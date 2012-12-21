@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/return_to_chat" android:id="@+id/to_chat"></item>
+    <item android:title="@string/forfeit" android:id="@+id/forfeit"></item>
+    <item android:title="@string/suggest_draw" android:id="@+id/draw"></item>
+    
+</menu>

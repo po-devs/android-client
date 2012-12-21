@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="empty"></string>
+    <string name="choosename">Trainer Name</string>
+    <string name="app_name">Pokémon Online</string>
+    <string name="connect">Connect!</string>
+    <string name="inputname">Trainer Name</string>
+    <string name="inputaddr">IP Address:Port</string>
+    <string name="chooseaddr">Server Address</string>
+    <string name="importteam">Import Team</string>
+    <string name="viewpokemon">View Pokémon</string>
+    <string name="tobattlescreen">Back to Battle Screen</string>
+    <string name="notinbattle">You are not currently in a battle!</string>
+    <string name="forfeit">Forfeit Current Battle</string>
+    <string name="ok">Okay</string>
+    <string name="cancel">Cancel</string>
+    <string name="no">No</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="suggest_draw">Suggest Draw</string>
+    <string name="return_to_chat">Return to Chat</string>
+	<string name="player_list">Player List</string>
+    <string name="channel_list">Channel List</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="accept_challenge">Accept Challenge from</string>
+    <string name="stat_attack">Attack</string>
+    <string name="stat_defense">Defense</string>
+    <string name="stat_spAttack">Sp. Att</string>
+    <string name="stat_spDefense">Sp. Def</string>
+    <string name="stat_speed">Speed</string>
+    <string name="stat_accuracy">Accuracy</string>
+    <string name="stat_evasion">Evasion</string>
+    <string name="rearrange_team_description">You can rearrange your team by dragging your Pokémon before the battle.</string>
+    <string name="rearrange_team_title">Rearrange Your Team</string>
+    <string name="foes_team">Foe\'s Team:</string>
+    <string name="your_team">Your Team:</string>
+    <string name="done">Done</string>
+    <string name="find_a_battle">Find Battle</string>
+    
+	<string name="crash_toast_text">Pokémon Online has crashed! Please help by e-mailing the resulting crash report.</string>
+	<string name="serv_name">Server Name</string>
+	<string name="players">Players</string>
+	<string name="serv_addr">Server Address</string>
+	<string name="connecttoserver">Connect to a Server</string>
+</resources>

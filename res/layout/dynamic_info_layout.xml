@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:id="@+id/dynamic_info_layout">
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20dp"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="10dp"
+		android:id="@+id/nameTypeView"/>
+	<TableLayout
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:layout_marginLeft="20dp"
+	  android:layout_marginRight="20dp"
+	  android:layout_marginBottom="20dp"
+	  android:id="@+id/dynamic_info_table">
+	  <TableRow>
+		  <TextView
+		  	android:layout_column="1"
+		  	android:layout_marginLeft="0dp"
+		  	android:layout_marginRight="0dp"
+		  	android:id="@+id/statNamesView"/>
+		  <TextView
+		  	android:gravity="right"
+		  	android:layout_marginLeft="0dp"
+		  	android:layout_marginRight="0dp"
+		  	android:id="@+id/statNumsView"/>
+		  <TextView
+		  	android:gravity="right"
+		  	android:layout_marginLeft="0dp"
+		  	android:layout_marginRight="0dp"
+		  	android:id="@+id/statBoostView"/>
+	  	</TableRow>
+	</TableLayout>
+</LinearLayout>
