@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="4dp" >
+
+    <TextView
+        android:id="@+id/registrytitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="dix"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="35sp" >
+
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/namestuff_land"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/registrytitle"
+        android:orientation="horizontal"
+        android:padding="4dp" >
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choosename"
+            android:textSize="20sp"
+			android:paddingRight="17dp"/>
+
+        <EditText
+            android:id="@+id/nameedit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/inputname"
+            android:maxLength="12" 
+            >
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addrstuff_land"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/namestuff_land"
+        android:orientation="horizontal"
+        android:padding="4dp" >
+
+        <TextView
+            android:id="@+id/addr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chooseaddr"
+            android:textSize="20sp"
+            android:paddingRight="5dp" />
+
+        <EditText
+            android:id="@+id/addredit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/inputaddr" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttonstuff"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp">
+
+        <Button
+            android:id="@+id/importteambutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/importteam" 
+            android:textSize="19sp">
+        </Button>
+
+        <Button
+            android:id="@+id/connectbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/connect"
+            android:textSize="19sp" >
+        </Button>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/titlestuff"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/addrstuff_land"
+        android:orientation="horizontal"
+        android:padding="4dp" >
+
+        <TextView
+            android:id="@+id/serv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/serv_name"
+            android:textSize="19sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/playernum_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="40dp"
+            android:text="@string/players"
+            android:textSize="19sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/serv_addr_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/serv_addr"
+            android:textSize="19sp" >
+        </TextView>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/serverlisting"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titlestuff"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp" >
+    </ListView>
+
+</RelativeLayout>
