@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<de.marcreichelt.android.ChatRealViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chatPokeSwitcher"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <!-- Begin Page 1 -->
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/battle_border_dark"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/playerlisttitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/player_list"
+            android:textSize="15sp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <view
+            android:id="@+id/playerlisting"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            class="com.pokebros.android.pokemononline.ChatListView" >
+        </view>
+    </LinearLayout>
+    <!-- End Page 1 -->
+    <!-- Begin Page2 -->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/chatlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/chatInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp" >
+        </EditText>
+
+        <ListView
+            android:id="@+id/chatView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/chatInput"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:divider="#0000" >
+        </ListView>
+    </RelativeLayout>
+    <!-- End Page 2 -->
+    <!-- Begin Page 3 -->
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/battle_border_dark"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/channellisttitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="@string/channel_list"
+            android:textSize="15sp"
+            android:textStyle="bold" >
+        </TextView>
+
+        <ListView
+            android:id="@+id/channellisting"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="left" >
+        </ListView>
+    </LinearLayout>
+    <!-- End Page 3 -->
+
+</de.marcreichelt.android.ChatRealViewSwitcher>

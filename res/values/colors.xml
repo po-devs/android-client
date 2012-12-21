@@ -1,0 +1,16 @@
+<resources>
+<color name="greenStart">#ff33dd44</color>  
+<color name="greenMid">#ff0A8815</color>  
+<color name="greenEnd">#ff1da130</color>
+<color name="redStart">#ffff0000</color>  
+<color name="redMid">#ffc90000</color>  
+<color name="redEnd">#ff850000</color>
+<color name="yellowStart">#ffffea00</color>  
+<color name="yellowMid">#ffe6d200</color>  
+<color name="yellowEnd">#ffc4b400</color>
+<color name="snag_callout_color">#808080</color>
+<color name="poke_text_shadow_enabled">#ffdddddd</color>
+<color name="poke_text_shadow_disabled">#ccffffff</color>
+<color name="pp_text_shadow_enabled">#ff333333</color>
+<color name="pp_text_shadow_disabled">#cc000000</color>
+</resources>

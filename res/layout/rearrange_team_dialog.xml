@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.launcher.DragLayer xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drag_my_poke"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/rearrange_team_dialog"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="5dp"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/arrange_team_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/rearrange_team_description"
+            android:textSize="13sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/yourteam_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/arrange_team_info"
+            android:layout_marginTop="4dp"
+            android:text="@string/your_team"
+            android:textStyle="bold" >
+        </TextView>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/yourteam_id"
+            android:layout_margin="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi115_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/my_arrange_poke1"
+            android:layout_alignTop="@+id/my_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/my_arrange_poke1"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi125_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/my_arrange_poke1"
+            android:layout_alignTop="@+id/my_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/my_arrange_poke2"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi135_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/my_arrange_poke1"
+            android:layout_alignTop="@+id/my_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/my_arrange_poke3"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi145_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/my_arrange_poke1"
+            android:layout_alignTop="@+id/my_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/my_arrange_poke4"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi155_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <com.android.launcher.PokeDragIcon
+            android:id="@+id/my_arrange_poke6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/my_arrange_poke1"
+            android:layout_alignTop="@+id/my_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/my_arrange_poke5"
+            android:background="@drawable/battle_border_button_dark"
+            android:clickable="true"
+            android:padding="6dp"
+            android:src="@drawable/pi165_icon" >
+        </com.android.launcher.PokeDragIcon>
+
+        <TextView
+            android:id="@+id/foesteam_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/my_arrange_poke1"
+            android:layout_marginTop="8dp"
+            android:text="@string/foes_team"
+            android:textStyle="bold" >
+        </TextView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/my_arrange_poke1"
+            android:layout_below="@+id/foesteam_id"
+            android:layout_margin="1dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/foe_arrange_poke1"
+            android:layout_alignTop="@+id/foe_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/foe_arrange_poke1"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/foe_arrange_poke1"
+            android:layout_alignTop="@+id/foe_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/foe_arrange_poke2"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/foe_arrange_poke1"
+            android:layout_alignTop="@+id/foe_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/foe_arrange_poke3"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/foe_arrange_poke1"
+            android:layout_alignTop="@+id/foe_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/foe_arrange_poke4"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/foe_arrange_poke6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/foe_arrange_poke1"
+            android:layout_alignTop="@+id/foe_arrange_poke1"
+            android:layout_margin="1dp"
+            android:layout_toRightOf="@+id/foe_arrange_poke5"
+            android:background="@drawable/battle_border_button_dark"
+            android:padding="6dp"
+            android:src="@drawable/pi130_icon" >
+        </ImageView>
+    </RelativeLayout>
+
+</com.android.launcher.DragLayer>
