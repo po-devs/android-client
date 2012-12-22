@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Html;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
@@ -55,6 +56,10 @@ public class NetworkService extends Service {
 	public boolean failedConnect = false;
 	public DataBaseHelper db;
 	public String serverName = "Not Connected";
+	public final ProtocolVersion version = new ProtocolVersion();
+	public boolean serverSupportsZipCompression = false;
+	@SuppressWarnings("unused")
+	private byte []reconnectSecret; 
 	
 	public boolean hasBattle() {
 		return battle != null;
@@ -112,7 +117,7 @@ public class NetworkService extends Service {
 				}
 				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
 				Baos loginCmd = new Baos();
-				loginCmd.putShort((short)0); // Protocol version
+				loginCmd.putBaos(version); // Protocol version
 				loginCmd.putShort((short)0); // Protocol subversion
 				loginCmd.write((byte)0);     // Network flags
 				loginCmd.putString(meLoginPlayer.nick());
@@ -191,18 +196,29 @@ public class NetworkService extends Service {
 				Log.e(TAG, "Received message for nonexistent channel");
 			break;
 		} case VersionControl: {
-			Short version = msg.readShort();
-			Short subVersion = msg.readShort();
-			if (version != 0 && subVersion != 0) {
+			ProtocolVersion serverVersion = new ProtocolVersion(msg);
+
+			if (serverVersion.compareTo(version) > 0) {
 				Log.d(TAG, "Server has newer protocol version than we expect");
+			} else if (serverVersion.compareTo(version) < 0) {
+				Log.d(TAG, "PO Android uses newer protocol than Server");
 			}
-			Bais flags = msg.readFlags();
-			Short lastVersionWithFeatures = msg.readShort();
-			Short lastSubVersionWithFeatures = msg.readShort();
-			Short lastVersionWithCompatBreak = msg.readShort();
-			Short lastSubVersionWithCompatBreak = msg.readShort();
-			Short lastVersionWithMajorCompatBreak = msg.readShort();
-			Short lastSubVersionWithMajorCompatBreak = msg.readShort();
+			
+			serverSupportsZipCompression = msg.readBool();
+			
+			ProtocolVersion lastVersionWithoutFeatures = new ProtocolVersion(msg);
+			ProtocolVersion lastVersionWithoutCompatBreak = new ProtocolVersion(msg);
+			ProtocolVersion lastVersionWithoutMajorCompatBreak = new ProtocolVersion(msg);
+
+			if (serverVersion.compareTo(version) > 0) {
+				if (lastVersionWithoutFeatures.compareTo(version) > 0) {
+					Toast.makeText(this, R.string.new_server_features_warning, Toast.LENGTH_SHORT).show();
+				} else if (lastVersionWithoutCompatBreak.compareTo(version) > 0) {
+					Toast.makeText(this, R.string.minor_compat_break_warning, Toast.LENGTH_SHORT).show();
+				} else if (lastVersionWithoutMajorCompatBreak.compareTo(version) > 0) {
+					Toast.makeText(this, R.string.major_compat_break_warning, Toast.LENGTH_LONG).show();
+				}
+			}
 			String serverName = msg.readString();
 			Log.d(TAG, "Server name is " + serverName);
 			break;
@@ -214,7 +230,7 @@ public class NetworkService extends Service {
 			Boolean hasReconnPass = flags.readBool();
 			if (hasReconnPass) {
 				// Read byte array
-				byte[] reconnSecret = msg.readQByteArray();
+				reconnectSecret = msg.readQByteArray();
 			}
 			mePlayer = new PlayerInfo(msg);
 			int numTiers = msg.readInt();

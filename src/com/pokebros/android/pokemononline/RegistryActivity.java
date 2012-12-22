@@ -20,6 +20,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.text.InputType;
 import android.util.Log;
@@ -56,7 +57,6 @@ public class RegistryActivity extends Activity implements ServiceConnection, Reg
 	private EditText editAddr;
 	private EditText editName;
 	private boolean bound = false;
-	private String path;
 	private FullPlayerInfo meLoginPlayer;
 	private SharedPreferences prefs;
 	RegistryConnectionService service;
@@ -250,7 +250,7 @@ public class RegistryActivity extends Activity implements ServiceConnection, Reg
 		case ImportTeamFromFile:
 			// Set an EditText view to get user input
 			final EditText input = new EditText(RegistryActivity.this);
-			input.append("/sdcard/");
+			input.append(Environment.getExternalStorageDirectory().getPath());
 
 			builder.setTitle("Team Import")
 			.setMessage("Please type the path to your team.")
