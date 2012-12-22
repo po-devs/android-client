@@ -9,7 +9,6 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.QColor;
 import com.pokebros.android.pokemononline.SerializeBytes;
-import com.pokebros.android.pokemononline.poke.UniqueID;
 
 // Represents a player in the player list
 public class PlayerInfo extends SerializeBytes {

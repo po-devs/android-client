@@ -3,15 +3,11 @@ package com.pokebros.android.pokemononline;
 import java.io.IOException;
 import java.nio.channels.UnresolvedAddressException;
 import java.text.ParseException;
-import java.util.concurrent.TimeoutException;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.widget.Toast;
 
 public class RegistryConnectionService extends Service {
 	
@@ -112,10 +108,10 @@ public class RegistryConnectionService extends Service {
 		
 		switch(c) {
 		case PlayersList: {
-			String name = msg.readQString();
-			String desc =  msg.readQString();
+			String name = msg.readString();
+			String desc =  msg.readString();
 			short players =  msg.readShort();
-			String ip =  msg.readQString();
+			String ip =  msg.readString();
 			short maxplayers = msg.readShort();
 			short port = msg.readShort();
 

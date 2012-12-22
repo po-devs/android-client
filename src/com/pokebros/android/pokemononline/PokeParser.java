@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,7 +17,6 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
-import android.net.Uri;
 
 import com.pokebros.android.pokemononline.player.PlayerTeam;
 import com.pokebros.android.pokemononline.poke.TeamPoke;

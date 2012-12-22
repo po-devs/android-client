@@ -14,11 +14,6 @@ public class Bais extends ByteArrayInputStream {
 		super(b);
 	}
 	
-	@Deprecated
-	public String readQString() {
-		return readString();
-	}
-	
 	public String readString() {
 		int len = readInt();
 		if (len == -1) // What Qt sends for null string

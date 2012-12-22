@@ -9,8 +9,8 @@ public class BasicPlayerInfo extends SerializeBytes {
 	public String nick = "", info = "";
 	
 	public BasicPlayerInfo(Bais msg) {
-		nick = msg.readQString();
-		info = msg.readQString();
+		nick = msg.readString();
+		info = msg.readString();
 	}
 	
 	public Baos serializeBytes() {

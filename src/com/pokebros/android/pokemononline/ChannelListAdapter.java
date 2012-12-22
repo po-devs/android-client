@@ -3,7 +3,6 @@ package com.pokebros.android.pokemononline;
 import java.util.Comparator;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -22,7 +22,7 @@ public class TeamPoke extends SerializeBytes {
 	
 	public TeamPoke(Bais msg) {
 		uID = new UniqueID(msg);
-		nick = msg.readQString();
+		nick = msg.readString();
 		item = msg.readShort();
 		ability = msg.readShort();
 		nature = msg.readByte();

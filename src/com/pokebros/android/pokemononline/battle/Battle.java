@@ -409,7 +409,7 @@ public class Battle {
 			break;
 		} case BattleChat: {
 		} case EndMessage: {
-			String message = msg.readQString();
+			String message = msg.readString();
 			if (message.equals(""))
 				break;
 			writeToHist(Html.fromHtml("<br><font color=" + (player !=0 ? "#5811b1>" : QtColor.Green) +
@@ -419,13 +419,13 @@ public class Battle {
 		} case Spectating: {
 			boolean come = msg.readBool();
 			int id = msg.readInt();
-			String name = msg.readQString();
+			String name = msg.readString();
 			// TODO addSpectator(come, id);
 			break;
 		} case SpectatorChat: {
 			// TODO if (ignoreSpecs) break;
 			int id = msg.readInt();
-			String message = msg.readQString();
+			String message = msg.readString();
 			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + netServ.players.get(id) + 
 					": " + NetworkService.escapeHtml(message)));
 			break;
@@ -435,7 +435,7 @@ public class Battle {
 			byte type = msg.readByte();
 			byte foe = msg.readByte();
 			short other = msg.readShort();
-			String q = msg.readQString();
+			String q = msg.readString();
 			
 			String s = netServ.db.query("SELECT EFFECT" + part + " FROM [Move_message] WHERE _id = " + move);
 			s = s.replaceAll("%s", currentPoke(player).nick);
@@ -599,7 +599,7 @@ public class Battle {
             }
 			break;
 		} case TierSection: {
-			String tier = msg.readQString();
+			String tier = msg.readString();
 			writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue +
 					"Tier: " + tier + "</b></font>"));
 			break;

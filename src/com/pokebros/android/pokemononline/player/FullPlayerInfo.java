@@ -10,7 +10,6 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.PokeParser;
 import com.pokebros.android.pokemononline.QColor;
-import com.pokebros.android.pokemononline.RegistryActivity;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
 // Contains all the information about the player.

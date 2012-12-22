@@ -1,25 +1,15 @@
 package com.pokebros.android.pokemononline;
 
 import java.io.IOException;
-//import org.apache.commons.collections.list;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
-
-import com.pokebros.android.pokemononline.battle.Battle;
-import com.pokebros.android.pokemononline.battle.BattleConf;
-import com.pokebros.android.pokemononline.battle.BattleTeam;
-import com.pokebros.android.pokemononline.battle.ChallengeEnums;
-import com.pokebros.android.pokemononline.player.FullPlayerInfo;
-import com.pokebros.android.pokemononline.player.PlayerInfo;
-import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,7 +22,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Html;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.pokebros.android.pokemononline.battle.Battle;
+import com.pokebros.android.pokemononline.player.FullPlayerInfo;
+import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";

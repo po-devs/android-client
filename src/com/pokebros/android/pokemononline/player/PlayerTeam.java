@@ -23,12 +23,12 @@ public class PlayerTeam extends SerializeBytes {
 	public String nick() { return nick; }
 	
 	public PlayerTeam(Bais msg) {
-		nick = msg.readQString();
-		info = msg.readQString();
-		loseMsg = msg.readQString();
-		winMsg = msg.readQString();
+		nick = msg.readString();
+		info = msg.readString();
+		loseMsg = msg.readString();
+		winMsg = msg.readString();
 		avatar = msg.readShort();
-		defaultTier = msg.readQString();
+		defaultTier = msg.readString();
 		team = new Team(msg);
 	}
 	

@@ -8,12 +8,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 import java.text.ParseException;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutionException;
 
-import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
-
-import android.media.MediaPlayer;
-import android.os.AsyncTask;
 import android.util.Log;
 
 public class PokeClientSocket {

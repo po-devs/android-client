@@ -3,10 +3,8 @@ package com.pokebros.android.pokemononline.poke;
 import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.DataBaseHelper;
-import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.battle.BattleMove;
-import com.pokebros.android.pokemononline.poke.PokeEnums.Status;
 
 // This class represents your poke during a battle.
 public class BattlePoke extends ShallowBattlePoke {
@@ -30,7 +28,7 @@ public class BattlePoke extends ShallowBattlePoke {
 	
 	public BattlePoke(Bais msg, DataBaseHelper db, byte gen) {
 		uID = new UniqueID(msg);
-		nick = msg.readQString();
+		nick = msg.readString();
 		totalHP = msg.readShort();
 		currentHP = msg.readShort();
 		gender = msg.readByte();

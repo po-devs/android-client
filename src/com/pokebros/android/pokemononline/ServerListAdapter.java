@@ -2,8 +2,6 @@ package com.pokebros.android.pokemononline;
 
 import java.util.Comparator;
 
-import com.pokebros.android.pokemononline.ServerListAdapter.Server;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

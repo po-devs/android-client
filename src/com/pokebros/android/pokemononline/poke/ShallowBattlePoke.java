@@ -30,7 +30,7 @@ public class ShallowBattlePoke extends SerializeBytes {
 	
 	public ShallowBattlePoke(Bais msg, boolean isMe, DataBaseHelper db, byte gen) {
 		uID = new UniqueID(msg);
-		rnick = nick = msg.readQString();
+		rnick = nick = msg.readString();
 		if (!isMe) {
 			nick = "the foe's " + nick;
 			
