@@ -57,7 +57,7 @@ public class RegistryConnectionService extends Service {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					socket = new PokeClientSocket("pokemon-online.dynalias.net", 5081);
+					socket = new PokeClientSocket("registry.pokemon-online.eu", 5090);
 					while(true) {
 						try {
 							socket.recvMessagePoll();
