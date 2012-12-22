@@ -49,11 +49,9 @@ public class Team implements SerializeBytes {
 			pokes[i] = new TeamPoke(mTP, mM, mDV, mEV, i);
 	}
 	
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.write(gen);
 		for(int i = 0; i < 6; i++)
 			bytes.putBaos(pokes[i]);
-		return bytes;
 	}
 }

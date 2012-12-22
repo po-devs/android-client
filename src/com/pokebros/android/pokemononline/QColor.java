@@ -27,8 +27,7 @@ public class QColor implements SerializeBytes {
 			html = ">";
 	}
 	
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.write(spec);
 		
 		bytes.putShort(alpha);
@@ -36,8 +35,6 @@ public class QColor implements SerializeBytes {
 		bytes.putShort(green);
 		bytes.putShort(blue);
 		bytes.putShort(pad);
-		
-		return bytes;
 	}
 	
 	@Override

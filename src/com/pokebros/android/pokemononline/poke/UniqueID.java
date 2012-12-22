@@ -23,10 +23,8 @@ public class UniqueID implements SerializeBytes {
 		subNum = 0;
 	}
 
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.putShort(pokeNum);
 		bytes.write(subNum);
-		return bytes;
 	}
 }

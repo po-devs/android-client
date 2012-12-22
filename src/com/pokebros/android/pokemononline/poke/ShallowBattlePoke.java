@@ -45,8 +45,7 @@ public class ShallowBattlePoke implements SerializeBytes {
 		level = msg.readByte();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putBaos(uID);
 		b.putString(nick);
 		b.write(lifePercent);
@@ -54,7 +53,6 @@ public class ShallowBattlePoke implements SerializeBytes {
 		b.write(gender);
 		b.putBool(shiny);
 		b.write(level);
-		return b;
 	}
 	
 	public SpannableStringBuilder nameAndType() {
@@ -82,8 +80,8 @@ public class ShallowBattlePoke implements SerializeBytes {
 			if (res.length() == 0 || res.equals(DataBaseHelper.ERROR))
 				// This should never happen but not having a type is probably bad
 				// give it curse type at least
-				res = new Integer(Type.Curse.ordinal()).toString();
-			types[i] = Type.values()[new Integer(res)];
+				res = Integer.valueOf(Type.Curse.ordinal()).toString();
+			types[i] = Type.values()[Integer.valueOf(res)];
 		}
 	}
 	

@@ -21,10 +21,8 @@ public class BattleTeam implements SerializeBytes {
 		}
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		for(int i = 0; i < 6; i++)
 			b.putBaos(pokes[i]);
-		return b;
 	}
 }

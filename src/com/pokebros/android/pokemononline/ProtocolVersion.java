@@ -56,10 +56,8 @@ public class ProtocolVersion implements SerializeBytes {
 		return version << 16 + minorVersion;
 	}
 
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putShort((short)version);
 		b.putShort((short)minorVersion);
-		return b;
 	} 
 }

@@ -17,12 +17,10 @@ public class ShallowShownPoke implements SerializeBytes {
 		item = msg.readBool();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putBaos(uID);
 		b.write(level);
 		b.write(gender);
 		b.putBool(item);
-		return b;
 	}
 }

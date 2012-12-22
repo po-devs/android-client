@@ -68,7 +68,7 @@ public class Baos extends ByteArrayOutputStream {
 	
 	public void putBaos(SerializeBytes src) {
 		try {
-			write(src.serializeBytes().toByteArray());
+			src.serializeBytes(this);
 		} catch (Exception e) {
 			System.exit(-1);
 		}

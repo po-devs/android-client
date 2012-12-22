@@ -21,13 +21,11 @@ public class BattleConf implements SerializeBytes {
 		clauses = msg.readInt();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.write(gen);
 		b.write(mode);
 		b.putInt(ids[0]);
 		b.putInt(ids[1]);
 		b.putInt(clauses);
-		return b;
 	}
 }

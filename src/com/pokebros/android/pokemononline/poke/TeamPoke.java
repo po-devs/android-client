@@ -89,8 +89,7 @@ public class TeamPoke implements SerializeBytes {
 		}
 	}
 	
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.putBaos(uID);
 		bytes.putString(nick);
 		bytes.putShort(item);
@@ -106,6 +105,5 @@ public class TeamPoke implements SerializeBytes {
 		}
 		for (int i = 0; i < 6; i++) bytes.write(DVs[i]);
 		for (int i = 0; i < 6; i++) bytes.write(EVs[i]);
-		return bytes;
 	}
 }

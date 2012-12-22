@@ -58,8 +58,7 @@ public class BattlePoke extends ShallowBattlePoke {
 	}
 	
 	@Override
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putBaos(uID);
 		b.putString(nick);
 		b.putShort(totalHP);
@@ -78,7 +77,6 @@ public class BattlePoke extends ShallowBattlePoke {
 			b.write(EVs[i]);
 		for(int i = 0; i < 6; i++)
 			b.write(DVs[i]);
-		return b;
 	}
 	
 	public int hiddenPowerType() {

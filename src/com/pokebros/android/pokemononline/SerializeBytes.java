@@ -1,5 +1,5 @@
 package com.pokebros.android.pokemononline;
 
 public interface SerializeBytes {
-	public Baos serializeBytes();
+	public void serializeBytes(Baos output);
 }

@@ -31,11 +31,9 @@ class AttackChoice extends Choice {
 		attackTarget = msg.readByte();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.write(attackSlot);
 		b.write(attackTarget);
-		return b;
 	}
 }
 
@@ -50,10 +48,8 @@ class SwitchChoice extends Choice {
 		pokeSlot = msg.readByte();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.write(pokeSlot);
-		return b;
 	}
 }
 
@@ -73,30 +69,26 @@ class RearrangeChoice extends Choice {
 			pokeIndexes[i] = team.pokes[i].teamNum;
 	}
 
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		try {
 			b.write(pokeIndexes);
 		} catch (Exception e) {
 			System.exit(-1);
 		}
-		return b;
 	}
 }
 
 class MoveToCenterChoice extends Choice {
-	public Baos serializeBytes() { 
+	public void serializeBytes(Baos b) { 
 		System.out.println("Error: serializeBytes called on MoveToCenterChoice");
 		System.exit(-1);
-		return null; 
 	}
 }
 
 class DrawChoice extends Choice {
-	public Baos serializeBytes() { 
+	public void serializeBytes(Baos b) { 
 		System.out.println("Error: serializeBytes called on DrawChoice");
-		System.exit(-1);
-		return null; 
+		System.exit(-1); 
 	}
 }
 
@@ -138,8 +130,7 @@ public class BattleChoice implements SerializeBytes {
 		}
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.write(playerSlot);
 		b.write(type);
 		
@@ -152,6 +143,5 @@ public class BattleChoice implements SerializeBytes {
 		default:
 			break;
 		}
-		return b;
 	}
 }

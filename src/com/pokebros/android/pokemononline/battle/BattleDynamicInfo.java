@@ -20,11 +20,9 @@ public class BattleDynamicInfo implements SerializeBytes {
 		flags = b.readByte();
 	}
 
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		for(int i = 0; i < 7; i++) b.write(boosts[i]);
 		b.write(flags);
-		return b;
 	}
 	
 	public String statsAndHazards() {
