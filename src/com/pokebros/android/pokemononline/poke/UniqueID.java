@@ -4,7 +4,7 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
-public class UniqueID extends SerializeBytes {
+public class UniqueID implements SerializeBytes {
 	public short pokeNum;
 	public byte subNum;
 	

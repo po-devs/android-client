@@ -14,7 +14,7 @@ import com.pokebros.android.pokemononline.SerializeBytes;
 
 // Contains all the information about the player.
 // Used for logging into the server.
-public class FullPlayerInfo extends SerializeBytes {
+public class FullPlayerInfo implements SerializeBytes {
 	public PlayerTeam playerTeam;
 	public boolean isDefault = true;
 	protected boolean ladderEnabled = true;

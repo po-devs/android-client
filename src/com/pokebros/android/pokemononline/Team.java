@@ -2,7 +2,7 @@ package com.pokebros.android.pokemononline;
 
 import com.pokebros.android.pokemononline.poke.TeamPoke;
 
-public class Team extends SerializeBytes {
+public class Team implements SerializeBytes {
 	protected byte gen = 5;
 	protected TeamPoke[] pokes = new TeamPoke[6];
 	

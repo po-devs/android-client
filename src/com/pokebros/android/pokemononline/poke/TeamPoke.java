@@ -5,7 +5,7 @@ import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
 // This class is how a poke is represented in the teambuilder.
-public class TeamPoke extends SerializeBytes {
+public class TeamPoke implements SerializeBytes {
 	protected UniqueID uID;
 	protected String nick;
 	protected short item;

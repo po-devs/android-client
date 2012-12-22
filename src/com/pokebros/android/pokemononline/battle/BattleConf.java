@@ -4,7 +4,7 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
-public class BattleConf extends SerializeBytes {
+public class BattleConf implements SerializeBytes {
 	public byte gen = 0;
 	public byte mode = 0;
 	public int[] ids = new int[2];

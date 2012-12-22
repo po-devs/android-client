@@ -6,7 +6,7 @@ import com.pokebros.android.pokemononline.DataBaseHelper;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.BattlePoke;
 
-public class BattleTeam extends SerializeBytes {
+public class BattleTeam implements SerializeBytes {
 	String nick = "";
 	String info = "";
 	int gen = 0;

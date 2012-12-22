@@ -11,7 +11,7 @@ package com.pokebros.android.pokemononline;
  * @author coyotte508
  *
  */
-public class ProtocolVersion extends SerializeBytes {
+public class ProtocolVersion implements SerializeBytes {
 	public int version;
 	public int minorVersion;
 	
@@ -56,7 +56,6 @@ public class ProtocolVersion extends SerializeBytes {
 		return version << 16 + minorVersion;
 	}
 
-	@Override
 	public Baos serializeBytes() {
 		Baos b = new Baos();
 		b.putShort((short)version);

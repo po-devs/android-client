@@ -4,7 +4,7 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
-public class ShallowShownPoke extends SerializeBytes {
+public class ShallowShownPoke implements SerializeBytes {
 	public boolean item;
 	public UniqueID uID;
 	public byte level;

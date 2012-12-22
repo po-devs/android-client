@@ -1,5 +1,5 @@
 package com.pokebros.android.pokemononline;
 
-public abstract class SerializeBytes {
-	public abstract Baos serializeBytes();
+public interface SerializeBytes {
+	public Baos serializeBytes();
 }

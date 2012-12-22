@@ -13,7 +13,7 @@ import com.pokebros.android.pokemononline.battle.Type;
 import com.pokebros.android.pokemononline.poke.PokeEnums.Status;
 
 // This class represents the Opponent's poke during a battle.
-public class ShallowBattlePoke extends SerializeBytes {
+public class ShallowBattlePoke implements SerializeBytes {
 	public String rnick, nick = "", pokeName = "";
 	int fullStatus = 0;
 	public UniqueID uID = new UniqueID();

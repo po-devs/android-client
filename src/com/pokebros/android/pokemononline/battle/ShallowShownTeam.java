@@ -5,7 +5,7 @@ import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.ShallowShownPoke;
 
-public class ShallowShownTeam extends SerializeBytes {
+public class ShallowShownTeam implements SerializeBytes {
 	public ShallowShownPoke[] pokes = new ShallowShownPoke[6];
 	
 	public ShallowShownTeam(Bais msg) {

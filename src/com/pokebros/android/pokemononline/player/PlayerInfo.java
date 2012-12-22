@@ -11,7 +11,7 @@ import com.pokebros.android.pokemononline.QColor;
 import com.pokebros.android.pokemononline.SerializeBytes;
 
 // Represents a player in the player list
-public class PlayerInfo extends SerializeBytes {
+public class PlayerInfo implements SerializeBytes {
 	final static short VERSION = 0;
 	final static String TAG = "PlayerInfo";
 	

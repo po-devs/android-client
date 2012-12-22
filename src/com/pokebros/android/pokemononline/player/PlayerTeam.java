@@ -10,7 +10,7 @@ import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.Team;
 
 // Player as represented in the teambuilder.
-public class PlayerTeam extends SerializeBytes {
+public class PlayerTeam implements SerializeBytes {
 	public String nick;
 	protected String info = "This is the default team. Please import your own team from the PC client.";
 	protected String loseMsg = "";

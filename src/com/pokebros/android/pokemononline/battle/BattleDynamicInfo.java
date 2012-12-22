@@ -1,15 +1,10 @@
 package com.pokebros.android.pokemononline.battle;
 
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-
 import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
-import com.pokebros.android.pokemononline.poke.BattlePoke;
-import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 
-public class BattleDynamicInfo extends SerializeBytes {
+public class BattleDynamicInfo implements SerializeBytes {
 	public static final byte SPIKES = 1;
 	public static final byte SPIKESL2 = 2;
 	public static final byte SPIKESL3 = 4;
@@ -24,8 +19,7 @@ public class BattleDynamicInfo extends SerializeBytes {
 		for(int i = 0; i < 7; i++) boosts[i] = b.readByte();
 		flags = b.readByte();
 	}
-	
-	@Override
+
 	public Baos serializeBytes() {
 		Baos b = new Baos();
 		for(int i = 0; i < 7; i++) b.write(boosts[i]);

@@ -14,7 +14,7 @@ enum ChoiceType {
 };
 
 // Please only call serializeBytes() on the Choices that make sense.
-abstract class Choice extends SerializeBytes {
+abstract class Choice implements SerializeBytes {
 }
 
 class AttackChoice extends Choice {
@@ -100,7 +100,7 @@ class DrawChoice extends Choice {
 	}
 }
 
-public class BattleChoice extends SerializeBytes {
+public class BattleChoice implements SerializeBytes {
 	protected byte type;
 	protected byte playerSlot;
 	protected Choice choice;
