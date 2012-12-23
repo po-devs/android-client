@@ -72,14 +72,12 @@ public class PlayerInfo implements SerializeBytes {
 		}
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putInt(id);
 		b.putString(nick);
 		b.putString(info);
 		b.write(auth);
 		b.putBaos(color);
-		return b;
 	}
 
 	static public class ComparePlayerInfos implements Comparator<PlayerInfo> {

@@ -46,12 +46,10 @@ public class FullPlayerInfo implements SerializeBytes {
 	public String toString() { return playerTeam.nick(); }
 	public String nick() { return playerTeam.nick(); }
 	
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.putBaos(playerTeam);
 		bytes.putBool(ladderEnabled);
 		bytes.putBool(showTeam);
 		bytes.putBaos(nameColor);
-		return bytes;
 	}
 }

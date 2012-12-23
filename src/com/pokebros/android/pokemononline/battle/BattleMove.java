@@ -76,12 +76,10 @@ public class BattleMove implements SerializeBytes {
 		totalPP = msg.readByte();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putShort(num);
 		b.write(currentPP);
 		b.write(totalPP);
-		return b;
 	}
 	
 	public String descAndEffects() {

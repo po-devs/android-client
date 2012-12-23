@@ -13,10 +13,8 @@ public class BasicPlayerInfo implements SerializeBytes {
 		info = msg.readString();
 	}
 	
-	public Baos serializeBytes() {
-		Baos b = new Baos();
+	public void serializeBytes(Baos b) {
 		b.putString(nick);
 		b.putString(info);
-		return b;
 	}
 }

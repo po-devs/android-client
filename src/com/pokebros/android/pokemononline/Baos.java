@@ -19,7 +19,7 @@ public class Baos extends ByteArrayOutputStream {
 		super(size);
 	}
 	
-	public void putInt(int i) {
+	public Baos putInt(int i) {
 		byte[] bytes = new byte[4];
 		
 		ByteBuffer bb = ByteBuffer.allocate(4);
@@ -33,9 +33,11 @@ public class Baos extends ByteArrayOutputStream {
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+		
+		return this;
 	}
 	
-	public void putShort(short s) {
+	public Baos putShort(short s) {
 		byte[] bytes = new byte[2];
 		
 		ByteBuffer bb = ByteBuffer.allocate(2);
@@ -49,9 +51,11 @@ public class Baos extends ByteArrayOutputStream {
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+		
+		return this;
 	}
 	
-	public void putString(String s) {
+	public Baos putString(String s) {
 		putInt(s.length());
 		try {
 			write(s.getBytes("UTF-8"));
@@ -60,17 +64,22 @@ public class Baos extends ByteArrayOutputStream {
 		} catch (IOException e) {
 			Log.e(TAG, "IOException while trying to put string");
 		}
+		
+		return this;
 	}
 	
-	public void putBool(boolean bool) {
+	public Baos putBool(boolean bool) {
 		write((byte)(bool ? 1 : 0));
+		
+		return this;
 	}
 	
-	public void putBaos(SerializeBytes src) {
+	public Baos putBaos(SerializeBytes src) {
 		try {
 			src.serializeBytes(this);
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+		return this;
 	}
 }

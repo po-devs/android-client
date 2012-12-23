@@ -208,7 +208,7 @@ public class RegistryActivity extends Activity implements ServiceConnection, Reg
 				Intent intent = new Intent(RegistryActivity.this, NetworkService.class);
 				intent.putExtra("ip", ipString);
 				intent.putExtra("port", portVal);
-				intent.putExtra("loginPlayer", meLoginPlayer.serializeBytes().toByteArray());
+				intent.putExtra("loginPlayer", new Baos().putBaos(meLoginPlayer).toByteArray());
 				prefs.edit().putString("lastAddr", editAddr.getText().toString()).putString("lastName", editName.getText().toString()).commit();
 
 				startService(intent);

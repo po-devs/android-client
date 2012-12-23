@@ -59,8 +59,7 @@ public class PlayerTeam implements SerializeBytes {
 		return nick;
 	}
 	
-	public Baos serializeBytes() {
-		Baos bytes = new Baos();
+	public void serializeBytes(Baos bytes) {
 		bytes.putString(nick);
 		bytes.putString(info);
 		bytes.putString(loseMsg);
@@ -68,7 +67,6 @@ public class PlayerTeam implements SerializeBytes {
 		bytes.putShort(avatar);
 		bytes.putString(defaultTier);
 		bytes.putBaos(team);
-		return bytes;
 	}
 
 }
