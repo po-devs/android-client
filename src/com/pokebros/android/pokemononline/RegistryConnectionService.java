@@ -3,17 +3,20 @@ package com.pokebros.android.pokemononline;
 import java.io.IOException;
 import java.nio.channels.UnresolvedAddressException;
 import java.text.ParseException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 public class RegistryConnectionService extends Service {
 	
 	public interface RegistryCommandListener {
 	
 		public abstract void ServerListEnd();
+		public abstract void RegistryConnectionClosed();
 
 		/*
 		 * Called when Registry sends us a new Server
@@ -22,28 +25,45 @@ public class RegistryConnectionService extends Service {
 				short players, String ip, short maxplayers, short port);
 	}
 	
-	private final IBinder binder = new LocalBinder();
-	private RegistryCommandListener listener = null;
+	private final ConcurrentHashMap<Intent, LocalBinder> binders = new ConcurrentHashMap<Intent, RegistryConnectionService.LocalBinder>();
 	
-	Thread sThread, rThread;
-	PokeClientSocket socket = null;
-	private Bais msg;
+	static final String TAG = "Pokemon Online Registry";
 
 	public class LocalBinder extends Binder {
-		RegistryConnectionService getService() {
-			return RegistryConnectionService.this;
+		public LocalBinder() {
 		}
+		
+		synchronized void connect(RegistryCommandListener listener) {
+			mListener = listener;
+			RegistryConnectionService.this.connect(this);
+		}
+		
+		synchronized void disconnect() {
+			mListener = null;
+		}
+		
+		synchronized RegistryCommandListener listener() {
+			return mListener;
+		}
+		
+		private RegistryCommandListener mListener;
 	}
 	
 	@Override
 	// This is called every time someone binds to us
 	public IBinder onBind(Intent intent) {
-		connect();
-		return binder;
+		binders.put(intent, new LocalBinder());
+		return binders.get(intent);
 	}
 	
-	public void setListener(RegistryCommandListener listener) {
-		this.listener = listener;
+	@Override
+	public boolean onUnbind(Intent intent) {
+		LocalBinder binder = binders.get(intent);
+		if (binder != null) {
+			binders.remove(intent);
+			binder.disconnect();
+		}
+		return false;
 	}
 	
 	@Override
@@ -52,12 +72,14 @@ public class RegistryConnectionService extends Service {
 		super.onCreate();
 	}
 	
-	private void connect() {
+	private void connect(final LocalBinder binder) {
 		// XXX This should probably have a timeout
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					socket = new PokeClientSocket("registry.pokemon-online.eu", 5090);
+					int count = 0;
+					Log.v(TAG, "Starting a registry request...");
+					PokeClientSocket socket = new PokeClientSocket("registry.pokemon-online.eu", 5090);
 					while(true) {
 						try {
 							socket.recvMessagePoll();
@@ -72,34 +94,37 @@ public class RegistryConnectionService extends Service {
 	        			}
 						Baos tmp = socket.getMsg();
 						if(tmp != null) {
-							msg = new Bais(tmp.toByteArray());
-							handleMsg();
+							Log.v(TAG, "reading message " + (++count));
+							handleMsg(socket, new Bais(tmp.toByteArray()), binder.listener());
 						} else {
 							// don't use all CPU when no message
 							try {
-								Thread.sleep(10);
+								Thread.sleep(100);
 							} catch (InterruptedException e) {
 								// no action
 							}
 						}
+						/* If we got disconnected, no point in continuing */
+						if (binder.listener() == null) {
+							socket.close();
+							break;
+						}
 					}
 				}
 				catch (IOException e) {
-					System.out.println("Registry connection failed");
+					Log.e(TAG, "Registry connection failed");
 				} catch (UnresolvedAddressException e) {
-					System.out.println("Unable to resolve address for registry");
+					Log.e(TAG, "Unable to resolve address for registry");
 				}
+				RegistryCommandListener listener = binder.listener();
+				if (listener != null) {
+					listener.RegistryConnectionClosed();
+				}
+				Log.v(TAG, "Registry connection finished");
 			}}).start();
 	}
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		super.onStartCommand(intent, flags, startId);
-		return START_STICKY;
-	}
-    
-	public void handleMsg() {
-
+	public void handleMsg(PokeClientSocket socket, Bais msg, RegistryCommandListener listener) {
 		/* Completely obvious way to "convert"
 		 * a byte into a value in an enum.
 		 */
@@ -115,17 +140,19 @@ public class RegistryConnectionService extends Service {
 			short maxplayers = msg.readShort();
 			short port = msg.readShort();
 
-			if (listener != null)
-				listener.NewServer(name, desc, players, ip, maxplayers, port); 
+			if (listener != null) {
+				listener.NewServer(name, desc, players, ip, maxplayers, port);
+			}
 			break;
 		}
 		case ServerListEnd:
-			if (listener != null)
+			if (listener != null) {
 				listener.ServerListEnd();
+			}
 			socket.close(); // server stops sending any meaningless data 
 			break;
 		default:
-			System.err.println("Unknown message");
+			Log.w(TAG, "Unknown message");
 		}
 	}
 }

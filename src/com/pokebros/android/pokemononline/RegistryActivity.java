@@ -54,7 +54,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private boolean bound = false;
 	private FullPlayerInfo meLoginPlayer;
 	private SharedPreferences prefs;
-	RegistryConnectionService service;
 
 	enum RegistryDialog {
 		SelectImportMethod,
@@ -119,8 +118,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				Server server = (Server)parent.getItemAtPosition(position);
-				editAddr.setText("");
-				editAddr.append(server.ip + ":" + String.valueOf(server.port));
+				editAddr.setText(server.ip + ":" + String.valueOf(server.port));
 			}
 		});
         
@@ -140,9 +138,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         	
 		});
         
-//        Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
-//        bindService(intent, this, 0);
-//        startService(intent);
+        Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
+        bindService(intent, this, BIND_AUTO_CREATE);
     }
     
     private OnClickListener registryListener = new OnClickListener() {
@@ -269,13 +266,21 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		});
 	}
     
-	public void ServerListEnd() {
+	synchronized public void ServerListEnd() {
+		if (!bound) {
+			return;
+		}
+		unbindService(RegistryActivity.this);
+
 		runOnUiThread(new Runnable() {
 			public void run() {
 				adapter.sortByPlayers();
-				service.stopSelf();
 			}
 		});
+	}
+	
+	public void RegistryConnectionClosed() {
+		ServerListEnd();
 	}
 
 	public void NewServer(final String name, final String desc, final short players,
@@ -287,10 +292,9 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		});
 	}
 
-	public void onServiceConnected(ComponentName name, IBinder binder) {
+	synchronized public void onServiceConnected(ComponentName name, IBinder binder) {
 		bound = true;
-		service = ((RegistryConnectionService.LocalBinder)binder).getService();
-		service.setListener(this);
+		((RegistryConnectionService.LocalBinder)binder).connect(this);
 	}
 	
 	public void printToast(final String s, final int len) {
@@ -301,15 +305,12 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		});
 	}
 
-	public void onServiceDisconnected(ComponentName name) {
+	synchronized public void onServiceDisconnected(ComponentName name) {
 		bound = false;
-		unbindService(this);
-		if (service != null)
-	    	service.setListener(null);
 	}
     
     @Override
-    public void onDestroy() {
+    synchronized public void onDestroy() {
     	if (bound)
     		unbindService(this);
     	super.onDestroy();
