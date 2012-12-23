@@ -17,6 +17,14 @@ import android.widget.Toast;
 
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 
+/**
+ * Lets the user select a file, if import is successful overwrite "team.xml" with
+ * imported team and calls activity.onTeamImportedFromFile if it implemens
+ * OnTeamImportedFromFileListener.
+ * 
+ * @author coyotte508
+ *
+ */
 public class ImportTeamFromFileDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {

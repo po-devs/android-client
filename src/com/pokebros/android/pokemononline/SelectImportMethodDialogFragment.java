@@ -8,6 +8,20 @@ import android.support.v4.app.DialogFragment;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 
+/**
+ * <p>Creates a dialog that proposes the use to import team from file or QR code.</p>
+ * 
+ * <p>If importing from file, will open a new ImportTeamFromFileDialogFragment,
+ * which will call yourActivity.OnTeamImportedFromFileListener's interface function
+ * onTeamImportedFromFile(FullPlayerInfo info).</p>
+ * 
+ * <p>Importing from QR code will call your activity's onActivityResult with the QR code
+ * data, letting you do the importing. In the future an easier skyteams service will
+ * be used.</p>
+ * 
+ * @author coyotte508
+ *
+ */
 public class SelectImportMethodDialogFragment extends DialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
