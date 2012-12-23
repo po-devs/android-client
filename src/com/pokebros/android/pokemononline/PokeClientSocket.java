@@ -93,12 +93,21 @@ public class PokeClientSocket {
 		return true;
 	}
 
+	/**
+	 * Retrieves next message in queue 
+	 * @return next message in queue or null if none
+	 */
 	public Baos getMsg() {
-		/* Retrieves next message in queue or null if none */
-		
 		return msgs.poll();
 	}
 
+	/**
+	 * Polls the socket to see if new data is available. If new data is available, messages
+	 * will be added to the queue that you can get with {@link #getMsg()}
+	 * 
+	 * @throws IOException forwarded from the socket functions
+	 * @throws ParseException if the server sent a packet too big for us to handle
+	 */
 	public void recvMessagePoll() throws IOException, ParseException {
 		//Log.d(TAG, "Socket polled");
 		if (readingPacket) {

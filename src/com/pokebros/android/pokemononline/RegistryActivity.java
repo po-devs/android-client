@@ -270,6 +270,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		if (!bound) {
 			return;
 		}
+		Log.i(TAG, "Unbinding registry connection service");
+		bound = false;
 		unbindService(RegistryActivity.this);
 
 		runOnUiThread(new Runnable() {
@@ -311,8 +313,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     
     @Override
     synchronized public void onDestroy() {
-    	if (bound)
-    		unbindService(this);
     	super.onDestroy();
     }
 }

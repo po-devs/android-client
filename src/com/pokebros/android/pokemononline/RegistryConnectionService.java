@@ -52,12 +52,14 @@ public class RegistryConnectionService extends Service {
 	@Override
 	// This is called every time someone binds to us
 	public IBinder onBind(Intent intent) {
+		Log.d(TAG, "binding service");
 		binders.put(intent, new LocalBinder());
 		return binders.get(intent);
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
+		Log.d(TAG, "unbinding service");
 		LocalBinder binder = binders.get(intent);
 		if (binder != null) {
 			binders.remove(intent);
