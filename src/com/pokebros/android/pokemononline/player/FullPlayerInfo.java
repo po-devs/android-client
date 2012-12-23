@@ -30,7 +30,7 @@ public class FullPlayerInfo implements SerializeBytes {
 	
 	public FullPlayerInfo(Context context, SharedPreferences prefs) {
 		try {
-			context.openFileInput("team.xml");
+			context.openFileInput(prefs.getString("teamFile", "team.xml"));
 			playerTeam = new PlayerTeam(context, new PokeParser(context));
 			isDefault = false;
 		} catch (FileNotFoundException e) {
