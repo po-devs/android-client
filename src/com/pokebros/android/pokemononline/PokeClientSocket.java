@@ -12,14 +12,18 @@ import java.util.LinkedList;
 import android.util.Log;
 
 public class PokeClientSocket {
+	/* Socket channel, true connection */
 	private SocketChannel schan = null;
 	private final static String TAG = "PokeClientSocket";
 
 	private Baos thisMsg = new Baos();
+	/* Length of the packet to come. Stored there before being put in remainingLen */
+	private ByteBuffer packetLength = ByteBuffer.allocate(4);
+	private int remainingLen = 0;
+	private boolean readingPacket;
 	private ByteBuffer currentData = ByteBuffer.allocate(4096);
 	private LinkedList<Baos> msgs = new LinkedList<Baos>();
-	int remaining = 0, dataLen = 0;
-	private byte lenRead = 0;
+	private int dataLen = 0;
 	public final static int CONNECT_TIMEOUT=10000;
 
 	public PokeClientSocket(String inIpAddr, int inPortNum) throws SocketTimeoutException, IOException
@@ -27,7 +31,7 @@ public class PokeClientSocket {
 		schan = SocketChannel.open();
 		//schan.connect(new InetSocketAddress(inIpAddr, inPortNum));
 		schan.socket().connect(new InetSocketAddress(inIpAddr, inPortNum), CONNECT_TIMEOUT);
-//		schan.configureBlocking(false);
+ 		schan.configureBlocking(false);
 	}
 
 	public boolean isConnected() { 
@@ -99,52 +103,61 @@ public class PokeClientSocket {
 	}
 
 	public void recvMessagePoll() throws IOException, ParseException {
-		Log.d(TAG, "Socket polled");
-		currentData.clear();
-		dataLen = schan.read(currentData);
-		currentData.flip();
+		//Log.d(TAG, "Socket polled");
+		if (readingPacket) {
+			dataLen = schan.read(currentData);
+		} else {
+			dataLen = schan.read(packetLength);
+		}
 		// Loop while there's still data in the buffer.
 		while (dataLen > 0) {
-			Log.d(TAG, "dataLen " + dataLen + " lenRead " + lenRead + " remaining " + remaining);
-			// Read in the message's length.
-			while (lenRead < 4) {
-				// If we haven't read in the length, try and get it.
-				if (dataLen == 0)
-					break;
-				remaining |= (((int)currentData.get() & 0xff) << (8 * (3 - lenRead)));
-				if (remaining < 0) {
-					// Length overflowed, something has gone horribly wrong.
-					throw new ParseException("The message length overflowed signed int", 0);
+			Log.d(TAG, "read " + dataLen + " bytes");
+			/* We're trying to get the length of a new packet */
+			if (!readingPacket) {
+				/* Wait until we get the length of a packet */
+				if (packetLength.position() < 4) {
+					/* Do nothing */
+				} else {
+					packetLength.rewind();
+					remainingLen = packetLength.getInt();
+					packetLength.clear();
+					
+					Log.d(TAG, "packet length determined: " + remainingLen + " bytes");
+					
+					if (remainingLen == 0) {
+						msgs.add(new Baos());
+					} else if (remainingLen < 0) {
+						throw new ParseException("The message length overflowed the length of a signed int", 0);
+					} else {
+						readingPacket = true;
+						currentData.limit(Math.min(remainingLen, currentData.capacity()));
+					}
 				}
-				lenRead++;
-				dataLen--;
-				if (lenRead == 4) {
-					Log.d(TAG, "Next message is of len " + remaining);
-				}
-			}
-
-			if(remaining <= dataLen) {
-				// There's enough data in the buffer to finish the current message.
-				byte[] bytes = new byte[remaining];
-				currentData.get(bytes, 0, remaining);
-				thisMsg.write(bytes);
-
-				// Add the read in message to the queue of
-				// unprocessed messages.
-				msgs.add(thisMsg);
-				thisMsg = new Baos();
-				dataLen -= remaining;
-				remaining = 0;
-				lenRead = 0; // Start the next new message
-			}
-			else {
-				// Otherwise, read what we can and put it into
-				// the incomplete message.
+			} else {
+				/* We're reading packet data */
+				remainingLen -= dataLen;
+				currentData.flip();
 				byte[] bytes = new byte[dataLen];
 				currentData.get(bytes, 0, dataLen);
 				thisMsg.write(bytes);
-				remaining -= dataLen;
-				dataLen = 0;
+				currentData.clear();
+
+				/* Did we read it all? */
+				if (remainingLen == 0) {
+					Log.d(TAG, "Packet fully read");
+					msgs.add(thisMsg);
+					thisMsg = new Baos();
+					
+					readingPacket = false;
+				} else {
+					currentData.limit(Math.min(remainingLen, currentData.capacity()));
+				}
+			}
+
+			if (readingPacket) {
+				dataLen = schan.read(currentData);
+			} else {
+				dataLen = schan.read(packetLength);
 			}
 		}
 	}
