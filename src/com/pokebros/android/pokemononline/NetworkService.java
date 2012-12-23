@@ -118,34 +118,37 @@ public class NetworkService extends Service {
 				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); // Protocol version
-				loginCmd.putShort((short)0); // Protocol subversion
 				loginCmd.write((byte)0);     // Network flags
 				loginCmd.putString(meLoginPlayer.nick());
 				socket.sendMessage(loginCmd, Command.Login);
-				new Thread(new Runnable() {
-		        	public void run() {
-		        		while(true) {
-		        			try {
-		        				// Get some data from the wire
-		        				socket.recvMessagePoll();
-		        			} catch (IOException e) {
-		        				// Disconnected
-		        				break;
-		        			} catch (ParseException e) {
-		        				// Got message that overflowed length from server.
-		        				// No way to recover.
-		        				// TODO die completely
-		        				break;
-		        			}
-		        			Baos tmp;
-		        			// Handle any messages that completed
-		        			while ((tmp = socket.getMsg()) != null) {
-			        			Bais msg = new Bais(tmp.toByteArray());
-			        			handleMsg(msg);
-		        			}
-		        		}
-		        	}
-		        }).start();
+
+        		while(socket.isConnected()) {
+        			try {
+        				// Get some data from the wire
+        				socket.recvMessagePoll();
+        			} catch (IOException e) {
+        				// Disconnected
+        				break;
+        			} catch (ParseException e) {
+        				// Got message that overflowed length from server.
+        				// No way to recover.
+        				// TODO die completely
+        				break;
+        			}
+        			Baos tmp;
+        			// Handle any messages that completed
+        			while ((tmp = socket.getMsg()) != null) {
+	        			Bais msg = new Bais(tmp.toByteArray());
+	        			handleMsg(msg);
+        			}
+        			
+        			/* Do not use too much CPU */
+        			try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// Do nothing
+					}
+        		}
 			}
 		}).start();
 	}
