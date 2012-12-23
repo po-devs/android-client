@@ -52,7 +52,9 @@ public class PlayerInfo implements SerializeBytes {
 			msg.skip(len - 1);
 		}
 		id = msg.readInt();
-		Bais netFlags = msg.readFlags();
+		/* Network flags, unused yet */
+		msg.readFlags();
+
 		Bais dataFlags = msg.readFlags();
 		isAway = dataFlags.readBool();
 		hasLadderEnabled = dataFlags.readBool();
@@ -60,9 +62,11 @@ public class PlayerInfo implements SerializeBytes {
 		color = new QColor(msg);
 		avatar = msg.readShort();
 		info = msg.readString();
-		if (info == null)
-			// No info provided, but "" is a little safer to use than null.
+		
+		// No info provided, but "" is a little safer to use than null.
+		if (info == null) {
 			info = "";
+		}
 		auth = msg.readByte();
 		
 		short numTiers = (short)((short)msg.readByte() & 0xff);
