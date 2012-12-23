@@ -94,10 +94,7 @@ public class PokeClientSocket {
 	}
 
 	public Baos getMsg() {
-		// This retrieves and removes the first
-		// item in the queue, returning null 
-		// if there is none.
-		// I know, great name, right?
+		/* Retrieves next message in queue or null if none */
 		
 		return msgs.poll();
 	}

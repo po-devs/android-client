@@ -92,22 +92,23 @@ public class RegistryConnectionService extends Service {
 	        				// TODO die completely
 	        				break;
 	        			}
-						Baos tmp = socket.getMsg();
-						if(tmp != null) {
+						Baos tmp;
+						while((tmp = socket.getMsg()) != null) {
 							Log.v(TAG, "reading message " + (++count));
 							handleMsg(socket, new Bais(tmp.toByteArray()), binder.listener());
-						} else {
-							// don't use all CPU when no message
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								// no action
-							}
 						}
+						
 						/* If we got disconnected, no point in continuing */
 						if (binder.listener() == null) {
 							socket.close();
 							break;
+						}
+
+						// don't use all CPU
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// no action
 						}
 					}
 				}
