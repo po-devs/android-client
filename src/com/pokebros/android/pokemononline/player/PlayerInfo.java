@@ -1,7 +1,6 @@
 package com.pokebros.android.pokemononline.player;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import android.util.Log;
 
@@ -9,6 +8,7 @@ import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.QColor;
 import com.pokebros.android.pokemononline.SerializeBytes;
+import com.pokebros.android.utilities.Getter;
 
 // Represents a player in the player list
 public class PlayerInfo implements SerializeBytes {
@@ -24,7 +24,7 @@ public class PlayerInfo implements SerializeBytes {
 	String info;
 	public byte auth;
 
-	class TierStanding {
+	public class TierStanding {
 		public String tier;
 		public short rating;
 		
@@ -34,7 +34,7 @@ public class PlayerInfo implements SerializeBytes {
 		}
 	}
 	
-	ArrayList<TierStanding> tierStandings;
+	public ArrayList<TierStanding> tierStandings;
 
 	public String nick() { return nick; }
 	public String info() { return info; }
@@ -83,21 +83,23 @@ public class PlayerInfo implements SerializeBytes {
 		b.write(auth);
 		b.putBaos(color);
 	}
-
-	static public class ComparePlayerInfos implements Comparator<PlayerInfo> {
-		public int compare(PlayerInfo p1, PlayerInfo p2) {
-			return p1.nick.compareTo(p2.nick);
+	
+	static public class TierStandingGetter implements Getter<TierStanding> {
+		public String get(TierStanding object, int index) {
+			if (index == 0) {
+				return object.tier;
+			} else {
+				if (object.rating == -1) {
+					return "???";
+				} else {
+					return String.valueOf(object.rating);
+				}
+			}
 		}
 	}
+	static public TierStandingGetter tierGetter = new TierStandingGetter();
 	
 	public boolean equals(PlayerInfo p) {
 		return nick.equals(p);
-	}
-	
-	public void update(PlayerInfo p) {
-		this.auth = p.auth;
-		this.nick = p.nick;
-		this.info = p.info;
-		this.avatar = p.avatar;
 	}
 }

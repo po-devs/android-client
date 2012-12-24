@@ -49,8 +49,11 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.ChallengeDesc;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
+import com.pokebros.android.pokemononline.player.PlayerInfo.TierStandingGetter;
 import com.pokebros.android.pokemononline.poke.UniqueID;
 import com.pokebros.android.utilities.StringUtilities;
+import com.pokebros.android.utilities.TwoViewsArrayAdapter;
 
 import de.marcreichelt.android.ChatRealViewSwitcher;
 
@@ -539,7 +542,8 @@ public class ChatActivity extends Activity {
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
             ImageView[] pPokeIcons = new ImageView[6];
-            TextView pInfo, pTeam, pName, pTier, pRating;           
+            TextView pInfo, pTeam, pName;
+            ListView ratings;
 			builder.setView(layout)
             .setNegativeButton("Back", new DialogInterface.OnClickListener(){
             	public void onClick(DialogInterface dialog, int which) {
@@ -564,17 +568,13 @@ public class ChatActivity extends Activity {
         			(i+1), "id", packName));
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
             }
-        	pInfo = (TextView)layout.findViewById(getResources().getIdentifier("player_info", "id", packName));
+        	pInfo = (TextView)layout.findViewById(R.id.player_info);
         	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
-        	pTeam = (TextView)layout.findViewById(getResources().getIdentifier("player_info_team", "id", packName));
-        	pTeam.setText(lastClickedPlayer.nick() + "'s team:");
-        	pName = (TextView)layout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
+        	pName = (TextView)layout.findViewById(R.id.player_info_name);
         	pName.setText(lastClickedPlayer.nick());
-        	pTier = (TextView)layout.findViewById(getResources().getIdentifier("player_info_tier", "id", packName));
-        	//pTier.setText(Html.fromHtml("<b>Tier: </b>" + NetworkService.escapeHtml(lastClickedPlayer.tier)));
-        	pRating = (TextView)layout.findViewById(getResources().getIdentifier("player_info_rating", "id", packName));
-            //pRating.setText(Html.fromHtml("<b>Rating: </b>" + NetworkService.escapeHtml(new Short(lastClickedPlayer.rating).toString())));    
-        	
+        	ratings = (ListView)layout.findViewById(R.id.player_info_tiers);
+        	ratings.setAdapter(new TwoViewsArrayAdapter<TierStanding>(this, android.R.layout.simple_list_item_2, 
+        			android.R.id.text1, android.R.id.text2, lastClickedPlayer.tierStandings, PlayerInfo.tierGetter));
             return pInfoDialog;
 		} case ChallengeMode: {
             final Clauses[] clauses = Clauses.values();
