@@ -11,15 +11,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
@@ -117,8 +118,8 @@ public class NetworkService extends Service {
 				}
 				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
 				Baos loginCmd = new Baos();
-				loginCmd.putBaos(version); // Protocol version
-				loginCmd.write((byte)0);     // Network flags
+				loginCmd.putBaos(version); //Protocol version
+				loginCmd.write((byte)0); //Network flags
 				loginCmd.putString(meLoginPlayer.nick());
 				socket.sendMessage(loginCmd, Command.Login);
 
@@ -170,14 +171,23 @@ public class NetworkService extends Service {
 	}
 
     protected void showNotification(Class<?> toStart, String text, String note) {
-        Notification notification = new Notification(R.drawable.icon, note,
-                System.currentTimeMillis());
+    	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+    	builder.setSmallIcon(R.drawable.icon)
+    		.setTicker(note)
+    		.setContentText(text)
+    		.setWhen(System.currentTimeMillis())
+    		.setContentTitle("Pokemon Online");
+
         // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
+        
+        builder.setContentIntent(notificationIntent);
 
-        notification.setLatestEventInfo(this, "POAndroid", text, notificationIntent);
-        this.startForeground(NOTIFICATION, notification);
+        NotificationManager mNotificationManager =
+        	    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        	// mId allows you to update the notification later on.
+    	mNotificationManager.notify(toStart.hashCode(), builder.build());
     }
 
     protected void showNotification(Class<?> toStart, String text) {
