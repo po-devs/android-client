@@ -30,6 +30,7 @@ import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
+import com.pokebros.android.utilities.StringUtilities;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
@@ -343,7 +344,21 @@ public class NetworkService extends Service {
 			boolean isHtml = dataFlags.readBool();
 			Channel chan = hasChannel ? channels.get(msg.readInt()) : null;
 			PlayerInfo player = hasId ? players.get(msg.readInt()) : null;
-			CharSequence message = isHtml ? Html.fromHtml(msg.readString()) : msg.readString();
+			CharSequence message = msg.readString();
+			if (hasId) {
+				CharSequence color = (player == null ? "orange" : player.color.toHexString());
+				CharSequence name = player.nick();
+				
+				if (isHtml) {
+					message = Html.fromHtml("<span style='color:" + color + "'><b>" + name + 
+							": </b></span>" + message);
+				} else {
+					message = Html.fromHtml("<span style='color:" + color +	"'><b>" + name +
+							": </b></span>" + StringUtilities.escapeHtml(message));
+				}
+			} else {
+				message = isHtml ? Html.fromHtml((String)message) : message;
+			}
 			if (!hasChannel) {
 				// Broadcast message
 				if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
@@ -358,12 +373,8 @@ public class NetworkService extends Service {
 				if (chan == null) {
 					Log.e(TAG, "Received message for nonexistent channel");
 				} else {
-					joinedChannels.peek().writeToHist(message);
+					chan.writeToHist(message);
 				}
-			}
-			if (hasId && player == null) {
-				Log.e(TAG, "Received message from nonexistent player");
-				break;
 			}
 			break;
 		}
