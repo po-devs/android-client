@@ -50,7 +50,6 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
-import com.pokebros.android.pokemononline.player.PlayerInfo.TierStandingGetter;
 import com.pokebros.android.pokemononline.poke.UniqueID;
 import com.pokebros.android.utilities.StringUtilities;
 import com.pokebros.android.utilities.TwoViewsArrayAdapter;
@@ -211,9 +210,11 @@ public class ChatActivity extends Activity {
                     netServ.socket.isConnected()) {
                   // Perform action on key press
                 	Baos b = new Baos();
-                	b.putInt(netServ.joinedChannels.peek().id);
+                	b.write(1); //channel message
+                	b.write(0); //no html
+                	b.putInt(currentChannel().id);
                 	b.putString(chatInput.getText().toString());
-                	//netServ.socket.sendMessage(b, Command.ChannelMessage);
+                	netServ.socket.sendMessage(b, Command.SendMessage);
                 	chatInput.getText().clear();
                   return true;
                 }
