@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -72,12 +73,51 @@ public class NetworkService extends Service {
 	
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
+	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
+
 	Tier superTier = new Tier();
 	
 	int bID = -1;
 	public class LocalBinder extends Binder {
 		NetworkService getService() {
 			return NetworkService.this;
+		}
+	}
+	
+	/**
+	 * Is the player in any of the same channels as us?
+	 * @param pid the id of the player we are interested in
+	 * @return true if the player shares a channel with us, false otherwise
+	 */
+	public boolean isOnAnyChannel(int pid) {
+		for (Channel c: channels.values()) {
+			if (c.players.contains(pid)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Called by a channel when a player leaves. If the player is not on any channel
+	 * and there's no special circumstances (as in PM), the player will get removed
+	 * @param pid The id of the player that left
+	 */
+	public void onPlayerLeaveChannel(int pid) {
+		if (!isOnAnyChannel(pid) && !pmedPlayers.contains(pid)) {
+			removePlayer(pid);
+		}
+	}
+	
+	/**
+	 * Removes a player from memory
+	 * @param pid The id of the player to remove
+	 */
+	public void removePlayer(int pid) {
+		players.remove(pid);
+		if (pmedPlayers.contains(pid)) {
+			//TODO: close the PM?
+			pmedPlayers.remove(pid);
 		}
 	}
 	
@@ -201,6 +241,7 @@ public class NetworkService extends Service {
 		switch (c) {
 		case ChannelPlayers:
 		case JoinChannel: 
+		case LeaveChannel:
 		case BattleList: {
 			Channel ch = channels.get(msg.readInt());
 			if(ch != null)
@@ -291,9 +332,7 @@ public class NetworkService extends Service {
 		} case PlayersList: {
 			while (msg.available() != 0) { // While there's playerInfo's available
 				PlayerInfo p = new PlayerInfo(msg);
-				if (!players.containsKey(p.id)) {
-					players.put(p.id, p);
-				}
+				players.put(p.id, p);
 			}
 			break;
 		} case SendMessage: {
@@ -434,12 +473,13 @@ public class NetworkService extends Service {
 //			String htmlMessage = msg.readQString();
 //			System.out.println("Html Message: " + htmlMessage);
 //			break;
-		} case Logout: {
+		}*/ case Logout: {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
-			System.out.println("Player " + playerID + " logged out.");
+			removePlayer(playerID);
+			//System.out.println("Player " + playerID + " logged out.");
 			break;
-		} case BattleFinished: {
+		} /*case BattleFinished: {
 			int battleID = msg.readInt();
 			byte battleDesc = msg.readByte();
 			int id1 = msg.readInt();
@@ -465,8 +505,9 @@ public class NetworkService extends Service {
 				}
 			}
 			break;
-		} case SendPM: {
+		}*/ case SendPM: {
 			int playerID = msg.readInt();
+			pmedPlayers.add(playerID);
 			// Ignore the message
 			String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
 			Baos bb = new Baos();
@@ -474,12 +515,7 @@ public class NetworkService extends Service {
 			bb.putString(pm);
 			socket.sendMessage(bb, Command.SendPM);
 			break;
-		} case PlayersList: {
-			PlayerInfo p = new PlayerInfo(msg);
-			if(!players.containsKey(p.id))
-				players.put(p.id, p);
-			break;
-		} case SendTeam: {
+		}/* case SendTeam: {
 			PlayerInfo p = new PlayerInfo(msg);
 			if (players.containsKey(p.id)) {
 				PlayerInfo player = players.get(p.id);

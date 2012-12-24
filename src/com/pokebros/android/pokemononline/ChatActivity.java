@@ -263,6 +263,15 @@ public class ChatActivity extends Activity {
 		});
 	}
 	
+	/**
+	 * Gives the current channel
+	 * @return the current channel as a {@link Channel} object
+	 */
+	public Channel currentChannel() {
+		/* Maybe later instead of this hack, use onSavedInstanceState properly ? */
+		return netServ.joinedChannels.peek();
+	}
+	
 	public void populateUI(boolean clear) {
 		Channel currentChannel = netServ.joinedChannels.peek();
 		if (currentChannel != null) {

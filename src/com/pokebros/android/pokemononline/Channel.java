@@ -9,14 +9,19 @@ import android.util.Log;
 
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 
+/**
+ * Contains all info regarding a channel: name, id, joined,
+ * and if joined a player list and chat history.
+ *
+ */
 public class Channel {
 	protected String name;
 	protected int id;
-	protected int events = 0;
 	public int lastSeen = 0;
 	protected boolean isReadyToQuit = false;
 	public boolean joined = false;
 	public final static int HIST_LIMIT = 1000;
+	public static final String TAG = "Pokemon Online Channel";
 	
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	
@@ -54,24 +59,26 @@ public class Channel {
 		if(p != null) {
 			players.put(p.id, p);
 			
-			if(netServ != null && netServ.chatActivity != null && this.equals(netServ.joinedChannels.peek()))
+			if(netServ != null && netServ.chatActivity != null && this.equals(netServ.chatActivity.currentChannel()))
 				netServ.chatActivity.addPlayer(p);
 		}
 		else
-			System.out.println("Tried to add nonexistant player id" +
-					"to channel " + name + ", ignoring");
+			Log.w(TAG, "Tried to add nonexistant player id to channel " + name + ", ignoring");
 	}
 	
 	public void removePlayer(PlayerInfo p){
 		if(p != null){
 			players.remove(p.id);
 			
-			if(netServ != null && netServ.chatActivity != null)
-				netServ.chatActivity.removePlayer(p);
+			if(netServ != null) {
+				if (netServ.chatActivity.currentChannel() == this) {
+					netServ.chatActivity.removePlayer(p);
+				}
+				netServ.onPlayerLeaveChannel(p.id);
+			}
 		}
 		else
-			System.out.println("Tried to remove nonexistant player id" +
-					"from channel " + name + ", ignoring");
+			Log.w(TAG, "Tried to remove nonexistant player id from channel " + name + ", ignoring");
 	}
 	
 	public void updatePlayer(PlayerInfo p) {
@@ -102,16 +109,6 @@ public class Channel {
 				}
 				addPlayer(p);
 				Log.d("JoinChannel", "Added " + p);
-				break;
-			} case BattleList: {
-				int numBattles = msg.readInt();
-				for (int i = 0; i < numBattles; i++) {
-					// TODO
-					int battleId = msg.readInt();
-					byte mode = msg.readByte();
-					int player1 = msg.readInt();
-					int player2 = msg.readInt();
-				}
 				break;
 			}
 /*			case ChannelMessage: {
@@ -166,7 +163,7 @@ public class Channel {
 			}
 			case HtmlChannel:
 				writeToHist(Html.fromHtml(msg.readQString()));
-				break;
+				break; */
 			case LeaveChannel:
 				PlayerInfo p = netServ.players.get(msg.readInt());
 				if (p.id == netServ.mePlayer.id) { // We left the channel
@@ -182,7 +179,7 @@ public class Channel {
 				removePlayer(p);
 				break;
 			default:
-				break;*/
+				break;
 			}
 		}
 }
