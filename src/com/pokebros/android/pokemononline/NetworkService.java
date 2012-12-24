@@ -355,11 +355,11 @@ public class NetworkService extends Service {
 				CharSequence name = player.nick();
 				
 				if (isHtml) {
-					message = Html.fromHtml("<span style='color:" + color + "'><b>" + name + 
-							": </b></span>" + message);
+					message = Html.fromHtml("<font color='" + color + "'><b>" + name + 
+							": </b></font>" + message);
 				} else {
-					message = Html.fromHtml("<span style='color:" + color +	"'><b>" + name +
-							": </b></span>" + StringUtilities.escapeHtml((String)message));
+					message = Html.fromHtml("<font color='" + color + "'><b>" + name +
+							": </b></font>" + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
 				message = isHtml ? Html.fromHtml((String)message) : message;
