@@ -37,6 +37,29 @@ public class Baos extends ByteArrayOutputStream {
 		return this;
 	}
 	
+	/**
+	 * Flags serialized are a succession of 7 boolean bits, followed by one control
+	 * bit telling if there's another 8 bits coming or not.
+	 * @param flags An array of boolean to serialize
+	 * @return the {@link Baos} instance for further serialization
+	 */
+	public Baos putFlags(boolean[] flags) {
+		short data = 0;
+		for (int i = 0, bytepos=0; i < flags.length; i++,bytepos++) {
+			if (bytepos != 7) {
+				data <<= 1;
+				data += (flags[i]?1:0);
+			} else {
+				bytepos = 0;
+				data += (1 << 7);
+				write((byte)data);
+				data = (short) (flags[i] ? 1 : 0);
+			}
+		}
+		write((byte)data);
+		return this;
+	}
+	
 	public Baos putShort(short s) {
 		byte[] bytes = new byte[2];
 		

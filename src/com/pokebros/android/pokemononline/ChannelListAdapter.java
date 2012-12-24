@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.pokebros.android.utilities.StringUtilities;
+
 public class ChannelListAdapter extends ArrayAdapter<com.pokebros.android.pokemononline.Channel>{
 	
 	public ChannelListAdapter(Context context, int resource) {
@@ -33,7 +35,7 @@ public class ChannelListAdapter extends ArrayAdapter<com.pokebros.android.pokemo
 				else if (!ch1.joined && ch2.joined)
 					return 1;
 				else
-					return ch1.name().toLowerCase().compareTo(ch2.name().toLowerCase());
+					return ch1.name().compareToIgnoreCase(ch2.name());
 			}
 		});
 		setNotifyOnChange(true);
@@ -49,7 +51,7 @@ public class ChannelListAdapter extends ArrayAdapter<com.pokebros.android.pokemo
 		if (channel != null) {
 			TextView nick = (TextView)view.findViewById(R.id.channel_list_name);
 			nick.setText(Html.fromHtml((channel.joined ? "<b><i>" : "" ) +
-					NetworkService.escapeHtml(channel.name()) +
+					StringUtilities.escapeHtml(channel.name()) +
 					(channel.joined ? "</i></b>" : "" )));
 		}
 		return view;

@@ -17,6 +17,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
@@ -35,13 +36,6 @@ import com.pokebros.android.utilities.StringUtilities;
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
     final static String pkgName = "com.pokebros.android.pokemononline";
-
-	public static String escapeHtml(String toEscape) {
-		toEscape = toEscape.replaceAll("&", "&amp;");
-		toEscape = toEscape.replaceAll("<", "&lt;");
-		toEscape = toEscape.replaceAll(">", "&gt;");
-		return toEscape;
-	}
 
 	private final IBinder binder = new LocalBinder();
 	protected int NOTIFICATION = 4356;
@@ -160,8 +154,19 @@ public class NetworkService extends Service {
 				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
-				loginCmd.write((byte)0); //Network flags
+				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
+				loginCmd.putFlags(new boolean []{true,true}); //Network flags
+				loginCmd.putString("android");
+				short versionCode;
+				try {
+					versionCode = (short)getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+				} catch (NameNotFoundException e1) {
+					versionCode = 0;
+				}
+				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
+				/* Data Flags: supportsZipCompression, isLadderEnabled, wantsIdsWithMessages, isIdle */
+				loginCmd.putFlags(new boolean []{false,true,true});
 				socket.sendMessage(loginCmd, Command.Login);
 
         		while(socket.isConnected()) {
@@ -354,7 +359,7 @@ public class NetworkService extends Service {
 							": </b></span>" + message);
 				} else {
 					message = Html.fromHtml("<span style='color:" + color +	"'><b>" + name +
-							": </b></span>" + StringUtilities.escapeHtml(message));
+							": </b></span>" + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
 				message = isHtml ? Html.fromHtml((String)message) : message;

@@ -2,7 +2,6 @@ package com.pokebros.android.pokemononline.battle;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.lang.Math;
 
 import android.database.sqlite.SQLiteException;
 import android.os.SystemClock;
@@ -12,14 +11,22 @@ import android.util.Log;
 
 import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
+import com.pokebros.android.pokemononline.ColorEnums.QtColor;
+import com.pokebros.android.pokemononline.ColorEnums.StatusColor;
+import com.pokebros.android.pokemononline.ColorEnums.TypeColor;
+import com.pokebros.android.pokemononline.ColorEnums.TypeForWeatherColor;
 import com.pokebros.android.pokemononline.NetworkService;
-import com.pokebros.android.pokemononline.ColorEnums.*;
-import com.pokebros.android.pokemononline.battle.ChallengeEnums.*;
+import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.poke.BattlePoke;
+import com.pokebros.android.pokemononline.poke.PokeEnums.Stat;
+import com.pokebros.android.pokemononline.poke.PokeEnums.Status;
+import com.pokebros.android.pokemononline.poke.PokeEnums.StatusFeeling;
+import com.pokebros.android.pokemononline.poke.PokeEnums.Weather;
+import com.pokebros.android.pokemononline.poke.PokeEnums.WeatherState;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.pokemononline.poke.UniqueID;
-import com.pokebros.android.pokemononline.poke.PokeEnums.*;
+import com.pokebros.android.utilities.StringUtilities;
 
 public class Battle {
 	static final String TAG = "Battle";
@@ -263,7 +270,7 @@ public class Battle {
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
 
-			writeToHist(Html.fromHtml("<br><b>" + tu(NetworkService.escapeHtml((currentPoke(player).nick))) +
+			writeToHist(Html.fromHtml("<br><b>" + tu(StringUtilities.escapeHtml((currentPoke(player).nick))) +
 					" fainted!</b>"));
 			break;
 		} case Hit: {
@@ -413,8 +420,8 @@ public class Battle {
 			if (message.equals(""))
 				break;
 			writeToHist(Html.fromHtml("<br><font color=" + (player !=0 ? "#5811b1>" : QtColor.Green) +
-					"<b>" + NetworkService.escapeHtml(players[player].nick()) + ": </b></font>" +
-					NetworkService.escapeHtml(message)));
+					"<b>" + StringUtilities.escapeHtml(players[player].nick()) + ": </b></font>" +
+					StringUtilities.escapeHtml(message)));
 			break;
 		} case Spectating: {
 			boolean come = msg.readBool();
@@ -427,7 +434,7 @@ public class Battle {
 			int id = msg.readInt();
 			String message = msg.readString();
 			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + netServ.players.get(id) + 
-					": " + NetworkService.escapeHtml(message)));
+					": " + StringUtilities.escapeHtml(message)));
 			break;
 		} case MoveMessage: {
 			short move = msg.readShort();
@@ -450,7 +457,7 @@ public class Battle {
 			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT name FROM [Abilities] WHERE _id = " + (other + 1)));
 			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT name FROM [Pokemons] WHERE Num = " + other));
 			
-			writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(NetworkService.escapeHtml(s)) + "</font>"));
+			writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(StringUtilities.escapeHtml(s)) + "</font>"));
 			break;
 		} case NoOpponent: {
 			writeToHist("\nBut there was no target...");
@@ -469,7 +476,7 @@ public class Battle {
             if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + other));
             /* Balloon gets a really special treatment */
             if (item == 35)
-                writeToHist(Html.fromHtml("<br><b>" + tu(NetworkService.escapeHtml(s)) + "</b>"));
+                writeToHist(Html.fromHtml("<br><b>" + tu(StringUtilities.escapeHtml(s)) + "</b>"));
             else
                 writeToHist("\n" + tu(s));
 			break;
@@ -553,9 +560,9 @@ public class Battle {
 	        if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT Name FROM [Abilities] WHERE _id = " + (other + 1)));
 	        if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT Name FROM [Pokemons] WHERE _id = " + other));
 	        if (type == Type.Normal.ordinal()) {
-	        	writeToHist("\n" + tu(NetworkService.escapeHtml(s)));
+	        	writeToHist("\n" + tu(StringUtilities.escapeHtml(s)));
 	        } else {
-	        	writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(NetworkService.escapeHtml(s)) + "</font>"));
+	        	writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(StringUtilities.escapeHtml(s)) + "</font>"));
 	        }
 			break;
 		} case Substitute: {

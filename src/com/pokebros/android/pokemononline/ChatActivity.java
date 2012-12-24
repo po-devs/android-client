@@ -50,6 +50,7 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.poke.UniqueID;
+import com.pokebros.android.utilities.StringUtilities;
 
 import de.marcreichelt.android.ChatRealViewSwitcher;
 
@@ -449,7 +450,7 @@ public class ChatActivity extends Activity {
 				//oppPokeIcons[i].setImageDrawable(getIcon(opp.pokes[i]));
 			}
 			oppInfo = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info", "id", packName));
-			oppInfo.setText(Html.fromHtml("<b>Info: </b>" + NetworkService.escapeHtml(opp.info())));
+			oppInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(opp.info())));
 			oppTeam = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_team", "id", packName));
 			oppTeam.setText(opp.nick() + "'s team:");
 			oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
@@ -564,7 +565,7 @@ public class ChatActivity extends Activity {
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
             }
         	pInfo = (TextView)layout.findViewById(getResources().getIdentifier("player_info", "id", packName));
-        	pInfo.setText(Html.fromHtml("<b>Info: </b>" + NetworkService.escapeHtml(lastClickedPlayer.info())));
+        	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
         	pTeam = (TextView)layout.findViewById(getResources().getIdentifier("player_info_team", "id", packName));
         	pTeam.setText(lastClickedPlayer.nick() + "'s team:");
         	pName = (TextView)layout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
