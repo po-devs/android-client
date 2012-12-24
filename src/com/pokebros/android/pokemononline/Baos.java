@@ -47,8 +47,7 @@ public class Baos extends ByteArrayOutputStream {
 		short data = 0;
 		for (int i = 0, bytepos=0; i < flags.length; i++,bytepos++) {
 			if (bytepos != 7) {
-				data <<= 1;
-				data += (flags[i]?1:0);
+				data += (flags[i]?1:0) << bytepos;
 			} else {
 				bytepos = 0;
 				data += (1 << 7);

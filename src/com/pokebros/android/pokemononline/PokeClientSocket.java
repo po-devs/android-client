@@ -9,11 +9,10 @@ import java.nio.channels.SocketChannel;
 import java.text.ParseException;
 import java.util.LinkedList;
 
-import android.util.Log;
-
 public class PokeClientSocket {
 	/* Socket channel, true connection */
 	private SocketChannel schan = null;
+	@SuppressWarnings("unused")
 	private final static String TAG = "PokeClientSocket";
 
 	private Baos thisMsg = new Baos();
@@ -117,7 +116,7 @@ public class PokeClientSocket {
 		}
 		// Loop while there's still data in the buffer.
 		while (dataLen > 0) {
-			Log.d(TAG, "read " + dataLen + " bytes");
+			//Log.d(TAG, "read " + dataLen + " bytes");
 			/* We're trying to get the length of a new packet */
 			if (!readingPacket) {
 				/* Wait until we get the length of a packet */
@@ -128,7 +127,7 @@ public class PokeClientSocket {
 					remainingLen = packetLength.getInt();
 					packetLength.clear();
 					
-					Log.d(TAG, "packet length determined: " + remainingLen + " bytes");
+					//Log.d(TAG, "packet length determined: " + remainingLen + " bytes");
 					
 					if (remainingLen == 0) {
 						msgs.add(new Baos());
@@ -150,7 +149,7 @@ public class PokeClientSocket {
 
 				/* Did we read it all? */
 				if (remainingLen == 0) {
-					Log.d(TAG, "Packet fully read");
+					//Log.d(TAG, "Packet fully read");
 					msgs.add(thisMsg);
 					thisMsg = new Baos();
 					
