@@ -38,7 +38,7 @@
             android:launchMode="singleTask" >
         </activity>
 
-        <service android:name=".NetworkService" android:isolatedProcess="true">
+        <service android:name=".NetworkService">
         </service>
         <service android:name=".RegistryConnectionService"  >
         </service>
