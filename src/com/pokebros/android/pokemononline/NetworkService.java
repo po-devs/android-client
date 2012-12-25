@@ -28,6 +28,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.pokebros.android.pokemononline.battle.Battle;
+import com.pokebros.android.pokemononline.battle.BattleConf;
+import com.pokebros.android.pokemononline.battle.BattleDesc;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
@@ -38,8 +40,6 @@ public class NetworkService extends Service {
     final static String pkgName = "com.pokebros.android.pokemononline";
 
 	private final IBinder binder = new LocalBinder();
-	protected int NOTIFICATION = 4356;
-	protected NotificationManager noteMan;
 	//public Channel currentChannel = null;
 	public LinkedList<Channel> joinedChannels = new LinkedList<Channel>();
 	Thread sThread, rThread;
@@ -64,15 +64,15 @@ public class NetworkService extends Service {
 	
 	private FullPlayerInfo meLoginPlayer;
 	public PlayerInfo mePlayer;
-	public Battle battle = null;// = new Battle();
+	public Battle battle = null;
 	
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
+	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
 	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
 
 	Tier superTier = new Tier();
 	
-	int bID = -1;
 	public class LocalBinder extends Binder {
 		NetworkService getService() {
 			return NetworkService.this;
@@ -104,18 +104,90 @@ public class NetworkService extends Service {
 		}
 	}
 	
+	public void addBattle(int battleid, BattleDesc desc) {
+		battles.put(battleid, desc);
+		
+		if (players.containsKey(desc.p1)) {
+			players.get(desc.p1).addBattle(battleid);
+		}
+		if (players.containsKey(desc.p2)) {
+			players.get(desc.p2).addBattle(battleid);
+		}
+	}
+	
+	/**
+	 * Removes a battle from memory
+	 * @param battleID the battle id of the battle to remove
+	 */
+	private void removeBattle(int battleID) {
+		if (!battles.containsKey(battleID)) {
+			return;
+		}
+		BattleDesc battle = battles.get(battleID);
+		if (hasPlayer(battle.p1)) {
+			players.get(battle.p1).removeBattle(battleID);
+		}
+		if (hasPlayer(battle.p2)) {
+			players.get(battle.p2).removeBattle(battleID);
+		}
+	}
+	
+	/**
+	 * Does the player exist in memory
+	 * @param pid the id of the player we're interested in
+	 * @return true if the player is in memory, or false
+	 */
+	public boolean hasPlayer(int pid) {
+		return players.containsKey(pid);
+	}
+	
+	/**
+	 * Checks if the players of the battle are online, and remove the battle from memory if not
+	 * @param battleid the id of the battle to check
+	 */
+	private void testRemoveBattle(Integer battleid) {
+		BattleDesc battle = battles.get(battleid);
+		
+		if (battle != null) {
+			if (!players.containsKey(battle.p1) && !players.containsKey(battle.p2)) {
+				battles.remove(battle);
+			}
+		}
+	}
+	
+	/**
+	 * Gets the name of a player or "???" if the player couldn't be found
+	 * @param playerId id of the player we're interested in
+	 * @return name of the player or "???" if not found
+	 */
+	public String playerName(int playerId) {
+		PlayerInfo player = players.get(playerId);
+		
+		if (player == null) {
+			return "???";
+		} else {
+			return player.nick();
+		}
+	}
+	
 	/**
 	 * Removes a player from memory
 	 * @param pid The id of the player to remove
 	 */
 	public void removePlayer(int pid) {
-		players.remove(pid);
+		PlayerInfo player = players.remove(pid);
 		if (pmedPlayers.contains(pid)) {
 			//TODO: close the PM?
 			pmedPlayers.remove(pid);
 		}
+		
+		if (player != null) {
+			for(Integer battleid: player.battles) {
+				testRemoveBattle(battleid);
+			}
+		}
 	}
-	
+
 	@Override
 	// This is *NOT* called every time someone binds to us, I don't really know why
 	// but onServiceConnected is correctly called in the activity sooo....
@@ -128,7 +200,6 @@ public class NetworkService extends Service {
 	public void onCreate() {
 		db = new DataBaseHelper(NetworkService.this);
 		showNotification(ChatActivity.class, "Chat");
-		noteMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		super.onCreate();
 	}
 	
@@ -247,8 +318,7 @@ public class NetworkService extends Service {
 		switch (c) {
 		case ChannelPlayers:
 		case JoinChannel: 
-		case LeaveChannel:
-		case BattleList: {
+		case LeaveChannel:{
 			Channel ch = channels.get(msg.readInt());
 			if(ch != null)
 				ch.handleChannelMsg(c, msg);
@@ -279,8 +349,10 @@ public class NetworkService extends Service {
 					Toast.makeText(this, R.string.major_compat_break_warning, Toast.LENGTH_LONG).show();
 				}
 			}
-			String serverName = msg.readString();
-			Log.d(TAG, "Server name is " + serverName);
+			serverName = msg.readString();
+			if (chatActivity != null) {
+				chatActivity.updateTitle();
+			}
 			break;
 		} case Register: {
 			// Username not registered
@@ -383,10 +455,30 @@ public class NetworkService extends Service {
 			}
 			break;
 		}
-/*		case BattleList:
-		case JoinChannel:
-		case LeaveChannel:
+		case BattleList: {
+			msg.readInt(); //channel, but irrelevant
+			int numBattles = msg.readInt();
+			for (; numBattles > 0; numBattles--) {
+				int battleId = msg.readInt();
+				//byte mode = msg.readByte(); /* protocol is messed up */
+				int player1 = msg.readInt();
+				int player2 = msg.readInt();
+				
+				addBattle(battleId, new BattleDesc(player1, player2));
+			}
+			break;
+		}
 		case ChannelBattle: {
+			msg.readInt(); //channel, but irrelevant
+			int battleId = msg.readInt();
+			//byte mode = msg.readByte();
+			int player1 = msg.readInt();
+			int player2 = msg.readInt();
+			
+			addBattle(battleId, new BattleDesc(player1, player2));
+		}
+/*		case JoinChannel:
+		case LeaveChannel:
 //		case ChannelMessage:
 //		case HtmlChannel: {
 			Channel ch = channels.get(msg.readInt());
@@ -463,44 +555,19 @@ public class NetworkService extends Service {
 				break;
 			}
 			break;
-		} case ChannelsList: {
-			int numChannels = msg.readInt();
-			for(int k = 0; k < numChannels; k++) {
-				int chanId = msg.readInt();
-				Channel ch = new Channel(chanId, msg.readQString(), this);
-				channels.put(chanId, ch);
-				//addChannel(msg.readQString(),chanId);
-			}
-			System.out.println(channels.toString());
-			break;
-		} case ChannelPlayers: {
-			Channel ch = channels.get(msg.readInt());
-			int numPlayers = msg.readInt();
-			if(ch != null) {
-				for(int k = 0; k < numPlayers; k++) {
-					int id = msg.readInt();
-					ch.addPlayer(players.get(id));
-				}
-			}
-			else
-				System.out.println("Received message for nonexistant channel");
-			break;
-//		} case HtmlMessage: {
-//			String htmlMessage = msg.readQString();
-//			System.out.println("Html Message: " + htmlMessage);
-//			break;
 		}*/ case Logout: {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
 			removePlayer(playerID);
 			//System.out.println("Player " + playerID + " logged out.");
 			break;
-		} /*case BattleFinished: {
+		} case BattleFinished: {
 			int battleID = msg.readInt();
 			byte battleDesc = msg.readByte();
+			msg.readByte(); // battle mode
 			int id1 = msg.readInt();
 			int id2 = msg.readInt();
-			System.out.println("bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
+			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (battle != null && battle.bID == battleID) {
 				if (mePlayer.id == id1 && battleDesc < 2) {
@@ -511,8 +578,11 @@ public class NetworkService extends Service {
 					showNotification(ChatActivity.class, "Chat", "You tied!");
 				}
 				
-				if (players.get(id1) != null && players.get(id2) != null && battleDesc < 2)
-					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + escapeHtml(players.get(id1).nick()) + outcome[battleDesc] + escapeHtml(players.get(id2).nick()) + ".</b></i>"));
+				if (battleDesc < 2) {
+					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
+							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
+							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"));
+				}
 				
 				if (battleDesc == 0 || battleDesc == 3) {
 					battle = null;
@@ -520,8 +590,10 @@ public class NetworkService extends Service {
 						battleActivity.end();
 				}
 			}
+			
+			removeBattle(battleID);
 			break;
-		}*/ case SendPM: {
+		} case SendPM: {
 			int playerID = msg.readInt();
 			pmedPlayers.add(playerID);
 			// Ignore the message
@@ -546,23 +618,28 @@ public class NetworkService extends Service {
 			}
 			break;
 
-		} case BattleMessage: {
+		} */ case BattleMessage: {
 			msg.readInt(); // currently support only one battle, unneeded
 			msg.readInt(); // discard the size, unneeded
 			if (battle != null)
 				battle.receiveCommand(msg);
 			break;
 		} case EngageBattle: {
-			bID = msg.readInt();
-			int pID1 = msg.readInt();
-			int pID2 = msg.readInt();
-			if(pID1 == 0) { // This is us!
+			int battleId = msg.readInt();
+			Bais flags = msg.readFlags();
+			byte mode = msg.readByte();
+			int p1 = msg.readInt();
+			int p2 = msg.readInt();
+			
+			addBattle(battleId, new BattleDesc(p1, p2, mode));
+			
+			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg);
 				// Start the battle
 				battle = new Battle(conf, msg, players.get(conf.id(0)),
-					players.get(conf.id(1)), mePlayer.id, bID, this);
-				joinedChannels.peek().writeToHist("Battle between " + mePlayer.nick() + 
-					" and " + players.get(pID2).nick() + " started!");
+					players.get(conf.id(1)), mePlayer.id, battleId, this);
+				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
+					" and " + playerName(p2) + " started!");
 				Intent in;
 				in = new Intent(this, BattleActivity.class);
 				in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -570,12 +647,8 @@ public class NetworkService extends Service {
 				findingBattle = false;
 			}
 			break;
-		} case Login: {
-			mePlayer = new PlayerInfo(msg);
-			players.put(mePlayer.id, mePlayer);
-			break;
 		} case AskForPass: {
-			salt = msg.readQString();
+			salt = msg.readString();
 			// XXX not sure what the second half is supposed to check
 			// from analyze.cpp : 265 of PO's code
 			if (salt.length() < 6) { //  || strlen((" " + salt).toUtf8().data()) < 7)
@@ -588,7 +661,7 @@ public class NetworkService extends Service {
 			}
 			break;
 		} case AddChannel: {
-			addChannel(msg.readQString(),msg.readInt());
+			addChannel(msg.readString(),msg.readInt());
 			break;
 		} case RemoveChannel: {
 			int chanId = msg.readInt();
@@ -601,23 +674,15 @@ public class NetworkService extends Service {
 			if (chatActivity != null)
 				chatActivity.removeChannel(channels.get(chanId));
 			channels.remove(chanId);
-			channels.put(chanId, new Channel(chanId, msg.readQString(), this));
+			channels.put(chanId, new Channel(chanId, msg.readString(), this));
 			break;
-		} case SendMessage: {
-			String message = msg.readQString();
-			System.out.println(message);
-			if (chatActivity != null && message.contains("Wrong password for this name."))
-				chatActivity.makeToast(message, "long");
-			else if (chatActivity != null && joinedChannels.peek() != null)
-				joinedChannels.peek().writeToHist(message);
-			break;
-		} */default: {
+		} default: {
 			System.out.println("Unimplented message");
 		}
 		}
 		if (battle != null && battleActivity != null && battle.histDelta.length() != 0)
 			battleActivity.updateBattleInfo(false);
-		if (chatActivity != null && joinedChannels.peek() != null)
+		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}
 
@@ -627,7 +692,7 @@ public class NetworkService extends Service {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 			Baos hashPass = new Baos();
-			hashPass.putString(toHex(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1")))));
+			hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
 			socket.sendMessage(hashPass, Command.AskForPass);
 		} catch (NoSuchAlgorithmException nsae) {
 			System.out.println("Attempting authentication threw an exception: " + nsae);
@@ -716,4 +781,8 @@ public class NetworkService extends Service {
     	}
     	return null;
     }
+
+	public BattleDesc battle(Integer battleid) {
+		return battles.get(battleid);
+	}
 }

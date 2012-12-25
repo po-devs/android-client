@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -76,7 +77,8 @@ public class ChatActivity extends Activity {
 		ChallengePlayer,
 		ViewPlayerInfo,
 		JoinChannel,
-		LeaveChannel;
+		LeaveChannel,
+		WatchBattle;
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -371,7 +373,7 @@ public class ChatActivity extends Activity {
 			IncomingChallenge challenge = netServ.challenges.peek();
 			if (challenge != null) {
 				ChatActivity.this.showDialog(ChatDialog.Challenge.ordinal());
-				netServ.noteMan.cancel(IncomingChallenge.note);
+				((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(IncomingChallenge.note);
 			}
 		}
 	}
@@ -703,6 +705,13 @@ public class ChatActivity extends Activity {
     		menu.setHeaderTitle(pName);
     		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, "Challenge " + pName);
     		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, "View Player Info");
+    		if (netServ != null) {
+	    		for (Integer battleid : lastClickedPlayer.battles) {
+	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, "Watch battle against " + 
+							netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
+							.setIntent(new Intent().putExtra("battle", battleid));
+	    		}
+    		}
     		break;
     	case R.id.channellisting:
     		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
@@ -724,6 +733,12 @@ public class ChatActivity extends Activity {
     		break;
     	case ViewPlayerInfo:
     		showDialog(ChatDialog.PlayerInfo.ordinal());
+    		break;
+    	case WatchBattle:
+    		int battleid = item.getIntent().getIntExtra("battleid", 0);
+    		if (battleid != 0) {
+    			/* watch battle */
+    		}
     		break;
     	case JoinChannel:
     		Baos join = new Baos();

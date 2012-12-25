@@ -19,6 +19,16 @@ public class Baos extends ByteArrayOutputStream {
 		super(size);
 	}
 	
+	public Baos putBytes(byte [] bytes) {
+		try {
+			putInt(bytes.length);
+			write(bytes);
+		} catch (Exception e) {
+			System.exit(-1);
+		}
+		return this;
+	}
+	
 	public Baos putInt(int i) {
 		byte[] bytes = new byte[4];
 		

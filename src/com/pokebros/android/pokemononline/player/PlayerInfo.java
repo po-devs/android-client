@@ -23,6 +23,7 @@ public class PlayerInfo implements SerializeBytes {
 	short avatar;
 	String info;
 	public byte auth;
+	public ArrayList<Integer> battles = new ArrayList<Integer>();
 
 	public class TierStanding {
 		public String tier;
@@ -101,5 +102,17 @@ public class PlayerInfo implements SerializeBytes {
 	
 	public boolean equals(PlayerInfo p) {
 		return nick.equals(p);
+	}
+	
+	public void addBattle(int battleid) {
+		if (!battles.contains(battleid)) {
+			battles.add(battleid);
+		}
+	}
+	public void removeBattle(int battleID) {
+		int index = battles.indexOf(battleID);
+		if (index != -1) {
+			battles.remove(index);
+		}
 	}
 }

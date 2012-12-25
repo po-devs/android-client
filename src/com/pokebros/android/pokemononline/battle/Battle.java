@@ -1,8 +1,11 @@
 package com.pokebros.android.pokemononline.battle;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.database.sqlite.SQLiteException;
 import android.os.SystemClock;
 import android.text.Html;
@@ -178,11 +181,12 @@ public class Battle {
 		return b;
 	}
 	
+	@SuppressLint("DefaultLocale")
 	public String tu (String toUpper) {
 		// Makes the first letter of a string uppercase
 		if (toUpper.length() <= 1)
 			return toUpper;
-		return toUpper.substring(0,1).toUpperCase()+toUpper.substring(1);
+		return toUpper.substring(0,1).toUpperCase(Locale.getDefault())+toUpper.substring(1);
 	}
 	
 	public void receiveCommand(Bais msg)  {
@@ -243,7 +247,7 @@ public class Battle {
 			short attack = msg.readShort();
 			Integer color;
 			try {
-				color = new Integer(netServ.db.query("SELECT type FROM [Moves] WHERE _id = " + attack));
+				color = Integer.valueOf(netServ.db.query("SELECT type FROM [Moves] WHERE _id = " + attack));
 			} catch (NumberFormatException e) {
 				color = Type.Curse.ordinal();
 			}
@@ -427,14 +431,22 @@ public class Battle {
 			boolean come = msg.readBool();
 			int id = msg.readInt();
 			String name = msg.readString();
-			// TODO addSpectator(come, id);
+			
+			if (come) {
+				addSpectator(id, name);
+			} else {
+				removeSpectator(id);
+			}
+			
+			writeToHist(Html.fromHtml("<br><font color=" + QtColor.DarkGreen + name + 
+					(come ? " is watching " : " left ") + " the battle.</font>"));
 			break;
 		} case SpectatorChat: {
 			// TODO if (ignoreSpecs) break;
 			int id = msg.readInt();
 			String message = msg.readString();
-			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + netServ.players.get(id) + 
-					": " + StringUtilities.escapeHtml(message)));
+			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + netServ.players.get(id).nick() + 
+					":</font> " + StringUtilities.escapeHtml(message)));
 			break;
 		} case MoveMessage: {
 			short move = msg.readShort();
@@ -671,7 +683,8 @@ public class Battle {
 			}
 			break;
 		} case OfferChoice: {
-			byte numSlot = msg.readByte(); // XXX what is this?
+			@SuppressWarnings("unused")
+			byte numSlot = msg.readByte(); //Which poke the choice is for
 			allowSwitch = msg.readBool();
 			System.out.println("Switch allowed: " + allowSwitch);
 			allowAttack = msg.readBool();
@@ -760,7 +773,18 @@ public class Battle {
 		}
 	}
 	
+	private Hashtable<Integer, String> spectators = new Hashtable<Integer, String>();
 	
+	private void addSpectator(int id, String name) {
+		spectators.put(id, name);
+		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ name + " is watching the battle</font>"));
+	}
+
+	private void removeSpectator(int id) {
+		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
+		spectators.remove(id);
+	}
+
 	public static String itemName(int itemnum) {
 		// I don't know how Java is okay with me referencing the non-static
 		// netServ in a static context, but I'll take it

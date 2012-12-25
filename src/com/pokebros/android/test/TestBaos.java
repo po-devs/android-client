@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.Baos;
 
+/* Run while in this file to run the JUnit test instead of the application */
 public class TestBaos extends TestCase {	
 	public void testPutFlags() {
 		/* The flags we are testing */
