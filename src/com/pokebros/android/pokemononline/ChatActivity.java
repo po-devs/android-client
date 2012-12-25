@@ -526,7 +526,7 @@ public class ChatActivity extends Activity {
 					if (netServ != null && netServ.socket.isConnected()) {
 						netServ.findingBattle = true;
 						try {
-							prefs.edit().putInt("range", new Integer(range.getText().toString()).intValue()).commit();
+							prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
 						} catch (NumberFormatException e) {
 							prefs.edit().remove("range").commit();
 						}
@@ -539,13 +539,13 @@ public class ChatActivity extends Activity {
 			return builder.create();
 		} case TierSelection: {
 			if (netServ == null) {
-				dismissDialog(id);
+				return null;
 			}
 			return new TierAlertDialog(this, netServ.superTier);
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
             ImageView[] pPokeIcons = new ImageView[6];
-            TextView pInfo, pTeam, pName;
+            TextView pInfo, pName;
             ListView ratings;
 			builder.setView(layout)
             .setNegativeButton("Back", new DialogInterface.OnClickListener(){
