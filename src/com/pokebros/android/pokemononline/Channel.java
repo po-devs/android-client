@@ -166,10 +166,10 @@ public class Channel {
 				break; */
 			case LeaveChannel:
 				PlayerInfo p = netServ.players.get(msg.readInt());
-				if (p.id == netServ.mePlayer.id) { // We left the channel
+				if (p.id == netServ.myid) { // We left the channel
 					players.clear();
 					joined = false;
-					// XXX this runtime complexity sucks
+
 					netServ.joinedChannels.remove(this);
 					if (netServ.chatActivity != null) {
 						netServ.chatActivity.populateUI(true);

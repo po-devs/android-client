@@ -72,6 +72,7 @@ public class NetworkService extends Service {
 	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
 
 	Tier superTier = new Tier();
+	public int myid = -1;
 	
 	public class LocalBinder extends Binder {
 		NetworkService getService() {
@@ -365,6 +366,7 @@ public class NetworkService extends Service {
 				reconnectSecret = msg.readQByteArray();
 			}
 			mePlayer = new PlayerInfo(msg);
+			myid = mePlayer.id;
 			int numTiers = msg.readInt();
 			for (int j = 0; j < numTiers; j++) {
 				// Tiers for each of our teams
