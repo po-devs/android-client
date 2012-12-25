@@ -404,8 +404,7 @@ public class ChatActivity extends Activity {
 		switch (ChatDialog.values()[id]) {
 		case Challenge: {
 			if (netServ == null) {
-				removeDialog(id);
-				dismissDialog(id);
+				return null;
 			}
 			final IncomingChallenge challenge = netServ.challenges.poll();
 			View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
