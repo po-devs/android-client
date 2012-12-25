@@ -45,4 +45,5 @@
 	<string name="major_compat_break_warning">There will be important problems when communicating with the server due to the android client being outdated</string>
 	<string name="minor_compat_break_warning">There may be minor problems when communicating with the server due to the android client being outdated</string>
 	<string name="new_server_features_warning">The server has new features that are not accessible with this android version!</string>
+	<string name="send_message">Send message...</string>
 </resources>

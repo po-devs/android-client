@@ -12,7 +12,9 @@
     <application
         android:name="ReportingApplication"
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name" 
+        android:theme="@style/AppTheme" 
+        android:allowBackup="true">
         <activity
             android:name=".RegistryActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -36,7 +38,7 @@
             android:launchMode="singleTask" >
         </activity>
 
-        <service android:name=".NetworkService" >
+        <service android:name=".NetworkService" android:isolatedProcess="true">
         </service>
         <service android:name=".RegistryConnectionService"  >
         </service>

@@ -97,8 +97,8 @@ public class Channel {
 				}
 				break;
 			} case JoinChannel: {
-				PlayerInfo p = netServ.players.get(msg.readInt());
-				if (p.id == netServ.myid) { // We joined the channel
+				int pid = msg.readInt();
+				if (pid == netServ.myid) { // We joined the channel
 					netServ.joinedChannels.addFirst(this);
 					joined = true;
 					if (netServ.chatActivity != null) {
@@ -107,8 +107,7 @@ public class Channel {
 					}
 					writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
 				}
-				addPlayer(p);
-				Log.d(TAG, "Added " + p);
+				addPlayer(netServ.players.get(pid));
 				break;
 			}
 /*			case ChannelMessage: {

@@ -10,7 +10,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/battle_border_dark"
+        android:background="@drawable/battle_border_light"
         android:clickable="true"
         android:orientation="vertical" >
 
@@ -48,6 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="4dp"
+            android:hint="@string/send_message"
+        	android:inputType="text"
             android:layout_marginRight="4dp" >
         </EditText>
 
@@ -69,7 +71,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/battle_border_dark"
+        android:background="@drawable/battle_border_light"
         android:clickable="true"
         android:orientation="vertical" >
 
