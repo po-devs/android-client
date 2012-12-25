@@ -98,7 +98,7 @@ public class Channel {
 				break;
 			} case JoinChannel: {
 				PlayerInfo p = netServ.players.get(msg.readInt());
-				if (p.id == netServ.mePlayer.id) { // We joined the channel
+				if (p.id == netServ.myid) { // We joined the channel
 					netServ.joinedChannels.addFirst(this);
 					joined = true;
 					if (netServ.chatActivity != null) {
@@ -108,7 +108,7 @@ public class Channel {
 					writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
 				}
 				addPlayer(p);
-				Log.d("JoinChannel", "Added " + p);
+				Log.d(TAG, "Added " + p);
 				break;
 			}
 /*			case ChannelMessage: {
@@ -165,8 +165,8 @@ public class Channel {
 				writeToHist(Html.fromHtml(msg.readQString()));
 				break; */
 			case LeaveChannel:
-				PlayerInfo p = netServ.players.get(msg.readInt());
-				if (p.id == netServ.myid) { // We left the channel
+				int pid = msg.readInt();
+				if (pid == netServ.myid) { // We left the channel
 					players.clear();
 					joined = false;
 
@@ -176,7 +176,7 @@ public class Channel {
 					}
 					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
 				}
-				removePlayer(p);
+				removePlayer(netServ.players.get(pid));
 				break;
 			default:
 				break;
