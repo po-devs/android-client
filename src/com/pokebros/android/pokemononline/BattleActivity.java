@@ -433,6 +433,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public void updateMyPoke() {
 		if (activeBattle == null) {
 			updateOppPoke(me);
+			return;
 		}
         runOnUiThread(new Runnable() {
 		
@@ -526,6 +527,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
 	
 	public void updateButtons() {
+		if (activeBattle == null) {
+			return;
+		}
 		runOnUiThread(new Runnable() {
 			public void run() {
 				if (!checkStruggle()) {
@@ -640,7 +644,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			try {
 				activeBattle = (Battle) battle;
 			} catch (ClassCastException ex) {
-				
+				activeBattle = null;
 			}
 			
 			netServ.showNotification(BattleActivity.class, "Battle");

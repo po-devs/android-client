@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.battle.BattleConf;
 import com.pokebros.android.pokemononline.battle.BattleDesc;
+import com.pokebros.android.pokemononline.battle.SpectatingBattle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
@@ -64,7 +65,7 @@ public class NetworkService extends Service {
 	private FullPlayerInfo meLoginPlayer;
 	public PlayerInfo mePlayer;
 	public Battle battle = null;
-	public Hashtable<Integer, Battle> spectatedBattles = new Hashtable<Integer, Battle>();
+	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
@@ -661,8 +662,7 @@ public class NetworkService extends Service {
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg);
-	            Battle battle = new Battle(conf, msg, players.get(conf.id(0)), players.get(conf.id(1)),
-	            		mePlayer.id, battleId, this);
+	            SpectatingBattle battle = new SpectatingBattle(conf, players.get(conf.id(0)), players.get(conf.id(1)), battleId, this);
 	            spectatedBattles.put(battleId, battle);
 	            
 	            Intent intent = new Intent(this, BattleActivity.class);
@@ -670,7 +670,7 @@ public class NetworkService extends Service {
 	            intent.putExtra("battleId", battleId);
 	            startActivity(intent);
 	        } else {
-	            Battle battle = spectatedBattles.remove(battleId);
+	            SpectatingBattle battle = spectatedBattles.remove(battleId);
 	            if (battle != null && battle.activity != null) {
 	            	battle.activity.end();
 	            }

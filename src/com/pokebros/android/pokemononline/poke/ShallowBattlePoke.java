@@ -28,7 +28,7 @@ public class ShallowBattlePoke implements SerializeBytes {
 	
 	public ShallowBattlePoke() {}; // For pokes who have not been sent out;
 	
-	public ShallowBattlePoke(Bais msg, boolean isMe, DataBaseHelper db, byte gen) {
+	public ShallowBattlePoke(Bais msg, boolean isMe, DataBaseHelper db, Gen gen) {
 		uID = new UniqueID(msg);
 		rnick = nick = msg.readString();
 		if (!isMe) {
@@ -36,7 +36,7 @@ public class ShallowBattlePoke implements SerializeBytes {
 			
 			// A little optimization; these only matter if it's not your poke
 			getName(db);
-			getTypes(db, gen);
+			getTypes(db, gen.num);
 		}
 		lifePercent = msg.readByte();
 		fullStatus = msg.readInt();
