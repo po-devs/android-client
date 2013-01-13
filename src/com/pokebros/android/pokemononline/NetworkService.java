@@ -37,7 +37,7 @@ import com.pokebros.android.utilities.StringUtilities;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
-    final static String pkgName = "com.pokebros.android.pokemononline";
+	final static String pkgName = "com.pokebros.android.pokemononline";
 
 	private final IBinder binder = new LocalBinder();
 	//public Channel currentChannel = null;
@@ -46,7 +46,6 @@ public class NetworkService extends Service {
 	PokeClientSocket socket = null;
 	boolean findingBattle = false;
 	public ChatActivity chatActivity = null;
-	public BattleActivity battleActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
 	private String salt = null;
@@ -57,15 +56,16 @@ public class NetworkService extends Service {
 	public boolean serverSupportsZipCompression = false;
 	@SuppressWarnings("unused")
 	private byte []reconnectSecret; 
-	
+
 	public boolean hasBattle() {
 		return battle != null;
 	}
-	
+
 	private FullPlayerInfo meLoginPlayer;
 	public PlayerInfo mePlayer;
 	public Battle battle = null;
-	
+	public Hashtable<Integer, Battle> spectatedBattles = new Hashtable<Integer, Battle>();
+
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
@@ -73,13 +73,13 @@ public class NetworkService extends Service {
 
 	Tier superTier = new Tier();
 	public int myid = -1;
-	
+
 	public class LocalBinder extends Binder {
 		NetworkService getService() {
 			return NetworkService.this;
 		}
 	}
-	
+
 	/**
 	 * Is the player in any of the same channels as us?
 	 * @param pid the id of the player we are interested in
@@ -93,7 +93,7 @@ public class NetworkService extends Service {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Called by a channel when a player leaves. If the player is not on any channel
 	 * and there's no special circumstances (as in PM), the player will get removed
@@ -104,10 +104,10 @@ public class NetworkService extends Service {
 			removePlayer(pid);
 		}
 	}
-	
+
 	public void addBattle(int battleid, BattleDesc desc) {
 		battles.put(battleid, desc);
-		
+
 		if (players.containsKey(desc.p1)) {
 			players.get(desc.p1).addBattle(battleid);
 		}
@@ -115,7 +115,7 @@ public class NetworkService extends Service {
 			players.get(desc.p2).addBattle(battleid);
 		}
 	}
-	
+
 	/**
 	 * Removes a battle from memory
 	 * @param battleID the battle id of the battle to remove
@@ -132,7 +132,7 @@ public class NetworkService extends Service {
 			players.get(battle.p2).removeBattle(battleID);
 		}
 	}
-	
+
 	/**
 	 * Does the player exist in memory
 	 * @param pid the id of the player we're interested in
@@ -141,21 +141,21 @@ public class NetworkService extends Service {
 	public boolean hasPlayer(int pid) {
 		return players.containsKey(pid);
 	}
-	
+
 	/**
 	 * Checks if the players of the battle are online, and remove the battle from memory if not
 	 * @param battleid the id of the battle to check
 	 */
 	private void testRemoveBattle(Integer battleid) {
 		BattleDesc battle = battles.get(battleid);
-		
+
 		if (battle != null) {
 			if (!players.containsKey(battle.p1) && !players.containsKey(battle.p2)) {
 				battles.remove(battle);
 			}
 		}
 	}
-	
+
 	/**
 	 * Gets the name of a player or "???" if the player couldn't be found
 	 * @param playerId id of the player we're interested in
@@ -163,14 +163,14 @@ public class NetworkService extends Service {
 	 */
 	public String playerName(int playerId) {
 		PlayerInfo player = players.get(playerId);
-		
+
 		if (player == null) {
 			return "???";
 		} else {
 			return player.nick();
 		}
 	}
-	
+
 	/**
 	 * Removes a player from memory
 	 * @param pid The id of the player to remove
@@ -181,7 +181,7 @@ public class NetworkService extends Service {
 			//TODO: close the PM?
 			pmedPlayers.remove(pid);
 		}
-		
+
 		if (player != null) {
 			for(Integer battleid: player.battles) {
 				testRemoveBattle(battleid);
@@ -195,7 +195,7 @@ public class NetworkService extends Service {
 	public IBinder onBind(Intent intent) {
 		return binder;
 	}
-	
+
 	@Override
 	// This is called once
 	public void onCreate() {
@@ -203,13 +203,13 @@ public class NetworkService extends Service {
 		showNotification(ChatActivity.class, "Chat");
 		super.onCreate();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		// XXX TODO be more graceful
 		Log.d(TAG, "NETWORK SERVICE DESTROYED; EXPECT BAD THINGS TO HAPPEN");
 	}
-	
+
 	public void connect(final String ip, final int port) {
 		// XXX This should probably have a timeout
 		new Thread(new Runnable() {
@@ -241,33 +241,33 @@ public class NetworkService extends Service {
 				loginCmd.putFlags(new boolean []{false,true,true});
 				socket.sendMessage(loginCmd, Command.Login);
 
-        		while(socket.isConnected()) {
-        			try {
-        				// Get some data from the wire
-        				socket.recvMessagePoll();
-        			} catch (IOException e) {
-        				// Disconnected
-        				break;
-        			} catch (ParseException e) {
-        				// Got message that overflowed length from server.
-        				// No way to recover.
-        				// TODO die completely
-        				break;
-        			}
-        			Baos tmp;
-        			// Handle any messages that completed
-        			while ((tmp = socket.getMsg()) != null) {
-	        			Bais msg = new Bais(tmp.toByteArray());
-	        			handleMsg(msg);
-        			}
-        			
-        			/* Do not use too much CPU */
-        			try {
+				while(socket.isConnected()) {
+					try {
+						// Get some data from the wire
+						socket.recvMessagePoll();
+					} catch (IOException e) {
+						// Disconnected
+						break;
+					} catch (ParseException e) {
+						// Got message that overflowed length from server.
+						// No way to recover.
+						// TODO die completely
+						break;
+					}
+					Baos tmp;
+					// Handle any messages that completed
+					while ((tmp = socket.getMsg()) != null) {
+						Bais msg = new Bais(tmp.toByteArray());
+						handleMsg(msg);
+					}
+
+					/* Do not use too much CPU */
+					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
 						// Do nothing
 					}
-        		}
+				}
 			}
 		}).start();
 	}
@@ -277,7 +277,7 @@ public class NetworkService extends Service {
 		super.onStartCommand(intent, flags, startId);
 		Bundle bundle = null;
 		if (intent != null) // Intent can be null if service restarts after being killed
-							// XXX We probably don't handle such restarts very gracefully 
+			// XXX We probably don't handle such restarts very gracefully 
 			bundle = intent.getExtras();
 		if (bundle != null && bundle.containsKey("loginPlayer")) {
 			meLoginPlayer = new FullPlayerInfo(new Bais(bundle.getByteArray("loginPlayer")));
@@ -288,30 +288,30 @@ public class NetworkService extends Service {
 		return START_STICKY;
 	}
 
-    protected void showNotification(Class<?> toStart, String text, String note) {
-    	NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-    	builder.setSmallIcon(R.drawable.icon)
-    		.setTicker(note)
-    		.setContentText(text)
-    		.setWhen(System.currentTimeMillis())
-    		.setContentTitle("Pokemon Online");
+	protected void showNotification(Class<?> toStart, String text, String note) {
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setSmallIcon(R.drawable.icon)
+		.setTicker(note)
+		.setContentText(text)
+		.setWhen(System.currentTimeMillis())
+		.setContentTitle("Pokemon Online");
 
-        // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
-        
-        builder.setContentIntent(notificationIntent);
+		// The PendingIntent to launch our activity if the user selects this notification
+		PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
+				new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        NotificationManager mNotificationManager =
-        	    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        	// mId allows you to update the notification later on.
-    	mNotificationManager.notify(toStart.hashCode(), builder.build());
-    }
+		builder.setContentIntent(notificationIntent);
 
-    protected void showNotification(Class<?> toStart, String text) {
-    	showNotification(toStart, text, text);
-    }
-	
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(toStart.hashCode(), builder.build());
+	}
+
+	protected void showNotification(Class<?> toStart, String text) {
+		showNotification(toStart, text, text);
+	}
+
 	public void handleMsg(Bais msg) {
 		byte i = msg.readByte();
 		Command c = Command.values()[i];
@@ -334,9 +334,9 @@ public class NetworkService extends Service {
 			} else if (serverVersion.compareTo(version) < 0) {
 				Log.d(TAG, "PO Android uses newer protocol than Server");
 			}
-			
+
 			serverSupportsZipCompression = msg.readBool();
-			
+
 			ProtocolVersion lastVersionWithoutFeatures = new ProtocolVersion(msg);
 			ProtocolVersion lastVersionWithoutCompatBreak = new ProtocolVersion(msg);
 			ProtocolVersion lastVersionWithoutMajorCompatBreak = new ProtocolVersion(msg);
@@ -427,7 +427,7 @@ public class NetworkService extends Service {
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
 				CharSequence name = player.nick();
-				
+
 				if (isHtml) {
 					message = Html.fromHtml("<font color='" + color + "'><b>" + name + 
 							": </b></font>" + message);
@@ -465,7 +465,7 @@ public class NetworkService extends Service {
 				//byte mode = msg.readByte(); /* protocol is messed up */
 				int player1 = msg.readInt();
 				int player2 = msg.readInt();
-				
+
 				addBattle(battleId, new BattleDesc(player1, player2));
 			}
 			break;
@@ -476,10 +476,10 @@ public class NetworkService extends Service {
 			//byte mode = msg.readByte();
 			int player1 = msg.readInt();
 			int player2 = msg.readInt();
-			
+
 			addBattle(battleId, new BattleDesc(player1, player2));
 		}
-/*		case JoinChannel:
+		/*		case JoinChannel:
 		case LeaveChannel:
 //		case ChannelMessage:
 //		case HtmlChannel: {
@@ -579,20 +579,21 @@ public class NetworkService extends Service {
 				} else if (battleDesc == 2) {
 					showNotification(ChatActivity.class, "Chat", "You tied!");
 				}
-				
+
 				if (battleDesc < 2) {
 					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
 							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
 							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"));
 				}
-				
+
 				if (battleDesc == 0 || battleDesc == 3) {
+					if (battle != null) {
+						battle.destroy();
+					}
 					battle = null;
-					if (battleActivity != null)
-						battleActivity.end();
 				}
 			}
-			
+
 			removeBattle(battleID);
 			break;
 		} case SendPM: {
@@ -632,16 +633,16 @@ public class NetworkService extends Service {
 			byte mode = msg.readByte();
 			int p1 = msg.readInt();
 			int p2 = msg.readInt();
-			
+
 			addBattle(battleId, new BattleDesc(p1, p2, mode));
-			
+
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg);
 				// Start the battle
 				battle = new Battle(conf, msg, players.get(conf.id(0)),
-					players.get(conf.id(1)), mePlayer.id, battleId, this);
+						players.get(conf.id(1)), mePlayer.id, battleId, this);
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
-					" and " + playerName(p2) + " started!");
+						" and " + playerName(p2) + " started!");
 				Intent in;
 				in = new Intent(this, BattleActivity.class);
 				in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -649,7 +650,33 @@ public class NetworkService extends Service {
 				findingBattle = false;
 			}
 			break;
-		} case AskForPass: {
+		} 
+		case SpectateBattle:
+			Bais flags = msg.readFlags();
+			int battleId = msg.readInt();
+			
+			if (flags.readBool()) {
+				if (spectatedBattles.contains(battleId)) {
+					Log.e(TAG, "Already watching battle " + battleId);
+					return;
+				}
+	            BattleConf conf = new BattleConf(msg);
+	            Battle battle = new Battle(conf, msg, players.get(conf.id(0)), players.get(conf.id(1)),
+	            		mePlayer.id, battleId, this);
+	            spectatedBattles.put(battleId, battle);
+	            
+	            Intent intent = new Intent(this, BattleActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            intent.putExtra("battleId", battleId);
+	            startActivity(intent);
+	        } else {
+	            Battle battle = spectatedBattles.remove(battleId);
+	            if (battle != null && battle.activity != null) {
+	            	battle.activity.end();
+	            }
+	        }
+			break;
+		case AskForPass: {
 			salt = msg.readString();
 			// XXX not sure what the second half is supposed to check
 			// from analyze.cpp : 265 of PO's code
@@ -682,8 +709,8 @@ public class NetworkService extends Service {
 			System.out.println("Unimplented message");
 		}
 		}
-		if (battle != null && battleActivity != null && battle.histDelta.length() != 0)
-			battleActivity.updateBattleInfo(false);
+		if (battle != null && battle.activity != null && battle.histDelta.length() != 0)
+			battle.activity.updateBattleInfo(false);
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}
@@ -702,43 +729,43 @@ public class NetworkService extends Service {
 			System.out.println("Attempting authentication threw an exception: " + uee);
 		}
 	}
-	
+
 	private byte[] mashBytes(final byte[] a, final byte[] b) {
 		byte[] ret = new byte[a.length + b.length];
 		System.arraycopy(a, 0, ret, 0, a.length);
 		System.arraycopy(b, 0, ret, a.length, b.length);
 		return ret;
 	}
-	
+
 	private String toHex(byte[] b) {
 		String ret = new BigInteger(1, b).toString(16);
 		while (ret.length() < 32)
 			ret = "0" + ret;
 		return ret;
 	}
-	
+
 	protected void herp() {
 		System.out.println("HERP");
 	}
-	
+
 	protected void addChannel(String chanName, int chanId) {
 		Channel c = new Channel(chanId, chanName, this);
 		channels.put(chanId, c);
 		if(chatActivity != null)
 			chatActivity.addChannel(c);
 	}
-	
+
 	public void playCry(ShallowBattlePoke poke) {
 		new Thread(new CryPlayer(poke)).start();
 	}
-	
+
 	class CryPlayer implements Runnable {
 		ShallowBattlePoke poke;
-		
+
 		public CryPlayer(ShallowBattlePoke poke) {
 			this.poke = poke;
 		}
-		
+
 		public void run() {
 			int resID = getResources().getIdentifier("p" + poke.uID.pokeNum,
 					"raw", pkgName);
@@ -765,24 +792,24 @@ public class NetworkService extends Service {
 			}
 		}
 	}
-	
-    public void disconnect() {
-    	if (socket != null && socket.isConnected()) {
-    		socket.close();
-    	}
-    	this.stopForeground(true);
-    	this.stopSelf();
-    }
-    
-    public PlayerInfo getPlayerByName(String playerName) {
-    	Enumeration<Integer> e = players.keys();
-    	while(e.hasMoreElements()) {
-    		PlayerInfo info = players.get(e.nextElement());
-    		if (info.nick().equals(playerName))
-    			return info;
-    	}
-    	return null;
-    }
+
+	public void disconnect() {
+		if (socket != null && socket.isConnected()) {
+			socket.close();
+		}
+		this.stopForeground(true);
+		this.stopSelf();
+	}
+
+	public PlayerInfo getPlayerByName(String playerName) {
+		Enumeration<Integer> e = players.keys();
+		while(e.hasMoreElements()) {
+			PlayerInfo info = players.get(e.nextElement());
+			if (info.nick().equals(playerName))
+				return info;
+		}
+		return null;
+	}
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);

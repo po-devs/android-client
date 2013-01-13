@@ -321,6 +321,10 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     
     @Override
     synchronized public void onDestroy() {
+    	if (bound) {
+    		unbindService(this);
+    		bound = false;
+    	}
     	super.onDestroy();
     }
 }
