@@ -504,17 +504,17 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				        if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
 				        	sprite = "empty_sprite.png";
 				        } else if (poke.sub) {
-				        	sprite = "sub_front.png";
+				        	sprite = opp == me ? "sub_back.png" : "sub_front.png";
 				        } else {
 				        	if (useAnimSprites) {
 						        Intent data = new Intent();
 						        data.setComponent(servName);
 						        data.putExtra("me", false);
-						        data.putExtra("sprite", getAnimSprite(poke, true));
+						        data.putExtra("sprite", getAnimSprite(poke, opp != me));
 						        data.putExtra("cb", mRecvr);
 						        startService(data);
 				        	} else {
-				        		sprite = getSprite(poke, true);
+				        		sprite = getSprite(poke, opp != me);
 				        	}
 				        }
 				        
