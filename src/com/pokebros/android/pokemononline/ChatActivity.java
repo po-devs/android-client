@@ -21,6 +21,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
@@ -34,6 +36,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -54,8 +57,6 @@ import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
 import com.pokebros.android.pokemononline.poke.UniqueID;
 import com.pokebros.android.utilities.StringUtilities;
 import com.pokebros.android.utilities.TwoViewsArrayAdapter;
-
-import de.marcreichelt.android.ChatRealViewSwitcher;
 
 public class ChatActivity extends Activity {
 	
@@ -92,7 +93,7 @@ public class ChatActivity extends Activity {
 	private NetworkService netServ = null;
 	private ListView chatView;
 	private EditText chatInput;
-	private ChatRealViewSwitcher chatViewSwitcher;
+	private ViewPager chatViewSwitcher;
 	private String packName = "com.pokebros.android.pokemononline";
 	private PlayerInfo lastClickedPlayer;
 	private Channel lastClickedChannel;
@@ -147,6 +148,35 @@ public class ChatActivity extends Activity {
 			return lv;
 		}
 	}
+	
+	View playersLayout, chatLayout, channelsLayout;
+	private class MyAdapter extends PagerAdapter
+	{
+		@Override
+		public int getCount() {
+			return 3;
+		}
+		
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			switch (position) {
+			case 0: container.addView(players);return players;
+			case 1: container.addView(chatView);return chatView;
+			case 2: container.addView(channels);return channels;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return (Object)arg0 == arg1;
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View)object);
+		}
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -163,19 +193,23 @@ public class ChatActivity extends Activity {
 		}
 		
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat);
+		chatViewSwitcher = new ViewPager(this);
+		chatLayout = getLayoutInflater().inflate(R.layout.chat, null);
+		channelsLayout = getLayoutInflater().inflate(R.layout.channellist, null);
+		playersLayout = getLayoutInflater().inflate(R.layout.playerlist, null);
+		chatView = (ListView)chatLayout.findViewById(R.id.chatView);
+		chatViewSwitcher.setAdapter(new MyAdapter());
+        setContentView(chatViewSwitcher);
         prefs = getPreferences(MODE_PRIVATE);
-        chatView = (ListView) findViewById(R.id.chatView);
-    	chatViewSwitcher = (ChatRealViewSwitcher)findViewById(R.id.chatPokeSwitcher);
-    	chatViewSwitcher.setCurrentScreen(1);
+    	chatViewSwitcher.setCurrentItem(1);
  
     	//Player List Stuff**
-    	players = (ChatListView)findViewById(R.id.playerlisting);
+    	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
     	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
     	registerForContextMenu(players);
         
         //Channel List Stuff**
-        channels = (ListView)findViewById(R.id.channellisting);
+    	channels = (ListView)channelsLayout.findViewById(R.id.channellisting);
         channelAdapter = new ChannelListAdapter(this, 0);
         registerForContextMenu(channels);
         channels.setOnItemClickListener(new OnItemClickListener() {
@@ -192,7 +226,7 @@ public class ChatActivity extends Activity {
         
         bindService(new Intent(ChatActivity.this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
-        chatInput = (EditText) findViewById(R.id.chatInput);
+        chatInput = (EditText) chatLayout.findViewById(R.id.chatInput);
 		// Hide the soft-keyboard when the activity is created
         chatInput.setInputType(InputType.TYPE_NULL);
         chatInput.setOnTouchListener(new View.OnTouchListener() {
@@ -228,7 +262,7 @@ public class ChatActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		chatViewSwitcher.setCurrentScreen(1);
+		chatViewSwitcher.setCurrentItem(1);
 		if (netServ != null && !netServ.hasBattle())
 			netServ.showNotification(ChatActivity.class, "Chat");
 		else if (netServ != null && netServ.hasBattle() && netServ.battle.gotEnd)
@@ -870,7 +904,7 @@ public class ChatActivity extends Activity {
 		chatViewSwitcher.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 			public void onGlobalLayout() {
 				chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				chatViewSwitcher.setCurrentScreen(1);
+				chatViewSwitcher.setCurrentItem(1);
 				if (messageAdapter != null)
 					chatView.setSelection(messageAdapter.getCount() - 1);
 			}

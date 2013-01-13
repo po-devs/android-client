@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/battle_border_light"
+    android:clickable="true"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/playerlisttitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/player_list"
+        android:textSize="15sp"
+        android:textStyle="bold" >
+    </TextView>
+
+    <view
+        android:id="@+id/playerlisting"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        class="com.pokebros.android.pokemononline.ChatListView" >
+    </view>
+</LinearLayout>

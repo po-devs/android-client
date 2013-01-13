@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.os.SystemClock;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,8 +50,6 @@ import com.pokebros.android.pokemononline.poke.PokeEnums.Status;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.pokemononline.poke.ShallowShownPoke;
 import com.pokebros.android.pokemononline.poke.UniqueID;
-
-import de.marcreichelt.android.RealViewSwitcher;
 
 class MyResultReceiver extends ResultReceiver {
     private Receiver mReceiver;
@@ -92,7 +91,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     
 	DragLayer mDragLayer;
 	
-	RealViewSwitcher realViewSwitcher;
+	ViewPager realViewSwitcher;
 	RelativeLayout battleView;
 	TextProgressBar[] hpBars = new TextProgressBar[2];
 	TextView[] currentPokeNames = new TextView[2];
@@ -234,7 +233,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		Context.BIND_AUTO_CREATE);
         
         resources = getResources();
-        realViewSwitcher = (RealViewSwitcher)findViewById(R.id.battlePokeSwitcher);
+        realViewSwitcher = (ViewPager)findViewById(R.id.battlePokeSwitcher);
         
         for(int i = 0; i < 4; i++) {
         	attackNames[i] = (TextView)findViewById(resources.getIdentifier("attack" + (i+1) + "Name", "id", pkgName));
@@ -592,7 +591,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public void switchToPokeViewer() {
 		runOnUiThread(new Runnable() {
 			public void run() {
-				realViewSwitcher.snapToScreen(1);
+				realViewSwitcher.setCurrentItem(1, true);
 			}
 		});
 	}
@@ -751,7 +750,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		for(int i = 0; i < 6; i++) {
     			if(id == pokeListButtons[i].getId()) {
     				netServ.socket.sendMessage(battle.constructSwitch((byte)i), Command.BattleMessage);
-    				realViewSwitcher.snapToScreen(0);
+    				realViewSwitcher.setCurrentItem(0, true);
     			}
     		}
     		battle.clicked = true;

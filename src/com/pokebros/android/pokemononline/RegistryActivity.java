@@ -139,7 +139,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		});
         
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
-        bindService(intent, this, BIND_AUTO_CREATE);
+        bound = bindService(intent, this, BIND_AUTO_CREATE);
     }
     
     private OnClickListener registryListener = new OnClickListener() {
@@ -272,7 +272,12 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		}
 		Log.i(TAG, "Unbinding registry connection service");
 		bound = false;
-		unbindService(RegistryActivity.this);
+		
+		try {
+			unbindService(RegistryActivity.this);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
 
 		runOnUiThread(new Runnable() {
 			public void run() {
