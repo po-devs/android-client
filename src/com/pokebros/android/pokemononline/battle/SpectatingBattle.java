@@ -375,10 +375,10 @@ public class SpectatingBattle {
 			if (!silent)
 				writeToHist("\nBut it failed!");
 			break;
-		} case BattleChat: {
-		} case EndMessage: {
+		} case BattleChat: 
+		case EndMessage: {
 			String message = msg.readString();
-			if (message.equals(""))
+			if (message == null || message.equals(""))
 				break;
 			writeToHist(Html.fromHtml("<br><font color=" + (player !=0 ? "#5811b1>" : QtColor.Green) +
 					"<b>" + StringUtilities.escapeHtml(players[player].nick()) + ": </b></font>" +
