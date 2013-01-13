@@ -30,7 +30,7 @@ public enum Command {
     CPUnban,
     SpectateBattle,
     SpectateBattleMessage,
-    Unused_29,
+    SpectateBattleChat,
     Unused_30, // = 30,
     Unused_31,
     Unused_32,

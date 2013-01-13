@@ -644,7 +644,15 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			try {
 				activeBattle = (Battle) battle;
 			} catch (ClassCastException ex) {
-				activeBattle = null;
+
+			}
+			
+			if (activeBattle == null) {
+				/* If it's a spectating battle, we remove the info view's bottom margin */
+				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)infoScroll.getLayoutParams();
+				params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 
+						((RelativeLayout.LayoutParams)attackRow2.getLayoutParams()).bottomMargin);
+				infoScroll.setLayoutParams(params);
 			}
 			
 			netServ.showNotification(BattleActivity.class, "Battle");
@@ -708,7 +716,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 								Baos msg = new Baos();
 								msg.putInt(BattleActivity.this.battle.bID);
 								msg.putString(message);
-					    		netServ.socket.sendMessage(msg, Command.BattleChat);
+								if (activeBattle != null) {
+									netServ.socket.sendMessage(msg, Command.BattleChat);
+								} else {
+									netServ.socket.sendMessage(msg, Command.SpectateBattleChat);
+								}
 							}
 						}
 					}).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

@@ -318,6 +318,7 @@
 		android:layout_marginBottom="2dp"
 		android:layout_marginRight="4dp"
 		android:layout_marginLeft="4dp"
+		android:visibility="gone"
 		android:clickable="true">
 		<TextView
 			android:text="@string/struggle_attack"
@@ -333,6 +334,7 @@
 
 	<LinearLayout
 		android:id="@+id/attackRow1"
+		android:visibility="gone"
 		android:baselineAligned="false"
 		android:orientation="horizontal"
 		android:layout_below="@id/infoScroll"
@@ -395,6 +397,7 @@
 		android:id="@+id/attackRow2"
 		android:orientation="horizontal"
 		android:baselineAligned="false"
+		android:visibility="gone"
 		android:layout_below="@id/attackRow1"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
