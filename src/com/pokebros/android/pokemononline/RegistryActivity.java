@@ -272,7 +272,15 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		}
 		Log.i(TAG, "Unbinding registry connection service");
 		bound = false;
-		unbindService(RegistryActivity.this);
+		
+		try {
+			unbindService(RegistryActivity.this);
+		} catch (IllegalArgumentException ex) {
+			/* Might happen if the registry acitivity was already stopped
+			 * and the service was unbound from there.
+			 */
+			return;
+		}
 
 		runOnUiThread(new Runnable() {
 			public void run() {
