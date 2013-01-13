@@ -653,6 +653,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 
 						((RelativeLayout.LayoutParams)attackRow2.getLayoutParams()).bottomMargin);
 				infoScroll.setLayoutParams(params);
+				
+				/* No need for the second view, about your team */
+				realViewSwitcher.removeViewAt(1);
 			}
 			
 			netServ.showNotification(BattleActivity.class, "Battle");
