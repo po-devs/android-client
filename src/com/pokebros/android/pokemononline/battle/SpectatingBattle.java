@@ -395,8 +395,6 @@ public class SpectatingBattle {
 				removeSpectator(id);
 			}
 			
-			writeToHist(Html.fromHtml("<br><font color=" + QtColor.DarkGreen + name + 
-					(come ? " is watching " : " left ") + " the battle.</font>"));
 			break;
 		} case SpectatorChat: {
 			// TODO if (ignoreSpecs) break;
