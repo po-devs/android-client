@@ -23,7 +23,6 @@
 		android:id="@+id/titleA">
 		
 		<TextView
-			android:text="Timer A"
 			android:layout_height="wrap_content"
 			android:textColor="@color/poke_text_color"
 			android:background="@drawable/battle_border"
@@ -34,7 +33,6 @@
 			android:layout_marginRight="4dp"
 			android:layout_width="wrap_content"/>
 		<TextView
-			android:text="Name A"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@color/poke_text_color"
@@ -47,20 +45,25 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:layout_toRightOf="@id/timerA"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
+
 		<ImageView
-			android:id="@+id/pokeball2A"
-			android:paddingTop="4dp"
-			android:paddingBottom="4dp"
-			android:layout_toRightOf="@id/pokeball1A"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"/>
+		    android:id="@+id/pokeball2A"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_toRightOf="@id/pokeball1A"
+		    android:contentDescription="@string/battle_opponent_team_poke_icon"
+		    android:paddingBottom="4dp"
+		    android:paddingTop="4dp" />
+
 		<ImageView
 			android:id="@+id/pokeball3A"
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:layout_toRightOf="@id/pokeball2A"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 		<ImageView
@@ -68,6 +71,7 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:layout_toRightOf="@id/pokeball3A"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 		<ImageView
@@ -75,6 +79,7 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:layout_toRightOf="@id/pokeball4A"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 		<ImageView
@@ -82,6 +87,7 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:layout_toRightOf="@id/pokeball5A"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 	</RelativeLayout>
@@ -89,7 +95,6 @@
 	
 	<!-- START Battle Screen -->
 	<RelativeLayout
-		android:text="Battle Screen"
 		android:layout_width="wrap_content"
 		android:textColor="@color/poke_text_color"
 		android:background="@drawable/battle_border"
@@ -137,6 +142,7 @@
 				android:id="@+id/currentPokeGenderA"
 				android:layout_height="wrap_content"
 				android:layout_toLeftOf="@id/currentPokeLevelA"
+				android:contentDescription="@string/gender_description"
 				android:layout_below="@id/hpBarA"
 				android:layout_marginLeft="2dp"
 				android:layout_marginTop="3dp"/>
@@ -145,6 +151,7 @@
 				android:id="@+id/currentPokeStatusA"
 				android:layout_height="wrap_content"
 				android:layout_toLeftOf="@id/currentPokeGenderA"
+				android:contentDescription="@string/hp_bar_description"
 				android:layout_below="@id/hpBarA"
 				android:layout_marginTop="3dp"/>
 				</RelativeLayout>
@@ -187,6 +194,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/currentPokeGenderB"
+				android:contentDescription="@string/gender_description"
 				android:layout_toLeftOf="@id/currentPokeLevelB"
 				android:layout_above="@id/hpBarB"
 				android:layout_marginLeft="2dp"
@@ -195,6 +203,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/currentPokeStatusB"
+				android:contentDescription="@string/status_description"
 				android:layout_toLeftOf="@id/currentPokeGenderB"
 				android:layout_above="@id/hpBarB"
 				android:layout_marginBottom="3dp"/>
@@ -212,7 +221,6 @@
 		android:layout_below="@id/battleScreen">
 		
 		<TextView
-			android:text="Timer B"
 			android:layout_height="wrap_content"
 			android:textColor="@color/poke_text_color"
 			android:background="@drawable/battle_border"
@@ -223,7 +231,6 @@
 			android:layout_marginLeft="4dp"
 			android:layout_width="wrap_content"/>
 		<TextView
-			android:text="Name B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="@color/poke_text_color"
@@ -235,6 +242,7 @@
 			android:id="@+id/pokeball6B"
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/timerB"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -242,6 +250,7 @@
 			android:id="@+id/pokeball5B"
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/pokeball6B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -249,6 +258,7 @@
 			android:id="@+id/pokeball4B"
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/pokeball5B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -256,6 +266,7 @@
 			android:id="@+id/pokeball3B"
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/pokeball4B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -263,6 +274,7 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:id="@+id/pokeball2B"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/pokeball3B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -270,6 +282,7 @@
 			android:paddingTop="4dp"
 			android:paddingBottom="4dp"
 			android:id="@+id/pokeball1B"
+			android:contentDescription="@string/battle_opponent_team_poke_icon"
 			android:layout_toLeftOf="@id/pokeball2B"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
@@ -284,12 +297,11 @@
 	android:layout_marginRight="4dp" 
 	android:layout_marginBottom="128dp"
 	android:layout_height="fill_parent"
-	android:layout_below="@id/titleB"
-	android:layout_weight="1">
+	android:layout_below="@id/titleB">
 		<TextView android:layout_width="fill_parent" 
 		android:id="@+id/infoWindow" 
 		android:textColor="@color/poke_text_color" 
-		android:text="Info Box" 
+		android:text="@string/info_box" 
 		android:layout_height="wrap_content">
 		</TextView>
 	</ScrollView>
@@ -308,7 +320,7 @@
 		android:layout_marginLeft="4dp"
 		android:clickable="true">
 		<TextView
-			android:text="STRUGGLE"
+			android:text="@string/struggle_attack"
 			android:textSize="30sp"
 			android:layout_marginTop="20dp"
 			android:layout_width="wrap_content"
@@ -325,6 +337,7 @@
 		android:layout_below="@id/infoScroll"
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent"
+		android:baselineAligned="false"
 		android:layout_marginTop="-126dp"
 		android:layout_marginBottom="64dp">
 		<RelativeLayout
@@ -336,7 +349,6 @@
 			android:layout_marginRight="2dp"
 			android:background="@drawable/battle_border_button">
 			<TextView
-				android:text="Attack 1"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack1Name"
@@ -344,7 +356,6 @@
 				android:layout_centerHorizontal="true"
 				android:textStyle="bold"/>
 			<TextView
-				android:text="PP"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack1PP"
@@ -361,7 +372,6 @@
 			android:layout_marginRight="4dp"
 			android:background="@drawable/battle_border_button">
 			<TextView
-				android:text="Attack 2"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack2Name"
@@ -369,7 +379,6 @@
 				android:layout_centerHorizontal="true"
 				android:textStyle="bold"/>
 			<TextView
-				android:text="PP"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack2PP"
@@ -383,6 +392,7 @@
 		android:orientation="horizontal"
 		android:layout_below="@id/attackRow1"
 		android:layout_height="wrap_content"
+		android:baselineAligned="false"
 		android:layout_width="fill_parent"
 		android:layout_marginTop="-62dp"
 		android:layout_marginBottom="2dp">
@@ -395,7 +405,6 @@
 			android:layout_marginRight="2dp"
 			android:background="@drawable/battle_border_button">
 			<TextView
-				android:text="Attack 3"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack3Name"
@@ -403,7 +412,6 @@
 				android:layout_centerHorizontal="true"
 				android:textStyle="bold"/>
 			<TextView
-				android:text="PP"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:textColor="@color/pp_text_color"
@@ -420,7 +428,6 @@
 			android:layout_marginRight="4dp"
 			android:background="@drawable/battle_border_button">
 			<TextView
-				android:text="Attack 4"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack4Name"
@@ -428,7 +435,6 @@
 				android:layout_centerHorizontal="true"
 				android:textStyle="bold"/>
 			<TextView
-				android:text="PP"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/attack4PP"
@@ -452,7 +458,8 @@
 		android:layout_height="wrap_content" android:layout_weight="16"
 		android:layout_width="fill_parent" android:id="@+id/pokeViewLayout1">
 		<ImageView android:src="@drawable/icon"
-			android:layout_height="wrap_content" 
+			android:layout_height="wrap_content"
+			android:contentDescription="@string/team_poke_icon"
 			android:layout_width="wrap_content" 
 			android:id="@+id/pokeViewIcon1" 
 			android:background="@drawable/battle_border_transparent" 
@@ -468,7 +475,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon1">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename1"
 					android:id="@+id/pokename1" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -477,7 +483,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp1" 
 					android:textSize="14sp"
 					android:id="@+id/hp1" 
 					android:textColor="@color/poke_text_color"
@@ -485,7 +490,6 @@
 					android:layout_below="@id/pokename1"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item1"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -493,7 +497,6 @@
 					android:layout_below="@id/hp1"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability1"
 					android:id="@+id/ability1" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -506,7 +509,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -518,7 +520,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -531,7 +532,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p1_attack2" 
@@ -543,7 +543,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p1_attack1" 
@@ -561,6 +560,7 @@
 		android:layout_height="wrap_content" android:layout_weight="16"
 		android:layout_width="fill_parent" android:id="@+id/pokeViewLayout2">
 		<ImageView android:src="@drawable/icon"
+		    android:contentDescription="@string/team_poke_icon"
 			android:layout_height="wrap_content" 
 			android:layout_centerVertical="true"
 			android:layout_width="wrap_content" 
@@ -577,7 +577,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon2">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename2"
 					android:id="@+id/pokename2" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -586,7 +585,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp2" 
 					android:textSize="14sp"
 					android:id="@+id/hp2" 
 					android:textColor="@color/poke_text_color"
@@ -594,7 +592,6 @@
 					android:layout_below="@id/pokename2"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item2"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -602,7 +599,6 @@
 					android:layout_below="@id/hp2"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability2"
 					android:id="@+id/ability2" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -615,7 +611,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -627,7 +622,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -640,7 +634,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p2_attack2" 
@@ -652,7 +645,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p2_attack1" 
@@ -673,6 +665,7 @@
 			android:layout_centerVertical="true"
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
+			android:contentDescription="@string/team_poke_icon"
 			android:id="@+id/pokeViewIcon3" 
 			android:background="@drawable/battle_border_transparent" 
 			android:paddingLeft="5dp" 
@@ -686,7 +679,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon3">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename3"
 					android:id="@+id/pokename3" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -695,7 +687,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp3" 
 					android:textSize="14sp"
 					android:id="@+id/hp3" 
 					android:textColor="@color/poke_text_color"
@@ -703,7 +694,6 @@
 					android:layout_below="@id/pokename3"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item3"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -711,7 +701,6 @@
 					android:layout_below="@id/hp3"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability3"
 					android:id="@+id/ability3" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -724,7 +713,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -736,7 +724,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -749,7 +736,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p3_attack2" 
@@ -761,7 +747,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p3_attack1" 
@@ -782,6 +767,7 @@
 			android:layout_centerVertical="true"
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
+			android:contentDescription="@string/team_poke_icon"
 			android:id="@+id/pokeViewIcon4" 
 			android:background="@drawable/battle_border_transparent" 
 			android:paddingLeft="5dp" 
@@ -795,7 +781,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon4">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename4"
 					android:id="@+id/pokename4" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -804,7 +789,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp4" 
 					android:textSize="14sp"
 					android:id="@+id/hp4" 
 					android:textColor="@color/poke_text_color"
@@ -812,7 +796,6 @@
 					android:layout_below="@id/pokename4"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item4"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -820,7 +803,6 @@
 					android:layout_below="@id/hp4"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability4"
 					android:id="@+id/ability4" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -833,7 +815,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -845,7 +826,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -858,7 +838,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p4_attack2" 
@@ -870,7 +849,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p4_attack1" 
@@ -891,6 +869,7 @@
 			android:layout_centerVertical="true"
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
+			android:contentDescription="@string/team_poke_icon"
 			android:id="@+id/pokeViewIcon5" 
 			android:background="@drawable/battle_border_transparent" 
 			android:paddingLeft="5dp" 
@@ -904,7 +883,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon5">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename5"
 					android:id="@+id/pokename5" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -913,7 +891,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp5" 
 					android:textSize="14sp"
 					android:id="@+id/hp5" 
 					android:textColor="@color/poke_text_color"
@@ -921,7 +898,6 @@
 					android:layout_below="@id/pokename5"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item5"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -929,7 +905,6 @@
 					android:layout_below="@id/hp5"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability5"
 					android:id="@+id/ability5" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -942,7 +917,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -954,7 +928,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -967,7 +940,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p5_attack2" 
@@ -979,7 +951,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p5_attack1" 
@@ -1000,6 +971,7 @@
 			android:layout_centerVertical="true"
 			android:layout_height="wrap_content" 
 			android:layout_width="wrap_content" 
+			android:contentDescription="@string/team_poke_icon"
 			android:id="@+id/pokeViewIcon6" 
 			android:background="@drawable/battle_border_transparent" 
 			android:paddingLeft="5dp" 
@@ -1013,7 +985,6 @@
 			android:layout_toRightOf="@id/pokeViewIcon6">			
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="pokename6"
 					android:id="@+id/pokename6" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="14sp"
@@ -1022,7 +993,6 @@
 					android:layout_alignParentTop="true"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="hp6" 
 					android:textSize="14sp"
 					android:id="@+id/hp6" 
 					android:textColor="@color/poke_text_color"
@@ -1030,7 +1000,6 @@
 					android:layout_below="@id/pokename6"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="--"
 					android:id="@+id/item6"
 					android:textColor="@color/poke_text_color"
 					android:textSize="10sp"
@@ -1038,7 +1007,6 @@
 					android:layout_below="@id/hp6"/>
 				<TextView 
 					android:layout_height="wrap_content" 
-					android:text="ability6"
 					android:id="@+id/ability6" 
 					android:textColor="@color/poke_text_color" 
 					android:textSize="10sp"
@@ -1051,7 +1019,6 @@
 			android:layout_height="wrap_content" 
 			android:layout_alignParentRight="true">
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_marginRight="10dp" 
@@ -1063,7 +1030,6 @@
 					android:layout_alignParentRight="true"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_alignParentRight="true" 
@@ -1076,7 +1042,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_toLeftOf="@+id/p6_attack2" 
@@ -1088,7 +1053,6 @@
 					android:gravity="center"
 					android:background="@drawable/battle_border"/>
 				<TextView 
-					android:text="TextView" 
 					android:textColor="@color/poke_text_color" 
 					android:layout_height="wrap_content" 
 					android:layout_below="@+id/p6_attack1" 

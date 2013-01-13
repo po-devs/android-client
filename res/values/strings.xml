@@ -45,5 +45,13 @@
 	<string name="major_compat_break_warning">There will be important problems when communicating with the server due to the android client being outdated</string>
 	<string name="minor_compat_break_warning">There may be minor problems when communicating with the server due to the android client being outdated</string>
 	<string name="new_server_features_warning">The server has new features that are not accessible with this android version!</string>
-	<string name="send_message">Send message...</string>
+	<string name="send_message">Send message</string>
+	<string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
+	<string name="struggle_attack">STRUGGLE</string>
+	<string name="info_box">Info Box</string>
+	<string name="hp_bar_description">hp bar</string>
+	<string name="gender_description">gender</string>
+	<string name="status_description">status</string>
+	<string name="sprite_description">sprite</string>
+	<string name="team_poke_icon">team poke icon</string>
 </resources>
