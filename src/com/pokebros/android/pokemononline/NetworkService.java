@@ -720,6 +720,11 @@ public class NetworkService extends Service {
 		}
 		if (battle != null && battle.activity != null && battle.histDelta.length() != 0)
 			battle.activity.updateBattleInfo(false);
+		for(SpectatingBattle battle : spectatedBattles.values()) {
+			if (battle != null && battle.activity != null && battle.histDelta.length() != 0) {
+				battle.activity.updateBattleInfo(false);
+			}
+		}
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}

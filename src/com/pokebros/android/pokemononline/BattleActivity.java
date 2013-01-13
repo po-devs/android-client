@@ -317,7 +317,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public void updateBattleInfo(boolean scroll) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-				if (!netServ.hasBattle())
+				if (battle == null)
 					return;
 				synchronized (battle.histDelta) {
 					infoView.append(battle.histDelta);
