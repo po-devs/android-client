@@ -29,7 +29,7 @@ public enum Command {
     CPBan,
     CPUnban,
     SpectateBattle,
-    Unused_28,
+    SpectateBattleMessage,
     Unused_29,
     Unused_30, // = 30,
     Unused_31,

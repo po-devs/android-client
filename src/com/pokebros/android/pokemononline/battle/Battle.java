@@ -109,7 +109,7 @@ public class Battle extends SpectatingBattle {
 			if (playCries) {
 				try {
 					synchronized (this) {
-						netServ.playCry(currentPoke(player));
+						netServ.playCry(this, currentPoke(player));
 						wait(10000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }

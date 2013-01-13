@@ -316,7 +316,7 @@ public class NetworkService extends Service {
 	public void handleMsg(Bais msg) {
 		byte i = msg.readByte();
 		Command c = Command.values()[i];
-		System.out.println("Received: " + c);
+		Log.d(TAG, "Received: " + c);
 		switch (c) {
 		case ChannelPlayers:
 		case JoinChannel: 
@@ -652,7 +652,7 @@ public class NetworkService extends Service {
 			}
 			break;
 		} 
-		case SpectateBattle:
+		case SpectateBattle: {
 			Bais flags = msg.readFlags();
 			int battleId = msg.readInt();
 			
@@ -676,6 +676,15 @@ public class NetworkService extends Service {
 	            }
 	        }
 			break;
+		}
+		case SpectateBattleMessage: {
+			int battleId = msg.readInt(); 
+			msg.readInt(); // discard the size, unneeded
+			if (spectatedBattles.containsKey(battleId)) {
+				spectatedBattles.get(battleId).receiveCommand(msg);
+			}
+			break;
+		}
 		case AskForPass: {
 			salt = msg.readString();
 			// XXX not sure what the second half is supposed to check
@@ -755,15 +764,17 @@ public class NetworkService extends Service {
 			chatActivity.addChannel(c);
 	}
 
-	public void playCry(ShallowBattlePoke poke) {
-		new Thread(new CryPlayer(poke)).start();
+	public void playCry(SpectatingBattle battle, ShallowBattlePoke poke) {
+		new Thread(new CryPlayer(poke, battle)).start();
 	}
 
 	class CryPlayer implements Runnable {
 		ShallowBattlePoke poke;
+		SpectatingBattle battle;
 
-		public CryPlayer(ShallowBattlePoke poke) {
+		public CryPlayer(ShallowBattlePoke poke, SpectatingBattle battle) {
 			this.poke = poke;
+			this.battle = battle;
 		}
 
 		public void run() {
