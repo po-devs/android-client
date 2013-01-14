@@ -413,7 +413,13 @@ public class NetworkService extends Service {
 		} case PlayersList: {
 			while (msg.available() != 0) { // While there's playerInfo's available
 				PlayerInfo p = new PlayerInfo(msg);
+				PlayerInfo oldPlayer = players.get(p.id);
 				players.put(p.id, p);
+				
+				if (oldPlayer != null && chatActivity != null) {
+					/* Updates the player in the adapter memory */
+					chatActivity.updatePlayer(p, oldPlayer);
+				}
 			}
 			break;
 		} case SendMessage: {

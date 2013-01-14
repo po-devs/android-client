@@ -81,13 +81,6 @@ public class Channel {
 			Log.w(TAG, "Tried to remove nonexistant player id from channel " + name + ", ignoring");
 	}
 	
-	public void updatePlayer(PlayerInfo p) {
-		if (players.containsKey(p.id)) {
-			if (netServ != null && netServ.chatActivity != null && this.equals(netServ.joinedChannels.peek()))
-				netServ.chatActivity.updatePlayer(p);
-		}
-	}
-	
 	public void handleChannelMsg(Command c, Bais msg) {
 			switch(c) {
 			case ChannelPlayers: {

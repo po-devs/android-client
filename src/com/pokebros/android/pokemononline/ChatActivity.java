@@ -830,11 +830,14 @@ public class ChatActivity extends Activity {
 		});
 	}
 	
-	public void updatePlayer(final PlayerInfo pi) {
+	public void updatePlayer(final PlayerInfo newPlayer, final PlayerInfo oldPlayer) {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				synchronized (playerAdapter) {
-					playerAdapter.notifyDataSetChanged();
+					if (playerAdapter.getPosition(oldPlayer) != -1) {
+						playerAdapter.remove(oldPlayer);
+						playerAdapter.add(newPlayer);
+					}
 				}
 			}
 		});
