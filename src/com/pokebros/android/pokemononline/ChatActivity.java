@@ -160,9 +160,9 @@ public class ChatActivity extends Activity {
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			switch (position) {
-			case 0: container.addView(players);return players;
-			case 1: container.addView(chatView);return chatView;
-			case 2: container.addView(channels);return channels;
+			case 0: container.addView(playersLayout);return playersLayout;
+			case 1: container.addView(chatLayout);return chatLayout;
+			case 2: container.addView(channelsLayout);return channelsLayout;
 			}
 			return null;
 		}
@@ -175,6 +175,14 @@ public class ChatActivity extends Activity {
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
 			container.removeView((View)object);
+		}
+		
+		@Override
+		public float getPageWidth(int page) {
+			if (page == 0 || page == 2) {
+				return 0.5f;
+			}
+			return 1.0f;
 		}
 	}
 
