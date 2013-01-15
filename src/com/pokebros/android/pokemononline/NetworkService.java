@@ -764,9 +764,7 @@ public class NetworkService extends Service {
 			System.out.println("Unimplented message");
 		}
 		}
-		if (battle != null && battle.activity != null && battle.histDelta.length() != 0)
-			battle.activity.updateBattleInfo(false);
-		for(SpectatingBattle battle : spectatedBattles.values()) {
+		for(SpectatingBattle battle : getBattles()) {
 			if (battle != null && battle.activity != null && battle.histDelta.length() != 0) {
 				battle.activity.updateBattleInfo(false);
 			}
