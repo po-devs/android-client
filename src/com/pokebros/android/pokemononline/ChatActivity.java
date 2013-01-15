@@ -273,8 +273,9 @@ public class ChatActivity extends Activity {
 		chatViewSwitcher.setCurrentItem(1);
 		if (netServ != null && !netServ.hasBattle())
 			netServ.showNotification(ChatActivity.class, "Chat");
-		else if (netServ != null && netServ.hasBattle() && netServ.battle.gotEnd)
-			netServ.battle.activity.endBattle();
+		else if (netServ != null) {
+			netServ.checkBattlesToEnd();
+		}
 		checkChallenges();
 		checkAskForPass();
 		checkFailedConnection();

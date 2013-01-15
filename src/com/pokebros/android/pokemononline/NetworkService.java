@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -131,6 +132,46 @@ public class NetworkService extends Service {
 		}
 		if (hasPlayer(battle.p2)) {
 			players.get(battle.p2).removeBattle(battleID);
+		}
+	}
+	
+	/**
+	 * Returns a list of all the battles fought or spectated
+	 * @return the battles fought/spectated
+	 */
+	public Collection<SpectatingBattle> getBattles() {
+		LinkedList<SpectatingBattle> ret = new LinkedList<SpectatingBattle>();
+		if (battle != null) {
+			ret.add(battle);
+		}
+		ret.addAll(spectatedBattles.values());
+		
+		return ret;
+	}
+	
+	/**
+	 * Checks all battles spectated or fought and removes/destroys the ones
+	 * that are finished
+	 */
+	public void checkBattlesToEnd() {
+		 for (SpectatingBattle battle: getBattles()) {
+			 if (battle.gotEnd) {
+				 closeBattle(battle.bID);
+			 }
+		 }
+	}
+
+	/**
+	 * Removes a battle spectated/fought from memory and destroys it
+	 * @param bID The id of the battle to remove
+	 */
+	private void closeBattle(int bID) {
+		if (battle != null && battle.bID == bID) {
+			battle.destroy();
+			battle = null;
+		}
+		if (spectatedBattles.containsKey(battle.bID)) {
+			spectatedBattles.remove(battle.bID).destroy();
 		}
 	}
 
@@ -578,13 +619,15 @@ public class NetworkService extends Service {
 			int id2 = msg.readInt();
 			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
-			if (battle != null && battle.bID == battleID) {
-				if (mePlayer.id == id1 && battleDesc < 2) {
-					showNotification(ChatActivity.class, "Chat", "You won!");
-				} else if (mePlayer.id == id2 && battleDesc < 2) {
-					showNotification(ChatActivity.class, "Chat", "You lost!");
-				} else if (battleDesc == 2) {
-					showNotification(ChatActivity.class, "Chat", "You tied!");
+			if (battle != null && battle.bID == battleID || spectatedBattles.containsKey(battleID)) {
+				if (battle.bID == battleID) {
+					if (mePlayer.id == id1 && battleDesc < 2) {
+						showNotification(ChatActivity.class, "Chat", "You won!");
+					} else if (mePlayer.id == id2 && battleDesc < 2) {
+						showNotification(ChatActivity.class, "Chat", "You lost!");
+					} else if (battleDesc == 2) {
+						showNotification(ChatActivity.class, "Chat", "You tied!");
+					}
 				}
 
 				if (battleDesc < 2) {
@@ -594,10 +637,7 @@ public class NetworkService extends Service {
 				}
 
 				if (battleDesc == 0 || battleDesc == 3) {
-					if (battle != null) {
-						battle.destroy();
-					}
-					battle = null;
+					closeBattle(battleID);
 				}
 			}
 
