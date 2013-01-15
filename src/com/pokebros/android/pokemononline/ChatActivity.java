@@ -274,7 +274,7 @@ public class ChatActivity extends Activity {
 		if (netServ != null && !netServ.hasBattle())
 			netServ.showNotification(ChatActivity.class, "Chat");
 		else if (netServ != null && netServ.hasBattle() && netServ.battle.gotEnd)
-			netServ.battleActivity.endBattle();
+			netServ.battle.activity.endBattle();
 		checkChallenges();
 		checkAskForPass();
 		checkFailedConnection();
@@ -776,9 +776,12 @@ public class ChatActivity extends Activity {
     		showDialog(ChatDialog.PlayerInfo.ordinal());
     		break;
     	case WatchBattle:
-    		int battleid = item.getIntent().getIntExtra("battleid", 0);
+    		int battleid = item.getIntent().getIntExtra("battle", 0);
     		if (battleid != 0) {
-    			/* watch battle */
+    			Baos watch = new Baos();
+    			watch.putInt(battleid);
+    			watch.putBool(true); // watch, not leaving
+    			netServ.socket.sendMessage(watch, Command.SpectateBattle);
     		}
     		break;
     	case JoinChannel:
@@ -869,11 +872,14 @@ public class ChatActivity extends Activity {
 		});
 	}
 	
-	public void updatePlayer(final PlayerInfo pi) {
+	public void updatePlayer(final PlayerInfo newPlayer, final PlayerInfo oldPlayer) {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				synchronized (playerAdapter) {
-					playerAdapter.notifyDataSetChanged();
+					if (playerAdapter.getPosition(oldPlayer) != -1) {
+						playerAdapter.remove(oldPlayer);
+						playerAdapter.add(newPlayer);
+					}
 				}
 			}
 		});

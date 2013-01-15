@@ -26,7 +26,7 @@ public class BattlePoke extends ShallowBattlePoke {
 	int[] DVs = new int[6];
 	int[] EVs = new int[6];
 	
-	public BattlePoke(Bais msg, DataBaseHelper db, byte gen) {
+	public BattlePoke(Bais msg, DataBaseHelper db, Gen gen) {
 		uID = new UniqueID(msg);
 		nick = msg.readString();
 		totalHP = msg.readShort();
@@ -39,7 +39,7 @@ public class BattlePoke extends ShallowBattlePoke {
 		ability = msg.readShort();
 		abilityString = db.query("SELECT Name FROM [Abilities] WHERE _id = " + (ability + 1));
 		happiness = msg.readByte();
-		getTypes(db, gen);
+		getTypes(db, gen.num);
 		getName(db);
 		
 		for(int i = 0; i < 5; i++)

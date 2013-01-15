@@ -275,8 +275,11 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		
 		try {
 			unbindService(RegistryActivity.this);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+		} catch (IllegalArgumentException ex) {
+			/* Might happen if the registry acitivity was already stopped
+			 * and the service was unbound from there.
+			 */
+			return;
 		}
 
 		runOnUiThread(new Runnable() {
@@ -318,6 +321,10 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     
     @Override
     synchronized public void onDestroy() {
+    	if (bound) {
+    		unbindService(this);
+    		bound = false;
+    	}
     	super.onDestroy();
     }
 }

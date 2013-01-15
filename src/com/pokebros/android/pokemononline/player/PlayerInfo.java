@@ -12,8 +12,8 @@ import com.pokebros.android.utilities.Getter;
 
 // Represents a player in the player list
 public class PlayerInfo implements SerializeBytes {
-	final static short VERSION = 0;
-	final static String TAG = "PlayerInfo";
+	private final static short VERSION = 0;
+	private final static String TAG = "PlayerInfo";
 	
 	public int id;
 	Boolean isAway;
