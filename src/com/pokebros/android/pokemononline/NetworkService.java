@@ -765,7 +765,7 @@ public class NetworkService extends Service {
 		}
 		}
 		for(SpectatingBattle battle : getBattles()) {
-			if (battle != null && battle.activity != null && battle.histDelta.length() != 0) {
+			if (battle.activity != null && battle.histDelta.length() != 0) {
 				battle.activity.updateBattleInfo(false);
 			}
 		}
