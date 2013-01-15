@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.os.SystemClock;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -219,6 +220,34 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	
 	public HpAnimator hpAnimator = new HpAnimator();
 	
+	View mainLayout, teamLayout;
+	private class MyAdapter extends PagerAdapter
+	{
+		@Override
+		public int getCount() {
+			return activeBattle == null ? 1 : 2;
+		}
+		
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			switch (position) {
+			case 0: container.addView(mainLayout);return mainLayout;
+			case 1: container.addView(teamLayout);return teamLayout;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return (Object)arg0 == arg1;
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View)object);
+		}
+	}
+	
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -233,43 +262,23 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			useAnimSprites = false;
 		}
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.battle_pokeviewer);
 
         bindService(new Intent(BattleActivity.this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
         resources = getResources();
-        realViewSwitcher = (ViewPager)findViewById(R.id.battlePokeSwitcher);
+        realViewSwitcher = (ViewPager) new ViewPager(this);
+		mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+		realViewSwitcher.setAdapter(new MyAdapter());
+		setContentView(realViewSwitcher);
+                
+        infoView = (TextView)mainLayout.findViewById(R.id.infoWindow);
+        infoScroll = (ScrollView)mainLayout.findViewById(R.id.infoScroll);
+        battleView = (RelativeLayout)mainLayout.findViewById(R.id.battleScreen);
         
-        if (activeBattle != null) {
-	        for(int i = 0; i < 4; i++) {
-	        	attackNames[i] = (TextView)findViewById(resources.getIdentifier("attack" + (i+1) + "Name", "id", pkgName));
-	        	attackPPs[i] = (TextView)findViewById(resources.getIdentifier("attack" + (i+1) + "PP", "id", pkgName));
-	        	attackLayouts[i] = (RelativeLayout)findViewById(resources.getIdentifier("attack" + (i+1) + "Layout", "id", pkgName));
-	        	attackLayouts[i].setOnClickListener(battleListener);
-	        	attackLayouts[i].setOnLongClickListener(moveListener);
-	        }
-	        for(int i = 0; i < 6; i++) {
-	        	pokeListNames[i] = (TextView)findViewById(resources.getIdentifier("pokename" + (i+1), "id", pkgName));
-	        	pokeListHPs[i] = (TextView)findViewById(resources.getIdentifier("hp" + (i+1), "id", pkgName));
-	        	pokeListItems[i] = (TextView)findViewById(resources.getIdentifier("item" + (i+1), "id", pkgName));
-	        	pokeListAbilities[i] = (TextView)findViewById(resources.getIdentifier("ability" + (i+1), "id", pkgName));
-	        	pokeListButtons[i] = (RelativeLayout)findViewById(resources.getIdentifier("pokeViewLayout" + (i+1), "id", pkgName));
-	        	pokeListButtons[i].setOnClickListener(battleListener);
-	        	pokeListIcons[i] = (ImageView)findViewById(resources.getIdentifier("pokeViewIcon" + (i+1), "id", pkgName));
-	        	
-	        	for(int j = 0; j < 4; j++)
-	        		pokeListMovePreviews[i][j] = (TextView)findViewById(resources.getIdentifier("p" + (i+1) + "_attack" + (j+1), "id", pkgName));
-	        }
-        }
-        
-        infoView = (TextView)findViewById(R.id.infoWindow);
-        infoScroll = (ScrollView)findViewById(R.id.infoScroll);
-        battleView = (RelativeLayout)findViewById(R.id.battleScreen);
-        
-    	struggleLayout = (RelativeLayout)findViewById(R.id.struggleLayout);
-    	attackRow1 = (LinearLayout)findViewById(R.id.attackRow1);
-    	attackRow2 = (LinearLayout)findViewById(R.id.attackRow2);
+    	struggleLayout = (RelativeLayout)mainLayout.findViewById(R.id.struggleLayout);
+    	attackRow1 = (LinearLayout)mainLayout.findViewById(R.id.attackRow1);
+    	attackRow2 = (LinearLayout)mainLayout.findViewById(R.id.attackRow2);
     	
     	struggleLayout.setOnClickListener(new OnClickListener() {
     		public void onClick(View v) {
@@ -652,9 +661,28 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 
 						((RelativeLayout.LayoutParams)attackRow2.getLayoutParams()).bottomMargin);
 				infoScroll.setLayoutParams(params);
+			} else {
+				teamLayout = getLayoutInflater().inflate(R.layout.battle_teamscreen, null);
 				
-				/* No need for the second view, about your team */
-				realViewSwitcher.removeViewAt(1);
+		        for(int i = 0; i < 4; i++) {
+		        	attackNames[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Name", "id", pkgName));
+		        	attackPPs[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "PP", "id", pkgName));
+		        	attackLayouts[i] = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Layout", "id", pkgName));
+		        	attackLayouts[i].setOnClickListener(battleListener);
+		        	attackLayouts[i].setOnLongClickListener(moveListener);
+		        }
+		        for(int i = 0; i < 6; i++) {
+		        	pokeListNames[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("pokename" + (i+1), "id", pkgName));
+		        	pokeListHPs[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("hp" + (i+1), "id", pkgName));
+		        	pokeListItems[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("item" + (i+1), "id", pkgName));
+		        	pokeListAbilities[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("ability" + (i+1), "id", pkgName));
+		        	pokeListButtons[i] = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("pokeViewLayout" + (i+1), "id", pkgName));
+		        	pokeListButtons[i].setOnClickListener(battleListener);
+		        	pokeListIcons[i] = (ImageView)teamLayout.findViewById(resources.getIdentifier("pokeViewIcon" + (i+1), "id", pkgName));
+		        	
+		        	for(int j = 0; j < 4; j++)
+		        		pokeListMovePreviews[i][j] = (TextView)teamLayout.findViewById(resources.getIdentifier("p" + (i+1) + "_attack" + (j+1), "id", pkgName));
+		        }
 			}
 			
 			netServ.showNotification(BattleActivity.class, "Battle");
@@ -666,38 +694,38 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	        opp = battle.opp;
 	        // We don't know which timer is which until the battle starts,
 	        // so set them here.
-	        timers[me] = (TextView)findViewById(R.id.timerB);
-	        timers[opp] = (TextView)findViewById(R.id.timerA);
+	        timers[me] = (TextView)mainLayout.findViewById(R.id.timerB);
+	        timers[opp] = (TextView)mainLayout.findViewById(R.id.timerA);
 
-	        names[me] = (TextView)findViewById(R.id.nameB);
-	        names[opp] = (TextView)findViewById(R.id.nameA);
+	        names[me] = (TextView)mainLayout.findViewById(R.id.nameB);
+	        names[opp] = (TextView)mainLayout.findViewById(R.id.nameA);
 
 	        for (int i = 0; i < 6; i++) {
-		        pokeballs[me][i] = (ImageView)findViewById(resources.getIdentifier("pokeball" + (i + 1) + "B", "id", pkgName));
-		        pokeballs[opp][i] = (ImageView)findViewById(resources.getIdentifier("pokeball" + (i + 1) + "A", "id", pkgName));
+		        pokeballs[me][i] = (ImageView)mainLayout.findViewById(resources.getIdentifier("pokeball" + (i + 1) + "B", "id", pkgName));
+		        pokeballs[opp][i] = (ImageView)mainLayout.findViewById(resources.getIdentifier("pokeball" + (i + 1) + "A", "id", pkgName));
 	        }
 	        updatePokeballs();
 	        
 	        names[me].setText(battle.players[me].nick());
 	        names[opp].setText(battle.players[opp].nick());
 
-	        hpBars[me] = (TextProgressBar)findViewById(R.id.hpBarB);
-	        hpBars[opp] = (TextProgressBar)findViewById(R.id.hpBarA);
+	        hpBars[me] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarB);
+	        hpBars[opp] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarA);
 	        
-	        currentPokeNames[me] = (TextView)findViewById(R.id.currentPokeNameB);
-	        currentPokeNames[opp] = (TextView)findViewById(R.id.currentPokeNameA);
+	        currentPokeNames[me] = (TextView)mainLayout.findViewById(R.id.currentPokeNameB);
+	        currentPokeNames[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeNameA);
 
-	        currentPokeLevels[me] = (TextView)findViewById(R.id.currentPokeLevelB);
-	        currentPokeLevels[opp] = (TextView)findViewById(R.id.currentPokeLevelA);
+	        currentPokeLevels[me] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelB);
+	        currentPokeLevels[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelA);
 	        
-	        currentPokeGenders[me] = (ImageView)findViewById(R.id.currentPokeGenderB);
-	        currentPokeGenders[opp] = (ImageView)findViewById(R.id.currentPokeGenderA);
+	        currentPokeGenders[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderB);
+	        currentPokeGenders[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderA);
 	        
-	        currentPokeStatuses[me] = (ImageView)findViewById(R.id.currentPokeStatusB);
-	        currentPokeStatuses[opp] = (ImageView)findViewById(R.id.currentPokeStatusA);
+	        currentPokeStatuses[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusB);
+	        currentPokeStatuses[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusA);
 	        
-	        pokeSprites[me] = (WebView)findViewById(R.id.pokeSpriteB);
-	        pokeSprites[opp] = (WebView)findViewById(R.id.pokeSpriteA);
+	        pokeSprites[me] = (WebView)mainLayout.findViewById(R.id.pokeSpriteB);
+	        pokeSprites[opp] = (WebView)mainLayout.findViewById(R.id.pokeSpriteA);
 	        for(int i = 0; i < 2; i++) {
 	        	pokeSprites[i].setOnLongClickListener(spriteListener);
 	        	pokeSprites[i].setBackgroundColor(0);
