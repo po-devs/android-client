@@ -226,7 +226,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	{
 		@Override
 		public int getCount() {
-			return activeBattle == null ? 1 : 2;
+			return isSpectating() ? 1 : 2;
 		}
 		
 		@Override
@@ -439,8 +439,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         }
 	}
 	
+	public boolean isSpectating() {
+		return activeBattle == null;
+	}
+	
 	public void updateMyPoke() {
-		if (activeBattle == null) {
+		if (isSpectating()) {
 			updateOppPoke(me);
 			return;
 		}
@@ -536,7 +540,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
 	
 	public void updateButtons() {
-		if (activeBattle == null) {
+		if (isSpectating()) {
 			return;
 		}
 		runOnUiThread(new Runnable() {
@@ -645,6 +649,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			if (battle == null) {
 	    		startActivity(new Intent(BattleActivity.this, ChatActivity.class));
 				finish();
+				
+				netServ.closeBattle(battleId); //remove the possibly ongoing notification
 				return;
 			}
 			
@@ -655,7 +661,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 
 			}
 			
-			if (activeBattle == null) {
+			if (isSpectating()) {
 				/* If it's a spectating battle, we remove the info view's bottom margin */
 				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)infoScroll.getLayoutParams();
 				params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 
@@ -898,7 +904,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.battleoptions, menu);
+        inflater.inflate(isSpectating() ? R.menu.spectatingbattleoptions : R.menu.battleoptions, menu);
         
         menu.findItem(R.id.sounds).setChecked(getSharedPreferences("battle", MODE_PRIVATE).getBoolean("pokemon_cries", true));
         return true;
@@ -914,6 +920,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	case R.id.forfeit:
     		if (netServ != null && netServ.hasBattle() && !battle.gotEnd)
     			showDialog(BattleDialog.ConfirmForfeit.ordinal());
+    		break;
+    	case R.id.close:
+    		netServ.stopWatching(battle.bID);
     		break;
     	case R.id.draw:
     		//TODO: Offer Draw

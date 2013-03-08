@@ -165,18 +165,17 @@ public class NetworkService extends Service {
 	 * Removes a battle spectated/fought from memory and destroys it
 	 * @param bID The id of the battle to remove
 	 */
-	private void closeBattle(int bID) {
+	public void closeBattle(int bID) {
 		if (battle != null && battle.bID == bID) {
 			battle.destroy();
 			battle = null;
 		}
 		if (spectatedBattles.containsKey(bID)) {
 			spectatedBattles.remove(bID).destroy();
-			
-			/* Remove the battle notification */
-			NotificationManager mNotificationManager = getNotificationManager();
-        	mNotificationManager.cancel("watch", bID);
 		}
+		/* Remove the battle notification */
+		NotificationManager mNotificationManager = getNotificationManager();
+    	mNotificationManager.cancel("battle", bID);
 	}
 
 	/**
@@ -738,7 +737,7 @@ public class NetworkService extends Service {
 	            mBuilder.setContentIntent(resultPendingIntent);
 	            NotificationManager mNotificationManager = getNotificationManager();
 	            // mId allows you to update the notification later on.
-	            mNotificationManager.notify("watch", battleId, mBuilder.build());
+	            mNotificationManager.notify("battle", battleId, mBuilder.build());
 	        } else {
 	        	closeBattle(battleId);
 	        }
@@ -894,5 +893,15 @@ public class NetworkService extends Service {
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);
+	}
+
+	/**
+	 * Tells the server we're not spectating a battle anymore, and close the appropriate
+	 * spectating window
+	 * @param bID the battle we're not watching anymore
+	 */
+	public void stopWatching(int bID) {
+		socket.sendMessage(new Baos().putInt(bID).putBool(false), Command.SpectateBattle);
+		closeBattle(bID);
 	}
 }
