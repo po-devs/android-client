@@ -94,6 +94,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 
 	public final static int SWIPE_TIME_THRESHOLD = 100;
     final static String pkgName = "com.pokebros.android.pokemononline";
+	private static final String TAG = "Battle";
     
 	DragLayer mDragLayer;
 	
@@ -251,7 +252,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	 /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	System.out.println("BattleActivity Created");
+    	Log.w(TAG, "Battle id: " + getIntent().getIntExtra("battleId", -1));
         super.onCreate(savedInstanceState);
         mRecvr = new MyResultReceiver(new Handler());
         mRecvr.setReceiver(this);
@@ -633,7 +634,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
-			netServ.herp();
 			
 			int battleId = getIntent().getIntExtra("battleId", 0);
 			if (battleId == 0) {
@@ -899,6 +899,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.battleoptions, menu);
+        
+        menu.findItem(R.id.sounds).setChecked(getSharedPreferences("battle", MODE_PRIVATE).getBoolean("pokemon_cries", true));
         return true;
     }
     
@@ -916,6 +918,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	case R.id.draw:
     		//TODO: Offer Draw
     		//showRearrangeTeamDialog();
+    		break;
+    	case R.id.sounds:
+    		item.setChecked(!item.isChecked());
+    		getSharedPreferences("battle", Context.MODE_PRIVATE).edit().putBoolean("pokemon_cries", item.isChecked()).commit();
     		break;
         }
         return true;
