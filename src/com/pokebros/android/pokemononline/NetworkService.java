@@ -18,7 +18,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -254,6 +253,13 @@ public class NetworkService extends Service {
 	public void onDestroy() {
 		// XXX TODO be more graceful
 		Log.d(TAG, "NETWORK SERVICE DESTROYED; EXPECT BAD THINGS TO HAPPEN");
+		
+		for(SpectatingBattle battle : getBattles()) {
+			closeBattle(battle.bID);
+		}
+		if (battle != null) {
+			closeBattle(battle.bID);
+		}
 	}
 
 	public void connect(final String ip, final int port) {
@@ -725,8 +731,8 @@ public class NetworkService extends Service {
 	                    .setOngoing(true);
 	            // Creates an explicit intent for an Activity in your app
 	            Intent resultIntent = new Intent(this, BattleActivity.class);
-	            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	            intent.putExtra("battleId", battleId);
+	            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            resultIntent.putExtra("battleId", battleId);
 
 	            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 	            mBuilder.setContentIntent(resultPendingIntent);
@@ -829,10 +835,7 @@ public class NetworkService extends Service {
 	}
 
 	public void playCry(SpectatingBattle battle, ShallowBattlePoke poke) {
-		SharedPreferences prefs = getSharedPreferences("battle", MODE_PRIVATE);
-		if (prefs.getBoolean("pokemon_cries", true)) {
-			new Thread(new CryPlayer(poke, battle)).start();
-		}
+		new Thread(new CryPlayer(poke, battle)).start();
 	}
 
 	class CryPlayer implements Runnable {

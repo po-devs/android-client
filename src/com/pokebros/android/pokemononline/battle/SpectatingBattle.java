@@ -6,6 +6,8 @@ import java.util.Locale;
 import java.util.Random;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
 import android.os.SystemClock;
 import android.text.Html;
@@ -181,8 +183,8 @@ public class SpectatingBattle {
 				activity.updatePokeballs();
 			}
 
-			boolean playCries = true; // XXX
-			if (playCries) {
+			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
+			if (prefs.getBoolean("pokemon_cries", true)) {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
@@ -223,8 +225,8 @@ public class SpectatingBattle {
 					"Start of turn " + turn + "</font></b>"));
 			break;
 		} case Ko: {
-			boolean playCries = true; // XXX
-			if (playCries) {
+			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
+			if (prefs.getBoolean("pokemon_cries", true)) {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
