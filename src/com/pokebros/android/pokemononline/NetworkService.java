@@ -165,14 +165,17 @@ public class NetworkService extends Service {
 	 * Removes a battle spectated/fought from memory and destroys it
 	 * @param bID The id of the battle to remove
 	 */
-	private void closeBattle(int bID) {
+	public void closeBattle(int bID) {
 		if (battle != null && battle.bID == bID) {
 			battle.destroy();
 			battle = null;
 		}
-		if (spectatedBattles.containsKey(battle.bID)) {
-			spectatedBattles.remove(battle.bID).destroy();
+		if (spectatedBattles.containsKey(bID)) {
+			spectatedBattles.remove(bID).destroy();
 		}
+		/* Remove the battle notification */
+		NotificationManager mNotificationManager = getNotificationManager();
+    	mNotificationManager.cancel("battle", bID);
 	}
 
 	/**
@@ -242,7 +245,6 @@ public class NetworkService extends Service {
 	// This is called once
 	public void onCreate() {
 		db = new DataBaseHelper(NetworkService.this);
-		showNotification(ChatActivity.class, "Chat");
 		super.onCreate();
 	}
 
@@ -250,6 +252,13 @@ public class NetworkService extends Service {
 	public void onDestroy() {
 		// XXX TODO be more graceful
 		Log.d(TAG, "NETWORK SERVICE DESTROYED; EXPECT BAD THINGS TO HAPPEN");
+		
+		for(SpectatingBattle battle : getBattles()) {
+			closeBattle(battle.bID);
+		}
+		if (battle != null) {
+			closeBattle(battle.bID);
+		}
 	}
 
 	public void connect(final String ip, final int port) {
@@ -328,30 +337,6 @@ public class NetworkService extends Service {
 		if (bundle != null && bundle.containsKey("ip"))
 			connect(bundle.getString("ip"), bundle.getShort("port"));
 		return START_STICKY;
-	}
-
-	protected void showNotification(Class<?> toStart, String text, String note) {
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-		builder.setSmallIcon(R.drawable.icon)
-		.setTicker(note)
-		.setContentText(text)
-		.setWhen(System.currentTimeMillis())
-		.setContentTitle("Pokemon Online");
-
-		// The PendingIntent to launch our activity if the user selects this notification
-		PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
-
-		builder.setContentIntent(notificationIntent);
-
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(toStart.hashCode(), builder.build());
-	}
-
-	protected void showNotification(Class<?> toStart, String text) {
-		showNotification(toStart, text, text);
 	}
 
 	public void handleMsg(Bais msg) {
@@ -620,14 +605,15 @@ public class NetworkService extends Service {
 			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (battle != null && battle.bID == battleID || spectatedBattles.containsKey(battleID)) {
-				if (battle.bID == battleID) {
-					if (mePlayer.id == id1 && battleDesc < 2) {
-						showNotification(ChatActivity.class, "Chat", "You won!");
-					} else if (mePlayer.id == id2 && battleDesc < 2) {
-						showNotification(ChatActivity.class, "Chat", "You lost!");
-					} else if (battleDesc == 2) {
-						showNotification(ChatActivity.class, "Chat", "You tied!");
-					}
+				if (battle != null && battle.bID == battleID) {
+					//TODO: notification on win/lose
+//					if (mePlayer.id == id1 && battleDesc < 2) {
+//						showNotification(ChatActivity.class, "Chat", "You won!");
+//					} else if (mePlayer.id == id2 && battleDesc < 2) {
+//						showNotification(ChatActivity.class, "Chat", "You lost!");
+//					} else if (battleDesc == 2) {
+//						showNotification(ChatActivity.class, "Chat", "You tied!");
+//					}
 				}
 
 				if (battleDesc < 2) {
@@ -708,18 +694,52 @@ public class NetworkService extends Service {
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg);
-	            SpectatingBattle battle = new SpectatingBattle(conf, players.get(conf.id(0)), players.get(conf.id(1)), battleId, this);
+	            PlayerInfo p1 = players.get(conf.id(0));
+	            PlayerInfo p2 = players.get(conf.id(1));
+	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);
 	            spectatedBattles.put(battleId, battle);
 	            
 	            Intent intent = new Intent(this, BattleActivity.class);
 	            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	            intent.putExtra("battleId", battleId);
 	            startActivity(intent);
+	            
+//	    		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+//	    		builder.setSmallIcon(R.drawable.icon)
+//	    		.setTicker(note)
+//	    		.setContentText(text)
+//	    		.setWhen(System.currentTimeMillis())
+//	    		.setContentTitle("Pokemon Online");
+//
+//	    		// The PendingIntent to launch our activity if the user selects this notification
+//	    		PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
+//	    				new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//	    		builder.setContentIntent(notificationIntent);
+//
+//	    		NotificationManager mNotificationManager =
+//	    				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//	    		// mId allows you to update the notification later on.
+//	    		mNotificationManager.notify(toStart.hashCode(), builder.build());
+	            
+	            NotificationCompat.Builder mBuilder =
+	                    new NotificationCompat.Builder(this)
+	                    .setSmallIcon(R.drawable.icon)
+	                    .setContentTitle("Spectated Battle")
+	                    .setContentText(p1.nick() + " vs " + p2.nick())
+	                    .setOngoing(true);
+	            // Creates an explicit intent for an Activity in your app
+	            Intent resultIntent = new Intent(this, BattleActivity.class);
+	            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            resultIntent.putExtra("battleId", battleId);
+
+	            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+	            mBuilder.setContentIntent(resultPendingIntent);
+	            NotificationManager mNotificationManager = getNotificationManager();
+	            // mId allows you to update the notification later on.
+	            mNotificationManager.notify("battle", battleId, mBuilder.build());
 	        } else {
-	            SpectatingBattle battle = spectatedBattles.remove(battleId);
-	            if (battle != null && battle.activity != null) {
-	            	battle.activity.end();
-	            }
+	        	closeBattle(battleId);
 	        }
 			break;
 		}
@@ -772,6 +792,10 @@ public class NetworkService extends Service {
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}
+	
+	NotificationManager getNotificationManager() {
+		return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	}
 
 	public void sendPass(String s) {
 		askedForPass = false;
@@ -800,10 +824,6 @@ public class NetworkService extends Service {
 		while (ret.length() < 32)
 			ret = "0" + ret;
 		return ret;
-	}
-
-	protected void herp() {
-		System.out.println("HERP");
 	}
 
 	protected void addChannel(String chanName, int chanId) {
@@ -873,5 +893,15 @@ public class NetworkService extends Service {
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);
+	}
+
+	/**
+	 * Tells the server we're not spectating a battle anymore, and close the appropriate
+	 * spectating window
+	 * @param bID the battle we're not watching anymore
+	 */
+	public void stopWatching(int bID) {
+		socket.sendMessage(new Baos().putInt(bID).putBool(false), Command.SpectateBattle);
+		closeBattle(bID);
 	}
 }
