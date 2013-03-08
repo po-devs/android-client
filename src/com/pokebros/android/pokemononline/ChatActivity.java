@@ -188,8 +188,7 @@ public class ChatActivity extends Activity {
 
 	/** Called when the activity is first created. */
 	@Override
-    public void onCreate(Bundle savedInstanceState) { 
-		System.out.println("CREATED CHAT ACTIVITY");
+    public void onCreate(Bundle savedInstanceState) {
 		if (loading) {
 			progressDialog = ProgressDialog.show(ChatActivity.this, "","Loading. Please wait...", true);
 			progressDialog.setCancelable(true);
@@ -271,9 +270,7 @@ public class ChatActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		chatViewSwitcher.setCurrentItem(1);
-		if (netServ != null && !netServ.hasBattle())
-			netServ.showNotification(ChatActivity.class, "Chat");
-		else if (netServ != null) {
+		if (netServ != null) {
 			netServ.checkBattlesToEnd();
 		}
 		checkChallenges();
@@ -284,8 +281,7 @@ public class ChatActivity extends Activity {
 	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
-			if (!netServ.hasBattle())
-				netServ.showNotification(ChatActivity.class, "Chat");
+
 			updateTitle();
 			netServ.chatActivity = ChatActivity.this;
 			if (netServ.joinedChannels.peek() != null && !netServ.joinedChannels.isEmpty()) {

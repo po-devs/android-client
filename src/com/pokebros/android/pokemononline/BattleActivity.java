@@ -684,8 +684,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        		pokeListMovePreviews[i][j] = (TextView)teamLayout.findViewById(resources.getIdentifier("p" + (i+1) + "_attack" + (j+1), "id", pkgName));
 		        }
 			}
-			
-			netServ.showNotification(BattleActivity.class, "Battle");
 
 			battleView.setBackgroundResource(resources.getIdentifier("bg" + battle.background, "drawable", pkgName));
 			

@@ -13,17 +13,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
@@ -242,7 +238,6 @@ public class NetworkService extends Service {
 	// This is called once
 	public void onCreate() {
 		db = new DataBaseHelper(NetworkService.this);
-		showNotification(ChatActivity.class, "Chat");
 		super.onCreate();
 	}
 
@@ -328,30 +323,6 @@ public class NetworkService extends Service {
 		if (bundle != null && bundle.containsKey("ip"))
 			connect(bundle.getString("ip"), bundle.getShort("port"));
 		return START_STICKY;
-	}
-
-	protected void showNotification(Class<?> toStart, String text, String note) {
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-		builder.setSmallIcon(R.drawable.icon)
-		.setTicker(note)
-		.setContentText(text)
-		.setWhen(System.currentTimeMillis())
-		.setContentTitle("Pokemon Online");
-
-		// The PendingIntent to launch our activity if the user selects this notification
-		PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
-
-		builder.setContentIntent(notificationIntent);
-
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(toStart.hashCode(), builder.build());
-	}
-
-	protected void showNotification(Class<?> toStart, String text) {
-		showNotification(toStart, text, text);
 	}
 
 	public void handleMsg(Bais msg) {
@@ -621,13 +592,14 @@ public class NetworkService extends Service {
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (battle != null && battle.bID == battleID || spectatedBattles.containsKey(battleID)) {
 				if (battle.bID == battleID) {
-					if (mePlayer.id == id1 && battleDesc < 2) {
-						showNotification(ChatActivity.class, "Chat", "You won!");
-					} else if (mePlayer.id == id2 && battleDesc < 2) {
-						showNotification(ChatActivity.class, "Chat", "You lost!");
-					} else if (battleDesc == 2) {
-						showNotification(ChatActivity.class, "Chat", "You tied!");
-					}
+					//TODO: notification on win/lose
+//					if (mePlayer.id == id1 && battleDesc < 2) {
+//						showNotification(ChatActivity.class, "Chat", "You won!");
+//					} else if (mePlayer.id == id2 && battleDesc < 2) {
+//						showNotification(ChatActivity.class, "Chat", "You lost!");
+//					} else if (battleDesc == 2) {
+//						showNotification(ChatActivity.class, "Chat", "You tied!");
+//					}
 				}
 
 				if (battleDesc < 2) {
