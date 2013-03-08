@@ -591,7 +591,7 @@ public class NetworkService extends Service {
 			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (battle != null && battle.bID == battleID || spectatedBattles.containsKey(battleID)) {
-				if (battle.bID == battleID) {
+				if (battle != null && battle.bID == battleID) {
 					//TODO: notification on win/lose
 //					if (mePlayer.id == id1 && battleDesc < 2) {
 //						showNotification(ChatActivity.class, "Chat", "You won!");
