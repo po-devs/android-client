@@ -881,7 +881,7 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-
+	
 	public void removeChannel(final Channel ch){
 		runOnUiThread(new Runnable() {
 			public void run() {

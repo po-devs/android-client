@@ -104,11 +104,20 @@ public class PlayerInfo implements SerializeBytes {
 		return nick.equals(p);
 	}
 	
+	/**
+	 * Is the player battling
+	 * @return true if the player is in one or more battles, false otherwise
+	 */
+	public boolean battling() {
+		return battles.size() > 0;
+	}
+	
 	public void addBattle(int battleid) {
 		if (!battles.contains(battleid)) {
 			battles.add(battleid);
 		}
 	}
+	
 	public void removeBattle(int battleID) {
 		int index = battles.indexOf(battleID);
 		if (index != -1) {

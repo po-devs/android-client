@@ -682,6 +682,11 @@ public class NetworkService extends Service {
 				startActivity(in);
 				findingBattle = false;
 			}
+			
+			if (chatActivity != null) {
+				chatActivity.updatePlayer(players.get(p1), players.get(p1));
+				chatActivity.updatePlayer(players.get(p2), players.get(p2));
+			}
 			break;
 		} 
 		case SpectateBattle: {

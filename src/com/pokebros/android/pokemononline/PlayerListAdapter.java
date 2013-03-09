@@ -3,6 +3,7 @@ package com.pokebros.android.pokemononline;
 import java.util.Comparator;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,9 @@ import android.widget.TextView;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 
 public class PlayerListAdapter extends ArrayAdapter<com.pokebros.android.pokemononline.player.PlayerInfo>{
+	
+	static final int battlingColor = Color.parseColor("#5d838c");
+	static int defaultColor = -1;
 	
 	public PlayerListAdapter(Context context, int resource) {
 		super(context, resource);
@@ -40,6 +44,16 @@ public class PlayerListAdapter extends ArrayAdapter<com.pokebros.android.pokemon
 		if (player != null) {
 			TextView nick = (TextView)view.findViewById(R.id.player_list_name);
 			nick.setText(player.nick());
+			
+			if (defaultColor == -1) {
+				defaultColor = nick.getTextColors().getDefaultColor();
+			}
+			
+			if (player.battling()) {
+				nick.setTextColor(battlingColor);
+			} else {
+				nick.setTextColor(defaultColor);
+			}
 		}
 		return view;
 	}
