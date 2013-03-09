@@ -36,7 +36,8 @@
     <string name="your_team">Your Team:</string>
     <string name="done">Done</string>
     <string name="find_a_battle">Find Battle</string>
-    
+    <string name="enable_sounds">Pokémon Cries</string>
+    <string name="stop_watching">Stop Watching</string>
 	<string name="crash_toast_text">Pokémon Online has crashed! Please help by e-mailing the resulting crash report.</string>
 	<string name="serv_name">Server Name</string>
 	<string name="players">Players</string>

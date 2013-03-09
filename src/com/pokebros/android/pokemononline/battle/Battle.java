@@ -1,5 +1,7 @@
 package com.pokebros.android.pokemononline.battle;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.pokebros.android.pokemononline.Bais;
@@ -105,8 +107,8 @@ public class Battle extends SpectatingBattle {
 				activity.updatePokeballs();
 			}
 
-			boolean playCries = true; // XXX
-			if (playCries) {
+			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
+			if (prefs.getBoolean("pokemon_cries", true)) {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
