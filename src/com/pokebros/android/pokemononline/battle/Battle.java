@@ -250,6 +250,14 @@ public class Battle extends SpectatingBattle {
 				activity.updateCurrentPokeListEntry();
 			}
 			break;
+		} case StraightDamage: {
+				if (player != me) {
+					super.dealWithCommand(bc, player, msg);
+				} else {
+					short damage = msg.readShort();
+					writeToHist("\n" + tu(currentPoke(player).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
+				}
+				break;
 		} case SpotShifts: {
 			// TODO
 			break;
