@@ -45,6 +45,7 @@ import android.widget.TextView;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
+import com.android.util.FullscreenActivity;
 import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.battle.BattleMove;
 import com.pokebros.android.pokemononline.battle.SpectatingBattle;
@@ -80,7 +81,7 @@ class MyResultReceiver extends ResultReceiver {
 }
 
 @SuppressLint("DefaultLocale")
-public class BattleActivity extends Activity implements MyResultReceiver.Receiver{
+public class BattleActivity extends FullscreenActivity implements MyResultReceiver.Receiver{
 	private MyResultReceiver mRecvr;
     private static ComponentName servName = new ComponentName("com.pokebros.android.pokemonresources", "com.pokebros.android.pokemonresources.SpriteService");
 	
@@ -253,7 +254,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	Log.w(TAG, "Battle id: " + getIntent().getIntExtra("battleId", -1));
-        super.onCreate(savedInstanceState);
         mRecvr = new MyResultReceiver(new Handler());
         mRecvr.setReceiver(this);
         try {
@@ -262,7 +262,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			Log.d("BattleActivity", "Animated sprites not found");
 			useAnimSprites = false;
 		}
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         bindService(new Intent(BattleActivity.this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
@@ -272,6 +271,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
 		realViewSwitcher.setAdapter(new MyAdapter());
 		setContentView(realViewSwitcher);
+        super.onCreate(savedInstanceState, realViewSwitcher);
                 
         infoView = (TextView)mainLayout.findViewById(R.id.infoWindow);
         infoScroll = (ScrollView)mainLayout.findViewById(R.id.infoScroll);
