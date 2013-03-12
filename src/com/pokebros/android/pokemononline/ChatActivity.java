@@ -549,11 +549,11 @@ public class ChatActivity extends Activity {
 			return builder.create();
 		} case FindBattle: {
 			final EditText range = new EditText(this);
-			range.append("" + (prefs.contains("range") ? prefs.getInt("range", 0) : ""));
+			range.append("" + prefs.getInt("range", 200));
 			range.setInputType(InputType.TYPE_CLASS_NUMBER);
 			range.setHint("Range");
 			builder.setTitle(R.string.find_a_battle)
-			.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", false), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
+			.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
 				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 					prefs.edit().putBoolean("findOption" + which, isChecked).commit();
 				}
