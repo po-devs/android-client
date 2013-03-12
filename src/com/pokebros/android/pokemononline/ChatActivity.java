@@ -673,11 +673,8 @@ public class ChatActivity extends Activity {
     	if (netServ != null && netServ.findingBattle) {
     		findbattle.setTitle("Cancel Find Battle");
     	} 
-    	else if(netServ != null && !netServ.hasBattle()) {
+    	else {
     		findbattle.setTitle(R.string.find_a_battle);
-    	}
-    	else if(netServ != null && netServ.hasBattle()) {
-    		findbattle.setTitle(R.string.tobattlescreen);
     	}
     	return true;
     }
@@ -690,17 +687,12 @@ public class ChatActivity extends Activity {
     		break;
 		case R.id.findbattle:
 			if (netServ.socket.isConnected()) {
-				if (netServ.findingBattle && !netServ.hasBattle()) {
+				if (netServ.findingBattle) {
 					netServ.findingBattle = false;
 					netServ.socket.sendMessage(
 							constructChallenge(ChallengeDesc.Cancelled.ordinal(), 0, Clauses.SleepClause.mask(), Mode.Singles.ordinal()),
 							Command.ChallengeStuff);
-				} else if(!netServ.findingBattle && netServ.hasBattle()) {
-	    			Intent in = new Intent(this, BattleActivity.class);
-	    			in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    			startActivity(in);
-	    			break;
-	    		} 
+				}
 				else {
 					showDialog(ChatDialog.FindBattle.ordinal());
 				}

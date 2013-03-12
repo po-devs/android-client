@@ -59,13 +59,30 @@ public class NetworkService extends Service {
 	@SuppressWarnings("unused")
 	private byte []reconnectSecret; 
 
-	public boolean hasBattle() {
-		return battle != null;
+	/**
+	 * Are we engaged in a battle?
+	 * @return True if we are at least in one battle
+	 */
+	public boolean isBattling() {
+		return !activeBattles.isEmpty();
+	}
+	
+	/**
+	 * Are we engaged in a battle with that particular battle ID?
+	 * @param battleId the battle ID
+	 * @return true if we are a player of the battle with the battle ID
+	 */
+	public boolean isBattling(int battleId) {
+		return activeBattles.containsKey(battleId);
+	}
+	
+	private Battle activeBattle(int battleId) {
+		return activeBattles.get(battleId);
 	}
 
 	private FullPlayerInfo meLoginPlayer;
 	public PlayerInfo mePlayer;
-	public Battle battle = null;
+	public Hashtable<Integer, Battle> activeBattles = new Hashtable<Integer, Battle>();
 	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
@@ -141,9 +158,7 @@ public class NetworkService extends Service {
 	 */
 	public Collection<SpectatingBattle> getBattles() {
 		LinkedList<SpectatingBattle> ret = new LinkedList<SpectatingBattle>();
-		if (battle != null) {
-			ret.add(battle);
-		}
+		ret.addAll(activeBattles.values());
 		ret.addAll(spectatedBattles.values());
 		
 		return ret;
@@ -166,9 +181,8 @@ public class NetworkService extends Service {
 	 * @param bID The id of the battle to remove
 	 */
 	public void closeBattle(int bID) {
-		if (battle != null && battle.bID == bID) {
-			battle.destroy();
-			battle = null;
+		if (isBattling(bID)) {
+			activeBattles.remove(bID).destroy();
 		}
 		if (spectatedBattles.containsKey(bID)) {
 			spectatedBattles.remove(bID).destroy();
@@ -254,9 +268,6 @@ public class NetworkService extends Service {
 		Log.d(TAG, "NETWORK SERVICE DESTROYED; EXPECT BAD THINGS TO HAPPEN");
 		
 		for(SpectatingBattle battle : getBattles()) {
-			closeBattle(battle.bID);
-		}
-		if (battle != null) {
 			closeBattle(battle.bID);
 		}
 	}
@@ -602,10 +613,10 @@ public class NetworkService extends Service {
 			msg.readByte(); // battle mode
 			int id1 = msg.readInt();
 			int id2 = msg.readInt();
-			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
+			//Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
-			if (battle != null && battle.bID == battleID || spectatedBattles.containsKey(battleID)) {
-				if (battle != null && battle.bID == battleID) {
+			if (isBattling(battleID) || spectatedBattles.containsKey(battleID)) {
+				if (isBattling(battleID)) {
 					//TODO: notification on win/lose
 //					if (mePlayer.id == id1 && battleDesc < 2) {
 //						showNotification(ChatActivity.class, "Chat", "You won!");
@@ -655,10 +666,11 @@ public class NetworkService extends Service {
 			break;
 
 		} */ case BattleMessage: {
-			msg.readInt(); // currently support only one battle, unneeded
+			int battleId = msg.readInt(); // currently support only one battle, unneeded
 			msg.readInt(); // discard the size, unneeded
-			if (battle != null)
-				battle.receiveCommand(msg);
+			if (isBattling(battleId)) {
+				activeBattle(battleId).receiveCommand(msg);
+			}
 			break;
 		} case EngageBattle: {
 			int battleId = msg.readInt();
@@ -672,15 +684,20 @@ public class NetworkService extends Service {
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg);
 				// Start the battle
-				battle = new Battle(conf, msg, players.get(conf.id(0)),
+				Battle battle = new Battle(conf, msg, players.get(conf.id(0)),
 						players.get(conf.id(1)), mePlayer.id, battleId, this);
+				activeBattles.put(battleId, battle);
+
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
 						" and " + playerName(p2) + " started!");
-				Intent in;
-				in = new Intent(this, BattleActivity.class);
-				in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(in);
+				Intent intent;
+				intent = new Intent(this, BattleActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra("battleId", battleId);
+				startActivity(intent);
 				findingBattle = false;
+				
+				showBattleNotification("Battle", battleId, conf);
 			}
 			
 			if (chatActivity != null) {
@@ -709,40 +726,7 @@ public class NetworkService extends Service {
 	            intent.putExtra("battleId", battleId);
 	            startActivity(intent);
 	            
-//	    		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//	    		builder.setSmallIcon(R.drawable.icon)
-//	    		.setTicker(note)
-//	    		.setContentText(text)
-//	    		.setWhen(System.currentTimeMillis())
-//	    		.setContentTitle("Pokemon Online");
-//
-//	    		// The PendingIntent to launch our activity if the user selects this notification
-//	    		PendingIntent notificationIntent = PendingIntent.getActivity(this, 0,
-//	    				new Intent(this, toStart), Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//	    		builder.setContentIntent(notificationIntent);
-//
-//	    		NotificationManager mNotificationManager =
-//	    				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//	    		// mId allows you to update the notification later on.
-//	    		mNotificationManager.notify(toStart.hashCode(), builder.build());
-	            
-	            NotificationCompat.Builder mBuilder =
-	                    new NotificationCompat.Builder(this)
-	                    .setSmallIcon(R.drawable.icon)
-	                    .setContentTitle("Spectated Battle")
-	                    .setContentText(p1.nick() + " vs " + p2.nick())
-	                    .setOngoing(true);
-	            // Creates an explicit intent for an Activity in your app
-	            Intent resultIntent = new Intent(this, BattleActivity.class);
-	            resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	            resultIntent.putExtra("battleId", battleId);
-
-	            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-	            mBuilder.setContentIntent(resultPendingIntent);
-	            NotificationManager mNotificationManager = getNotificationManager();
-	            // mId allows you to update the notification later on.
-	            mNotificationManager.notify("battle", battleId, mBuilder.build());
+	            showBattleNotification("Spectated Battle", battleId, conf);
 	        } else {
 	        	closeBattle(battleId);
 	        }
@@ -798,6 +782,28 @@ public class NetworkService extends Service {
 			chatActivity.updateChat();
 	}
 	
+	private void showBattleNotification(String title, int battleId, BattleConf conf) {
+		PlayerInfo p1 = players.get(conf.id(0));
+		PlayerInfo p2 = players.get(conf.id(1));
+		
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon)
+                .setContentTitle(title)
+                .setContentText(p1.nick() + " vs " + p2.nick())
+                .setOngoing(true);
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, BattleActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        resultIntent.putExtra("battleId", battleId);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = getNotificationManager();
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify("battle", battleId, mBuilder.build());
+	}
+
 	NotificationManager getNotificationManager() {
 		return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}

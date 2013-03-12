@@ -42,15 +42,15 @@ public class PokeDragIcon extends ImageView implements DragSource, DropTarget {
 			otherIcon.otherIconDim[3] = this.getBottom();
 			otherIcon.isTarget = true;
 			
-			BattlePoke temp = battleActivity.netServ.battle.myTeam.pokes[num];
-			battleActivity.netServ.battle.myTeam.pokes[num] = battleActivity.netServ.battle.myTeam.pokes[otherIcon.num];
-			battleActivity.netServ.battle.myTeam.pokes[otherIcon.num] = temp;
+			BattlePoke temp = battleActivity.activeBattle.myTeam.pokes[num];
+			battleActivity.activeBattle.myTeam.pokes[num] = battleActivity.activeBattle.myTeam.pokes[otherIcon.num];
+			battleActivity.activeBattle.myTeam.pokes[otherIcon.num] = temp;
 			
 			int tempNum = num;
 			num = otherIcon.num;
 			otherIcon.num = tempNum;
 			
-			System.out.println(battleActivity.netServ.battle.myTeam.pokes[0].nick + " IS IN FRONT");
+			System.out.println(battleActivity.activeBattle.myTeam.pokes[0].nick + " IS IN FRONT");
 			
 			this.layout(target.getLeft(), target.getTop(), target.getRight(), target.getBottom());
 		}

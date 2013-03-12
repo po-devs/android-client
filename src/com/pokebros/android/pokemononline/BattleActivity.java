@@ -133,7 +133,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	LinearLayout attackRow2;
 	
 	SpectatingBattle battle = null;
-	Battle activeBattle = null;
+	public Battle activeBattle = null;
 	
 	boolean useAnimSprites = true;
 	BattleMove lastClickedMove;
@@ -640,9 +640,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			netServ = ((NetworkService.LocalBinder)service).getService();
 			
 			int battleId = getIntent().getIntExtra("battleId", 0);
-			if (battleId == 0) {
-				battle = netServ.battle;
-			} else {
+			battle = netServ.activeBattles.get(battleId);
+			if (battle == null) {
 				battle = netServ.spectatedBattles.get(battleId);
 			}
 			
@@ -890,6 +889,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	v.setEnabled(enabled);
     	v.setTextColor(v.getTextColors().withAlpha(enabled ? 255 : 128).getDefaultColor());
     }
+    
+    /**
+     * If we're battling, it acts as the cancel button. Otherwise it brings you back to chat.
+     */
     @Override
     public void onBackPressed() {
     	if(netServ != null && activeBattle != null && !battle.gotEnd)
@@ -918,7 +921,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		finish();
     		break;
     	case R.id.forfeit:
-    		if (netServ != null && netServ.hasBattle() && !battle.gotEnd)
+    		if (netServ != null && netServ.isBattling() && !battle.gotEnd)
     			showDialog(BattleDialog.ConfirmForfeit.ordinal());
     		break;
     	case R.id.close:
@@ -941,13 +944,13 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
 	
 	private void checkRearrangeTeamDialog() {
-		if (netServ != null && netServ.hasBattle() && battle.shouldShowPreview) {
+		if (netServ != null && netServ.isBattling() && battle.shouldShowPreview) {
 			showDialog(BattleDialog.RearrangeTeam.ordinal());
 		}
 	}
     
 	void endBattle() {
-		if (netServ != null && netServ.socket != null && netServ.socket.isConnected() && netServ.hasBattle()) {
+		if (netServ != null && netServ.socket != null && netServ.socket.isConnected() && netServ.isBattling()) {
     		Baos bID = new Baos();
     		bID.putInt(battle.bID);
     		netServ.socket.sendMessage(bID, Command.BattleFinished);
