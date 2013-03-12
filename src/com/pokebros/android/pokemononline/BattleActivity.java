@@ -671,9 +671,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				teamLayout = getLayoutInflater().inflate(R.layout.battle_teamscreen, null);
 				
 		        for(int i = 0; i < 4; i++) {
-		        	attackNames[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Name", "id", pkgName));
-		        	attackPPs[i] = (TextView)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "PP", "id", pkgName));
-		        	attackLayouts[i] = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Layout", "id", pkgName));
+		        	attackNames[i] = (TextView)mainLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Name", "id", pkgName));
+		        	attackPPs[i] = (TextView)mainLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "PP", "id", pkgName));
+		        	attackLayouts[i] = (RelativeLayout)mainLayout.findViewById(resources.getIdentifier("attack" + (i+1) + "Layout", "id", pkgName));
 		        	attackLayouts[i].setOnClickListener(battleListener);
 		        	attackLayouts[i].setOnLongClickListener(moveListener);
 		        }
