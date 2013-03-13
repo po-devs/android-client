@@ -693,11 +693,15 @@ public class NetworkService extends Service {
 						" and " + playerName(p2) + " started!");
 				Intent intent;
 				intent = new Intent(this, BattleActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra("battleId", battleId);
-				startActivity(intent);
-				findingBattle = false;
+				if (chatActivity == null) {
+	            	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            	startActivity(intent);
+	            } else {
+	            	chatActivity.startActivity(intent);
+	            }
 				
+				findingBattle = false;
 				showBattleNotification("Battle", battleId, conf);
 			}
 			
@@ -722,9 +726,14 @@ public class NetworkService extends Service {
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);
 	            spectatedBattles.put(battleId, battle);
 	            
-	            Intent intent = new Intent(this, BattleActivity.class);
+	            Intent intent = new Intent(chatActivity == null ? this : chatActivity, BattleActivity.class);
 	            intent.putExtra("battleId", battleId);
-	            startActivity(intent);
+	            if (chatActivity == null) {
+	            	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	            	startActivity(intent);
+	            } else {
+	            	chatActivity.startActivity(intent);
+	            }
 	            
 	            showBattleNotification("Spectated Battle", battleId, conf);
 	        } else {
