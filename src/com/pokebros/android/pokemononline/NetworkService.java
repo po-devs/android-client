@@ -24,7 +24,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
@@ -693,15 +692,11 @@ public class NetworkService extends Service {
 						" and " + playerName(p2) + " started!");
 				Intent intent;
 				intent = new Intent(this, BattleActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra("battleId", battleId);
-				if (chatActivity == null) {
-	            	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	            	startActivity(intent);
-	            } else {
-	            	chatActivity.startActivity(intent);
-	            }
-				
+				startActivity(intent);
 				findingBattle = false;
+				
 				showBattleNotification("Battle", battleId, conf);
 			}
 			
@@ -726,14 +721,10 @@ public class NetworkService extends Service {
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);
 	            spectatedBattles.put(battleId, battle);
 	            
-	            Intent intent = new Intent(chatActivity == null ? this : chatActivity, BattleActivity.class);
+	            Intent intent = new Intent(this, BattleActivity.class);
+	            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	            intent.putExtra("battleId", battleId);
-	            if (chatActivity == null) {
-	            	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	            	startActivity(intent);
-	            } else {
-	            	chatActivity.startActivity(intent);
-	            }
+	            startActivity(intent);
 	            
 	            showBattleNotification("Spectated Battle", battleId, conf);
 	        } else {
@@ -803,23 +794,10 @@ public class NetworkService extends Service {
                 .setOngoing(true);
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, BattleActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         resultIntent.putExtra("battleId", battleId);
 
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(ChatActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(
-		            battleId,
-		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );
-
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = getNotificationManager();
         // mId allows you to update the notification later on.

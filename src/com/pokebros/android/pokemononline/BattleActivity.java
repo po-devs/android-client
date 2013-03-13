@@ -262,7 +262,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			Log.d("BattleActivity", "Animated sprites not found");
 			useAnimSprites = false;
 		}
-        
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         bindService(new Intent(BattleActivity.this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
@@ -634,6 +635,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			checkRearrangeTeamDialog();
 	}
 	
+    @Override
+    public void onBackPressed() {
+		startActivity(new Intent(BattleActivity.this, ChatActivity.class));
+		finish();
+    }
+	
 	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
@@ -645,6 +652,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			}
 			
 			if (battle == null) {
+	    		startActivity(new Intent(BattleActivity.this, ChatActivity.class));
 				finish();
 				
 				netServ.closeBattle(battleId); //remove the possibly ongoing notification
