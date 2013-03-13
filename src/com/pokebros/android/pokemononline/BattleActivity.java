@@ -262,8 +262,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			Log.d("BattleActivity", "Animated sprites not found");
 			useAnimSprites = false;
 		}
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        
         bindService(new Intent(BattleActivity.this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
