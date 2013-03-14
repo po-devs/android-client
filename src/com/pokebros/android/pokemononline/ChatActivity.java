@@ -138,6 +138,7 @@ public class ChatActivity extends Activity {
 					}
 					else {
 						Baos b = new Baos();
+						b.write(0); //The team for which to change the tier. Since we handle only one team...
 						b.putString(self.name);
 						netServ.socket.sendMessage(b, Command.TierSelection);
 						Toast.makeText(ChatActivity.this, "Tier Selected: " + self.name, Toast.LENGTH_SHORT).show();
