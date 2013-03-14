@@ -75,6 +75,13 @@ public class Battle extends SpectatingBattle {
 		return b;
 	}
 	
+	public Baos constructDraw() {
+		Baos b = new Baos();
+		b.putInt(bID);
+		b.putBaos(new BattleChoice(me, ChoiceType.DrawType));
+		return b;
+	}
+	
 	@Override
 	public void dealWithCommand(BattleCommand bc, byte player, Bais msg)  {
 		switch(bc) {
