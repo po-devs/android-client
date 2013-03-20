@@ -635,6 +635,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			checkRearrangeTeamDialog();
 	}
 	
+    @Override
+    public void onBackPressed() {
+		startActivity(new Intent(BattleActivity.this, ChatActivity.class));
+		finish();
+    }
+	
 	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
@@ -890,19 +896,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	v.setTextColor(v.getTextColors().withAlpha(enabled ? 255 : 128).getDefaultColor());
     }
     
-    /**
-     * If we're battling, it acts as the cancel button. Otherwise it brings you back to chat.
-     */
-    @Override
-    public void onBackPressed() {
-    	if(netServ != null && activeBattle != null && !battle.gotEnd)
-    		netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);
-    	else {
-    		startActivity(new Intent(BattleActivity.this, ChatActivity.class));
-    		finish();
-    	}
-    }
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -910,15 +903,18 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         inflater.inflate(isSpectating() ? R.menu.spectatingbattleoptions : R.menu.battleoptions, menu);
         
         menu.findItem(R.id.sounds).setChecked(getSharedPreferences("battle", MODE_PRIVATE).getBoolean("pokemon_cries", true));
+        /* No point in cancelling if no action done */
+        if (!isSpectating() && !activeBattle.clicked) {
+        	menu.findItem(R.id.cancel).setVisible(false);
+        }
         return true;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
-    	case R.id.to_chat:
-    		startActivity(new Intent(this, ChatActivity.class));
-    		finish();
+    	case R.id.cancel:
+    		netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);
     		break;
     	case R.id.forfeit:
     		if (netServ != null && netServ.isBattling() && !battle.gotEnd)
@@ -928,8 +924,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		netServ.stopWatching(battle.bID);
     		break;
     	case R.id.draw:
-    		//TODO: Offer Draw
-    		//showRearrangeTeamDialog();
+    		netServ.socket.sendMessage(activeBattle.constructDraw(), Command.BattleMessage);
     		break;
     	case R.id.sounds:
     		item.setChecked(!item.isChecked());
