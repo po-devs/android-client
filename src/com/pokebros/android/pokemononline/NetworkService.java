@@ -90,6 +90,7 @@ public class NetworkService extends Service {
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
 	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
+	protected Hashtable<Integer, PrivateMessage> privateMessages = new Hashtable<Integer, PrivateMessage>();
 
 	Tier superTier = new Tier();
 	public int myid = -1;
@@ -642,14 +643,10 @@ public class NetworkService extends Service {
 			removeBattle(battleID);
 			break;
 		} case SendPM: {
-			int playerID = msg.readInt();
-			pmedPlayers.add(playerID);
-			// Ignore the message
-			String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
-			Baos bb = new Baos();
-			bb.putInt(playerID);
-			bb.putString(pm);
-			socket.sendMessage(bb, Command.SendPM);
+			int playerId = msg.readInt();
+			String message = msg.readString();
+			
+			dealWithPM(playerId, message);
 			break;
 		}/* case SendTeam: {
 			PlayerInfo p = new PlayerInfo(msg);
@@ -783,6 +780,22 @@ public class NetworkService extends Service {
 			chatActivity.updateChat();
 	}
 	
+	private void dealWithPM(int playerId, String message) {
+		pmedPlayers.add(playerId);
+
+		if (privateMessages.containsKey(playerId)) {
+			privateMessages.put(playerId, new PrivateMessage(players.get(playerId), players.get(myid)));
+		}
+
+		privateMessages.get(playerId).addMessage(players.get(playerId), message);
+		
+		String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
+		Baos bb = new Baos();
+		bb.putInt(playerId);
+		bb.putString(pm);
+		socket.sendMessage(bb, Command.SendPM);
+	}
+
 	private void showBattleNotification(String title, int battleId, BattleConf conf) {
 		PlayerInfo p1 = players.get(conf.id(0));
 		PlayerInfo p2 = players.get(conf.id(1));
