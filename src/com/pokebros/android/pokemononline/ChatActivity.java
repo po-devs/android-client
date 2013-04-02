@@ -17,8 +17,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
@@ -54,7 +52,6 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
-import com.pokebros.android.pokemononline.poke.UniqueID;
 import com.pokebros.android.utilities.StringUtilities;
 import com.pokebros.android.utilities.TwoViewsArrayAdapter;
 
@@ -791,7 +788,12 @@ public class ChatActivity extends Activity {
     			netServ.socket.sendMessage(leave, Command.LeaveChannel);
     		break;
     	case PrivateMessage:
-    		//TODO: handle private message activity
+    		if (netServ == null) {
+    			Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
+    		} else {
+    			netServ.createPM(lastClickedPlayer.id);
+    			//TODO: launch PM activity
+    		}
     		break;
     	}
     	return true;
@@ -898,16 +900,16 @@ public class ChatActivity extends Activity {
 		});
 	}
 	
-	private Drawable getIcon(UniqueID uid) {
-		Resources resources = getResources();
-		int resID = resources.getIdentifier("pi" + uid.pokeNum +
-				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
-				"_icon", "drawable", packName);
-		if (resID == 0)
-			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
-					"drawable", packName);
-		return resources.getDrawable(resID);
-	}
+//	private Drawable getIcon(UniqueID uid) {
+//		Resources resources = getResources();
+//		int resID = resources.getIdentifier("pi" + uid.pokeNum +
+//				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
+//				"_icon", "drawable", packName);
+//		if (resID == 0)
+//			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
+//					"drawable", packName);
+//		return resources.getDrawable(resID);
+//	}
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {

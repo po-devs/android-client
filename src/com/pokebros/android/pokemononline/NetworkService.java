@@ -780,12 +780,20 @@ public class NetworkService extends Service {
 			chatActivity.updateChat();
 	}
 	
-	private void dealWithPM(int playerId, String message) {
-		pmedPlayers.add(playerId);
-
+	/**
+	 * Creates a PM window with the other guy
+	 * @param playerId the other guy's id
+	 */
+	public void createPM(int playerId) {
 		if (privateMessages.containsKey(playerId)) {
 			privateMessages.put(playerId, new PrivateMessage(players.get(playerId), players.get(myid)));
 		}
+	}
+	
+	private void dealWithPM(int playerId, String message) {
+		pmedPlayers.add(playerId);
+
+		createPM(playerId);
 
 		privateMessages.get(playerId).addMessage(players.get(playerId), message);
 		
