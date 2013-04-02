@@ -197,6 +197,7 @@ public class Battle extends SpectatingBattle {
 				if (activity !=null) {
 					activity.updatePokes(player);
 				}
+			default: break;
 			}
 			break;
 		} case MakeYourChoice: {

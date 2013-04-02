@@ -7,6 +7,7 @@ import com.pokebros.android.pokemononline.Baos;
 
 /* Run while in this file to run the JUnit test instead of the application */
 public class TestBaos extends TestCase {	
+	@SuppressWarnings("resource")
 	public void testPutFlags() {
 		/* The flags we are testing */
 		boolean flags[] = new boolean[] {true,true,false,true,

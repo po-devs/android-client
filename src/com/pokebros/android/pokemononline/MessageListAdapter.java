@@ -5,6 +5,7 @@ import java.util.ListIterator;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -31,6 +32,8 @@ public class MessageListAdapter extends BaseAdapter {
 	public void add(SpannableStringBuilder span) {
 		TextView toAdd = new TextView(context);
 		toAdd.setText(span);
+		Linkify.addLinks(toAdd, Linkify.ALL);
+		
 		messageViews.add(toAdd);
 		if (getCount() > Channel.HIST_LIMIT)
 			messageViews.remove();

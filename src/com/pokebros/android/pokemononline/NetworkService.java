@@ -927,6 +927,7 @@ public class NetworkService extends Service {
 	 * spectating window
 	 * @param bID the battle we're not watching anymore
 	 */
+	@SuppressWarnings("resource")
 	public void stopWatching(int bID) {
 		socket.sendMessage(new Baos().putInt(bID).putBool(false), Command.SpectateBattle);
 		closeBattle(bID);

@@ -601,6 +601,7 @@ public class SpectatingBattle {
 				if (activity !=null) {
 					activity.updatePokes(player);
 				}
+			default: break;
 			}
 			break;
 		} case ClockStart: {

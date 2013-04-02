@@ -143,7 +143,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     }
     
     private OnClickListener registryListener = new OnClickListener() {
-    	public void onClick(View v) {
+    	@SuppressWarnings("resource")
+		public void onClick(View v) {
     		if (v == findViewById(R.id.connectbutton)){
     			String ipString = editAddr.getText().toString().split(":")[0];
     			String portString = "";
