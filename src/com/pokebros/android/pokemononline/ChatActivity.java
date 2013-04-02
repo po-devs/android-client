@@ -79,7 +79,8 @@ public class ChatActivity extends Activity {
 		ViewPlayerInfo,
 		JoinChannel,
 		LeaveChannel,
-		WatchBattle;
+		WatchBattle,
+		PrivateMessage;
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -737,7 +738,10 @@ public class ChatActivity extends Activity {
     		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, "Challenge " + pName);
     		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, "View Player Info");
     		if (netServ != null) {
-	    		for (Integer battleid : lastClickedPlayer.battles) {
+    			if (netServ.myid != lastClickedPlayer.id) {
+	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, "Private Message");
+	    		}
+    			for (Integer battleid : lastClickedPlayer.battles) {
 	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, "Watch battle against " + 
 							netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
 							.setIntent(new Intent().putExtra("battle", battleid));
@@ -785,6 +789,9 @@ public class ChatActivity extends Activity {
     		leave.putInt(lastClickedChannel.id);
     		if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
     			netServ.socket.sendMessage(leave, Command.LeaveChannel);
+    		break;
+    	case PrivateMessage:
+    		//TODO: handle private message activity
     		break;
     	}
     	return true;

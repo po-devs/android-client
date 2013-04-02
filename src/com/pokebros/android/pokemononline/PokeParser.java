@@ -70,6 +70,12 @@ public class PokeParser extends DefaultHandler
 			e.printStackTrace();
 		}
 		parsedTeam = myHandler.getParsedData();
+		
+		try {
+			in.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getNick() {return parsedTeam.getNick();}
