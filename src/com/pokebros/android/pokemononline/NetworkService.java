@@ -35,6 +35,9 @@ import com.pokebros.android.pokemononline.battle.BattleDesc;
 import com.pokebros.android.pokemononline.battle.SpectatingBattle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.pokemononline.pms.PrivateMessage;
+import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
+import com.pokebros.android.pokemononline.pms.PrivateMessageList;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.utilities.StringUtilities;
 
@@ -86,17 +89,18 @@ public class NetworkService extends Service {
 	public Hashtable<Integer, Battle> activeBattles = new Hashtable<Integer, Battle>();
 	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
+	Tier superTier = new Tier();
+	public int myid = -1;
+	public PlayerInfo me = new PlayerInfo();
+	
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
 	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
-	protected Hashtable<Integer, PrivateMessage> privateMessages = new Hashtable<Integer, PrivateMessage>();
-
-	Tier superTier = new Tier();
-	public int myid = -1;
+	public PrivateMessageList pms = new PrivateMessageList(me);
 
 	public class LocalBinder extends Binder {
-		NetworkService getService() {
+		public NetworkService getService() {
 			return NetworkService.this;
 		}
 	}
@@ -345,7 +349,7 @@ public class NetworkService extends Service {
 			bundle = intent.getExtras();
 		if (bundle != null && bundle.containsKey("loginPlayer")) {
 			meLoginPlayer = new FullPlayerInfo(new Bais(bundle.getByteArray("loginPlayer")));
-			mePlayer = new PlayerInfo (meLoginPlayer);
+			me.setTo(new PlayerInfo (meLoginPlayer));
 		}
 		if (bundle != null && bundle.containsKey("ip"))
 			connect(bundle.getString("ip"), bundle.getShort("port"));
@@ -405,15 +409,15 @@ public class NetworkService extends Service {
 				// Read byte array
 				reconnectSecret = msg.readQByteArray();
 			}
-			mePlayer = new PlayerInfo(msg);
-			myid = mePlayer.id;
+			me.setTo(new PlayerInfo(msg));
+			myid = me.id;
 			int numTiers = msg.readInt();
 			for (int j = 0; j < numTiers; j++) {
 				// Tiers for each of our teams
 				// TODO Do something with this info?
 				msg.readString();
 			}
-			players.put(mePlayer.id, mePlayer);
+			players.put(myid, me);
 			break;
 		} case TierSelection: {
 			msg.readInt(); // Number of tiers
@@ -455,9 +459,18 @@ public class NetworkService extends Service {
 				PlayerInfo oldPlayer = players.get(p.id);
 				players.put(p.id, p);
 				
-				if (oldPlayer != null && chatActivity != null) {
-					/* Updates the player in the adapter memory */
-					chatActivity.updatePlayer(p, oldPlayer);
+				if (oldPlayer != null) {
+					p.battles = oldPlayer.battles;
+
+					if (chatActivity != null) {
+						/* Updates the player in the adapter memory */
+						chatActivity.updatePlayer(p, oldPlayer);
+					}
+				}
+				
+				/* Updates self player */
+				if (p.id == myid) {
+					me.setTo(p);
 				}
 			}
 			break;
@@ -683,7 +696,7 @@ public class NetworkService extends Service {
 				BattleConf conf = new BattleConf(msg);
 				// Start the battle
 				Battle battle = new Battle(conf, msg, players.get(conf.id(0)),
-						players.get(conf.id(1)), mePlayer.id, battleId, this);
+						players.get(conf.id(1)), myid, battleId, this);
 				activeBattles.put(battleId, battle);
 
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
@@ -785,17 +798,12 @@ public class NetworkService extends Service {
 	 * @param playerId the other guy's id
 	 */
 	public void createPM(int playerId) {
-		if (privateMessages.containsKey(playerId)) {
-			privateMessages.put(playerId, new PrivateMessage(players.get(playerId), players.get(myid)));
-		}
+		pms.createPM(players.get(playerId));
 	}
 	
 	private void dealWithPM(int playerId, String message) {
 		pmedPlayers.add(playerId);
-
-		createPM(playerId);
-
-		privateMessages.get(playerId).addMessage(players.get(playerId), message);
+		pms.newMessage(players.get(playerId), message);
 		
 		String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
 		Baos bb = new Baos();

@@ -1,7 +1,6 @@
-package com.pokebros.android.pokemononline;
+package com.pokebros.android.pokemononline.pms;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 
@@ -10,19 +9,23 @@ import com.pokebros.android.pokemononline.player.PlayerInfo;
  *
  */
 public class PrivateMessage {
+	PrivateMessageListener listener;
+	
 	public PrivateMessage(PlayerInfo other, PlayerInfo me) {
 		this.other = other;
 		this.me = me;
 	}
 	
 	public void addMessage(PlayerInfo info, String message) {
-		if (info.id == this.id()) {
-			if (info.nick() != "???") this.other = info;
-		} else {
-			this.me = info;
+		if (info.id == this.id() && info.nick() != "???") {
+			this.other = info;
 		}
-		
+		  
 		messages.add(new Message(info, message, System.currentTimeMillis()));
+		
+		if (listener != null) {
+			listener.onNewMessage(messages.getLast());
+		}
 	}
 
 	@Override
@@ -45,6 +48,10 @@ public class PrivateMessage {
 		long time; //timestamp of the message
 	}
 	
-	List<Message> messages = new LinkedList<PrivateMessage.Message>();
+	LinkedList<Message> messages = new LinkedList<PrivateMessage.Message>();
 	PlayerInfo me, other;
+	
+	interface PrivateMessageListener {
+		void onNewMessage(Message message);
+	}
 }

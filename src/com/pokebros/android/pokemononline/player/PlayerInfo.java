@@ -124,4 +124,20 @@ public class PlayerInfo implements SerializeBytes {
 			battles.remove(index);
 		}
 	}
+	
+	/**
+	 * Updates self to the other player info
+	 * @param info the info to copy
+	 */
+	public void setTo(PlayerInfo info) {
+		id = info.id;
+		isAway = info.isAway;
+		hasLadderEnabled = info.hasLadderEnabled;
+		nick = info.nick;
+		color = info.color;
+		avatar = info.avatar;
+		this.info = info.info;
+		auth = info.auth;
+		battles = info.battles;
+	}
 }

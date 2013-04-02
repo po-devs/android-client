@@ -52,6 +52,7 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
+import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
 import com.pokebros.android.utilities.StringUtilities;
 import com.pokebros.android.utilities.TwoViewsArrayAdapter;
 
@@ -792,7 +793,10 @@ public class ChatActivity extends Activity {
     			Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
     		} else {
     			netServ.createPM(lastClickedPlayer.id);
-    			//TODO: launch PM activity
+    			
+    			Intent intent = new Intent(this, PrivateMessageActivity.class);
+    			intent.putExtra("playerId", lastClickedPlayer.id);
+    			startActivity(intent);
     		}
     		break;
     	}

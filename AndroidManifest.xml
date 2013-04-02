@@ -36,6 +36,11 @@
             android:label="@string/app_name"
             android:launchMode="singleTask" >
         </activity>
+        <activity
+            android:name=".pms.PrivateMessageActivity"
+            android:label="@string/private_messages"
+            android:launchMode="singleTask" >
+        </activity>
 
         <service android:name=".NetworkService">
         </service>

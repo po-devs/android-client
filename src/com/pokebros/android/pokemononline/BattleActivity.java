@@ -249,7 +249,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		}
 	}
 	
-	 /** Called when the activity is first created. */
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	Log.w(TAG, "Battle id: " + getIntent().getIntExtra("battleId", -1));
