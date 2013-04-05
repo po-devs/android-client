@@ -51,17 +51,26 @@ public class PrivateMessageActivity extends Activity {
 	private class MyAdapter extends PagerAdapter implements PrivateMessageListListener
 	{
 		@Override
+		public CharSequence getPageTitle(int position) {
+			return getItemAt(position).other.nick();
+		}
+
+		@Override
 		public int getCount() {
 			return pms.privateMessages.size();
 		}
 		
-		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
+		PrivateMessage getItemAt(int position) {
 			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
 			for (int i = 0; i < position; i++) {
 				it.next();
 			}
-			PrivateMessage pm = it.next();
+			return it.next();
+		}
+		
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			PrivateMessage pm = getItemAt(position);
 			
 			ListView lv = new ListView(PrivateMessageActivity.this);
 			container.addView(lv);
