@@ -57,4 +57,5 @@
 	<string name="team_poke_icon">team poke icon</string>
 	<string name="no_netserv">Server connection failure</string>
 	<string name="private_messages">Private Messages</string>
+	<!-- <string name="player">Player</string>  -->
 </resources>

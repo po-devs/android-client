@@ -20,7 +20,7 @@ public class PlayerInfo implements SerializeBytes {
 	Boolean hasLadderEnabled;
 	String nick;
 	public QColor color;
-	short avatar;
+	public short avatar;
 	String info;
 	public byte auth;
 	public ArrayList<Integer> battles = new ArrayList<Integer>();

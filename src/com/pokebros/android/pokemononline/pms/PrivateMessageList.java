@@ -1,11 +1,11 @@
 package com.pokebros.android.pokemononline.pms;
 
-import java.util.Hashtable;
+import java.util.TreeMap;
 
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 
 public class PrivateMessageList {
-	protected Hashtable<Integer, PrivateMessage> privateMessages = new Hashtable<Integer, PrivateMessage>();
+	protected TreeMap<Integer, PrivateMessage> privateMessages = new TreeMap<Integer, PrivateMessage>();
 	PlayerInfo me = new PlayerInfo();
 	PrivateMessageListListener listener;
 	
