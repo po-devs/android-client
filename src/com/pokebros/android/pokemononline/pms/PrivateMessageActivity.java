@@ -50,10 +50,6 @@ public class PrivateMessageActivity extends Activity {
 	
 	private class MyAdapter extends PagerAdapter implements PrivateMessageListListener
 	{
-		MyAdapter() {
-			pms.listener = this;
-		}
-		
 		@Override
 		public int getCount() {
 			return pms.privateMessages.size();
@@ -67,18 +63,38 @@ public class PrivateMessageActivity extends Activity {
 			}
 			PrivateMessage pm = it.next();
 			
-			//TODO: recycle views?
 			ListView lv = new ListView(PrivateMessageActivity.this);
 			container.addView(lv);
 			
 			lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
+			lv.setTag(R.id.associated_pm, pm);
+			lv.setTag(R.id.position, position);
 
 			return lv;
+		}
+		
+		@Override
+		public int getItemPosition(Object object) {
+			View v = (View) object;
+			PrivateMessage pm = (PrivateMessage) v.getTag(R.id.associated_pm);
+			int lastPos = (Integer) v.getTag(R.id.position);
+			
+			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
+			for (int i = 0; i < pms.privateMessages.size(); i++) {
+				if (it.next() == pm) {
+					if (lastPos != i) {
+						v.setTag(R.id.position, i);
+						return i;
+					}
+					return POSITION_UNCHANGED;
+				}
+			}
+			return POSITION_NONE;
 		}
 
 		@Override
 		public boolean isViewFromObject(View v, Object o) {
-			return (Object)v == o;
+			return v == o;
 		}
 
 		@Override
