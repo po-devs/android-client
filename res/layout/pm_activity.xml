@@ -5,11 +5,12 @@
     android:orientation="vertical" >
     
     <android.support.v4.view.ViewPager 
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1.0"/>
 
-	<EditText android:id="@+id/chatInput"
+	<EditText android:id="@+id/pmInput"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
