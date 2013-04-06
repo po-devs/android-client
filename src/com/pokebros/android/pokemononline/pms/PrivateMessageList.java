@@ -18,7 +18,7 @@ public class PrivateMessageList {
 	 * @param playerId the other guy's id
 	 */
 	public void createPM(PlayerInfo info) {
-		if (privateMessages.containsKey(info.id)) {
+		if (!privateMessages.containsKey(info.id)) {
 			privateMessages.put(info.id, new PrivateMessage(info, me));
 			
 			if (listener != null) {

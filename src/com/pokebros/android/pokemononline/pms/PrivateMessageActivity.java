@@ -18,6 +18,7 @@ import android.widget.ListView;
 import com.pokebros.android.pokemononline.NetworkService;
 import com.pokebros.android.pokemononline.R;
 import com.pokebros.android.pokemononline.pms.PrivateMessageList.PrivateMessageListListener;
+import com.viewpagerindicator.TitlePageIndicator;
 
 public class PrivateMessageActivity extends Activity {
 	protected PrivateMessageList pms;
@@ -34,6 +35,9 @@ public class PrivateMessageActivity extends Activity {
         setContentView(R.layout.pm_activity);
         ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
         vp.setAdapter(adapter);
+        
+        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        titleIndicator.setViewPager(vp);
     }
     
     private ServiceConnection connection = new ServiceConnection() {
@@ -57,10 +61,17 @@ public class PrivateMessageActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			return pms.privateMessages.size();
+			if (pms == null) {
+				return 0;
+			} else {
+				return pms.privateMessages.size();
+			}
 		}
 		
 		PrivateMessage getItemAt(int position) {
+			if (pms == null) {
+				return null;
+			}
 			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
 			for (int i = 0; i < position; i++) {
 				it.next();
@@ -71,6 +82,10 @@ public class PrivateMessageActivity extends Activity {
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			PrivateMessage pm = getItemAt(position);
+			
+			if (pm == null) {
+				return null;
+			}
 			
 			ListView lv = new ListView(PrivateMessageActivity.this);
 			container.addView(lv);
@@ -84,6 +99,10 @@ public class PrivateMessageActivity extends Activity {
 		
 		@Override
 		public int getItemPosition(Object object) {
+			if (pms == null) {
+				return POSITION_UNCHANGED;
+			}
+
 			View v = (View) object;
 			PrivateMessage pm = (PrivateMessage) v.getTag(R.id.associated_pm);
 			int lastPos = (Integer) v.getTag(R.id.position);
@@ -112,7 +131,11 @@ public class PrivateMessageActivity extends Activity {
 		}
 
 		public void onNewPM(PrivateMessage privateMessage) {
-			notifyDataSetChanged();
+			runOnUiThread(new Runnable() {
+				public void run() {
+					notifyDataSetChanged();
+				}
+			});
 		}
 	}
 }

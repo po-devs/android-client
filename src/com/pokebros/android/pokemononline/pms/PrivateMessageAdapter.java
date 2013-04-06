@@ -2,6 +2,7 @@ package com.pokebros.android.pokemononline.pms;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -20,8 +21,12 @@ public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> 
 		pm.listener = this;
 	}
 
-	public void onNewMessage(Message message) {
-		add(message);
+	public void onNewMessage(final Message message) {
+		new Handler(getContext().getMainLooper()).post(new Runnable() {
+			public void run() {
+				add(message);
+			}
+		});
 	}
 
 	public long getItemId(int position) {

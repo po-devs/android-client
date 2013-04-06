@@ -19,6 +19,7 @@
             android:name=".RegistryActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
+            android:theme="@style/DarkAppTheme"
             android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,7 @@
         <activity
             android:name=".pms.PrivateMessageActivity"
             android:label="@string/private_messages"
+            android:theme="@style/DarkAppTheme"
             android:launchMode="singleTask" >
         </activity>
 

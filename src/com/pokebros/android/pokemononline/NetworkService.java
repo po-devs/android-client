@@ -803,6 +803,7 @@ public class NetworkService extends Service {
 	
 	private void dealWithPM(int playerId, String message) {
 		pmedPlayers.add(playerId);
+		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
 		
 		String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
