@@ -168,7 +168,15 @@ public class Channel {
 					}
 					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
 				}
-				removePlayer(netServ.players.get(pid));
+				/* If a pmed players logs out, we receive the log out message before the leave channel one
+				 * so there's this work around...
+				 */
+				PlayerInfo p = netServ.players.get(pid);
+				if (p == null) {
+					p = new PlayerInfo();
+					p.id = pid;
+				}
+				removePlayer(p);
 				break;
 			default:
 				break;
