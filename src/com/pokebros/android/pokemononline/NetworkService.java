@@ -504,7 +504,13 @@ public class NetworkService extends Service {
 						message = Html.fromHtml("<font color='#FF00FF'>" + str + "</font>");
 					} else if (index != -1) {
 						String firstPart = str.substring(0, index);
-						String secondPart = str.substring(index+2);
+						String secondPart;
+						
+						try {
+							secondPart = str.substring(index+2);
+						} catch (IndexOutOfBoundsException ex) {
+							secondPart = "";
+						}
 						
 						CharSequence color = "#318739";
 						if (firstPart.equals("Welcome Message")) {
