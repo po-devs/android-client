@@ -494,7 +494,29 @@ public class NetworkService extends Service {
 							": </b></font>" + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
-				message = isHtml ? Html.fromHtml((String)message) : message;
+				String str = StringUtilities.escapeHtml((String)message);
+				if (isHtml) {
+					message = Html.fromHtml(str);
+				} else {
+					int index = str.indexOf(':');
+					
+					if (str.startsWith("*** ")) {
+						message = Html.fromHtml("<font color='#FF00FF'>" + str + "</font>");
+					} else if (index != -1) {
+						String firstPart = str.substring(0, index);
+						String secondPart = str.substring(index+2);
+						
+						CharSequence color = "#318739";
+						if (firstPart.equals("Welcome Message")) {
+							color = "blue";
+						} else if (firstPart.equals("~~Server~~")) {
+							color = "orange";
+						}
+						
+						message = Html.fromHtml("<font color='" + color + "'><b>" + firstPart +
+								": </b></font>" + secondPart);
+					}
+				}
 			}
 			if (!hasChannel) {
 				// Broadcast message
