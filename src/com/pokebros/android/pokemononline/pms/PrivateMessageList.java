@@ -39,5 +39,21 @@ public class PrivateMessageList {
 	
 	interface PrivateMessageListListener {
 		void onNewPM(PrivateMessage privateMessage);
+
+		void onRemovePM(int id);
+	}
+
+	public void removePM(int id) {
+		if (privateMessages.containsKey(id)) {
+			privateMessages.remove(id);
+			
+			if (listener != null) {
+				listener.onRemovePM(id);
+			}
+		}
+	}
+
+	public int count() {
+		return privateMessages.size();
 	}
 }

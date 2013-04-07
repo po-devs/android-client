@@ -59,7 +59,6 @@ public class Bais extends ByteArrayInputStream {
 		return ret;
 	}
 	
-	@SuppressWarnings("resource")
 	public Bais readFlags() {
 		byte readByte;
 		Baos bools = new Baos();

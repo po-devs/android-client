@@ -3,6 +3,7 @@ package com.pokebros.android.pokemononline.pms;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,9 @@ import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -28,6 +32,7 @@ public class PrivateMessageActivity extends Activity {
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
 	protected NetworkService netServ;
+	protected ViewPager vp;
 
 	/** Called when the activity is first created. */
     @Override
@@ -38,7 +43,7 @@ public class PrivateMessageActivity extends Activity {
         		Context.BIND_AUTO_CREATE);
         
         setContentView(R.layout.pm_activity);
-        final ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
+        vp = (ViewPager) findViewById(R.id.viewPager);
         vp.setAdapter(adapter);
         
         TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
@@ -70,12 +75,82 @@ public class PrivateMessageActivity extends Activity {
 		});
     }
     
-    private ServiceConnection connection = new ServiceConnection() {
+    @Override
+	protected void onResume() {
+    	super.onResume();
+    	
+    	/* Removes the PM notification */
+    	((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel("pm", 0);
+    	
+    	/* Switches to the appropriate page */
+    	int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
+    	
+    	if (position != PagerAdapter.POSITION_NONE) {
+    		vp.setCurrentItem(position, true);
+    	}
+	}
+    
+    @Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		
+		setIntent(intent);
+	}
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		
+		if (item.getItemId() == R.id.closePM) {
+			try {
+				int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
+				pms.removePM(id);
+			} catch (NullPointerException ex) {
+				
+			}
+			
+			if (pms.count() == 0) {
+				finish();
+			}
+			return true;
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.pmoptions, menu);
+        
+		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		
+		if (adapter.getCount() <= 0) {
+			menu.removeItem(R.id.closePM);
+		}
+		return true;
+	}
+
+	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
 			pms = netServ.pms;
 			pms.listener = adapter;
 			adapter.notifyDataSetChanged();
+			
+			/* Switches to the appropriate page */
+	    	int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
+	    	
+	    	if (position != PagerAdapter.POSITION_NONE) {
+	    		vp.setCurrentItem(position, true);
+	    	}
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {
@@ -95,7 +170,7 @@ public class PrivateMessageActivity extends Activity {
 			if (pms == null) {
 				return 0;
 			} else {
-				return pms.privateMessages.size();
+				return pms.count();
 			}
 		}
 		
@@ -139,13 +214,26 @@ public class PrivateMessageActivity extends Activity {
 			int lastPos = (Integer) v.getTag(R.id.position);
 			
 			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
-			for (int i = 0; i < pms.privateMessages.size(); i++) {
+			for (int i = 0; i < pms.count(); i++) {
 				if (it.next() == pm) {
 					if (lastPos != i) {
 						v.setTag(R.id.position, i);
 						return i;
 					}
 					return POSITION_UNCHANGED;
+				}
+			}
+			return POSITION_NONE;
+		}
+		
+		public int getIdPosition(int id) {
+			if (pms == null) {
+				return POSITION_NONE;
+			}
+			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
+			for (int i = 0; i < pms.count(); i++) {
+				if (it.next().other.id == id) {
+					return i;
 				}
 			}
 			return POSITION_NONE;
@@ -162,6 +250,14 @@ public class PrivateMessageActivity extends Activity {
 		}
 
 		public void onNewPM(PrivateMessage privateMessage) {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					notifyDataSetChanged();
+				}
+			});
+		}
+
+		public void onRemovePM(int id) {
 			runOnUiThread(new Runnable() {
 				public void run() {
 					notifyDataSetChanged();

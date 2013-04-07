@@ -35,6 +35,7 @@ import com.pokebros.android.pokemononline.battle.BattleDesc;
 import com.pokebros.android.pokemononline.battle.SpectatingBattle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
 import com.pokebros.android.pokemononline.pms.PrivateMessageList;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.utilities.StringUtilities;
@@ -804,7 +805,47 @@ public class NetworkService extends Service {
 		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
 		
-		sendPM(playerId, "This user is running the Pokemon Online Android client and cannot respond to private messages.");
+		showPMNotification(playerId);
+	}
+	
+	private void showPMNotification(int playerId) {
+		PlayerInfo p = players.get(playerId);
+		if (p == null) {
+			p = new PlayerInfo();
+		}
+		
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_action_mail)
+                .setContentTitle("PM - Pokemon Online")
+                .setContentText("New message from " + p.nick())
+                .setOngoing(true);
+        
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, PrivateMessageActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        resultIntent.putExtra("playerId", playerId);
+
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(ChatActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
+
+        //PendingIntent resultPendingIntent = PendingIntent.getActivity(this, battleId, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = getNotificationManager();
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify("pm", 0, mBuilder.build());
 	}
 
 	private void showBattleNotification(String title, int battleId, BattleConf conf) {

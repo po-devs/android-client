@@ -803,7 +803,6 @@ public class ChatActivity extends Activity {
     	return true;
     }
 
-
     private void disconnect() {
 		if (netServ != null)
 			netServ.disconnect();
