@@ -3,7 +3,14 @@ android-client
 
 Client for android for pokemon online
 
-Needs the [ViewPagerIndicator][1] library. If git submodule worked properly, you just have to import viewpagerindicator/library in eclipse as Android code. Otherwise, download first the zip for the viewpagerindicator source and extract it in a viewpagerindicator subfolder.
+Cloning
+========
+
+This contains a submodule, so don't forget to do the following commands after the initial clone:
+```sh
+git submodule init
+git submodule update
+```
 
 Building
 ========
