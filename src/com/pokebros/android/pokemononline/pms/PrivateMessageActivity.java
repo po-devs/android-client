@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pokebros.android.pokemononline.NetworkService;
 import com.pokebros.android.pokemononline.R;
@@ -23,6 +27,7 @@ import com.viewpagerindicator.TitlePageIndicator;
 public class PrivateMessageActivity extends Activity {
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
+	protected NetworkService netServ;
 
 	/** Called when the activity is first created. */
     @Override
@@ -33,22 +38,48 @@ public class PrivateMessageActivity extends Activity {
         		Context.BIND_AUTO_CREATE);
         
         setContentView(R.layout.pm_activity);
-        ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
+        final ViewPager vp = (ViewPager) findViewById(R.id.viewPager);
         vp.setAdapter(adapter);
         
         TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
         titleIndicator.setViewPager(vp);
+        
+        final EditText send = (EditText) findViewById(R.id.pmInput);
+        send.setOnKeyListener(new OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+            	// and the socket is connected
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER) && netServ != null) {
+                	PrivateMessage pm = adapter.getItemAt(vp.getCurrentItem()); 
+                	int id = pm.other.id;
+                	
+                	if (netServ.players.get(id) == null) {
+                		Toast.makeText(PrivateMessageActivity.this, "This player is offline", Toast.LENGTH_SHORT).show();
+                		return true;
+                	}
+                	
+                	// Perform action on key press
+                	netServ.sendPM(id, send.getText().toString());
+                	pm.addMessage(pm.me, send.getText().toString());
+                	send.getText().clear();
+                  return true;
+                }
+                return false;
+            }
+		});
     }
     
     private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			NetworkService netServ = ((NetworkService.LocalBinder)service).getService();
+			netServ = ((NetworkService.LocalBinder)service).getService();
 			pms = netServ.pms;
 			pms.listener = adapter;
 			adapter.notifyDataSetChanged();
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {
+			netServ = null;
 		}
 	};
 	

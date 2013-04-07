@@ -35,8 +35,6 @@ import com.pokebros.android.pokemononline.battle.BattleDesc;
 import com.pokebros.android.pokemononline.battle.SpectatingBattle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
-import com.pokebros.android.pokemononline.pms.PrivateMessage;
-import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
 import com.pokebros.android.pokemononline.pms.PrivateMessageList;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.utilities.StringUtilities;
@@ -806,11 +804,7 @@ public class NetworkService extends Service {
 		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
 		
-		String pm = new String("This user is running the Pokemon Online Android client and cannot respond to private messages.");
-		Baos bb = new Baos();
-		bb.putInt(playerId);
-		bb.putString(pm);
-		socket.sendMessage(bb, Command.SendPM);
+		sendPM(playerId, "This user is running the Pokemon Online Android client and cannot respond to private messages.");
 	}
 
 	private void showBattleNotification(String title, int battleId, BattleConf conf) {
@@ -957,9 +951,20 @@ public class NetworkService extends Service {
 	 * spectating window
 	 * @param bID the battle we're not watching anymore
 	 */
-	@SuppressWarnings("resource")
 	public void stopWatching(int bID) {
 		socket.sendMessage(new Baos().putInt(bID).putBool(false), Command.SpectateBattle);
 		closeBattle(bID);
+	}
+
+	/**
+	 * Sends a private message to a user
+	 * @param id Id of the user dest
+	 * @param message message to send 
+	 */
+	public void sendPM(int id, String message) {
+		Baos bb = new Baos();
+		bb.putInt(id);
+		bb.putString(message);
+		socket.sendMessage(bb, Command.SendPM);
 	}
 }

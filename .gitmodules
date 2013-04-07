@@ -1,0 +1,3 @@
+[submodule "viewpagerindicator"]
+	path = viewpagerindicator
+	url = git@github.com:coyotte508/Android-ViewPagerIndicator.git
