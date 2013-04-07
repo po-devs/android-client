@@ -95,7 +95,7 @@ public class NetworkService extends Service {
 	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
-	protected HashSet<Integer> pmedPlayers = new HashSet<Integer>();
+	static public HashSet<Integer> pmedPlayers = new HashSet<Integer>();
 	public PrivateMessageList pms = new PrivateMessageList(me);
 
 	public class LocalBinder extends Binder {
@@ -1007,5 +1007,7 @@ public class NetworkService extends Service {
 		bb.putInt(id);
 		bb.putString(message);
 		socket.sendMessage(bb, Command.SendPM);
+		
+		pmedPlayers.add(id);
 	}
 }

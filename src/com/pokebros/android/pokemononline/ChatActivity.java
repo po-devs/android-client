@@ -214,6 +214,16 @@ public class ChatActivity extends Activity {
     	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
     	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
     	registerForContextMenu(players);
+    	players.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				PlayerInfo clicked = playerAdapter.getItem(position);
+				if(netServ != null && NetworkService.pmedPlayers.contains(clicked.id)) {
+					Intent intent = new Intent(ChatActivity.this, PrivateMessageActivity.class);
+	    			intent.putExtra("playerId", clicked.id);
+	    			startActivity(intent);
+				}
+			}
+		});
         
         //Channel List Stuff**
     	channels = (ListView)channelsLayout.findViewById(R.id.channellisting);

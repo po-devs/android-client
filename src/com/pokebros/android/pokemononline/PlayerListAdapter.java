@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.utilities.StringUtilities;
 
 public class PlayerListAdapter extends ArrayAdapter<com.pokebros.android.pokemononline.player.PlayerInfo>{
 	
@@ -43,7 +45,12 @@ public class PlayerListAdapter extends ArrayAdapter<com.pokebros.android.pokemon
 		PlayerInfo player = getItem(position);
 		if (player != null) {
 			TextView nick = (TextView)view.findViewById(R.id.player_list_name);
-			nick.setText(player.nick());
+			
+			if (NetworkService.pmedPlayers.contains(player.id)) {
+				nick.setText(Html.fromHtml("<b><i>"  + StringUtilities.escapeHtml(player.nick()) + "</i></b>" ));
+			} else {
+				nick.setText(player.nick());
+			}
 			
 			if (defaultColor == -1) {
 				defaultColor = nick.getTextColors().getDefaultColor();
