@@ -494,10 +494,10 @@ public class NetworkService extends Service {
 							": </b></font>" + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
-				String str = StringUtilities.escapeHtml((String)message);
 				if (isHtml) {
-					message = Html.fromHtml(str);
+					message = Html.fromHtml((String)message);
 				} else {
+					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');
 					
 					if (str.startsWith("*** ")) {
