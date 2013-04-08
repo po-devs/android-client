@@ -840,13 +840,11 @@ public class ChatActivity extends Activity {
     private Baos constructFindBattle(boolean forceRated, boolean forceSameTier,
     		boolean onlyInRange, int i, byte mode) {
 		Baos find = new Baos();
-		int flags = 0;
-		flags |= (forceRated ? 1:0);
-		flags |= (forceSameTier ? 2:0);
-		flags |= (onlyInRange ? 4:0);
-		find.putInt(flags);
-		find.putShort((short)i);
-		find.write(mode);
+		find.putBool(onlyInRange);
+		find.write((forceRated ? 1 : 0) + (forceSameTier? 2 : 0));
+		if (onlyInRange) {
+			find.putShort((short)i);
+		}
 		return find;
     }
 
