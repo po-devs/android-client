@@ -272,7 +272,7 @@ public class Battle extends SpectatingBattle {
 		} case RearrangeTeam: {
 			oppTeam = new ShallowShownTeam(msg);
 			shouldShowPreview = true;
-			if(activity != null && activity.hasWindowFocus())
+			if(activity != null)
 				activity.notifyRearrangeTeamDialog();
 			break;
 		} case ChangePP: {
