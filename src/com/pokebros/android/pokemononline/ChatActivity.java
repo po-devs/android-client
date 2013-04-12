@@ -521,7 +521,7 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
-			builder.setMessage("Please enter your password " + netServ.mePlayer.nick() + ".")
+			builder.setMessage("Please enter your password " + netServ.me.nick() + ".")
 			.setCancelable(true)
 			.setView(passField)
 			.setPositiveButton("Done", new DialogInterface.OnClickListener() {

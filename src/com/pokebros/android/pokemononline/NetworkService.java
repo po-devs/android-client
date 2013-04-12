@@ -84,7 +84,6 @@ public class NetworkService extends Service {
 	}
 
 	private FullPlayerInfo meLoginPlayer;
-	public PlayerInfo mePlayer;
 	public Hashtable<Integer, Battle> activeBattles = new Hashtable<Integer, Battle>();
 	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
