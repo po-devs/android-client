@@ -478,12 +478,21 @@ public class NetworkService extends Service {
 			boolean hasId = netFlags.readBool();
 			Bais dataFlags = msg.readFlags();
 			boolean isHtml = dataFlags.readBool();
-			Channel chan = hasChannel ? channels.get(msg.readInt()) : null;
-			PlayerInfo player = hasId ? players.get(msg.readInt()) : null;
+			
+			Channel chan = null;
+			PlayerInfo player = null;
+			int pId = 0;
+			if (hasChannel) {
+				chan = channels.get(msg.readInt());
+			}
+			if (hasId) {
+				player = players.get(pId = msg.readInt());
+			}
+
 			CharSequence message = msg.readString();
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
-				CharSequence name = player.nick();
+				CharSequence name = playerName(pId);
 
 				if (isHtml) {
 					message = Html.fromHtml("<font color='" + color + "'><b>" + name + 
