@@ -110,7 +110,7 @@ public class NetworkService extends Service {
 	 */
 	public boolean isOnAnyChannel(int pid) {
 		for (Channel c: channels.values()) {
-			if (c.players.contains(pid)) {
+			if (c.players.containsKey(pid)) {
 				return true;
 			}
 		}
