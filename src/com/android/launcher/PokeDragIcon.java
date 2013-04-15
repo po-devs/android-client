@@ -1,7 +1,7 @@
 package com.android.launcher;
 
 import com.pokebros.android.pokemononline.BattleActivity;
-import com.pokebros.android.pokemononline.poke.BattlePoke;
+import com.pokebros.android.pokemononline.battle.BattlePoke;
 
 import android.content.Context;
 import android.util.AttributeSet;

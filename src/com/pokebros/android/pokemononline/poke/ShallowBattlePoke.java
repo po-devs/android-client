@@ -62,13 +62,13 @@ public class ShallowBattlePoke implements SerializeBytes {
 		return s;
 	}
 	
-	void getName(DataBaseHelper db) {
+	protected void getName(DataBaseHelper db) {
 		pokeName = db.query("SELECT Name from [Pokemons] WHERE (Num = " + 
 				uID.pokeNum + ") AND (Forme = " + uID.subNum + ")");
 	}
 	
 	
-	void getTypes(DataBaseHelper db, byte gen) {
+	protected void getTypes(DataBaseHelper db, byte gen) {
 		for(int i = 0; i < 2; i++) {
 			String res = db.query("SELECT G" + gen + "T" + (i+1) + " from [Pokemons] WHERE (Num = " +
 					uID.pokeNum + ") AND (Forme = " + uID.subNum + ")");
