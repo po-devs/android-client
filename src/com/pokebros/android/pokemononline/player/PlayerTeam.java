@@ -1,7 +1,6 @@
 package com.pokebros.android.pokemononline.player;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.PokeParser;
@@ -11,53 +10,28 @@ import com.pokebros.android.utilities.Baos;
 
 // Player as represented in the teambuilder.
 public class PlayerTeam implements SerializeBytes {
-	public String nick;
-	protected String info = "This is the default team. Please import your own team from the PC client.";
-	protected String loseMsg = "";
-	protected String winMsg = "";
-	protected String tier = "";
-	protected Team team;
-	short avatar = 72;
+	public PlayerProfile profile;
+	public Team team;
 	
-	public String nick() { return nick; }
+	public String nick() { return profile.nick; }
 	
 	public PlayerTeam(Bais msg) {
-		nick = msg.readString();
-		info = msg.readString();
-		loseMsg = msg.readString();
-		winMsg = msg.readString();
-		avatar = msg.readShort();
+		profile = new PlayerProfile(msg);
 		team = new Team(msg);
 	}
 	
 	public PlayerTeam(Context context, PokeParser p) {
-		if (nick == null) {		
-			Toast.makeText(context, "No trainer name found. Please enter a unique name before connecting to a server.", Toast.LENGTH_LONG).show();
-			nick = "";
-		}
 		team = p.getTeam();
+		profile = new PlayerProfile(context);
 	}
 	
-	public PlayerTeam(Context context, String name) {
-		nick = name;
-		if (nick == null) {		
-			Toast.makeText(context, "No trainer name found. Please enter a unique name before connecting to a server.", Toast.LENGTH_LONG).show();
-			nick = "";
-		}
+	public PlayerTeam(Context context) {
 		team = new Team();
+		profile = new PlayerProfile(context);
 	}
-	
-	public String toString() {
-		return nick;
-	}
-	
+		
 	public void serializeBytes(Baos bytes) {
-		bytes.putString(nick);
-		bytes.putString(info);
-		bytes.putString(loseMsg);
-		bytes.putString(winMsg);	
-		bytes.putShort(avatar);
+		bytes.putBaos(profile);
 		bytes.putBaos(team);
 	}
-
 }

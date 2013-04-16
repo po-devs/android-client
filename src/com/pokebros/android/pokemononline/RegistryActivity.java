@@ -101,7 +101,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		});
 
 		meLoginPlayer = new FullPlayerInfo(RegistryActivity.this, prefs);
-		editName.append(meLoginPlayer.nick());
+		editName.setText(meLoginPlayer.nick());
 		
 		//Capture out button from layout
         Button conbutton = (Button)findViewById(R.id.connectbutton);
@@ -170,13 +170,14 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 					return;
 				}
 				
-				meLoginPlayer.playerTeam.nick = nick;
+				meLoginPlayer.playerTeam.profile.nick = nick;
 				
 				Intent intent = new Intent(RegistryActivity.this, NetworkService.class);
 				intent.putExtra("ip", ipString);
 				intent.putExtra("port", portVal);
 				intent.putExtra("loginPlayer", new Baos().putBaos(meLoginPlayer).toByteArray());
-				prefs.edit().putString("lastAddr", editAddr.getText().toString()).putString("lastName", editName.getText().toString()).commit();
+				prefs.edit().putString("lastAddr", editAddr.getText().toString()).commit();
+				meLoginPlayer.playerTeam.profile.save(RegistryActivity.this);
 
 				startService(intent);
 				startActivity(new Intent(RegistryActivity.this, ChatActivity.class));

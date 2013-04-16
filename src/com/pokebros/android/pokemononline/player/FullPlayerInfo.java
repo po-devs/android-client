@@ -28,11 +28,11 @@ public class FullPlayerInfo implements SerializeBytes {
 			isDefault = false;
 		} catch (FileNotFoundException e) {
 			Toast.makeText(context, "No team found. Loaded system default.", Toast.LENGTH_LONG).show();
-			playerTeam = new PlayerTeam(context, prefs.getString("lastName", null));
+			playerTeam = new PlayerTeam(context);
 		} catch (NumberFormatException e) {
 			// The file could not be parsed correctly
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
-			playerTeam = new PlayerTeam(context, prefs.getString("lastName", null));
+			playerTeam = new PlayerTeam(context);
 		}
 	}
 	

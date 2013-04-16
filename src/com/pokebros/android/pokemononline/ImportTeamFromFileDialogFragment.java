@@ -44,7 +44,7 @@ public class ImportTeamFromFileDialogFragment extends DialogFragment {
 				if (path != null) {
 					try {
 						/* First test if the team is valid */
-						SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+						SharedPreferences prefs = getActivity().getSharedPreferences("team", Context.MODE_PRIVATE);
 						prefs.edit().putString("teamFile", path); //but does not commit!
 						
 						FullPlayerInfo fullPlayerInfo = new FullPlayerInfo(getActivity(), prefs);
