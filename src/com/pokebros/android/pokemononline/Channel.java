@@ -8,6 +8,7 @@ import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.utilities.Bais;
 
 /**
  * Contains all info regarding a channel: name, id, joined,

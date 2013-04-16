@@ -14,7 +14,6 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
-import com.pokebros.android.pokemononline.Bais;
 import com.pokebros.android.pokemononline.BattleActivity;
 import com.pokebros.android.pokemononline.ColorEnums.QtColor;
 import com.pokebros.android.pokemononline.ColorEnums.StatusColor;
@@ -30,6 +29,7 @@ import com.pokebros.android.pokemononline.poke.PokeEnums.Weather;
 import com.pokebros.android.pokemononline.poke.PokeEnums.WeatherState;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.pokemononline.poke.UniqueID;
+import com.pokebros.android.utilities.Bais;
 import com.pokebros.android.utilities.StringUtilities;
 
 public class SpectatingBattle {

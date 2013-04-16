@@ -1,5 +1,8 @@
 package com.pokebros.android.pokemononline;
 
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
+
 /**
  * Describes the protocol version of the client or server. 
  * 

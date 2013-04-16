@@ -1,9 +1,9 @@
 package com.pokebros.android.pokemononline.battle;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.ShallowShownPoke;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 public class ShallowShownTeam implements SerializeBytes {
 	public ShallowShownPoke[] pokes = new ShallowShownPoke[6];

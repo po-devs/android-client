@@ -9,6 +9,8 @@ import java.nio.channels.SocketChannel;
 import java.text.ParseException;
 import java.util.LinkedList;
 
+import com.pokebros.android.utilities.Baos;
+
 public class PokeClientSocket {
 	/* Socket channel, true connection */
 	private SocketChannel schan = null;

@@ -53,6 +53,7 @@ import com.pokebros.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo.TierStanding;
 import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
+import com.pokebros.android.utilities.Baos;
 import com.pokebros.android.utilities.StringUtilities;
 import com.pokebros.android.utilities.TwoViewsArrayAdapter;
 

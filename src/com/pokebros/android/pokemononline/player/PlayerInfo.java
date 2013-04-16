@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.QColor;
 import com.pokebros.android.pokemononline.SerializeBytes;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 import com.pokebros.android.utilities.Getter;
 
 // Represents a player in the player list

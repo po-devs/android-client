@@ -1,8 +1,8 @@
 package com.pokebros.android.pokemononline.player;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 // Short version of a player, only nick and info
 public class BasicPlayerInfo implements SerializeBytes {

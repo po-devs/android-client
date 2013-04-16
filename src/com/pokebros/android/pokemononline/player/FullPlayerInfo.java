@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.PokeParser;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 // Contains all the information about the player.
 // Used for logging into the server.

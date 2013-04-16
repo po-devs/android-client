@@ -5,6 +5,9 @@ import java.nio.channels.UnresolvedAddressException;
 import java.text.ParseException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;

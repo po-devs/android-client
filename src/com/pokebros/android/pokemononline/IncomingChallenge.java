@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.ChallengeDesc;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.utilities.Bais;
 
 public class IncomingChallenge {
 	byte desc, mode;

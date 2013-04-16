@@ -40,6 +40,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.pokebros.android.pokemononline.RegistryConnectionService.RegistryCommandListener;
 import com.pokebros.android.pokemononline.ServerListAdapter.Server;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
+import com.pokebros.android.utilities.Baos;
 
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
 	

@@ -3,11 +3,11 @@ package com.pokebros.android.pokemononline.player;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.PokeParser;
 import com.pokebros.android.pokemononline.poke.Team;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 // Player as represented in the teambuilder.
 public class PlayerTeam implements SerializeBytes {

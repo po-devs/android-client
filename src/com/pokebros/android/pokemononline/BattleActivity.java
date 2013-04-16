@@ -55,6 +55,7 @@ import com.pokebros.android.pokemononline.poke.PokeEnums.Status;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.pokemononline.poke.ShallowShownPoke;
 import com.pokebros.android.pokemononline.poke.UniqueID;
+import com.pokebros.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
     private Receiver mReceiver;

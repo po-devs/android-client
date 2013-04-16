@@ -1,5 +1,8 @@
 package com.pokebros.android.pokemononline;
 
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
+
 public class QColor implements SerializeBytes {
 	protected byte spec;
 	protected short alpha;

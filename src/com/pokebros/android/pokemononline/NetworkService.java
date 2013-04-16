@@ -38,6 +38,8 @@ import com.pokebros.android.pokemononline.player.PlayerInfo;
 import com.pokebros.android.pokemononline.pms.PrivateMessageActivity;
 import com.pokebros.android.pokemononline.pms.PrivateMessageList;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 import com.pokebros.android.utilities.StringUtilities;
 
 public class NetworkService extends Service {

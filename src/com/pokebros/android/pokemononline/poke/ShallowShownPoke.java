@@ -1,8 +1,8 @@
 package com.pokebros.android.pokemononline.poke;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.SerializeBytes;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 public class ShallowShownPoke implements SerializeBytes {
 	public boolean item;

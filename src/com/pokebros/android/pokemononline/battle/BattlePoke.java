@@ -1,11 +1,11 @@
 package com.pokebros.android.pokemononline.battle;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
 import com.pokebros.android.pokemononline.DataBaseHelper;
 import com.pokebros.android.pokemononline.poke.Gen;
 import com.pokebros.android.pokemononline.poke.ShallowBattlePoke;
 import com.pokebros.android.pokemononline.poke.UniqueID;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 // This class represents your poke during a battle.
 public class BattlePoke extends ShallowBattlePoke {

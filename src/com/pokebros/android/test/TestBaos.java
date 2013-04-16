@@ -2,8 +2,8 @@ package com.pokebros.android.test;
 
 import junit.framework.TestCase;
 
-import com.pokebros.android.pokemononline.Bais;
-import com.pokebros.android.pokemononline.Baos;
+import com.pokebros.android.utilities.Bais;
+import com.pokebros.android.utilities.Baos;
 
 /* Run while in this file to run the JUnit test instead of the application */
 public class TestBaos extends TestCase {	

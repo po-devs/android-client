@@ -1,9 +1,10 @@
-package com.pokebros.android.pokemononline;
+package com.pokebros.android.utilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
 
 import android.util.Log;
 

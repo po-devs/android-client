@@ -1,10 +1,12 @@
-package com.pokebros.android.pokemononline;
+package com.pokebros.android.utilities;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import com.pokebros.android.pokemononline.SerializeBytes;
 
 import android.util.Log;
 
@@ -112,6 +114,23 @@ public class Baos extends ByteArrayOutputStream {
 		} catch (Exception e) {
 			System.exit(-1);
 		}
+		return this;
+	}
+	
+	/**
+	 * Serializes a version-controlled structure.
+	 * The structure just has to serialize itself in a bew baos,
+	 * then it calls baos.versionControl(X, newBaos) on the give
+	 * baos. (X obviously being the version of the serialization)
+	 * 
+	 * @param version The version of the serialization
+	 * @param b The serialized content
+	 * @return Self
+	 */
+	public Baos putVersionControl(int version, Baos b) {
+		write((byte) version);
+		putInt(b.size());
+		write(b.buf, 0, b.count);
 		return this;
 	}
 }
