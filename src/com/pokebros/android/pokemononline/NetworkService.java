@@ -297,7 +297,7 @@ public class NetworkService extends Service {
 				loginCmd.putBaos(version); //Protocol version
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
 				loginCmd.putFlags(new boolean []{true,true,true,false,false,meLoginPlayer.color().colorInt != Color.WHITE, true, 
-						meLoginPlayer.playerTeam.team.isValid()}); //Network flags
+						meLoginPlayer.team.isValid()}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
@@ -316,11 +316,11 @@ public class NetworkService extends Service {
 					loginCmd.putBaos(meLoginPlayer.color());
 				}
 				
-				loginCmd.putBaos(meLoginPlayer.playerTeam.profile.trainerInfo);
+				loginCmd.putBaos(meLoginPlayer.profile.trainerInfo);
 				
-				if (meLoginPlayer.playerTeam.team.isValid()) {
+				if (meLoginPlayer.team.isValid()) {
 					loginCmd.write(1); // number of teams
-					loginCmd.putBaos(meLoginPlayer.playerTeam.team);
+					loginCmd.putBaos(meLoginPlayer.team);
 				}
 				
 				socket.sendMessage(loginCmd, Command.Login);

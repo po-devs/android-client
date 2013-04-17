@@ -170,14 +170,14 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 					return;
 				}
 				
-				meLoginPlayer.playerTeam.profile.nick = nick;
+				meLoginPlayer.profile.nick = nick;
 				
 				Intent intent = new Intent(RegistryActivity.this, NetworkService.class);
 				intent.putExtra("ip", ipString);
 				intent.putExtra("port", portVal);
 				intent.putExtra("loginPlayer", new Baos().putBaos(meLoginPlayer).toByteArray());
 				prefs.edit().putString("lastAddr", editAddr.getText().toString()).commit();
-				meLoginPlayer.playerTeam.profile.save(RegistryActivity.this);
+				meLoginPlayer.profile.save(RegistryActivity.this);
 
 				startService(intent);
 				startActivity(new Intent(RegistryActivity.this, ChatActivity.class));
