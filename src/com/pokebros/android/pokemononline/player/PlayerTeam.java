@@ -10,14 +10,14 @@ import com.pokebros.android.utilities.Baos;
 
 // Player as represented in the teambuilder.
 public class PlayerTeam implements SerializeBytes {
-	public TrainerInfo profile;
+	public PlayerProfile profile;
 	public Team team;
 	
 	public String nick() { return profile.nick; }
 	
 	public PlayerTeam(Bais msg) {
 		/* First: profile */
-		profile = new TrainerInfo(msg);
+		profile = new PlayerProfile(msg);
 		
 		/* Team count and team(s) */
 		byte teamCount = msg.readByte();
@@ -32,12 +32,12 @@ public class PlayerTeam implements SerializeBytes {
 	
 	public PlayerTeam(Context context, PokeParser p) {
 		team = p.getTeam();
-		profile = new TrainerInfo(context);
+		profile = new PlayerProfile(context);
 	}
 	
 	public PlayerTeam(Context context) {
 		team = new Team();
-		profile = new TrainerInfo(context);
+		profile = new PlayerProfile(context);
 	}
 		
 	public void serializeBytes(Baos bytes) {

@@ -44,4 +44,8 @@ public class Team implements SerializeBytes {
 		
 		b.putVersionControl(0, b);
 	}
+
+	public boolean isValid() {
+		return pokes[0].uID.pokeNum != 0;
+	}
 }

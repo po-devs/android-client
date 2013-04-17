@@ -1,59 +1,54 @@
 package com.pokebros.android.pokemononline;
 
+import android.graphics.Color;
+
 import com.pokebros.android.utilities.Bais;
 import com.pokebros.android.utilities.Baos;
 
 public class QColor implements SerializeBytes {
-	protected byte spec;
-	protected short alpha;
-	protected short red;
-	protected short green;
-	protected short blue;
-	protected short pad;
-	public String html;
+	protected int colorInt = Color.BLACK;
 	
 	public QColor(Bais msg) {
-		spec = msg.readByte();
-		alpha = msg.readShort();
-		red = msg.readShort();
-		green = msg.readShort();
-		blue = msg.readShort();
-		pad = msg.readShort();
-		html = "color = #" + String.format("%02X", (byte)red) + String.format("%02X", (byte)green) + String.format("%02X", (byte)blue) + ">";
+		byte spec = msg.readByte();
+		/* Trick to convert signed short to unsigned short */
+		int alpha = (msg.readShort() + 65536) % 65536;
+		int red = (msg.readShort() + 65536) % 65536;
+		int green = (msg.readShort() + 65536) % 65536;
+		int blue = (msg.readShort() + 65536) % 65536;
+		msg.readShort(); // read padding
+		
+		if (spec == 1) { //Rgb
+			colorInt = Color.argb(alpha, red, green, blue);
+		} else if (spec == 2) { //HSV
+			float hsv[] = { ((float)red) * 360 / 65536, ((float)green) * 360 / 65536, ((float)blue) / 65536};
+			colorInt = Color.HSVToColor(alpha, hsv);
+		} else { //unsupported spec
+			colorInt = Color.BLACK;
+		}
 	}
 	
 	public QColor() {
-			spec = 0;
-			alpha |= 0xffff;
-			red = green = blue = 0;
-			pad = 0;
-			html = ">";
+	}
+	
+	public QColor(String hex) {
+		colorInt = Color.parseColor(hex);
 	}
 	
 	public void serializeBytes(Baos bytes) {
-		bytes.write(spec);
+		bytes.write(1); // RGB spec
 		
-		bytes.putShort(alpha);
-		bytes.putShort(red);
-		bytes.putShort(green);
-		bytes.putShort(blue);
-		bytes.putShort(pad);
+		bytes.putShort((short)Color.alpha(colorInt));
+		bytes.putShort((short)Color.red(colorInt));
+		bytes.putShort((short)Color.green(colorInt));
+		bytes.putShort((short)Color.blue(colorInt));
+		bytes.putShort((short)0);
 	}
 	
-	@Override
-	public String toString() {
-		return html; 
-	}
-	
-	       
 	public String toHexString() {
-		if (spec == 1) {
-			int red = 0 > this.red ? this.red + 32767 + 32768 : this.red;
-			int green = 0 > this.green ? this.red + 32767 + 32768 : this.green;
-			int blue = 0 > this.blue ? this.red + 32767 + 32768 : this.blue;
-			return String.format("#%02x%02x%02x", red >> 8, green >> 8, blue >> 8);
+		if (Color.alpha(colorInt) == 255) {
+			return String.format("#%02x%02x%02x", Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt));
 		} else {
-			return null; // TODO: fix other color formats
+			return String.format("#%02x%02x%02x%02x", Color.alpha(colorInt), Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt));
 		}
 	}
 }

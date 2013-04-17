@@ -19,6 +19,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Bundle;
@@ -295,7 +296,8 @@ public class NetworkService extends Service {
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
-				loginCmd.putFlags(new boolean []{true,true}); //Network flags
+				loginCmd.putFlags(new boolean []{true,true,true,false,false,meLoginPlayer.color().colorInt != Color.WHITE, true, 
+						meLoginPlayer.playerTeam.team.isValid()}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
@@ -306,7 +308,21 @@ public class NetworkService extends Service {
 				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
 				/* Data Flags: supportsZipCompression, isLadderEnabled, wantsIdsWithMessages, isIdle */
-				loginCmd.putFlags(new boolean []{false,true,true});
+				loginCmd.putFlags(new boolean []{false,true,true,false});
+				
+				/* No default channel, no auto join channels */
+				
+				if (meLoginPlayer.color().colorInt != Color.WHITE) {
+					loginCmd.putBaos(meLoginPlayer.color());
+				}
+				
+				loginCmd.putBaos(meLoginPlayer.playerTeam.profile.trainerInfo);
+				
+				if (meLoginPlayer.playerTeam.team.isValid()) {
+					loginCmd.write(1); // number of teams
+					loginCmd.putBaos(meLoginPlayer.playerTeam.team);
+				}
+				
 				socket.sendMessage(loginCmd, Command.Login);
 
 				while(socket.isConnected()) {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.pokebros.android.pokemononline.QColor;
 import com.pokebros.android.pokemononline.SerializeBytes;
 import com.pokebros.android.pokemononline.poke.PokeParser;
 import com.pokebros.android.utilities.Bais;
@@ -37,6 +38,7 @@ public class FullPlayerInfo implements SerializeBytes {
 	}
 	
 	public String nick() { return playerTeam.nick(); }
+	public QColor color() { return playerTeam.profile.color; }
 	
 	public void serializeBytes(Baos bytes) {
 		bytes.putBaos(playerTeam);
