@@ -3,6 +3,7 @@ package com.pokebros.android.pokemononline;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
@@ -33,8 +34,11 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				int option = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
 				if (option == 0) { // From File
-					DialogFragment fragment = new ImportTeamFromFileDialogFragment();
-					fragment.show(getActivity().getSupportFragmentManager(), "team-from-file");
+					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+					intent.setType("file/*");
+					intent = Intent.createChooser(intent, "File explorer");
+					getActivity().startActivityForResult(intent, RegistryActivity.PICKFILE_RESULT_CODE);
 				} else if (option == 1) { // From QR Code
 					AlertDialog result = (new IntentIntegrator(getActivity())).initiateScan();
 					if (result != null)
