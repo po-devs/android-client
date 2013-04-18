@@ -616,7 +616,7 @@ public class SpectatingBattle {
 		} case ChangeHp: {
 			short newHP = msg.readShort();
 			
-			currentPoke(player).lastKnownPercent = (byte)newHP;
+			currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 			currentPoke(player).lifePercent = (byte)newHP;
 				
 			if(activity != null) {

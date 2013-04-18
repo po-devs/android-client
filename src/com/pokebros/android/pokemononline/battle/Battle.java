@@ -238,11 +238,11 @@ public class Battle extends SpectatingBattle {
 			short newHP = msg.readShort();
 			if(player == me) {
 				myTeam.pokes[0].currentHP = newHP;
-				currentPoke(player).lastKnownPercent = (byte)newHP;
+				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 				currentPoke(player).lifePercent = (byte)(newHP * 100 / myTeam.pokes[0].totalHP);
 			}
 			else {
-				currentPoke(player).lastKnownPercent = (byte)newHP;
+				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 				currentPoke(player).lifePercent = (byte)newHP;
 			}
 			if(activity != null) {
