@@ -9,47 +9,104 @@ public class TeamPoke implements SerializeBytes {
 	protected UniqueID uID;
 	protected String nick;
 	protected short item;
+	protected short pokeball;
 	protected short ability;
 	protected byte nature;
 	protected byte gender;
-	protected byte gen;
+	protected Gen gen;
 	protected boolean shiny;
 	protected byte happiness;
 	protected byte level;
-	protected int[] moves = new int[4];
+	protected short[] moves = new short[4];
 	protected byte[] DVs = new byte[6];
 	protected byte[] EVs = new byte[6];
 	
 	public TeamPoke(Bais msg) {
-		uID = new UniqueID(msg);
-		nick = msg.readString();
-		item = msg.readShort();
-		ability = msg.readShort();
-		nature = msg.readByte();
-		gender = msg.readByte();
-		//gen = msg.readByte();
-		shiny = msg.readBool();
-		happiness = msg.readByte();
-		level = msg.readByte();
+		loadFromBais(msg);
+	}
+	
+	public TeamPoke(Bais msg, Gen gen) {
+		this.gen = gen;
+		loadFromBais(msg);
+	}
+	
+	public void loadFromBais(Bais msg) {
+		Bais b = new Bais(msg.readVersionControlData());
+		int version = b.read();
 		
-		for(int i = 0; i < 4; i++)
-			moves[i] = msg.readInt();
+		if (version != 0) {
+		
+		}
+		
+		Bais network = b.readFlags();
+
+//		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
+//      isShiny=0
+		if (network.readBool()) {
+			gen = new Gen(b);
+		} else if (gen != null) {
+			gen = new Gen();
+		}
+		uID = new UniqueID(b);
+		level = b.readByte();
+		
+		Bais data = b.readFlags();
+		shiny = data.readBool();
+		
+		if (network.readBool()) {
+			nick = b.readString();
+		} else {
+			nick = "";
+		}
+
+		if (network.readBool()) {
+			pokeball = b.readShort();
+		} else {
+			pokeball = 0;
+		}
+		
+		if (gen.num > 1) {
+			item = b.readShort();
+			if (gen.num > 2) {
+				ability = b.readShort();
+				nature = b.readByte();
+			}
+
+			gender = b.readByte();
+			if (gen.num > 2 && network.readBool()) {
+				happiness = network.readByte();
+			}
+		}
+		
+		boolean ppups = network.readBool();
+		for (int i = 0; i < 4; i++) {
+			if (ppups) {
+				b.readByte(); // read the pp up for the move, but ignore it
+			}
+			moves[i] = b.readShort();
+		}
+		
 		for(int i = 0; i < 6; i++)
-			DVs[i] = msg.readByte();
-		for(int i = 0; i < 6; i++)
-			EVs[i] = msg.readByte();
+			EVs[i] = b.readByte();
+		
+		if (network.readBool()) {
+			for(int i = 0; i < 6; i++)
+				DVs[i] = b.readByte();
+		} else {
+			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+		}
 	}
 	
 	public TeamPoke() {
 		uID = new UniqueID();
-		nick = "LOLZ";
+		nick = "";
 		item = 71;
 		ability = 98;
 		nature = 0;
 		gender = 1;
-		gen = 5;
+		gen = new Gen();
 		shiny = true;
-		happiness = 127;
+		happiness = 0;
 		level = 100;
 		/*moves[0] = 331;
 		moves[1] = 213;
@@ -62,48 +119,43 @@ public class TeamPoke implements SerializeBytes {
 		DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
 		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 10;
 	}
-
-	public TeamPoke (String[][] mTP, int[][] mM, byte[][] mDV, byte[][] mEV, int i) {
-		uID = new UniqueID((short)(Integer.parseInt(mTP[i][0])), (byte)(Integer.parseInt(mTP[i][1])));
-		nick = mTP[i][2];
-		item = (short)(Integer.parseInt(mTP[i][3]));
-		ability = (short)(Integer.parseInt(mTP[i][4]));
-		nature = (byte)(Integer.parseInt(mTP[i][5]));
-		gender = (byte)(Integer.parseInt(mTP[i][6]));
-		if (mTP[i][7].equals("0")) {
-			shiny = false;
-		}
-		else {
-			shiny = true;
-		}
-		happiness = (byte)(Integer.parseInt(mTP[i][8]));
-		level = (byte)(Integer.parseInt(mTP[i][9]));
-		for (int j = 0; j < 4; j++) {
-			moves[j] = mM[i][j];
-		}
-		for (int j = 0; j < 6; j++) {
-			DVs[j] = mDV[i][j];
-		}
-		for (int j = 0; j < 6; j++) {
-			EVs[j] = mEV[i][j];
-		}
-	}
 	
 	public void serializeBytes(Baos bytes) {
-		bytes.putBaos(uID);
-		bytes.putString(nick);
-		bytes.putShort(item);
-		bytes.putShort(ability);
-		bytes.write(nature);
-		bytes.write(gender);
-		// bytes.write(gen); XXX Gen would go here 
-		bytes.putBool(shiny);
-		bytes.write(happiness);
-		bytes.write(level);
-		for (int i = 0; i < 4; i++) {
-			bytes.putInt(moves[i]);
+		Baos b = new Baos();
+//		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
+//      isShiny=0
+		b.putFlags(new boolean[]{false, nick.length() > 0, false, happiness != 0, false, true});
+		
+		b.putBaos(uID);
+		b.write(level);
+		b.write(shiny ? 1 : 0);
+		
+		if (nick.length() > 0) {
+			b.putString(nick);
 		}
-		for (int i = 0; i < 6; i++) bytes.write(DVs[i]);
-		for (int i = 0; i < 6; i++) bytes.write(EVs[i]);
+		
+		if (gen.num > 1) {
+			b.putShort(item);
+			
+			if (gen.num > 2) {
+				b.putShort(ability);
+				b.write(nature);
+			}
+		
+			b.write(gender);
+		
+			if (gen.num > 2 && happiness != 0) {
+				b.write(happiness);
+			}
+		}
+		
+		for (int i = 0; i < 4; i++) {
+			b.putShort(moves[i]);
+		}
+		
+		for (int i = 0; i < 6; i++) b.write(EVs[i]);
+		for (int i = 0; i < 6; i++) b.write(DVs[i]);
+		
+		bytes.putVersionControl(0, b);
 	}
 }

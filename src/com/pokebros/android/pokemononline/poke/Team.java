@@ -5,8 +5,8 @@ import com.pokebros.android.utilities.Bais;
 import com.pokebros.android.utilities.Baos;
 
 public class Team implements SerializeBytes {
-	protected byte gen = 5;
-	protected byte subgen = 1;
+	protected Gen gen = new Gen();
+
 	protected String defaultTier;
 	protected TeamPoke[] pokes = new TeamPoke[6];
 	
@@ -17,10 +17,10 @@ public class Team implements SerializeBytes {
 		
 		if (version == 0) {
 			defaultTier = b.readBool() ? b.readString() : "";
-			gen = b.readByte();
-			subgen = b.readByte();
-			for(int i = 0; i < 6; i++)
-				pokes[i] = new TeamPoke(b);
+			gen = new Gen(b);
+			for(int i = 0; i < 6; i++) {
+				pokes[i] = new TeamPoke(b, gen);
+			}
 		}
 	}
 	
@@ -37,8 +37,7 @@ public class Team implements SerializeBytes {
 			b.putString(defaultTier);
 		}
 		
-		b.write(gen);
-		b.write(subgen);
+		b.putBaos(gen);
 		for(int i = 0; i < 6; i++)
 			b.putBaos(pokes[i]);
 		

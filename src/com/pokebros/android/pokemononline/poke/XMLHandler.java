@@ -32,9 +32,13 @@ public class XMLHandler extends DefaultHandler {
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
 		if (localName.equals("Team")) {
-			myParsedTeam.gen = (byte)Integer.parseInt(atts.getValue("gen"));
-			myParsedTeam.subgen = (byte)Integer.parseInt(atts.getValue("subgen"));
+			myParsedTeam.gen.num = (byte)Integer.parseInt(atts.getValue("gen"));
+			myParsedTeam.gen.subNum = (byte)Integer.parseInt(atts.getValue("subgen"));
 			myParsedTeam.defaultTier = atts.getValue("defaultTier");
+			
+			for (int i = 0; i < 6; i++) {
+				myParsedTeam.pokes[i].gen = myParsedTeam.gen;
+			}
 		}
 //		else if (localName.equals("Trainer")) {
 //			inTrainer = true;
@@ -96,7 +100,7 @@ public class XMLHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) {
 		if (inMove) {
-			myParsedTeam.pokes[numPoke].moves[numMove] = Integer.parseInt(new String(ch, start, length));
+			myParsedTeam.pokes[numPoke].moves[numMove] = (short)Integer.parseInt(new String(ch, start, length));
 		}
 		else if (inDV) {
 			myParsedTeam.pokes[numPoke].DVs[numDV] = (byte)(Integer.parseInt(new String(ch, start, length)));
