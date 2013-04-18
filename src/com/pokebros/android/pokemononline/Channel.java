@@ -72,7 +72,7 @@ public class Channel {
 			players.remove(p.id);
 			
 			if(netServ != null) {
-				if (netServ.chatActivity.currentChannel() == this) {
+				if (netServ.chatActivity != null && netServ.chatActivity.currentChannel() == this) {
 					netServ.chatActivity.removePlayer(p);
 				}
 				netServ.onPlayerLeaveChannel(p.id);

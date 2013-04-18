@@ -36,6 +36,10 @@ public class PlayerProfile implements SerializeBytes {
 				winMsg = b.readString();
 				loseMsg = b.readString();
 				tieMsg = b.readString();			
+			} else {
+				winMsg = "";
+				loseMsg = "";
+				tieMsg = "";
 			}
 		}
 		
