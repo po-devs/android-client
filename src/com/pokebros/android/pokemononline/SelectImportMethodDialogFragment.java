@@ -36,7 +36,7 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 				if (option == 0) { // From File
 					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
-					intent.setType("file/*");
+					intent.setType("file/*.tp");
 					intent = Intent.createChooser(intent, "File explorer");
 					getActivity().startActivityForResult(intent, RegistryActivity.PICKFILE_RESULT_CODE);
 				} else if (option == 1) { // From QR Code

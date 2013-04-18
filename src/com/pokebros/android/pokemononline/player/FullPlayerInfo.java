@@ -19,8 +19,6 @@ public class FullPlayerInfo implements SerializeBytes {
 	public PlayerProfile profile;
 	public Team team;
 	
-	
-	
 	public boolean isDefault = true;
 	
 	public FullPlayerInfo(Bais msg) {

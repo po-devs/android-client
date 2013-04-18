@@ -139,5 +139,6 @@ public class PlayerInfo implements SerializeBytes {
 		this.info = info.info;
 		auth = info.auth;
 		battles = info.battles;
+		tierStandings = info.tierStandings;
 	}
 }

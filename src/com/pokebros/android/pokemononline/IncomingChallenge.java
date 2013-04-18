@@ -7,19 +7,27 @@ import android.os.Bundle;
 
 import com.pokebros.android.pokemononline.battle.ChallengeEnums.ChallengeDesc;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
+import com.pokebros.android.pokemononline.poke.Gen;
 import com.pokebros.android.utilities.Bais;
 
 public class IncomingChallenge {
 	byte desc, mode;
+	String srcTier, destTier;
 	int opponent, clauses;
+	int team;
+	Gen gen;
 	String oppName = null;
-	static int note = new Random(System.currentTimeMillis()).nextInt();
+	static int note = new Random().nextInt();
 	
 	public IncomingChallenge(Bais msg) {
 		desc = msg.readByte();
 		opponent = msg.readInt();
 		clauses = msg.readInt();
 		mode = msg.readByte();
+		team = msg.read();
+		gen = new Gen(msg);
+		srcTier = msg.readString();
+		destTier = msg.readString();
 	}
 	
 	public void setNick(PlayerInfo p) { if(p != null) oppName = p.nick(); }
@@ -36,6 +44,10 @@ public class IncomingChallenge {
 		b.putInt("opponent", opponent);
 		b.putInt("clauses", clauses);
 		b.putString("oppName", oppName);
+		b.putString("srcTier", srcTier);
+		b.putByte("gen", gen.num);
+		b.putByte("subgen", gen.subNum);
+		b.putString("destTier", destTier);
 		return b;
 	}
 }

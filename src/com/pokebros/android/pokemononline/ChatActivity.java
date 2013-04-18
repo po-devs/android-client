@@ -1,5 +1,6 @@
 package com.pokebros.android.pokemononline;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -68,7 +69,8 @@ public class ChatActivity extends Activity {
 		FindBattle,
 		TierSelection,
 		PlayerInfo,
-		ChallengeMode
+		ChallengeMode,
+		ChooseTierMode
 	}
 	
 	public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -447,6 +449,8 @@ public class ChatActivity extends Activity {
 		}
 	}
 	
+	String challengedTier = "";
+	
 	@Override
 	protected Dialog onCreateDialog(final int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -460,7 +464,7 @@ public class ChatActivity extends Activity {
 			View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
 			PlayerInfo opp = netServ.players.get(challenge.opponent);
 			ImageView[] oppPokeIcons = new ImageView[6];
-			TextView oppInfo, oppTeam, oppName, oppTier, oppRating;           
+			TextView oppInfo, oppTeam, oppName;           
 			builder.setView(challengedLayout)
 			.setCancelable(false)
 			.setNegativeButton(this.getString(R.string.decline), new DialogInterface.OnClickListener() {
@@ -470,6 +474,9 @@ public class ChatActivity extends Activity {
 						netServ.socket.sendMessage(
 								constructChallenge(ChallengeDesc.Refused.ordinal(),
 										challenge.opponent,
+										0,
+										challenge.srcTier,
+										challenge.destTier,
 										challenge.clauses,
 										challenge.mode),
 										Command.ChallengeStuff);
@@ -484,6 +491,9 @@ public class ChatActivity extends Activity {
 						netServ.socket.sendMessage(
 								constructChallenge(ChallengeDesc.Accepted.ordinal(),
 										challenge.opponent,
+										0,
+										challenge.srcTier,
+										challenge.destTier,
 										challenge.clauses,
 										challenge.mode),
 										Command.ChallengeStuff);
@@ -511,9 +521,9 @@ public class ChatActivity extends Activity {
 			oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
 			oppName.setText(this.getString(R.string.accept_challenge) + " " + opp.nick() + "?");
 			oppName.setTextSize(18);
-			oppTier = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_tier", "id", packName));
+			//oppTier = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_tier", "id", packName));
 			//oppTier.setText(Html.fromHtml("<b>Tier: </b>" + NetworkService.escapeHtml(opp.tier)));
-			oppRating = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_rating", "id", packName));
+			//oppRating = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_rating", "id", packName));
 			//oppRating.setText(Html.fromHtml("<b>Rating: </b>" + NetworkService.escapeHtml(new Short(opp.rating).toString())));    
 
 			return oppInfoDialog;
@@ -609,7 +619,7 @@ public class ChatActivity extends Activity {
             })
             .setPositiveButton("Challenge", new DialogInterface.OnClickListener(){
             	public void onClick(DialogInterface dialog, int which) {
-        			showDialog(ChatDialog.ChallengeMode.ordinal());
+        			showDialog(ChatDialog.ChooseTierMode.ordinal());
             		removeDialog(id);
             	}});
             final AlertDialog pInfoDialog = builder.create();
@@ -628,6 +638,51 @@ public class ChatActivity extends Activity {
         	ratings.setAdapter(new TwoViewsArrayAdapter<TierStanding>(this, android.R.layout.simple_list_item_2, 
         			android.R.id.text1, android.R.id.text2, lastClickedPlayer.tierStandings, PlayerInfo.tierGetter));
             return pInfoDialog;
+		} case ChooseTierMode: {
+			@SuppressWarnings("unchecked")
+			final ArrayList<PlayerInfo.TierStanding> standings = (ArrayList<PlayerInfo.TierStanding>)lastClickedPlayer.tierStandings.clone();
+			
+			/* If the opponent only has one team, no point in choosing which tier to challenge in */
+			if (standings.size() == 1) {
+				challengedTier = standings.get(0).tier;
+				showDialog(ChatDialog.ChallengeMode.ordinal());
+				return null;
+			}
+			
+			final String[] tiers = new String[standings.size()];
+			int checkedItem = -1;
+			for (int i = 0; i < standings.size(); i++) {
+				tiers[i] = standings.get(i).tier + " (" + standings.get(i).rating + ")";
+				
+				if (standings.get(i).tier == netServ.me.tierStandings.get(0).tier) {
+					checkedItem = i;
+				}
+			}
+			builder.setSingleChoiceItems(tiers, checkedItem, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					if (which == -1) {
+						which = 0;
+					}
+					challengedTier = standings.get(which).tier; 
+					showDialog(ChatDialog.ChallengeMode.ordinal());
+					removeDialog(id);
+				}
+			})
+            .setNegativeButton("Back", new DialogInterface.OnClickListener(){
+            	public void onClick(DialogInterface dialog, int which) {
+            		removeDialog(id);
+            	}
+            })
+            .setOnCancelListener(new DialogInterface.OnCancelListener(){
+            	public void onCancel(DialogInterface dialog) {
+            		removeDialog(id);
+            	}
+            })
+            .setTitle("Select tier");
+			return builder.create();
 		} case ChallengeMode: {
             final Clauses[] clauses = Clauses.values();
             final int numClauses = clauses.length;
@@ -647,8 +702,16 @@ public class ChatActivity extends Activity {
 					int clauses = 0;
 					for (int i = 0; i < numClauses; i++)
 						clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
-					if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
-						netServ.socket.sendMessage(constructChallenge(ChallengeDesc.Sent.ordinal(), lastClickedPlayer.id, clauses, Mode.Singles.ordinal()), Command.ChallengeStuff);
+					if (netServ != null && netServ.socket != null && netServ.socket.isConnected()) {
+						ArrayList<TierStanding> standings = netServ.me.tierStandings;
+						netServ.socket.sendMessage(constructChallenge(ChallengeDesc.Sent.ordinal(), 
+								lastClickedPlayer.id, 
+								0, 
+								standings.get(0).tier, 
+								challengedTier,
+								clauses, 
+								Mode.Singles.ordinal()), Command.ChallengeStuff);
+					}
 					removeDialog(id);
 				}
 			})
@@ -701,7 +764,7 @@ public class ChatActivity extends Activity {
 				if (netServ.findingBattle) {
 					netServ.findingBattle = false;
 					netServ.socket.sendMessage(
-							constructChallenge(ChallengeDesc.Cancelled.ordinal(), 0, Clauses.SleepClause.mask(), Mode.Singles.ordinal()),
+							constructChallenge(ChallengeDesc.Cancelled.ordinal(), 0, 0, "", "", Clauses.SleepClause.mask(), Mode.Singles.ordinal()),
 							Command.ChallengeStuff);
 				}
 				else {
@@ -773,7 +836,7 @@ public class ChatActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
     	switch(ChatContext.values()[item.getItemId()]){
     	case ChallengePlayer:
-    		showDialog(ChatDialog.ChallengeMode.ordinal());
+    		showDialog(ChatDialog.ChooseTierMode.ordinal());
     		break;
     	case ViewPlayerInfo:
     		showDialog(ChatDialog.PlayerInfo.ordinal());
@@ -829,12 +892,16 @@ public class ChatActivity extends Activity {
 		ChatActivity.this.finish();
     }
     
-    private Baos constructChallenge(int desc, int opp, int clauses, int mode) {
+    private Baos constructChallenge(int desc, int opp, int team, String srcTier, String destTier, int clauses, int mode) {
     	Baos challenge = new Baos();
     	challenge.write(desc);
     	challenge.putInt(opp);
     	challenge.putInt(clauses);
     	challenge.write(mode);
+    	challenge.write(team);
+    	challenge.putBaos(netServ.meLoginPlayer.team.gen);
+    	challenge.putString(srcTier);
+    	challenge.putString(destTier);
     	return challenge;
     }
     

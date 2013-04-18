@@ -5,7 +5,7 @@ import com.pokebros.android.utilities.Bais;
 import com.pokebros.android.utilities.Baos;
 
 public class Team implements SerializeBytes {
-	protected Gen gen = new Gen();
+	public Gen gen = new Gen();
 
 	protected String defaultTier;
 	protected TeamPoke[] pokes = new TeamPoke[6];

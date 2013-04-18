@@ -10,6 +10,7 @@ public class ChallengeEnums {
 		Refused,
 		InvalidTeam,
 		InvalidGen,
+		InvalidTier,
 
 		ChallengeDescLast
 	};

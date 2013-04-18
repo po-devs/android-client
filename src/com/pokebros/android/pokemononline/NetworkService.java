@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.pokebros.android.pokemononline.battle.Battle;
 import com.pokebros.android.pokemononline.battle.BattleConf;
 import com.pokebros.android.pokemononline.battle.BattleDesc;
+import com.pokebros.android.pokemononline.battle.ChallengeEnums;
 import com.pokebros.android.pokemononline.battle.SpectatingBattle;
 import com.pokebros.android.pokemononline.player.FullPlayerInfo;
 import com.pokebros.android.pokemononline.player.PlayerInfo;
@@ -86,7 +88,7 @@ public class NetworkService extends Service {
 		return activeBattles.get(battleId);
 	}
 
-	private FullPlayerInfo meLoginPlayer;
+	public FullPlayerInfo meLoginPlayer;
 	public Hashtable<Integer, Battle> activeBattles = new Hashtable<Integer, Battle>();
 	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
@@ -593,6 +595,48 @@ public class NetworkService extends Service {
 			int player2 = msg.readInt();
 
 			addBattle(battleId, new BattleDesc(player1, player2));
+		} case ChallengeStuff: {
+			IncomingChallenge challenge = new IncomingChallenge(msg);
+			challenge.setNick(players.get(challenge.opponent));
+			System.out.println("CHALLENGE STUFF: " + ChallengeEnums.ChallengeDesc.values()[challenge.desc]);
+			switch(ChallengeEnums.ChallengeDesc.values()[challenge.desc]) {
+			case Sent:
+				if (challenge.isValidChallenge(players)) {
+					challenges.addFirst(challenge);
+					if (chatActivity != null && chatActivity.hasWindowFocus()) {
+						chatActivity.notifyChallenge();
+					} else {
+						Notification note = new Notification(R.drawable.icon, "You've been challenged by " + challenge.oppName + "!", System.currentTimeMillis());
+						note.setLatestEventInfo(this, "Pokemon Online", "You've been challenged!", PendingIntent.getActivity(this, 0,
+								new Intent(NetworkService.this, ChatActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK));
+						getNotificationManager().notify(IncomingChallenge.note, note);
+					}
+				}
+				break;
+			case Refused:
+				if(challenge.oppName != null && chatActivity != null) {
+					chatActivity.makeToast(challenge.oppName + " refused your challenge", "short");
+				}
+				break;
+			case Busy:
+				if(challenge.oppName != null && chatActivity != null) {
+					chatActivity.makeToast(challenge.oppName + " is busy", "short");
+				}
+				break;
+			case InvalidTeam:
+				if (chatActivity != null)
+					chatActivity.makeToast("Challenge failed due to invalid team", "long");
+				break;
+			case InvalidGen:
+				if (chatActivity != null)
+					chatActivity.makeToast("Challenge failed due to invalid gen", "long");
+				break;
+			case InvalidTier:
+				if (chatActivity != null)
+					chatActivity.makeToast("Challenge failed due to invalid tier", "long");
+				break;
+			}
+			break;
 		}
 		/*		case JoinChannel:
 		case LeaveChannel:
@@ -633,46 +677,7 @@ public class NetworkService extends Service {
 				prevTier = t;
 			}
 			break;
-		} case ChallengeStuff: {
-			IncomingChallenge challenge = new IncomingChallenge(msg);
-			challenge.setNick(players.get(challenge.opponent));
-			System.out.println("CHALLENGE STUFF: " + ChallengeEnums.ChallengeDesc.values()[challenge.desc]);
-			switch(ChallengeEnums.ChallengeDesc.values()[challenge.desc]) {
-			case Sent:
-				if (challenge.isValidChallenge(players)) {
-					challenges.addFirst(challenge);
-					if (chatActivity != null && chatActivity.hasWindowFocus()) {
-						chatActivity.notifyChallenge();
-					} else {
-						Notification note = new Notification(R.drawable.icon, "You've been challenged by " + challenge.oppName + "!", System.currentTimeMillis());
-						note.setLatestEventInfo(this, "POAndroid", "You've been challenged!", PendingIntent.getActivity(this, 0,
-								new Intent(NetworkService.this, ChatActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK));
-						noteMan.cancel(IncomingChallenge.note);
-						noteMan.notify(IncomingChallenge.note, note);
-					}
-				}
-				break;
-			case Refused:
-				if(challenge.oppName != null && chatActivity != null) {
-					chatActivity.makeToast(challenge.oppName + " refused your challenge", "short");
-				}
-				break;
-			case Busy:
-				if(challenge.oppName != null && chatActivity != null) {
-					chatActivity.makeToast(challenge.oppName + " is busy", "short");
-				}
-				break;
-			case InvalidTeam:
-				if (chatActivity != null)
-					chatActivity.makeToast("Challenge failed due to invalid team", "long");
-				break;
-			case InvalidGen:
-				if (chatActivity != null)
-					chatActivity.makeToast("Challenge failed due to invalid gen", "long");
-				break;
-			}
-			break;
-		}*/ case Logout: {
+		} */ case Logout: {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
 			removePlayer(playerID);
