@@ -36,7 +36,7 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 					DialogFragment fragment = new ImportTeamFromFileDialogFragment();
 					fragment.show(getActivity().getSupportFragmentManager(), "team-from-file");
 				} else if (option == 1) { // From QR Code
-					AlertDialog result = IntentIntegrator.initiateScan(getActivity());
+					AlertDialog result = (new IntentIntegrator(getActivity())).initiateScan();
 					if (result != null)
 						result.show();
 				}
