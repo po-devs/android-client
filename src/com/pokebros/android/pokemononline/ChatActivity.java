@@ -508,16 +508,9 @@ public class ChatActivity extends Activity {
 			});
 			final AlertDialog oppInfoDialog = builder.create();
 
-
-			for(int i = 0; i < 6; i++){
-				oppPokeIcons[i] = (ImageView)challengedLayout.findViewById(getResources().getIdentifier("player_info_poke" + 
-						(i+1), "id", packName));
-				//oppPokeIcons[i].setImageDrawable(getIcon(opp.pokes[i]));
-			}
 			oppInfo = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info", "id", packName));
 			oppInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(opp.info())));
-			oppTeam = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_team", "id", packName));
-			oppTeam.setText(opp.nick() + "'s team:");
+
 			oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
 			oppName.setText(this.getString(R.string.accept_challenge) + " " + opp.nick() + "?");
 			oppName.setTextSize(18);
