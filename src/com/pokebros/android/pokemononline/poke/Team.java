@@ -42,7 +42,7 @@ public class Team implements SerializeBytes {
 		for(int i = 0; i < 6; i++)
 			b.putBaos(pokes[i]);
 		
-		b.putVersionControl(0, b);
+		bytes.putVersionControl(0, b);
 	}
 
 	public boolean isValid() {

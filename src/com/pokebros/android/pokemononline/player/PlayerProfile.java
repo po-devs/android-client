@@ -39,8 +39,8 @@ public class PlayerProfile implements SerializeBytes {
 			}
 		}
 		
-		public TrainerInfo(short avatar, String info, String winMsg, String loseMsg, String tieMsg) {
-			this.avatar = avatar;
+		public TrainerInfo(int avatar, String info, String winMsg, String loseMsg, String tieMsg) {
+			this.avatar = (short)avatar;
 			this.info = info;
 			this.winMsg = winMsg;
 			this.loseMsg = loseMsg;
@@ -65,6 +65,15 @@ public class PlayerProfile implements SerializeBytes {
 	
 	public TrainerInfo trainerInfo;
 	
+	public PlayerProfile() {
+		Random r = new Random();
+		
+		nick = "guest" + r.nextInt(65536);
+		color = new QColor("white");
+		
+		trainerInfo = new TrainerInfo(72, "Android player", "", "", "");
+	}
+	
 	public PlayerProfile(Bais msg) {
 		nick = msg.readString();
 		color = new QColor(msg);
@@ -80,7 +89,7 @@ public class PlayerProfile implements SerializeBytes {
 		nick = prefs.getString("name", "guest" + r.nextInt(65536));
 		color = new QColor(prefs.getString("color", "white")); //Default color, so that server won't pick it up
 		
-		trainerInfo = new TrainerInfo((short) prefs.getInt("avatar", 72), prefs.getString("info", "Android player."),
+		trainerInfo = new TrainerInfo(prefs.getInt("avatar", 72), prefs.getString("info", "Android player."),
 				prefs.getString("winMsg", ""), prefs.getString("loseMsg", ""), prefs.getString("tieMsg", ""));
 	}
 	
