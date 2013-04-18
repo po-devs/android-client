@@ -8,7 +8,7 @@ import org.acra.annotation.ReportsCrashes;
 import android.app.Application;
 
 @ReportsCrashes(formKey = "",
-				mailTo = "po-android@umich.edu",
+				mailTo = "poscripters@gmail.com",
 				mode = ReportingInteractionMode.TOAST,
                 resToastText = R.string.crash_toast_text,
                 customReportContent = { ReportField.PACKAGE_NAME, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.BRAND, ReportField.STACK_TRACE }
