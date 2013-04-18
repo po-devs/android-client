@@ -310,6 +310,9 @@ public class NetworkService extends Service {
 				/* Data Flags: supportsZipCompression, isLadderEnabled, wantsIdsWithMessages, isIdle */
 				loginCmd.putFlags(new boolean []{false,true,true,false});
 				
+				/* Reconnect even if all the bits are different */
+				loginCmd.write(0);
+				
 				/* No default channel, no auto join channels */
 				
 				if (meLoginPlayer.color().colorInt != Color.WHITE) {
