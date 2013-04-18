@@ -128,8 +128,8 @@ public class Baos extends ByteArrayOutputStream {
 	 * @return Self
 	 */
 	public Baos putVersionControl(int version, Baos b) {
+		putShort((short)(b.size()+1));
 		write((byte) version);
-		putInt(b.size());
 		write(b.buf, 0, b.count);
 		return this;
 	}

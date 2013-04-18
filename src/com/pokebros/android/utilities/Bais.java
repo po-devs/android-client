@@ -73,8 +73,16 @@ public class Bais extends ByteArrayInputStream {
 		return new Bais(bools.toByteArray());
 	}
 	
+	public byte[] readVersionControlData() {
+		return readQByteArray(true);
+	}
+	
 	public byte[] readQByteArray() {
-		int len = readInt();
+		return readQByteArray(false);
+	}
+	
+	public byte[] readQByteArray(boolean isShort) {
+		int len = isShort ? ((int) (readShort()+65536)) % 65536  : readInt();
 		if (len < 0) {
 			// XXX Bad things happened do something about them.
 			return null;

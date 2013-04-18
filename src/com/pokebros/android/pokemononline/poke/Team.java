@@ -12,8 +12,8 @@ public class Team implements SerializeBytes {
 	
 	/* Used internally only */
 	public Team(Bais msg) {
-		int version = (int) msg.read();
-		Bais b = new Bais(msg.readQByteArray());
+		Bais b = new Bais(msg.readVersionControlData());
+		int version = (int) b.read();
 		
 		if (version == 0) {
 			defaultTier = b.readBool() ? b.readString() : "";

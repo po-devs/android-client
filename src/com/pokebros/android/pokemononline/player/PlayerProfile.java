@@ -20,8 +20,8 @@ public class PlayerProfile implements SerializeBytes {
 		
 		public TrainerInfo(Bais msg) {
 			/* Version control! */
-			byte version = msg.readByte();
-			Bais b = new Bais(msg.readQByteArray());
+			Bais b = new Bais(msg.readVersionControlData());
+			byte version = b.readByte();
 			
 			if (version != 0) {
 				
