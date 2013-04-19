@@ -56,7 +56,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private EditText editAddr;
 	private EditText editName;
 	private boolean bound = false;
-	private FullPlayerInfo meLoginPlayer;
+	private FullPlayerInfo meLoginPlayer = new FullPlayerInfo();
 	private SharedPreferences prefs;
 
 	enum RegistryDialog {

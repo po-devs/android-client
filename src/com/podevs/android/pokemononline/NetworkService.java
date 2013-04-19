@@ -298,7 +298,7 @@ public class NetworkService extends Service {
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
-				loginCmd.putFlags(new boolean []{true,true,true,false,false,meLoginPlayer.color().colorInt != Color.WHITE, true, 
+				loginCmd.putFlags(new boolean []{true,true,true,false,false,meLoginPlayer.color().isValid(), true, 
 						meLoginPlayer.team.isValid()}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
@@ -317,7 +317,7 @@ public class NetworkService extends Service {
 				
 				/* No default channel, no auto join channels */
 				
-				if (meLoginPlayer.color().colorInt != Color.WHITE) {
+				if (meLoginPlayer.color().isValid()) {
 					loginCmd.putBaos(meLoginPlayer.color());
 				}
 				

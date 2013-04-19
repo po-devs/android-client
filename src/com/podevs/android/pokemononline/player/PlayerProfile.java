@@ -73,7 +73,7 @@ public class PlayerProfile implements SerializeBytes {
 		Random r = new Random();
 		
 		nick = "guest" + r.nextInt(65536);
-		color = new QColor("white");
+		color = new QColor();
 		
 		trainerInfo = new TrainerInfo(72, "Android player", "", "", "");
 	}
@@ -91,7 +91,7 @@ public class PlayerProfile implements SerializeBytes {
 		Random r = new Random();
 		
 		nick = prefs.getString("name", "guest" + r.nextInt(65536));
-		color = new QColor(prefs.getString("color", "white")); //Default color, so that server won't pick it up
+		color = new QColor(prefs.getString("color", "")); //Default color, so that server won't pick it up
 		
 		trainerInfo = new TrainerInfo(prefs.getInt("avatar", 72), prefs.getString("info", "Android player."),
 				prefs.getString("winMsg", ""), prefs.getString("loseMsg", ""), prefs.getString("tieMsg", ""));
@@ -113,7 +113,7 @@ public class PlayerProfile implements SerializeBytes {
 		editor.putString("loseMsg", trainerInfo.loseMsg);
 		editor.putString("tieMsg", trainerInfo.tieMsg);
 		editor.putInt("avatar", trainerInfo.avatar);
-		//editor.putString("color", color.toHexString());
+		editor.putString("color", color.toHexString());
 		
 		editor.commit();
 	}

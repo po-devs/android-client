@@ -7,7 +7,7 @@ import com.podevs.android.utilities.Baos;
 public class Team implements SerializeBytes {
 	public Gen gen = new Gen();
 
-	protected String defaultTier;
+	protected String defaultTier = "";
 	protected TeamPoke[] pokes = new TeamPoke[6];
 	
 	/* Used internally only */

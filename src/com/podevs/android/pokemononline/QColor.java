@@ -32,6 +32,8 @@ public class QColor implements SerializeBytes {
 	}
 	
 	public QColor() {
+		invalid = true;
+		colorInt = Color.BLACK;
 	}
 	
 	public QColor(String hex) {
@@ -67,6 +69,10 @@ public class QColor implements SerializeBytes {
 		} else {
 			return String.format("#%02x%02x%02x%02x", Color.alpha(colorInt), Color.red(colorInt), Color.green(colorInt), Color.blue(colorInt));
 		}
+	}
+	
+	public boolean isValid() {
+		return !invalid;
 	}
 }
 

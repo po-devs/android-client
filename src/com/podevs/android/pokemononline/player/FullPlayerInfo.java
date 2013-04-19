@@ -53,6 +53,11 @@ public class FullPlayerInfo implements SerializeBytes {
 		}
 	}
 	
+	public FullPlayerInfo() {
+		team = new Team();
+		profile = new PlayerProfile();
+	}
+
 	public String nick() { return profile.nick; }
 	public QColor color() { return profile.color; }
 	
