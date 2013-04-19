@@ -873,20 +873,21 @@ public class ChatActivity extends Activity {
     }
 
     private void disconnect() {
-		if (netServ != null)
+		if (netServ != null) {
 			netServ.disconnect();
-		if (progressDialog != null)
+		}
+		if (progressDialog != null) {
 			progressDialog.dismiss();
+		}
 		
-		stopService(new Intent(this, NetworkService.class));
 		Intent intent = new Intent(this, RegistryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra("sticky", true);
 		
 		if(netServ == null || netServ.socket == null)
 			intent.putExtra("failedConnect", true);
-		startActivity(intent);
 		ChatActivity.this.finish();
+		startActivity(intent);
     }
     
     private Baos constructChallenge(int desc, int opp, int team, String srcTier, String destTier, int clauses, int mode) {
