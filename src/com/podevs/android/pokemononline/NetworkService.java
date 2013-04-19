@@ -598,7 +598,7 @@ public class NetworkService extends Service {
 		} case ChallengeStuff: {
 			IncomingChallenge challenge = new IncomingChallenge(msg);
 			challenge.setNick(players.get(challenge.opponent));
-			System.out.println("CHALLENGE STUFF: " + ChallengeEnums.ChallengeDesc.values()[challenge.desc]);
+
 			switch(ChallengeEnums.ChallengeDesc.values()[challenge.desc]) {
 			case Sent:
 				if (challenge.isValidChallenge(players)) {
