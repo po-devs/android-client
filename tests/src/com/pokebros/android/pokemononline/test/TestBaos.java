@@ -2,10 +2,10 @@ package com.pokebros.android.pokemononline.test;
 
 import android.test.AndroidTestCase;
 
-import com.pokebros.android.pokemononline.player.PlayerProfile;
-import com.pokebros.android.pokemononline.player.PlayerProfile.TrainerInfo;
-import com.pokebros.android.utilities.Bais;
-import com.pokebros.android.utilities.Baos;
+import com.podevs.android.pokemononline.player.PlayerProfile;
+import com.podevs.android.pokemononline.player.PlayerProfile.TrainerInfo;
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
 
 /* Run while in this file to run the JUnit test instead of the application */
 public class TestBaos extends AndroidTestCase {	
