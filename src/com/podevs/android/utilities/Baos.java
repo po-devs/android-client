@@ -90,11 +90,14 @@ public class Baos extends ByteArrayOutputStream {
 	}
 	
 	public Baos putString(String s) {
-		putInt(s.length());
+		byte bytes [];
 		try {
-			write(s.getBytes("UTF-8"));
+			bytes = s.getBytes("UTF-8");
+			putInt(bytes.length);
+			write(bytes);
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "Unsupported encoding while trying to put string");
+			putInt(0);
 		} catch (IOException e) {
 			Log.e(TAG, "IOException while trying to put string");
 		}
