@@ -96,7 +96,7 @@ public class ChatActivity extends Activity {
 	private ListView chatView;
 	private EditText chatInput;
 	private ViewPager chatViewSwitcher;
-	private String packName = "com.pokebros.android.pokemononline";
+	private String packName = "com.podevs.android.pokemononline";
 	private PlayerInfo lastClickedPlayer;
 	private Channel lastClickedChannel;
 	private boolean loading = true;
@@ -244,8 +244,10 @@ public class ChatActivity extends Activity {
 			}
 		});
         
-        bindService(new Intent(ChatActivity.this, NetworkService.class), connection,
-        		Context.BIND_AUTO_CREATE);
+        Intent serviceIntent = new Intent(ChatActivity.this, NetworkService.class);
+        
+        startService(serviceIntent);
+        bindService(serviceIntent, connection, BIND_AUTO_CREATE);
         chatInput = (EditText) chatLayout.findViewById(R.id.chatInput);
 		// Hide the soft-keyboard when the activity is created
         chatInput.setInputType(InputType.TYPE_NULL);
@@ -875,6 +877,8 @@ public class ChatActivity extends Activity {
 			netServ.disconnect();
 		if (progressDialog != null)
 			progressDialog.dismiss();
+		
+		stopService(new Intent(this, NetworkService.class));
 		Intent intent = new Intent(this, RegistryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra("sticky", true);

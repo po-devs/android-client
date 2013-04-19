@@ -47,7 +47,7 @@ import com.podevs.android.utilities.StringUtilities;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
-	final static String pkgName = "com.pokebros.android.pokemononline";
+	final static String pkgName = "com.podevs.android.pokemononline";
 
 	private final IBinder binder = new LocalBinder();
 	//public Channel currentChannel = null;

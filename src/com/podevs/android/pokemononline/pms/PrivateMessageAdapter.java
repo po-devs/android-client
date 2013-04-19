@@ -13,7 +13,7 @@ import com.podevs.android.pokemononline.pms.PrivateMessage.PrivateMessageListene
 
 public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> implements PrivateMessageListener {
 	PrivateMessage pm;
-	private String packName = "com.pokebros.android.pokemononline";
+	private String packName = "com.podevs.android.pokemononline";
 	
 	public PrivateMessageAdapter(Context context, PrivateMessage pm) {
 		super(context, 0, pm.messages);

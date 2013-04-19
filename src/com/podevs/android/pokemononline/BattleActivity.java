@@ -83,7 +83,7 @@ class MyResultReceiver extends ResultReceiver {
 @SuppressLint("DefaultLocale")
 public class BattleActivity extends Activity implements MyResultReceiver.Receiver{
 	private MyResultReceiver mRecvr;
-    private static ComponentName servName = new ComponentName("com.pokebros.android.pokemonresources", "com.pokebros.android.pokemonresources.SpriteService");
+    private static ComponentName servName = new ComponentName("com.podevs.android.pokemonresources", "com.podevs.android.pokemonresources.SpriteService");
 	
 	public enum BattleDialog {
 		RearrangeTeam,
@@ -94,7 +94,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
 
 	public final static int SWIPE_TIME_THRESHOLD = 100;
-    final static String pkgName = "com.pokebros.android.pokemononline";
+    final static String pkgName = "com.podevs.android.pokemononline";
 	private static final String TAG = "Battle";
     
 	DragLayer mDragLayer;
@@ -258,7 +258,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         mRecvr = new MyResultReceiver(new Handler());
         mRecvr.setReceiver(this);
         try {
-			getPackageManager().getApplicationInfo("com.pokebros.android.pokemonresources", 0);
+			getPackageManager().getApplicationInfo("com.podevs.android.pokemonresources", 0);
 		} catch (NameNotFoundException e) {
 			Log.d("BattleActivity", "Animated sprites not found");
 			useAnimSprites = false;

@@ -73,7 +73,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 	        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	            if ("com.pokebros.android.pokemononline.NetworkService".equals(service.service.getClassName())) {
+	            if ("com.podevs.android.pokemononline.NetworkService".equals(service.service.getClassName())) {
 					startActivity(new Intent(RegistryActivity.this, ChatActivity.class));
 	            	finish();
 	            	return;
