@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="dix"
+        android:text="@string/connecttoserver"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="35sp" >
 
@@ -40,7 +40,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/inputname"
-            android:maxLength="12" 
+            android:maxLength="20" 
             >
         </EditText>
     </LinearLayout>

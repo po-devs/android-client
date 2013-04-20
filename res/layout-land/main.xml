@@ -37,6 +37,7 @@
             android:layout_width="fill_parent"
             android:layout_height="24dp"
             android:padding="3dp"
+            android:maxLength="20"
             android:hint="@string/inputname"
             android:textSize="12sp">
         </EditText>
