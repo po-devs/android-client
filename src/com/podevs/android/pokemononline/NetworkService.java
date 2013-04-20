@@ -756,8 +756,8 @@ public class NetworkService extends Service {
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg);
 				// Start the battle
-				Battle battle = new Battle(conf, msg, players.get(conf.id(0)),
-						players.get(conf.id(1)), myid, battleId, this);
+				Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)),
+						getNonNullPlayer(conf.id(1)), myid, battleId, this);
 				activeBattles.put(battleId, battle);
 
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
@@ -788,8 +788,8 @@ public class NetworkService extends Service {
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg);
-	            PlayerInfo p1 = players.get(conf.id(0));
-	            PlayerInfo p2 = players.get(conf.id(1));
+	            PlayerInfo p1 = getNonNullPlayer(conf.id(0));
+	            PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);
 	            spectatedBattles.put(battleId, battle);
 	            
@@ -854,6 +854,17 @@ public class NetworkService extends Service {
 			chatActivity.updateChat();
 	}
 	
+	private PlayerInfo getNonNullPlayer(int id) {
+		PlayerInfo p = players.get(id);
+		
+		if (p == null) {
+			p = new PlayerInfo();
+			p.nick = "???";
+			p.id = id;
+		}
+		return null;
+	}
+
 	/**
 	 * Creates a PM window with the other guy
 	 * @param playerId the other guy's id
