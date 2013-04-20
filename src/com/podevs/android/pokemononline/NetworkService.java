@@ -595,6 +595,7 @@ public class NetworkService extends Service {
 			int player2 = msg.readInt();
 
 			addBattle(battleId, new BattleDesc(player1, player2));
+			break;
 		} case ChallengeStuff: {
 			IncomingChallenge challenge = new IncomingChallenge(msg);
 			challenge.setNick(players.get(challenge.opponent));
