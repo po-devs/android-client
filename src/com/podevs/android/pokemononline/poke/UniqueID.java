@@ -22,6 +22,21 @@ public class UniqueID implements SerializeBytes {
 		pokeNum = 0;
 		subNum = 0;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		try {
+			UniqueID o = (UniqueID) other;
+			return pokeNum == o.pokeNum && subNum == o.subNum;
+		} catch (ClassCastException e) {
+			return false;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int)pokeNum + subNum*65536;
+	}
 
 	public void serializeBytes(Baos bytes) {
 		bytes.putShort(pokeNum);

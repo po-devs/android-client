@@ -2,15 +2,19 @@ package com.podevs.android.pokemononline.battle;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.Html;
 import android.util.Log;
 
+import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.StringUtilities;
 
 public class Battle extends SpectatingBattle {
 	static private final String TAG = "Battle";	
@@ -273,6 +277,13 @@ public class Battle extends SpectatingBattle {
 			shouldShowPreview = true;
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();
+			
+			DataBaseHelper db = netServ.db;
+			String names[] = {PokemonInfo.name(db, oppTeam.poke(0).uID), PokemonInfo.name(db, oppTeam.poke(1).uID),
+					PokemonInfo.name(db, oppTeam.poke(2).uID), PokemonInfo.name(db, oppTeam.poke(3).uID),
+					PokemonInfo.name(db, oppTeam.poke(4).uID), PokemonInfo.name(db, oppTeam.poke(5).uID)};
+			
+			writeToHist(Html.fromHtml("<br><font color=\"blue\"><b>Opponent's team: </b></font>" + StringUtilities.join(names, " / ")));
 			break;
 		} case ChangePP: {
 			byte moveNum = msg.readByte();

@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-	private static final int DATABASE_VERSION = 6; // Increment when database should be updated on users' devices
+	private static final int DATABASE_VERSION = 7; // Increment when database should be updated on users' devices
 	private static final String DBNAME = "po_database";
 	public static final String ERROR = "Missingno.";
 	private final String dbPath;

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -41,7 +42,7 @@ public class BattleMove implements SerializeBytes {
 	
 	public BattleMove(int n, DataBaseHelper db) {
 		num = (short) n;
-		name = db.query("SELECT name FROM [Moves] WHERE _id = " + num);
+		name = MoveInfo.name(db, n);
 		try {
 			type = new Byte(db.query("SELECT type FROM [Moves] WHERE _id = " + num));
 		} catch (NumberFormatException e) {

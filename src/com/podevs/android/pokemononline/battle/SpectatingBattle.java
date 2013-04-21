@@ -15,20 +15,21 @@ import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import com.podevs.android.pokemononline.BattleActivity;
-import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.ColorEnums.QtColor;
 import com.podevs.android.pokemononline.ColorEnums.StatusColor;
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;
 import com.podevs.android.pokemononline.ColorEnums.TypeForWeatherColor;
+import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.podevs.android.pokemononline.player.PlayerInfo;
-import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
-import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.poke.PokeEnums.Stat;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.pokemononline.poke.PokeEnums.StatusFeeling;
 import com.podevs.android.pokemononline.poke.PokeEnums.Weather;
 import com.podevs.android.pokemononline.poke.PokeEnums.WeatherState;
+import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
+import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.StringUtilities;
 
@@ -215,8 +216,7 @@ public class SpectatingBattle {
 			boolean silent = msg.readBool();
 			if (!silent) {
 			writeToHist(Html.fromHtml("<br>" + tu(currentPoke(player).nick +
-					" used <font color =" + TypeColor.values()[color] +
-					netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + attack) + "</font>!")));
+					" used <font color =" + TypeColor.values()[color] + MoveInfo.name(netServ.db, attack) + "</font>!")));
 			}
 			break;
 		} case BeginTurn: {
