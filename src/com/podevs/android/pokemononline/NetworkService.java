@@ -863,7 +863,8 @@ public class NetworkService extends Service {
 			p.nick = "???";
 			p.id = id;
 		}
-		return null;
+		
+		return p;
 	}
 
 	/**
