@@ -147,7 +147,7 @@ public class Battle extends SpectatingBattle {
 			break;
 		} case TempPokeChange: {
 			byte id = msg.readByte();
-			System.out.println("Recieved: " + TempPokeChange.values()[id]);
+			
 			switch(TempPokeChange.values()[id]) {
 			case TempMove:
 			case DefMove:

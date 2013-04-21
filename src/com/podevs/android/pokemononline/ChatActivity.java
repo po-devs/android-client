@@ -465,8 +465,13 @@ public class ChatActivity extends Activity {
 			final IncomingChallenge challenge = netServ.challenges.poll();
 			View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
 			PlayerInfo opp = netServ.players.get(challenge.opponent);
-			ImageView[] oppPokeIcons = new ImageView[6];
-			TextView oppInfo, oppTeam, oppName;           
+			
+			/* Like when activity resumed after a long time */
+			if (opp == null) {
+				return null;
+			}
+
+			TextView oppInfo, oppName;           
 			builder.setView(challengedLayout)
 			.setCancelable(false)
 			.setNegativeButton(this.getString(R.string.decline), new DialogInterface.OnClickListener() {
