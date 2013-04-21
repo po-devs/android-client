@@ -373,7 +373,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	else
     		uID = poke.specialSprites.peek();
     	if (uID.pokeNum < 0)
-    		res = "empty_sprite.png";
+    		res = "empty_sprite";
     	else {
         	res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
         			(front ? "_front" : "_back");
