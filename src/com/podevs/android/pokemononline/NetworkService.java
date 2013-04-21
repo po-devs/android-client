@@ -12,17 +12,20 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -48,6 +51,7 @@ import com.podevs.android.utilities.StringUtilities;
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
 	final static String pkgName = "com.podevs.android.pokemononline";
+	final static String defaultKey = "default chan for ";
 
 	private final IBinder binder = new LocalBinder();
 	//public Channel currentChannel = null;
@@ -280,13 +284,19 @@ public class NetworkService extends Service {
 			closeBattle(battle.bID);
 		}
 	}
+	
+	private String ip;
+	private int port;
 
-	public void connect(final String ip, final int port) {
+	public void connect(String ip, int port) {
+		this.ip = ip;
+		this.port = port;
 		// XXX This should probably have a timeout
 		new Thread(new Runnable() {
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 			public void run() {
 				try {
-					socket = new PokeClientSocket(ip, port);
+					socket = new PokeClientSocket(NetworkService.this.ip, NetworkService.this.port);
 				} catch (IOException e) {
 					failedConnect = true;
 					if(chatActivity != null) {
@@ -297,9 +307,24 @@ public class NetworkService extends Service {
 				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
-				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
-				loginCmd.putFlags(new boolean []{true,true,true,false,false,meLoginPlayer.color().isValid(), true, 
-						meLoginPlayer.team.isValid()}); //Network flags
+				
+				String defaultChannel = null;
+				Set<String> autoJoinChannels = null;
+				
+				SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);
+				String key = NetworkService.this.ip + ":" + NetworkService.this.port;
+				
+				if (prefs.contains(key)) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						autoJoinChannels = prefs.getStringSet(key, null);
+					}
+				}
+				defaultChannel = prefs.getString(defaultKey+key, null);
+				
+				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, 
+				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
+				loginCmd.putFlags(new boolean []{true,true,true,defaultChannel != null, autoJoinChannels != null,
+						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid()}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
@@ -315,7 +340,16 @@ public class NetworkService extends Service {
 				/* Reconnect even if all the bits are different */
 				loginCmd.write(0);
 				
-				/* No default channel, no auto join channels */
+				if (defaultChannel != null) {
+					loginCmd.putString(defaultChannel);
+				}
+				if (autoJoinChannels != null) {
+					Object channels [] = autoJoinChannels.toArray();
+					loginCmd.putInt(channels.length);
+					for (int i = 0; i < channels.length; i++) {
+						loginCmd.putString(channels[i].toString());
+					}
+				}
 				
 				if (meLoginPlayer.color().isValid()) {
 					loginCmd.putBaos(meLoginPlayer.color());
@@ -1084,5 +1118,48 @@ public class NetworkService extends Service {
 		socket.sendMessage(bb, Command.SendPM);
 		
 		pmedPlayers.add(id);
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void updateJoinedChannels() {
+		if (chatActivity != null) {
+			chatActivity.populateUI(true);
+			chatActivity.progressDialog.dismiss();
+		}
+		
+		SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);
+		SharedPreferences.Editor edit = prefs.edit();
+		
+		String key = this.ip + ":" + this.port;
+		
+		if (joinedChannels.size() == 1 && joinedChannels.getFirst().id == 0) {
+			/* Only joined default channel! */
+			edit.remove(key).remove(defaultKey+key);
+		} else {
+			boolean hasDefault = false;
+			HashSet<String> autoJoin = new HashSet<String>();
+			
+			for (Channel chan : joinedChannels) {
+				if (chan.id == 0) {
+					hasDefault = true;
+				} else {
+					autoJoin.add(chan.name);
+				}
+			}
+			
+			if (hasDefault) {
+				edit.remove(defaultKey+key);
+			} else {
+				String firstChan = joinedChannels.getFirst().name;
+				autoJoin.remove(firstChan);
+				
+				edit.putString(defaultKey+key, firstChan);
+			}
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				edit.putStringSet(key, autoJoin);
+			}
+		}
+		edit.commit();
 	}
 }

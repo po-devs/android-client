@@ -93,12 +93,10 @@ public class Channel {
 			} case JoinChannel: {
 				int pid = msg.readInt();
 				if (pid == netServ.myid) { // We joined the channel
-					netServ.joinedChannels.addFirst(this);
 					joined = true;
-					if (netServ.chatActivity != null) {
-						netServ.chatActivity.populateUI(true);
-						netServ.chatActivity.progressDialog.dismiss();
-					}
+					netServ.joinedChannels.addFirst(this);
+					netServ.updateJoinedChannels();
+
 					writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
 				}
 				addPlayer(netServ.players.get(pid));
@@ -164,9 +162,8 @@ public class Channel {
 					joined = false;
 
 					netServ.joinedChannels.remove(this);
-					if (netServ.chatActivity != null) {
-						netServ.chatActivity.populateUI(true);
-					}
+					netServ.updateJoinedChannels();
+					
 					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
 				}
 				/* If a pmed players logs out, we receive the log out message before the leave channel one
