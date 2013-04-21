@@ -3,7 +3,6 @@ package com.podevs.android.pokemononline.player;
 import java.io.FileNotFoundException;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.podevs.android.pokemononline.QColor;
@@ -36,11 +35,11 @@ public class FullPlayerInfo implements SerializeBytes {
 		}
 	}
 	
-	public FullPlayerInfo(Context context, SharedPreferences prefs) {
+	public FullPlayerInfo(Context context) {
 		profile = new PlayerProfile(context);
 		
 		try {
-			context.openFileInput(prefs.getString("teamFile", "team.xml"));
+			context.openFileInput("team.xml");
 			team = (new PokeParser(context)).getTeam();
 			isDefault = false;
 		} catch (FileNotFoundException e) {

@@ -103,7 +103,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			}
 		});
 
-		meLoginPlayer = new FullPlayerInfo(RegistryActivity.this, prefs);
+		meLoginPlayer = new FullPlayerInfo(RegistryActivity.this);
 		editName.setText(meLoginPlayer.nick());
 		
 		//Capture out button from layout
@@ -203,19 +203,11 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				String path = intent.getData().getPath();
 			    
 				try {
-					/* First test if the team is valid */
-					SharedPreferences prefs = getSharedPreferences("team", Context.MODE_PRIVATE);
-					prefs.edit().putString("teamFile", path); //but does not commit!
-					
-					FullPlayerInfo fullPlayerInfo = new FullPlayerInfo(this, prefs);
-					
-					if (!fullPlayerInfo.isDefault) {
-						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
-							
+					{
 						// Copy imported file to default team location
 						FileInputStream team = new FileInputStream(path);
 						FileOutputStream saveTeam = openFileOutput("team.xml", Context.MODE_PRIVATE);
-
+	
 						byte[] buffer = new byte[1024];
 						int length;
 						while ((length = team.read(buffer))>0)
@@ -223,7 +215,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 						saveTeam.flush();
 						saveTeam.close();
 						team.close();
-						
+					}
+					
+					FullPlayerInfo fullPlayerInfo = new FullPlayerInfo(this);
+					
+					if (!fullPlayerInfo.isDefault) {
+						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
+												
 						/* Tells the activity that the team was successfully imported */
 						onTeamImportedFromFile(fullPlayerInfo);
 					} else {
@@ -260,7 +258,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 					saveTeam.close();
 	
 					/* Acts as if we imported a new team, i.e. loads from file */
-					onTeamImportedFromFile(new FullPlayerInfo(this, prefs));
+					onTeamImportedFromFile(new FullPlayerInfo(this));
 					
 					if (!meLoginPlayer.isDefault)
 						Toast.makeText(RegistryActivity.this, "Team successfully imported from QR code", Toast.LENGTH_SHORT).show();
