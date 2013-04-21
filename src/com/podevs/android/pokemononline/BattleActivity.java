@@ -50,11 +50,11 @@ import com.podevs.android.pokemononline.battle.BattleMove;
 import com.podevs.android.pokemononline.battle.BattlePoke;
 import com.podevs.android.pokemononline.battle.SpectatingBattle;
 import com.podevs.android.pokemononline.battle.Type;
+import com.podevs.android.pokemononline.poke.PokeEnums.Gender;
+import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.ShallowShownPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
-import com.podevs.android.pokemononline.poke.PokeEnums.Gender;
-import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
@@ -904,14 +904,31 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         inflater.inflate(isSpectating() ? R.menu.spectatingbattleoptions : R.menu.battleoptions, menu);
         
         menu.findItem(R.id.sounds).setChecked(getSharedPreferences("battle", MODE_PRIVATE).getBoolean("pokemon_cries", true));
-        /* No point in cancelling if no action done */
-        if (!isSpectating() && !activeBattle.clicked) {
-        	menu.findItem(R.id.cancel).setVisible(false);
-        }
         return true;
     }
     
     @Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+    	super.onPrepareOptionsMenu(menu);
+    	
+    	if (!isSpectating()) {
+    		if (activeBattle.gotEnd) {
+    			menu.findItem(R.id.close).setVisible(true);
+    			menu.findItem(R.id.cancel).setVisible(false);
+    			menu.findItem(R.id.forfeit).setVisible(false);
+    			menu.findItem(R.id.draw).setVisible(false);
+    		} else {
+    			/* No point in canceling if no action done */
+    			menu.findItem(R.id.close).setVisible(false);
+    	        if (!isSpectating() && !activeBattle.clicked) {
+    	        	menu.findItem(R.id.cancel).setVisible(false);
+    	        }
+    		}
+    	}
+		return true;
+	}
+
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
     	case R.id.cancel:

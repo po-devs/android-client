@@ -59,4 +59,5 @@
 	<string name="private_messages">Private Messages</string>
 	<!-- <string name="player">Player</string>  -->
 	<string name="closePM">Close PM</string>
+	<string name="closeBattle">Leave Battle</string>
 </resources>
