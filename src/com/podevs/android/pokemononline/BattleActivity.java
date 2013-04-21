@@ -920,9 +920,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		} else {
     			/* No point in canceling if no action done */
     			menu.findItem(R.id.close).setVisible(false);
-    	        if (!isSpectating() && !activeBattle.clicked) {
-    	        	menu.findItem(R.id.cancel).setVisible(false);
-    	        }
+	        	menu.findItem(R.id.cancel).setVisible(activeBattle.clicked);
     		}
     	}
 		return true;
