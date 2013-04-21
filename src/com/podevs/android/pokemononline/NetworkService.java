@@ -242,6 +242,16 @@ public class NetworkService extends Service {
 			return player.nick();
 		}
 	}
+	
+	public int playerAuth(int playerId) {
+		PlayerInfo player = players.get(playerId);
+
+		if (player == null) {
+			return 0;
+		} else {
+			return player.auth;
+		}
+	}
 
 	/**
 	 * Removes a player from memory
@@ -551,12 +561,16 @@ public class NetworkService extends Service {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
 				CharSequence name = playerName(pId);
 
-				if (isHtml) {
-					message = Html.fromHtml("<font color='" + color + "'><b>" + name + 
-							": </b></font>" + message);
+				String beg = "<font color='" + color + "'><b>";
+				if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
+					beg += "+<i>" + name + ": </i></b></font>";
 				} else {
-					message = Html.fromHtml("<font color='" + color + "'><b>" + name +
-							": </b></font>" + StringUtilities.escapeHtml((String)message));
+					beg += name + ": </b></font>";
+				}
+				if (isHtml) {
+					message = Html.fromHtml(beg + message);
+				} else {
+					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
 				if (isHtml) {
