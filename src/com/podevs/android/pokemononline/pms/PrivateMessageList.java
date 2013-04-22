@@ -4,11 +4,14 @@ import java.util.TreeMap;
 
 import com.podevs.android.pokemononline.player.PlayerInfo;
 
+
+
 public class PrivateMessageList {
 	protected TreeMap<Integer, PrivateMessage> privateMessages = new TreeMap<Integer, PrivateMessage>();
 	PlayerInfo me = new PlayerInfo();
 	PrivateMessageListListener listener;
-	
+	Calendar now = Calendar.getInstance();
+	SimpleDateFormat df = new SimpleDateFormat("hh:mm aa");
 	public PrivateMessageList(PlayerInfo me) {
 		this.me = me;
 	}
@@ -19,7 +22,7 @@ public class PrivateMessageList {
 	 */
 	public void createPM(PlayerInfo info) {
 		if (!privateMessages.containsKey(info.id)) {
-			privateMessages.put(info.id, new PrivateMessage(info, system.currentTimeMillis(), me));
+			privateMessages.put(info.id, new PrivateMessage(info, df.format(now.getTime()), me));
 			
 			if (listener != null) {
 				listener.onNewPM(privateMessages.get(info.id));
@@ -34,7 +37,7 @@ public class PrivateMessageList {
 	 */
 	public void newMessage(PlayerInfo playerInfo, String message) {
 		createPM(playerInfo);
-		privateMessages.get(playerInfo.id).addMessage(playerInfo, system.currentTimeMillis())
+		privateMessages.get(playerInfo.id).addMessage(playerInfo, df.format(now.getTime()))
 	
 	interface PrivateMessageListListener {
 		void onNewPM(PrivateMessage privateMessage);
