@@ -19,7 +19,7 @@ public class PrivateMessageList {
 	 */
 	public void createPM(PlayerInfo info) {
 		if (!privateMessages.containsKey(info.id)) {
-			privateMessages.put(info.id, new PrivateMessage(info, me));
+			privateMessages.put(info.id, new PrivateMessage(info, time, me));
 			
 			if (listener != null) {
 				listener.onNewPM(privateMessages.get(info.id));
@@ -34,7 +34,7 @@ public class PrivateMessageList {
 	 */
 	public void newMessage(PlayerInfo playerInfo, String message) {
 		createPM(playerInfo);
-		privateMessages.get(playerInfo.id).addMessage(playerInfo, message);
+		privateMessages.get(playerInfo.id).addMessage(playerInfo, time, message);
 	}
 	
 	interface PrivateMessageListListener {
