@@ -34,7 +34,7 @@ public class PrivateMessageList {
 	 */
 	public void newMessage(PlayerInfo playerInfo, String message) {
 		createPM(playerInfo);
-		privateMessages.get(playerInfo.id).addMessage(playerInfo, system.currentTimeMillis()
+		privateMessages.get(playerInfo.id).addMessage(playerInfo, system.currentTimeMillis())
 	
 	interface PrivateMessageListListener {
 		void onNewPM(PrivateMessage privateMessage);
