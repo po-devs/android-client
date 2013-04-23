@@ -597,8 +597,7 @@ public class ChatActivity extends Activity {
 							prefs.edit().remove("range").commit();
 						}
 						netServ.socket.sendMessage(
-								constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", false), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200), (byte) 0),
-								Command.FindBattle);
+								constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
 					}
 				}
 			});
@@ -916,12 +915,12 @@ public class ChatActivity extends Activity {
     }
     
     private Baos constructFindBattle(boolean forceRated, boolean forceSameTier,
-    		boolean onlyInRange, int i, byte mode) {
+    		boolean onlyInRange, int range) {
 		Baos find = new Baos();
-		find.putBool(onlyInRange);
-		find.write((forceRated ? 1 : 0) + (forceSameTier? 2 : 0));
+		find.putFlags(new boolean[]{onlyInRange, false});
+		find.putFlags(new boolean[]{forceRated, forceSameTier});
 		if (onlyInRange) {
-			find.putShort((short)i);
+			find.putShort((short)range);
 		}
 		return find;
     }
