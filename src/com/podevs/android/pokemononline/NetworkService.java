@@ -298,7 +298,7 @@ public class NetworkService extends Service {
         
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(this, ChatActivity.class);
-        resultIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         mBuilder.setContentIntent(PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         
