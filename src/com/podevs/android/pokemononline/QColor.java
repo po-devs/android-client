@@ -19,7 +19,7 @@ public class QColor implements SerializeBytes {
 		msg.readShort(); // read padding
 		
 		if (spec == 1) { //Rgb
-			colorInt = Color.argb(alpha, red, green, blue);
+			colorInt = Color.argb(alpha >> 8, red >> 8, green >> 8, blue >> 8);
 			invalid = false;
 		} else if (spec == 2) { //HSV
 			float hsv[] = { ((float)red) * 360 / 65536, ((float)green) * 360 / 65536, ((float)blue) / 65536};
