@@ -23,7 +23,7 @@ public class Channel {
 	public int lastSeen = 0;
 	protected boolean isReadyToQuit = false;
 	public boolean joined = false;
-	public final static int HIST_LIMIT = 1000;
+	public final static int HIST_LIMIT = 700;
 	public static final String TAG = "Pokemon Online Channel";
 	
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
@@ -39,7 +39,7 @@ public class Channel {
 		synchronized(messageList) {
 			messageList.add(spannable);
 			lastSeen++;
-			if (messageList.size() > HIST_LIMIT)
+			while (messageList.size() > HIST_LIMIT)
 				messageList.remove();
 		}
 	}
