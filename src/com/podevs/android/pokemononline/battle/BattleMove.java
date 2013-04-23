@@ -3,11 +3,11 @@ package com.podevs.android.pokemononline.battle;
 import android.graphics.Color;
 
 import com.podevs.android.pokemononline.DataBaseHelper;
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 public class BattleMove implements SerializeBytes {
 	public byte currentPP = 0;

@@ -1,9 +1,7 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.utilities;
 
 import android.graphics.Color;
 
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
 
 public class QColor implements SerializeBytes {
 	protected int colorInt = Color.BLACK;

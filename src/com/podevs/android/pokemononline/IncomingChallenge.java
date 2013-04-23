@@ -11,13 +11,16 @@ import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.utilities.Bais;
 
 public class IncomingChallenge {
-	byte desc, mode;
-	String srcTier, destTier;
-	int opponent, clauses;
+	byte desc;
+	public byte mode;
+	public String srcTier;
+	public String destTier;
+	public int opponent;
+	public int clauses;
 	int team;
 	Gen gen;
 	String oppName = null;
-	static int note = new Random().nextInt();
+	public static int note = new Random().nextInt();
 	
 	public IncomingChallenge(Bais msg) {
 		desc = msg.readByte();

@@ -6,11 +6,11 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 
 import com.podevs.android.pokemononline.DataBaseHelper;
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.pokemononline.battle.Type;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 // This class represents the Opponent's poke during a battle.
 public class ShallowBattlePoke implements SerializeBytes {

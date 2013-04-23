@@ -1,6 +1,6 @@
 package com.android.launcher;
 
-import com.podevs.android.pokemononline.BattleActivity;
+import com.podevs.android.pokemononline.battle.BattleActivity;
 import com.podevs.android.pokemononline.battle.BattlePoke;
 
 import android.content.Context;

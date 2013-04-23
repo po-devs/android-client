@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.podevs.android.pokemononline.QColor;
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.QColor;
+import com.podevs.android.utilities.SerializeBytes;
 
 // Contains all the information about the player.
 // Used for logging into the server.

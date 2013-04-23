@@ -1,8 +1,8 @@
 package com.podevs.android.pokemononline.player;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 // Short version of a player, only nick and info
 public class BasicPlayerInfo implements SerializeBytes {

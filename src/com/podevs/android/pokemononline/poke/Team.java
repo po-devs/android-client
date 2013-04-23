@@ -1,8 +1,8 @@
 package com.podevs.android.pokemononline.poke;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 public class Team implements SerializeBytes {
 	public Gen gen = new Gen();

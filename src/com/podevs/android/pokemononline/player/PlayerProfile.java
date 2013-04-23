@@ -5,10 +5,10 @@ import java.util.Random;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.podevs.android.pokemononline.QColor;
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.QColor;
+import com.podevs.android.utilities.SerializeBytes;
 
 public class PlayerProfile implements SerializeBytes {
 	public String nick;

@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.registry;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -39,9 +39,12 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.podevs.android.pokemononline.RegistryConnectionService.RegistryCommandListener;
-import com.podevs.android.pokemononline.ServerListAdapter.Server;
+import com.podevs.android.pokemononline.NetworkService;
+import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.player.FullPlayerInfo;
+import com.podevs.android.pokemononline.registry.RegistryConnectionService.RegistryCommandListener;
+import com.podevs.android.pokemononline.registry.ServerListAdapter.Server;
 import com.podevs.android.utilities.Baos;
 
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {

@@ -1,8 +1,8 @@
 package com.podevs.android.pokemononline.poke;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 // This class is how a poke is represented in the teambuilder.
 public class TeamPoke implements SerializeBytes {

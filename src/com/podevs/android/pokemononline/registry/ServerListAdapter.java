@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.registry;
 
 import java.util.Comparator;
 
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.podevs.android.pokemononline.R;
 
 public class ServerListAdapter extends ArrayAdapter<ServerListAdapter.Server> {
 

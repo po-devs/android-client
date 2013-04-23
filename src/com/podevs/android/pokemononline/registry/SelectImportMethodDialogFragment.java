@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.registry;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.podevs.android.pokemononline.R;
 
 /**
  * <p>Creates a dialog that proposes the use to import team from file or QR code.</p>

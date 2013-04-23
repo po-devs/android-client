@@ -35,10 +35,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.podevs.android.pokemononline.battle.Battle;
+import com.podevs.android.pokemononline.battle.BattleActivity;
 import com.podevs.android.pokemononline.battle.BattleConf;
 import com.podevs.android.pokemononline.battle.BattleDesc;
 import com.podevs.android.pokemononline.battle.ChallengeEnums;
 import com.podevs.android.pokemononline.battle.SpectatingBattle;
+import com.podevs.android.pokemononline.chat.Channel;
+import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.player.FullPlayerInfo;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
@@ -57,8 +60,8 @@ public class NetworkService extends Service {
 	//public Channel currentChannel = null;
 	public LinkedList<Channel> joinedChannels = new LinkedList<Channel>();
 	Thread sThread, rThread;
-	PokeClientSocket socket = null;
-	boolean findingBattle = false;
+	public PokeClientSocket socket = null;
+	public boolean findingBattle = false;
 	public ChatActivity chatActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
@@ -96,11 +99,11 @@ public class NetworkService extends Service {
 	public Hashtable<Integer, Battle> activeBattles = new Hashtable<Integer, Battle>();
 	public Hashtable<Integer, SpectatingBattle> spectatedBattles = new Hashtable<Integer, SpectatingBattle>();
 
-	Tier superTier = new Tier();
+	public Tier superTier = new Tier();
 	public int myid = -1;
 	public PlayerInfo me = new PlayerInfo();
 	
-	protected Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
+	public Hashtable<Integer, Channel> channels = new Hashtable<Integer, Channel>();
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	public Hashtable<Integer, BattleDesc> battles = new Hashtable<Integer, BattleDesc>();
 	static public HashSet<Integer> pmedPlayers = new HashSet<Integer>();

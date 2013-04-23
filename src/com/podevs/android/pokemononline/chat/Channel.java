@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.chat;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -7,6 +7,8 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
+import com.podevs.android.pokemononline.Command;
+import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.utilities.Bais;
 
@@ -16,8 +18,8 @@ import com.podevs.android.utilities.Bais;
  *
  */
 public class Channel {
-	protected String name;
-	protected int id;
+	public String name;
+	public int id;
 	public int lastSeen = 0;
 	protected boolean isReadyToQuit = false;
 	public boolean joined = false;
@@ -26,7 +28,7 @@ public class Channel {
 	
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	
-	LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
+	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
 	
 	public void writeToHist(CharSequence text) {
 		SpannableStringBuilder spannable;

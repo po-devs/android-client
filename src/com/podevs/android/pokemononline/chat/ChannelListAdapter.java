@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.chat;
 
 import java.util.Comparator;
 
@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.podevs.android.pokemononline.R;
 import com.podevs.android.utilities.StringUtilities;
 
-public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.pokemononline.Channel>{
+public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.pokemononline.chat.Channel>{
 	
 	public ChannelListAdapter(Context context, int resource) {
 		super(context, resource);

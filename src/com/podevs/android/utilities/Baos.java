@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 
 import android.util.Log;
 

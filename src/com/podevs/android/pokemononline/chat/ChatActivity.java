@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.chat;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -48,12 +48,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.podevs.android.pokemononline.Command;
+import com.podevs.android.pokemononline.IncomingChallenge;
+import com.podevs.android.pokemononline.MessageListAdapter;
+import com.podevs.android.pokemononline.NetworkService;
+import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.Tier;
 import com.podevs.android.pokemononline.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.pokemononline.battle.ChallengeEnums.Clauses;
 import com.podevs.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.player.PlayerInfo.TierStanding;
 import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
+import com.podevs.android.pokemononline.registry.RegistryActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
@@ -316,7 +323,7 @@ public class ChatActivity extends Activity {
 		}
 	};
 	
-	void updateTitle() {
+	public void updateTitle() {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				ChatActivity.this.setTitle(netServ.serverName);

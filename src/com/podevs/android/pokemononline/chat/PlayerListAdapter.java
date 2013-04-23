@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.chat;
 
 import java.util.Comparator;
 
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.podevs.android.pokemononline.NetworkService;
+import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.utilities.StringUtilities;
 

@@ -14,7 +14,6 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 
-import com.podevs.android.pokemononline.BattleActivity;
 import com.podevs.android.pokemononline.ColorEnums.QtColor;
 import com.podevs.android.pokemononline.ColorEnums.StatusColor;
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;

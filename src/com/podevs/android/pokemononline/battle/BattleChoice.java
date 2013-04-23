@@ -1,8 +1,8 @@
 package com.podevs.android.pokemononline.battle;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 enum ChoiceType {
     CancelType,

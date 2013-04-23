@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.battle;
 
 import java.util.Locale;
 
@@ -45,11 +45,11 @@ import android.widget.TextView;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
-import com.podevs.android.pokemononline.battle.Battle;
-import com.podevs.android.pokemononline.battle.BattleMove;
-import com.podevs.android.pokemononline.battle.BattlePoke;
-import com.podevs.android.pokemononline.battle.SpectatingBattle;
-import com.podevs.android.pokemononline.battle.Type;
+import com.podevs.android.pokemononline.Command;
+import com.podevs.android.pokemononline.NetworkService;
+import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.TextProgressBar;
+import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.poke.PokeEnums.Gender;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;

@@ -2,10 +2,10 @@ package com.podevs.android.pokemononline.battle;
 
 import android.util.Log;
 
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 public class BattleConf implements SerializeBytes {
 	private static final int VERSION = 0;

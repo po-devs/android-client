@@ -2,6 +2,7 @@ package com.podevs.android.pokemononline;
 
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 
 /**
  * Describes the protocol version of the client or server. 

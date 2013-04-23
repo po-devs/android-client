@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import android.util.Log;
 
-import com.podevs.android.pokemononline.QColor;
-import com.podevs.android.pokemononline.SerializeBytes;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.Getter;
+import com.podevs.android.utilities.QColor;
+import com.podevs.android.utilities.SerializeBytes;
 
 // Represents a player in the player list
 public class PlayerInfo implements SerializeBytes {

@@ -1,10 +1,12 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.registry;
 
 import java.io.IOException;
 import java.nio.channels.UnresolvedAddressException;
 import java.text.ParseException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.podevs.android.pokemononline.Command;
+import com.podevs.android.pokemononline.PokeClientSocket;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 

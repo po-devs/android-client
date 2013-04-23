@@ -3,6 +3,8 @@ package com.podevs.android.pokemononline;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import com.podevs.android.pokemononline.chat.Channel;
+
 import android.content.Context;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
@@ -13,7 +15,7 @@ import android.widget.TextView;
 
 public class MessageListAdapter extends BaseAdapter {
 	LinkedList<TextView> messageViews = new LinkedList<TextView>();
-	Channel channel;
+	public Channel channel;
 	Context context;
     public int lastSeen = 0;
 	

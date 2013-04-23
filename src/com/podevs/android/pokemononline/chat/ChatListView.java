@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline;
+package com.podevs.android.pokemononline.chat;
 
 import android.content.Context;
 import android.util.AttributeSet;
