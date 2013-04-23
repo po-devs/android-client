@@ -3,6 +3,7 @@ package com.podevs.android.pokemononline.registry;
 import java.util.Comparator;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,11 @@ public class ServerListAdapter extends ArrayAdapter<ServerListAdapter.Server> {
 			players.setText(server.maxplayers == 0 ? ""+server.players : "" + server.players + "/" + server.maxplayers);
 			TextView connection = (TextView)view.findViewById(R.id.connection);
 			connection.setText(server.ip + ":" + server.port);
+			
+			/* To make them easier to be seen on dark background */
+			name.setTextColor(Color.WHITE);
+			players.setTextColor(Color.WHITE);
+			connection.setTextColor(Color.WHITE);
 		}
 		return view;
 		
