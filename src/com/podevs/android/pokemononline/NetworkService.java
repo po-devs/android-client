@@ -23,11 +23,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
@@ -1070,7 +1072,17 @@ public class NetworkService extends Service {
 	}
 
 	public void playCry(SpectatingBattle battle, ShallowBattlePoke poke) {
-		new Thread(new CryPlayer(poke, battle)).start();
+		int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+		
+		/* Don't ring if in silent mode */
+		if (ringMode== AudioManager.RINGER_MODE_NORMAL) {
+			new Thread(new CryPlayer(poke, battle)).start();							
+		} else if (ringMode == AudioManager.RINGER_MODE_VIBRATE) {
+			Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			// Vibrate for 700 milliseconds
+			v.vibrate(700);
+		}
+		
 	}
 
 	class CryPlayer implements Runnable {
