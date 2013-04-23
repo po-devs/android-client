@@ -8,11 +8,11 @@ public class MoveInfo {
 	private static SparseArray<String> moveNames = new SparseArray<String>();
 	
 	public static String name(DataBaseHelper db, int num) {
-		if (moveNames.indexOfKey(num) != -1) {
+		if (moveNames.indexOfKey(num) >= 0) {
 			return moveNames.get(num);
 		}
 		
-		String name = db.query("SELECT name FROM [moves] WHERE _id = " + num);
+		String name = db.query("SELECT name FROM [Moves] WHERE _id = " + num);
 		moveNames.put(num, name);
 		
 		return name;
