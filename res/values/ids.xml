@@ -6,4 +6,5 @@
     <item
         type="id"
         name="associated_pm" />
+    <item type="id" name="networkService"/>
 </resources>

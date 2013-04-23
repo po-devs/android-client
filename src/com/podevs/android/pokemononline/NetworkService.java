@@ -286,6 +286,21 @@ public class NetworkService extends Service {
 	public void onCreate() {
 		db = new DataBaseHelper(NetworkService.this);
 		super.onCreate();
+		
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.icon)
+                .setContentTitle("Chat - Pokemon Online")
+                .setContentText("Pokemon Online is running")
+                .setOngoing(true);
+        
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, ChatActivity.class);
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+        mBuilder.setContentIntent(PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        
+		startForeground(R.id.networkService, mBuilder.build());
 	}
 
 	@Override
@@ -296,6 +311,8 @@ public class NetworkService extends Service {
 		for(SpectatingBattle battle : getBattles()) {
 			closeBattle(battle.bID);
 		}
+		
+		stopForeground(true);
 	}
 	
 	private String ip;
@@ -421,6 +438,7 @@ public class NetworkService extends Service {
 		}
 		if (bundle != null && bundle.containsKey("ip"))
 			connect(bundle.getString("ip"), bundle.getShort("port"));
+				
 		return START_STICKY;
 	}
 
