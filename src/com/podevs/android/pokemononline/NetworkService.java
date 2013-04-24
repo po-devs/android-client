@@ -1134,10 +1134,10 @@ public class NetworkService extends Service {
 	}
 
 	public void playCry(final SpectatingBattle battle, ShallowBattlePoke poke) {
-		int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+		final int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
 		
 		/* Don't ring if in silent mode */
-		if (ringMode== AudioManager.RINGER_MODE_NORMAL) {
+		if (ringMode == AudioManager.RINGER_MODE_NORMAL) {
 			new Thread(new CryPlayer(poke, battle)).start();							
 		} else if (ringMode == AudioManager.RINGER_MODE_VIBRATE) {
 			Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -1151,7 +1151,7 @@ public class NetworkService extends Service {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						Thread.sleep(100);
+						Thread.sleep(ringMode == AudioManager.RINGER_MODE_VIBRATE ? 1000 : 100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
