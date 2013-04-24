@@ -41,8 +41,7 @@ public class PokeClientSocket {
 		try {
 			ret = schan.finishConnect() && schan.isConnected();
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(-1);
+			return false;
 		}
 		return ret;
 	}

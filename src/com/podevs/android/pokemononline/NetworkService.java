@@ -502,13 +502,6 @@ public class NetworkService extends Service {
 		case LeaveChannel:{
 			Channel ch = channels.get(msg.readInt());
 			if(ch != null) {
-				if (c == Command.ChannelPlayers && !joinedChannels.contains(ch)) {
-					joinedChannels.addLast(ch);
-					
-					if (chatActivity != null) {
-						chatActivity.populateUI(false);
-					}
-				}
 				ch.handleChannelMsg(c, msg);
 			} else {
 				Log.e(TAG, "Received message for nonexistent channel");
@@ -1231,7 +1224,7 @@ public class NetworkService extends Service {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
 		if (chatActivity != null) {
-			chatActivity.populateUI(false);
+			chatActivity.populateUI(true);
 			chatActivity.progressDialog.dismiss();
 		}
 		

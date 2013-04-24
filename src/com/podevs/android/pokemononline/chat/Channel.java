@@ -84,6 +84,16 @@ public class Channel {
 			Log.w(TAG, "Tried to remove nonexistant player id from channel " + name + ", ignoring");
 	}
 	
+	private void joined() {
+		joined = true;
+		if (!netServ.joinedChannels.contains(this)) {
+			netServ.joinedChannels.addFirst(this);
+			netServ.updateJoinedChannels();
+			
+			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
+		}
+	}
+	
 	public void handleChannelMsg(Command c, Bais msg) {
 			switch(c) {
 			case ChannelPlayers: {
@@ -91,15 +101,14 @@ public class Channel {
 				for(int i = 0; i < numPlayers; i++) {
 					addPlayer(netServ.players.get(msg.readInt()));
 				}
+				
+				joined();
+				
 				break;
 			} case JoinChannel: {
 				int pid = msg.readInt();
 				if (pid == netServ.myid) { // We joined the channel
-					joined = true;
-					netServ.joinedChannels.addFirst(this);
-					netServ.updateJoinedChannels();
-
-					writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
+					joined();
 				}
 				addPlayer(netServ.players.get(pid));
 				break;
