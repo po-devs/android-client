@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.channels.AsynchronousCloseException;
 import java.nio.channels.SocketChannel;
 import java.text.ParseException;
 import java.util.LinkedList;
@@ -38,8 +39,9 @@ public class PokeClientSocket {
 	public boolean isConnected() { 
 		boolean ret = false;
 		try {
-			ret = schan.finishConnect();
+			ret = schan.finishConnect() && schan.isConnected();
 		} catch (IOException e) {
+			e.printStackTrace();
 			System.exit(-1);
 		}
 		return ret;
@@ -61,7 +63,7 @@ public class PokeClientSocket {
 					b.rewind();
 					schan.write(b);
 				} catch (IOException e) {
-					System.out.println("Caught IOException Writing To Socket Stream!");
+					e.printStackTrace();
 					System.exit(-1);
 				} finally {
 					this.notify();
@@ -115,6 +117,9 @@ public class PokeClientSocket {
 			dataLen = schan.read(currentData);
 		} else {
 			dataLen = schan.read(packetLength);
+		}
+		if (dataLen < 0) {
+			throw new AsynchronousCloseException();
 		}
 		// Loop while there's still data in the buffer.
 		while (dataLen > 0) {

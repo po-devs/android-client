@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -420,9 +421,14 @@ public class NetworkService extends Service {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-						// Do nothing
+						e.printStackTrace();
 					}
 				}
+				
+				
+				String vv = SimpleDateFormat.getTimeInstance().format(Long.valueOf(System.currentTimeMillis()));
+				
+				writeMessage("(" + vv + ") Disconnected from server");
 			}
 		}).start();
 	}
@@ -924,6 +930,17 @@ public class NetworkService extends Service {
 		}
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
+	}
+	
+	private void writeMessage(String s) {
+		if (chatActivity != null && chatActivity.currentChannel() != null) {
+			chatActivity.currentChannel().writeToHist("\n"+s);
+			chatActivity.updateChat();
+		} else if (joinedChannels.size() > 0) {
+			for (Channel c: joinedChannels) {
+				c.writeToHist("\n"+s);
+			}
+		}
 	}
 	
 	private PlayerInfo getNonNullPlayer(int id) {
