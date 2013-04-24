@@ -16,8 +16,8 @@ public class PlayerInfo implements SerializeBytes {
 	private final static String TAG = "PlayerInfo";
 	
 	public int id;
-	Boolean isAway;
-	Boolean hasLadderEnabled;
+	public boolean isAway;
+	public boolean hasLadderEnabled;
 	public String nick;
 	public QColor color;
 	public short avatar;

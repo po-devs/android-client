@@ -60,4 +60,6 @@
 	<!-- <string name="player">Player</string>  -->
 	<string name="closePM">Close PM</string>
 	<string name="closeBattle">Leave Battle</string>
+	<string name="tierSelection">Tier Selection</string>
+	<string name="idle">Idle</string>
 </resources>

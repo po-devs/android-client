@@ -756,6 +756,13 @@ public class ChatActivity extends Activity {
     	else {
     		findbattle.setTitle(R.string.find_a_battle);
     	}
+    	
+    	if (netServ != null && netServ.me != null) {
+    		menu.findItem(R.id.idle).setChecked(netServ.me.isAway);    		
+    	} else {
+    		menu.findItem(R.id.idle).setChecked(getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false));
+    	}
+    	
     	return true;
     }
     
@@ -784,6 +791,12 @@ public class ChatActivity extends Activity {
 			//Toast.makeText(ChatActivity.this, "Preferences not Implemented Yet",
             //        Toast.LENGTH_SHORT).show();
 			showDialog(ChatDialog.TierSelection.ordinal());
+			break;
+		case R.id.idle:
+			boolean checked = !item.isChecked();
+			
+			getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).commit();
+			netServ.socket.sendMessage(new Baos().putFlags(new boolean[]{netServ.me.hasLadderEnabled, checked}), Command.OptionsChanged);
 			break;
     	}
     	return true;

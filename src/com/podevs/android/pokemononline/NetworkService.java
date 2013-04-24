@@ -373,7 +373,7 @@ public class NetworkService extends Service {
 				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
 				/* Data Flags: supportsZipCompression, isLadderEnabled, wantsIdsWithMessages, isIdle */
-				loginCmd.putFlags(new boolean []{false,true,true,false});
+				loginCmd.putFlags(new boolean []{false,true,true,getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false)});
 				
 				/* Reconnect even if all the bits are different */
 				loginCmd.write(0);
@@ -623,7 +623,21 @@ public class NetworkService extends Service {
 				}
 			}
 			break;
-		} case SendMessage: {
+		} case OptionsChanged: {
+			int id = msg.readInt();
+			Bais dataFlags = msg.readFlags();
+			
+			PlayerInfo p = players.get(id);
+			if (p != null) {
+				p.hasLadderEnabled = dataFlags.readBool();
+				p.isAway = dataFlags.readBool();
+				
+				if (p.id == myid) {
+					me.setTo(p);
+				}
+			}
+			break;
+		}	case SendMessage: {
 			Bais netFlags = msg.readFlags();
 			boolean hasChannel = netFlags.readBool();
 			boolean hasId = netFlags.readBool();
