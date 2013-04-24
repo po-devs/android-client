@@ -1133,7 +1133,7 @@ public class NetworkService extends Service {
 			chatActivity.addChannel(c);
 	}
 
-	public void playCry(SpectatingBattle battle, ShallowBattlePoke poke) {
+	public void playCry(final SpectatingBattle battle, ShallowBattlePoke poke) {
 		int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
 		
 		/* Don't ring if in silent mode */
@@ -1147,9 +1147,19 @@ public class NetworkService extends Service {
 
 		/* In other cases, the cry's end will call notify on its own */
 		if (ringMode != AudioManager.RINGER_MODE_NORMAL) {
-			synchronized (battle) {
-				battle.notify();
-			}
+			/* Can't notify right away, would be before the wait */
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					synchronized (battle) {
+						battle.notify();
+					}
+				}
+			}); 
 		}
 	}
 
@@ -1177,7 +1187,7 @@ public class NetworkService extends Service {
 				synchronized (cryPlayer) {
 					cryPlayer.start();
 					try {
-						cryPlayer.wait(10000);
+						cryPlayer.wait(5000);
 					} catch (InterruptedException e) {}
 				}
 				cryPlayer.release();
