@@ -182,4 +182,10 @@ public class Channel {
 				break;
 			}
 		}
+
+	public void clearData() {
+		players.clear();
+		
+		/* Todo: instead use leaveChannel() or make sure during reconnect we don't keep extra players */
+	}
 }

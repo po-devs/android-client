@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -63,19 +62,20 @@ public class NetworkService extends Service {
 	//public Channel currentChannel = null;
 	public LinkedList<Channel> joinedChannels = new LinkedList<Channel>();
 	Thread sThread, rThread;
-	public PokeClientSocket socket = null;
+	volatile public PokeClientSocket socket = null;
 	public boolean findingBattle = false;
 	public ChatActivity chatActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
 	private String salt = null;
 	public boolean failedConnect = false;
+	private boolean reconnectDenied = false;
 	public DataBaseHelper db;
 	public String serverName = "Not Connected";
+	private volatile boolean halted = false;
 	public final ProtocolVersion version = new ProtocolVersion();
 	public boolean serverSupportsZipCompression = false;
-	@SuppressWarnings("unused")
-	private byte []reconnectSecret; 
+	private byte reconnectSecret[] = null; 
 
 	/**
 	 * Are we engaged in a battle?
@@ -219,6 +219,10 @@ public class NetworkService extends Service {
 	public boolean hasPlayer(int pid) {
 		return players.containsKey(pid);
 	}
+	
+	public boolean hasChannel(int cid) {
+		return channels.containsKey(cid);
+	}
 
 	/**
 	 * Checks if the players of the battle are online, and remove the battle from memory if not
@@ -316,6 +320,7 @@ public class NetworkService extends Service {
 		}
 		
 		stopForeground(true);
+		halted = true;
 	}
 	
 	private String ip;
@@ -396,41 +401,78 @@ public class NetworkService extends Service {
 				}
 				
 				socket.sendMessage(loginCmd, Command.Login);
-
-				while(socket.isConnected()) {
-					try {
-						// Get some data from the wire
-						socket.recvMessagePoll();
-					} catch (IOException e) {
-						// Disconnected
-						break;
-					} catch (ParseException e) {
-						// Got message that overflowed length from server.
-						// No way to recover.
-						// TODO die completely
-						break;
-					}
-					Baos tmp;
-					// Handle any messages that completed
-					while ((tmp = socket.getMsg()) != null) {
-						Bais msg = new Bais(tmp.toByteArray());
-						handleMsg(msg);
-					}
-
-					/* Do not use too much CPU */
-					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
 				
-				
-				String vv = SimpleDateFormat.getTimeInstance().format(Long.valueOf(System.currentTimeMillis()));
-				
-				writeMessage("(" + vv + ") Disconnected from server");
+				do {
+					readSocketMessages(socket);
+					
+					if (halted) {
+						return;
+					}
+					
+					writeMessage("(" + StringUtilities.timeStamp() + ") Disconnected from server");
+										
+					reconnect();
+				} while (!reconnectDenied && !halted);
 			}
 		}).start();
+	}
+	
+	private void reconnect() {
+		/* Impossible to reconnect with -1 id */
+		if (myid == -1 || reconnectSecret == null) {
+			reconnectDenied = true;
+			return;
+		}
+		while (!halted) {
+			try {
+				socket = new PokeClientSocket(NetworkService.this.ip, NetworkService.this.port);
+			} catch (IOException e) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e2) {
+					e2.printStackTrace();
+				}
+				continue;
+			}
+			
+			Baos msgToSend = new Baos();
+			msgToSend.putInt(me.id);
+			msgToSend.putBytes(reconnectSecret);
+			
+			socket.sendMessage(msgToSend, Command.Reconnect);
+			
+			return;
+		}
+	}
+	
+	private void readSocketMessages(PokeClientSocket socket) {
+		while(!halted && socket.isConnected()) {
+			try {
+				// Get some data from the wire
+				socket.recvMessagePoll();
+			} catch (IOException e) {
+				// Disconnected
+				break;
+			} catch (ParseException e) {
+				// Got message that overflowed length from server.
+				// No way to recover.
+				// TODO die completely
+				break;
+			}
+			Baos tmp;
+			// Handle any messages that completed
+			while ((tmp = socket.getMsg()) != null) {
+				Bais msg = new Bais(tmp.toByteArray());
+				handleMsg(msg);
+			}
+
+			/* Do not use too much CPU */
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -459,10 +501,18 @@ public class NetworkService extends Service {
 		case JoinChannel: 
 		case LeaveChannel:{
 			Channel ch = channels.get(msg.readInt());
-			if(ch != null)
+			if(ch != null) {
+				if (c == Command.ChannelPlayers && !joinedChannels.contains(ch)) {
+					joinedChannels.addLast(ch);
+					
+					if (chatActivity != null) {
+						chatActivity.populateUI(false);
+					}
+				}
 				ch.handleChannelMsg(c, msg);
-			else
+			} else {
 				Log.e(TAG, "Received message for nonexistent channel");
+			}
 			break;
 		} case VersionControl: {
 			ProtocolVersion serverVersion = new ProtocolVersion(msg);
@@ -497,12 +547,16 @@ public class NetworkService extends Service {
 			// Username not registered
 			break;
 		} case Login: {
+			reconnectDenied = false;
+
 			Bais flags = msg.readFlags();
 			Boolean hasReconnPass = flags.readBool();
 			if (hasReconnPass) {
-				// Read byte array
 				reconnectSecret = msg.readQByteArray();
+			} else {
+				reconnectSecret = null;
 			}
+			
 			me.setTo(new PlayerInfo(msg));
 			myid = me.id;
 			int numTiers = msg.readInt();
@@ -539,10 +593,18 @@ public class NetworkService extends Service {
 			break;
 		} case ChannelsList: {
 			int numChannels = msg.readInt();
+
 			for(int j = 0; j < numChannels; j++) {
 				int chanId = msg.readInt();
-				Channel ch = new Channel(chanId, msg.readString(), this);
-				channels.put(chanId, ch);
+				
+				if (hasChannel(chanId)) {
+					Channel ch = channels.get(chanId);
+					ch.name = msg.readString();
+				} else {
+					Channel ch = new Channel(chanId, msg.readString(), this);
+					channels.put(chanId, ch);
+				}
+
 				//addChannel(msg.readQString(),chanId);
 			}
 			Log.d(TAG, channels.toString());
@@ -715,47 +777,23 @@ public class NetworkService extends Service {
 				break;
 			}
 			break;
-		}
-		/*		case JoinChannel:
-		case LeaveChannel:
-//		case ChannelMessage:
-//		case HtmlChannel: {
-			Channel ch = channels.get(msg.readInt());
-			if(ch != null)
-				ch.handleChannelMsg(c, msg);
-			else
-				System.out.println("Received message for nonexistant channel");
-			break;
-//		} case ServerName: {
-//			serverName = msg.readQString();
-//			if (chatActivity != null)
-//				chatActivity.updateTitle();
-//			break;
-		} case TierSelection: {
-			msg.readInt(); // Number of tiers
-			Tier prevTier = new Tier((byte)msg.read(), msg.readQString());
-			prevTier.parentTier = superTier;
-			superTier.subTiers.add(prevTier);
-			while(msg.available() != 0) { // While there's another tier available
-				Tier t = new Tier((byte)msg.read(), msg.readQString());
-				if(t.level == prevTier.level) { // Sibling case
-					prevTier.parentTier.addSubTier(t);
-					t.parentTier = prevTier.parentTier;
+		} case Reconnect: {
+			boolean success = msg.readBool();
+			
+			if (success) {
+				reconnectDenied = false;
+				
+				writeMessage("(" + StringUtilities.timeStamp() + ") Reconnected to server");
+				
+				for (Channel ch: joinedChannels) {
+					ch.clearData();
 				}
-				else if(t.level < prevTier.level) { // Uncle case
-					while(t.level < prevTier.level)
-						prevTier = prevTier.parentTier;
-					prevTier.parentTier.addSubTier(t);
-					t.parentTier = prevTier.parentTier;
-				}
-				else if(t.level > prevTier.level) { // Child case
-					prevTier.addSubTier(t);
-					t.parentTier = prevTier;
-				}
-				prevTier = t;
+				joinedChannels.clear();
+			} else {
+				reconnectDenied = true;
 			}
 			break;
-		} */ case Logout: {
+		} case Logout: {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
 			removePlayer(playerID);
@@ -1099,7 +1137,13 @@ public class NetworkService extends Service {
 			// Vibrate for 700 milliseconds
 			v.vibrate(700);
 		}
-		
+
+		/* In other cases, the cry's end will call notify on its own */
+		if (ringMode != AudioManager.RINGER_MODE_NORMAL) {
+			synchronized (battle) {
+				battle.notify();
+			}
+		}
 	}
 
 	class CryPlayer implements Runnable {
@@ -1187,7 +1231,7 @@ public class NetworkService extends Service {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
 		if (chatActivity != null) {
-			chatActivity.populateUI(true);
+			chatActivity.populateUI(false);
 			chatActivity.progressDialog.dismiss();
 		}
 		

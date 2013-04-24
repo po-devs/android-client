@@ -341,7 +341,7 @@ public class ChatActivity extends Activity {
 	}
 	
 	public void populateUI(boolean clear) {
-		Channel currentChannel = netServ.joinedChannels.peek();
+		Channel currentChannel = this.currentChannel();
 		if (currentChannel != null) {
 			// Populate the player list
 			if (clear) {
@@ -349,7 +349,7 @@ public class ChatActivity extends Activity {
 				channelAdapter = new ChannelListAdapter(ChatActivity.this, 0);
 			}
 			messageAdapter = new MessageListAdapter(currentChannel, ChatActivity.this);
-			Enumeration<PlayerInfo> e = netServ.joinedChannels.peek().players.elements();
+			Enumeration<PlayerInfo> e = currentChannel.players.elements();
 			playerAdapter.setNotifyOnChange(false);
 			while(e.hasMoreElements()) {
 				playerAdapter.add(e.nextElement());

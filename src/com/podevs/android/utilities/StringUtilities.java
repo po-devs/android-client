@@ -1,5 +1,7 @@
 package com.podevs.android.utilities;
 
+import java.text.SimpleDateFormat;
+
 public class StringUtilities {
 	public static String escapeHtml(String seq) {
 		return seq.replace("&", "&amp;").replace("<", "&lt;");
@@ -17,5 +19,9 @@ public class StringUtilities {
 		}
 		
 		return ret;
+	}
+	
+	public static String timeStamp() {
+		return SimpleDateFormat.getTimeInstance().format(Long.valueOf(System.currentTimeMillis()));
 	}
 }
