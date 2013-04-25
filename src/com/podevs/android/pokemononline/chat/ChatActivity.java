@@ -459,6 +459,7 @@ public class ChatActivity extends Activity {
 	}
 	
 	String challengedTier = "";
+	boolean registering = false;
 	
 	@Override
 	protected Dialog onCreateDialog(final int id) {
@@ -546,6 +547,9 @@ public class ChatActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					if (netServ != null) {
 						netServ.sendPass(passField.getText().toString());
+						
+						registering = false;
+						netServ.registered = true;
 					}
 					removeDialog(id);
 				}
@@ -553,7 +557,9 @@ public class ChatActivity extends Activity {
 			.setOnCancelListener(new OnCancelListener() {
 				public void onCancel(DialogInterface dialog) {
 					removeDialog(id);
-					disconnect();
+					if (!registering) {
+						disconnect();
+					}
 				}
 			});
 			final AlertDialog dialog = builder.create();
@@ -763,6 +769,10 @@ public class ChatActivity extends Activity {
     		menu.findItem(R.id.idle).setChecked(getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false));
     	}
     	
+    	if (netServ != null && netServ.registered) {
+    		menu.findItem(R.id.register).setVisible(false);
+    	}
+    	
     	return true;
     }
     
@@ -797,6 +807,12 @@ public class ChatActivity extends Activity {
 			
 			getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).commit();
 			netServ.socket.sendMessage(new Baos().putFlags(new boolean[]{netServ.me.hasLadderEnabled, checked}), Command.OptionsChanged);
+			break;
+		case R.id.register:
+			if (netServ != null) {
+				registering = true;
+				netServ.socket.sendMessage(new Baos(), Command.Register);
+			}
 			break;
     	}
     	return true;

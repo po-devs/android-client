@@ -64,6 +64,7 @@ public class NetworkService extends Service {
 	Thread sThread, rThread;
 	volatile public PokeClientSocket socket = null;
 	public boolean findingBattle = false;
+	public boolean registered = false;
 	public ChatActivity chatActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
@@ -1201,6 +1202,7 @@ public class NetworkService extends Service {
 
 	public void disconnect() {
 		if (socket != null && socket.isConnected()) {
+			halted = true;
 			socket.close();
 		}
 		this.stopForeground(true);

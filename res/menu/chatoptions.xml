@@ -11,6 +11,10 @@
         android:title="@string/idle">
     </item>
     <item
+        android:id="@+id/register"
+        android:title="@string/register">
+    </item>
+    <item
         android:id="@+id/chat_disconnect"
         android:title="@string/disconnect">
     </item>
