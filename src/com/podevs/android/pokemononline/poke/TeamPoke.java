@@ -42,9 +42,9 @@ public class TeamPoke implements SerializeBytes {
 
 //		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
 //      isShiny=0
-		if (network.readBool()) {
+		if (network.readBool()) { // gen flag
 			gen = new Gen(b);
-		} else if (gen != null) {
+		} else if (gen == null) {
 			gen = new Gen();
 		}
 		uID = new UniqueID(b);
@@ -53,13 +53,13 @@ public class TeamPoke implements SerializeBytes {
 		Bais data = b.readFlags();
 		shiny = data.readBool();
 		
-		if (network.readBool()) {
+		if (network.readBool()) { //nickname flag
 			nick = b.readString();
 		} else {
 			nick = "";
 		}
 
-		if (network.readBool()) {
+		if (network.readBool()) { //pokeball flag
 			pokeball = b.readShort();
 		} else {
 			pokeball = 0;
@@ -73,12 +73,12 @@ public class TeamPoke implements SerializeBytes {
 			}
 
 			gender = b.readByte();
-			if (gen.num > 2 && network.readBool()) {
-				happiness = network.readByte();
+			if (gen.num > 2 && network.readBool()) { //happiness flag
+				happiness = b.readByte();
 			}
 		}
 		
-		boolean ppups = network.readBool();
+		boolean ppups = network.readBool(); //ppup flags
 		for (int i = 0; i < 4; i++) {
 			if (ppups) {
 				b.readByte(); // read the pp up for the move, but ignore it
@@ -89,7 +89,7 @@ public class TeamPoke implements SerializeBytes {
 		for(int i = 0; i < 6; i++)
 			EVs[i] = b.readByte();
 		
-		if (network.readBool()) {
+		if (network.readBool()) { //Ivs flags
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
 		} else {
