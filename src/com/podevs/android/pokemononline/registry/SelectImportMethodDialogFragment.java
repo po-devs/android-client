@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
@@ -30,17 +31,20 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 		builder.setTitle("Import team...")
-		.setSingleChoiceItems(new CharSequence[]{"From file", "From QR code"}, -1, null)
+		.setSingleChoiceItems(new CharSequence[]{"Tutorial", "From file", "From QR code"}, -1, null)
 		.setPositiveButton("Import", new Dialog.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				int option = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
-				if (option == 0) { // From File
+				if (option == 0) {
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pokemon-online.eu/forums/showthread.php?19698-Importing-teams-on-PO-Android&styleid=14"));
+					startActivity(browserIntent);
+				} else if (option == 1) { // From File
 					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
 					intent.setType("file/*.tp");
 					intent = Intent.createChooser(intent, "File explorer");
 					getActivity().startActivityForResult(intent, RegistryActivity.PICKFILE_RESULT_CODE);
-				} else if (option == 1) { // From QR Code
+				} else if (option == 2) { // From QR Code
 					AlertDialog result = (new IntentIntegrator(getActivity())).initiateScan();
 					if (result != null)
 						result.show();
