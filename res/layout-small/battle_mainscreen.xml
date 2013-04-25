@@ -25,7 +25,8 @@
             android:background="@drawable/battle_border"
             android:gravity="center"
             android:minWidth="60sp"
-            android:textColor="@color/poke_text_color" />
+            android:textColor="@color/poke_text_color"
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/nameA"
@@ -34,7 +35,8 @@
             android:layout_alignParentRight="true"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
-            android:textColor="@color/poke_text_color" />
+            android:textColor="@color/poke_text_color"
+            android:textIsSelectable="true" />
 
         <ImageView
             android:id="@+id/pokeball1A"
@@ -105,7 +107,7 @@
         android:background="@drawable/battle_border"
         android:textColor="@color/poke_text_color" >
 
-        <ImageView
+        <WebView
             android:id="@+id/pokeSpriteA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -134,7 +136,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@id/hpBarA"
-                android:textColor="@color/poke_text_color" />
+                android:textColor="@color/poke_text_color"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/currentPokeLevelA"
@@ -143,7 +146,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@id/hpBarA"
                 android:layout_marginLeft="2dp"
-                android:textColor="@color/poke_text_color" />
+                android:textColor="@color/poke_text_color"
+                android:textIsSelectable="false" />
 
             <ImageView
                 android:id="@+id/currentPokeGenderA"
@@ -165,7 +169,7 @@
                 android:contentDescription="@string/status_description" />
         </RelativeLayout>
 
-        <ImageView
+        <WebView
             android:id="@+id/pokeSpriteB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
