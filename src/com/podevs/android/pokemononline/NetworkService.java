@@ -1058,8 +1058,8 @@ public class NetworkService extends Service {
 	}
 
 	private void showBattleNotification(String title, int battleId, BattleConf conf) {
-		PlayerInfo p1 = players.get(conf.id(0));
-		PlayerInfo p2 = players.get(conf.id(1));
+		PlayerInfo p1 = getNonNullPlayer(conf.id(0));
+		PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 		
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
