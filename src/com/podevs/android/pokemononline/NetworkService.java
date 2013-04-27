@@ -1099,6 +1099,7 @@ public class NetworkService extends Service {
 	}
 
 	public void sendPass(String s) {
+		getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
 		askedForPass = false;
 		MessageDigest md5;
 		try {
@@ -1107,9 +1108,7 @@ public class NetworkService extends Service {
 			hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
 			socket.sendMessage(hashPass, Command.AskForPass);
 		} catch (NoSuchAlgorithmException nsae) {
-			System.out.println("Attempting authentication threw an exception: " + nsae);
 		} catch (UnsupportedEncodingException uee) {
-			System.out.println("Attempting authentication threw an exception: " + uee);
 		}
 	}
 
@@ -1288,5 +1287,9 @@ public class NetworkService extends Service {
 			}
 		}
 		edit.commit();
+	}
+
+	public String getDefaultPass() {
+		return getSharedPreferences("passwords", MODE_PRIVATE).getString(salt, "");
 	}
 }

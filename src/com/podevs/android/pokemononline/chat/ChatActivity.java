@@ -562,6 +562,10 @@ public class ChatActivity extends Activity {
 					}
 				}
 			});
+			if (netServ != null) {
+				String defaultPass = netServ.getDefaultPass();
+				passField.setText(defaultPass);
+			}
 			final AlertDialog dialog = builder.create();
         	passField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 				public void onFocusChange(View v, boolean hasFocus) {
