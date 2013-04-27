@@ -1,7 +1,6 @@
 package com.podevs.android.pokemononline.battle;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Random;
 
@@ -13,6 +12,7 @@ import android.os.SystemClock;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.podevs.android.pokemononline.ColorEnums.QtColor;
 import com.podevs.android.pokemononline.ColorEnums.StatusColor;
@@ -404,7 +404,7 @@ public class SpectatingBattle {
 			// TODO if (ignoreSpecs) break;
 			int id = msg.readInt();
 			String message = msg.readString();
-			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + netServ.players.get(id).nick() + 
+			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + spectators.get(id) + 
 					":</font> " + StringUtilities.escapeHtml(message)));
 			break;
 		} case MoveMessage: {
@@ -645,7 +645,7 @@ public class SpectatingBattle {
 		}
 	}
 	
-	private Hashtable<Integer, String> spectators = new Hashtable<Integer, String>();
+	private SparseArray<String> spectators = new SparseArray<String>();
 	
 	private void addSpectator(int id, String name) {
 		spectators.put(id, name);
