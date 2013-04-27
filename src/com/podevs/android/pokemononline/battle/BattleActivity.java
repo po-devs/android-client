@@ -272,6 +272,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
 		realViewSwitcher.setAdapter(new MyAdapter());
 		setContentView(realViewSwitcher);
+		
+		if (mainLayout.findViewById(R.id.smallBattleWindow) != null) {
+			/* Small screen, set full screen otherwise pokemon are cropped */
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
                 
         infoView = (TextView)mainLayout.findViewById(R.id.infoWindow);
         infoScroll = (ScrollView)mainLayout.findViewById(R.id.infoScroll);
