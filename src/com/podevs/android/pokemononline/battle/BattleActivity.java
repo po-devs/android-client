@@ -1029,7 +1029,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				t = (TextView)simpleDialog.findViewById(R.id.statNamesView);
         		t.setText(battle.dynamicInfo[player].statsAndHazards());
         		t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
-        		if (player == me)
+        		if (player == me && !isSpectating())
 	        		t.setText(activeBattle.myTeam.pokes[0].printStats());
         		else
         			t.setVisibility(View.GONE);
