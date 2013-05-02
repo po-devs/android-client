@@ -177,7 +177,7 @@ public class Battle extends SpectatingBattle {
 				UniqueID sprite = new UniqueID(msg);
 				if (sprite.pokeNum != 0)
 					currentPoke(player).specialSprites.addFirst(sprite);
-				else
+				else if (currentPoke(player).specialSprites.size() > 0)
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
 					activity.updatePokes(player);
