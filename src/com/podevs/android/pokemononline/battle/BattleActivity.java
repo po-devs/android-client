@@ -1025,7 +1025,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		simpleDialog.setContentView(R.layout.dynamic_info_layout);
 
         		TextView t = (TextView)simpleDialog.findViewById(R.id.nameTypeView); 
-        		t.setText((player == me ? activeBattle.myTeam.pokes[0] : battle.currentPoke(player)).nameAndType());
+        		t.setText(( (player == me && !isSpectating()) ? activeBattle.myTeam.pokes[0] : battle.currentPoke(player)).nameAndType());
 				t = (TextView)simpleDialog.findViewById(R.id.statNamesView);
         		t.setText(battle.dynamicInfo[player].statsAndHazards());
         		t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
