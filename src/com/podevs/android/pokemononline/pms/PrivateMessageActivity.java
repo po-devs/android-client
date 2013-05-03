@@ -1,6 +1,7 @@
 package com.podevs.android.pokemononline.pms;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -178,11 +179,16 @@ public class PrivateMessageActivity extends Activity {
 			if (pms == null) {
 				return null;
 			}
-			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
-			for (int i = 0; i < position; i++) {
-				it.next();
+			
+			try {
+				Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
+				for (int i = 0; i < position; i++) {
+					it.next();
+				}
+				return it.next();
+			} catch (NoSuchElementException e) {
+				return null;
 			}
-			return it.next();
 		}
 		
 		@Override
