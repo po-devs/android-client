@@ -10,7 +10,7 @@ import com.podevs.android.utilities.SerializeBytes;
 public class BattleConf implements SerializeBytes {
 	private static final int VERSION = 0;
 	private static final String TAG = "Battle Configuration";
-	public Gen gen;
+	public Gen gen = new Gen();
 	public byte mode = 0;
 	public int[] ids = new int[2];
 	public int clauses;
