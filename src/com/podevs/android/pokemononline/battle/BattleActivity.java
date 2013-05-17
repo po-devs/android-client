@@ -1053,7 +1053,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		});
         		return simpleDialog;
         	}
-        	break;
+        	return null;
         case MoveInfo:
         	dialog = builder.setTitle(lastClickedMove.name)
         	.setMessage(lastClickedMove.descAndEffects())
