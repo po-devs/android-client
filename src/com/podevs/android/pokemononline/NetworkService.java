@@ -495,8 +495,13 @@ public class NetworkService extends Service {
 
 	public void handleMsg(Bais msg) {
 		byte i = msg.readByte();
+		
+		if (i < 0 || i >= Command.values().length) {
+			Log.w(TAG, "Command out of bounds: "  +i);
+		}
+		
 		Command c = Command.values()[i];
-		Log.d(TAG, "Received: " + c);
+		//Log.d(TAG, "Received: " + c);
 		switch (c) {
 		case ChannelPlayers:
 		case JoinChannel: 
