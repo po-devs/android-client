@@ -16,13 +16,19 @@ public class Bais extends ByteArrayInputStream {
 	}
 	
 	public String readString() {
+		String str = "";
 		int len = readInt();
-		if (len == -1) // What Qt sends for null string
-			return null;
+		// What Qt sends for null string
+		if (len == -1) {
+			return str;
+		}
+		if (len > available()) {
+			//XXX Bad things happened do something about them.
+			return str;
+		}
 		byte[] bytes = new byte[len];
 		read(bytes, 0, len);
 		
-		String str = null;
 		try {
 			str = new String(bytes, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -85,7 +91,11 @@ public class Bais extends ByteArrayInputStream {
 		int len = isShort ? ((int) (readShort()+65536)) % 65536  : readInt();
 		if (len < 0) {
 			// XXX Bad things happened do something about them.
-			return null;
+			return new byte[0];
+		}
+		if (len > this.available()) {
+			//XXX Bad things happened do something about them.
+			return new byte[0];
 		}
 		byte tmpBuf[] = new byte[len];
 		try {
@@ -99,7 +109,7 @@ public class Bais extends ByteArrayInputStream {
 
 	public ArrayList<String> readQStringList() {
 		int len = readInt();
-		if (len < 0) {
+		if (len < 0 || len > available()/4) {
 			// XXX Bad things happened do something about them.
 			return null;
 		}
