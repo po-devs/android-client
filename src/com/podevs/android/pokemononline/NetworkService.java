@@ -752,6 +752,10 @@ public class NetworkService extends Service {
 			IncomingChallenge challenge = new IncomingChallenge(msg);
 			challenge.setNick(players.get(challenge.opponent));
 
+			if (challenge.desc < 0 || challenge.desc >= ChallengeEnums.ChallengeDesc.values().length) {
+				Log.w(TAG, "Challenge description out of bounds: " + challenge.desc);
+				break;
+			}
 			switch(ChallengeEnums.ChallengeDesc.values()[challenge.desc]) {
 			case Sent:
 				if (challenge.isValidChallenge(players)) {
