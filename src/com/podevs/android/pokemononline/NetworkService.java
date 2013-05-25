@@ -542,6 +542,9 @@ public class NetworkService extends Service {
 				chatActivity.updateTitle();
 			}
 			break;
+		} case KeepAlive: {
+			socket.sendMessage(null, Command.KeepAlive);
+			break;
 		} case Register: {
 			// Username not registered
 			break;

@@ -72,6 +72,9 @@ public class PokeClientSocket {
 	}
 	
 	public boolean sendMessage(Baos msgToSend, Command msgType) {
+		if (msgToSend == null) {
+			msgToSend = new Baos();
+		}
 		Baos bytesToSend = new Baos();
 		bytesToSend.putInt(msgToSend.size() + 1);
 		bytesToSend.write((byte)msgType.ordinal());
