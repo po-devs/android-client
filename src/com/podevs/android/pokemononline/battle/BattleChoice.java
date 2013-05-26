@@ -10,7 +10,8 @@ enum ChoiceType {
     SwitchType,
     RearrangeType,
     CenterMoveType,
-    DrawType
+    DrawType,
+    ItemType
 };
 
 // Please only call serializeBytes() on the Choices that make sense.
@@ -108,6 +109,7 @@ public class BattleChoice implements SerializeBytes {
 	public BattleChoice(byte ps, ChoiceType ct) {
 		playerSlot = ps;
 		choiceType = ct;
+		type = (byte)ct.ordinal();
 	}
 	
 	public BattleChoice(Bais msg) {
