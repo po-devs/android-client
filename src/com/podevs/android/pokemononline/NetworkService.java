@@ -75,6 +75,7 @@ public class NetworkService extends Service {
 	public String serverName = "Not Connected";
 	private volatile boolean halted = false;
 	public final ProtocolVersion version = new ProtocolVersion();
+	public ProtocolVersion serverVersion = version;
 	public boolean serverSupportsZipCompression = false;
 	private byte reconnectSecret[] = null; 
 
@@ -514,12 +515,12 @@ public class NetworkService extends Service {
 			}
 			break;
 		} case VersionControl: {
-			ProtocolVersion serverVersion = new ProtocolVersion(msg);
+			serverVersion = new ProtocolVersion(msg);
 
 			if (serverVersion.compareTo(version) > 0) {
 				Log.d(TAG, "Server has newer protocol version than we expect");
 			} else if (serverVersion.compareTo(version) < 0) {
-				Log.d(TAG, "PO Android uses newer protocol than Server");
+				Toast.makeText(this, "PO Android uses newer network protocol than Server", Toast.LENGTH_LONG);
 			}
 
 			serverSupportsZipCompression = msg.readBool();
@@ -890,7 +891,7 @@ public class NetworkService extends Service {
 			addBattle(battleId, new BattleDesc(p1, p2, mode));
 
 			if(flags.readBool()) { // This is us!
-				BattleConf conf = new BattleConf(msg);
+				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
 				// Start the battle
 				Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)),
 						getNonNullPlayer(conf.id(1)), myid, battleId, this);
@@ -923,7 +924,7 @@ public class NetworkService extends Service {
 					Log.e(TAG, "Already watching battle " + battleId);
 					return;
 				}
-	            BattleConf conf = new BattleConf(msg);
+	            BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
 	            PlayerInfo p1 = getNonNullPlayer(conf.id(0));
 	            PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);

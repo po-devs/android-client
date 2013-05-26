@@ -19,23 +19,31 @@ public class BattleConf implements SerializeBytes {
 	public int id(int i) { return ids[i]; }
 	public byte mode() { return mode; };
 	
-	public BattleConf(Bais msg) {
-		short len = msg.readShort();
-		short version = (short)((short)msg.readByte() & 0xff);
-		if (VERSION != version) {
-			Log.d(TAG, "Skipped unkown version " + version);
-			msg.skip(len - 1);
+	public BattleConf(Bais msg, boolean old) {
+		if (!old) {
+			short len = msg.readShort();
+			short version = (short)((short)msg.readByte() & 0xff);
+			if (VERSION != version) {
+				Log.d(TAG, "Skipped unkown version " + version);
+				msg.skip(len - 1);
+			}
+			
+			msg.readFlags();
+			rated = msg.readFlags().readBool();
+	
+			gen = new Gen(msg);
+	
+			mode = msg.readByte();
+			clauses = msg.readInt();
+			ids[0] = msg.readInt();
+			ids[1] = msg.readInt();
+		} else {
+			gen = new Gen(msg);
+			mode = msg.readByte();
+			ids[0] = msg.readInt();
+			ids[1] = msg.readInt();
+			clauses = msg.readInt();
 		}
-		
-		msg.readFlags();
-		rated = msg.readFlags().readBool();
-
-		gen = new Gen(msg);
-
-		mode = msg.readByte();
-		clauses = msg.readInt();
-		ids[0] = msg.readInt();
-		ids[1] = msg.readInt();
 	}
 	
 	public void serializeBytes(Baos b) {
