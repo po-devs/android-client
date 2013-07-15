@@ -517,10 +517,22 @@ public class NetworkService extends Service {
 		} case VersionControl: {
 			serverVersion = new ProtocolVersion(msg);
 
+			/* Toast messages there trigger an exception:
+			 * 
+			 * java.lang.RuntimeException: Can't create handler inside thread that has not called Looper.prepare()
+				at android.os.Handler.<init>(Handler.java:121)
+				at android.widget.Toast.<init>(Toast.java:73)
+				at android.widget.Toast.makeText(Toast.java:249)
+				at com.podevs.android.pokemononline.NetworkService.handleMsg(NetworkService.java:523)
+				at com.podevs.android.pokemononline.NetworkService.readSocketMessages(NetworkService.java:468)
+				at com.podevs.android.pokemononline.NetworkService.access$2(NetworkService.java:450)
+				at com.podevs.android.pokemononline.NetworkService$1.run(NetworkService.java:408)
+				at java.lang.Thread.run(Thread.java:1019)
+			 */
 			if (serverVersion.compareTo(version) > 0) {
 				Log.d(TAG, "Server has newer protocol version than we expect");
 			} else if (serverVersion.compareTo(version) < 0) {
-				Toast.makeText(this, "PO Android uses newer network protocol than Server", Toast.LENGTH_LONG);
+				//Toast.makeText(this, "PO Android uses newer network protocol than Server", Toast.LENGTH_LONG);
 			}
 
 			serverSupportsZipCompression = msg.readBool();
@@ -531,11 +543,11 @@ public class NetworkService extends Service {
 
 			if (serverVersion.compareTo(version) > 0) {
 				if (lastVersionWithoutFeatures.compareTo(version) > 0) {
-					Toast.makeText(this, R.string.new_server_features_warning, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(this, R.string.new_server_feaantures_warning, Toast.LENGTH_SHORT).show();
 				} else if (lastVersionWithoutCompatBreak.compareTo(version) > 0) {
-					Toast.makeText(this, R.string.minor_compat_break_warning, Toast.LENGTH_SHORT).show();
+					//Toast.makeText(this, R.string.minor_compat_break_warning, Toast.LENGTH_SHORT).show();
 				} else if (lastVersionWithoutMajorCompatBreak.compareTo(version) > 0) {
-					Toast.makeText(this, R.string.major_compat_break_warning, Toast.LENGTH_LONG).show();
+					//Toast.makeText(this, R.string.major_compat_break_warning, Toast.LENGTH_LONG).show();
 				}
 			}
 			serverName = msg.readString();
