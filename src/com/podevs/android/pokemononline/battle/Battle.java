@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.text.Html;
 import android.util.Log;
 
-import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
@@ -278,10 +277,9 @@ public class Battle extends SpectatingBattle {
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();
 			
-			DataBaseHelper db = netServ.db;
-			String names[] = {PokemonInfo.name(db, oppTeam.poke(0).uID), PokemonInfo.name(db, oppTeam.poke(1).uID),
-					PokemonInfo.name(db, oppTeam.poke(2).uID), PokemonInfo.name(db, oppTeam.poke(3).uID),
-					PokemonInfo.name(db, oppTeam.poke(4).uID), PokemonInfo.name(db, oppTeam.poke(5).uID)};
+			String names[] = {PokemonInfo.name(oppTeam.poke(0).uID), PokemonInfo.name(oppTeam.poke(1).uID),
+					PokemonInfo.name(oppTeam.poke(2).uID), PokemonInfo.name(oppTeam.poke(3).uID),
+					PokemonInfo.name(oppTeam.poke(4).uID), PokemonInfo.name(oppTeam.poke(5).uID)};
 			
 			writeToHist(Html.fromHtml("<br><font color=\"blue\"><b>Opponent's team: </b></font>" + StringUtilities.join(names, " / ")));
 			break;

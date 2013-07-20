@@ -23,6 +23,16 @@ public class UniqueID implements SerializeBytes {
 		subNum = 0;
 	}
 	
+	public UniqueID(String str) {
+		int colon = str.indexOf(':');
+		pokeNum = (short)Integer.parseInt(str.substring(0, colon));
+		try  {
+			subNum = (byte)Integer.parseInt(str.substring(colon+1));
+		} catch (NumberFormatException e) {
+			subNum = 0;
+		}
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		try {

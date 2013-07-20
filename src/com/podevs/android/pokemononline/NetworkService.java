@@ -34,7 +34,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.podevs.android.pokemononline.battle.Battle;
 import com.podevs.android.pokemononline.battle.BattleActivity;
