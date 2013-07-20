@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.podevs.android.pokemononline.Command;
 import com.podevs.android.pokemononline.PokeClientSocket;
+import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -17,7 +18,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class RegistryConnectionService extends Service {
-	
 	public interface RegistryCommandListener {
 	
 		public abstract void ServerListEnd();
@@ -77,6 +77,8 @@ public class RegistryConnectionService extends Service {
 	// This is called once
 	public void onCreate() {
 		super.onCreate();
+		
+		InfoConfig.context = this;
 	}
 	
 	private void connect(final LocalBinder binder) {

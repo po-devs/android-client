@@ -48,6 +48,7 @@ import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
 import com.podevs.android.pokemononline.pms.PrivateMessageList;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
+import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
@@ -294,6 +295,9 @@ public class NetworkService extends Service {
 	public void onCreate() {
 		db = new DataBaseHelper(NetworkService.this);
 		super.onCreate();
+		
+		/* The context needed for the database */
+		InfoConfig.context = this;
 		
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
