@@ -1019,7 +1019,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         case OppDynamicInfo:
         	player = opp;
         case MyDynamicInfo:
-        	if(netServ != null && battle != null) {
+        	if(netServ != null && battle != null && battle.dynamicInfo[player] != null) {
         		final Dialog simpleDialog = new Dialog(this);
         		simpleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         		simpleDialog.setContentView(R.layout.dynamic_info_layout);
