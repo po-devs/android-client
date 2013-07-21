@@ -86,12 +86,11 @@ public class RegistryConnectionService extends Service {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					int count = 0;
 					Log.v(TAG, "Starting a registry request...");
 					PokeClientSocket socket = new PokeClientSocket("registry.pokemon-online.eu", 5090);
 					while(true) {
 						try {
-							socket.recvMessagePoll();
+						    handleMsg(socket, socket.getMsg(), binder.listener());
 						} catch (IOException e) {
 							// disconnected
 							break;
@@ -101,23 +100,11 @@ public class RegistryConnectionService extends Service {
 	        				// TODO die completely
 	        				break;
 	        			}
-						Baos tmp;
-						while((tmp = socket.getMsg()) != null) {
-							Log.v(TAG, "reading message " + (++count));
-							handleMsg(socket, new Bais(tmp.toByteArray()), binder.listener());
-						}
 						
 						/* If we got disconnected, no point in continuing */
 						if (binder.listener() == null) {
 							socket.close();
 							break;
-						}
-
-						// don't use all CPU
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// no action
 						}
 					}
 				}
