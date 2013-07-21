@@ -10,10 +10,10 @@ import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 public class MoveInfo {
 	private static class Move {
 		String name;
-		byte type = -1;
-		byte pp = -1;
-		String accuracy = null;
-		String power = null;
+		byte type = 0;
+		byte pp = 5;
+		byte accuracy = 0;
+		byte power = 0;
 		String effect = null;
 		
 		Move(String name) {
@@ -38,42 +38,58 @@ public class MoveInfo {
 	
 	public static byte type(int num) {
 		testLoad(num);
-		if (moveNames.get(num).type == (byte)-1) {
-			loadPokeTypes();
-		}
+		loadPokeTypes();
+
 		return moveNames.get(num).type;
 	}
 	
 	public static byte pp(int num) {
 		testLoad(num);
-		if (moveNames.get(num).pp == (byte)-1) {
-			loadPokePPs();
-		}
+		loadPokePPs();
+
 		return moveNames.get(num).pp;
 	}
 	
-	public static String accuracy(int num) {
+	public static byte accuracy(int num) {
 		testLoad(num);
-		if (moveNames.get(num).accuracy == null) {
-			loadPokeAccuracies();
-		}
+		loadPokeAccuracies();
+
 		return moveNames.get(num).accuracy;
 	}
 	
-	public static String power(int num) {
-		testLoad(num);
-		if (moveNames.get(num).power == null) {
-			loadPokePowers();
+	public static String accuracyString(int num) {
+		byte acc = accuracy(num);
+		if (acc == 101) {
+			return "--";
+		} else {
+			return String.valueOf(num);
 		}
+	}
+	
+	public static byte power(int num) {
+		testLoad(num);
+		loadPokePowers();
+
 		return moveNames.get(num).power;
+	}
+	
+	public static String powerString(int num) {
+		byte pow = power(num);
+		if (pow == 0) {
+			return "--";
+		} else if (pow == 1) {
+			return "???";
+		} else {
+			return String.valueOf(num);
+		}
 	}
 	
 	public static String effect(int num) {
 		testLoad(num);
-		if (moveNames.get(num).effect == null) {
-			loadPokeEffects();
-		}
-		return moveNames.get(num).effect;
+		loadPokeEffects();
+
+		String effect = moveNames.get(num).effect;
+		return effect == null ? "" : effect;
 	}
 
 	public static String message(int num, int part) {
@@ -89,7 +105,12 @@ public class MoveInfo {
 		}
 	}
 	
+	static boolean effectsloaded = false;
 	private static void loadPokeEffects() {
+		if (effectsloaded) {
+			return;
+		}
+		effectsloaded = true;
 		InfoFiller.fill("db/moves/5G/effect.txt", new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
@@ -97,7 +118,12 @@ public class MoveInfo {
 		});
 	}
 
+	static boolean pploaded = false;
 	private static void loadPokePPs() {
+		if (pploaded) {
+			return;
+		}
+		pploaded = true;
 		InfoFiller.fill("db/moves/5G/pp.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
@@ -106,23 +132,40 @@ public class MoveInfo {
 		});
 	}
 	
+	static boolean accuracyloaded = false;
 	private static void loadPokeAccuracies() {
-		InfoFiller.fill("db/moves/5G/accuracy.txt", new Filler() {
-			public void fill(int i, String b) {
+		if (accuracyloaded) {
+			return;
+		}
+		accuracyloaded = true;
+		InfoFiller.fill("db/moves/5G/accuracy.txt", new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
 				moveNames.get(i).accuracy = b;
 			}
 		});
 	}
 	
+	static boolean powerloaded = false;
 	private static void loadPokePowers() {
-		InfoFiller.fill("db/moves/5G/power.txt", new Filler() {
-			public void fill(int i, String s) {
-				moveNames.get(i).power = s;
+		if (powerloaded) {
+			return;
+		}
+		powerloaded = true;
+		InfoFiller.fill("db/moves/5G/power.txt", new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).power = b;
 			}
 		});
 	}
 
+	static boolean typeloaded = false;
 	private static void loadPokeTypes() {
+		if (typeloaded) {
+			return;
+		}
+		typeloaded = true;
 		InfoFiller.fill("db/moves/5G/type.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {

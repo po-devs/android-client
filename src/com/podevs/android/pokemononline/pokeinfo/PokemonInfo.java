@@ -28,13 +28,21 @@ public class PokemonInfo {
 	public static int type1(UniqueID uID, int gen) {
 		testLoad(uID, gen);
 		
-		return pokemons[gen].get(uID.hashCode()).type1;
+		int type = pokemons[gen].get(uID.hashCode()).type1;
+		if (type == -1) {
+			type = pokemons[gen].get(uID.originalHashCode()).type1;
+		}
+		return type;
 	}
 	
 	public static int type2(UniqueID uID, int gen) {
 		testLoad(uID, gen);
 		
-		return pokemons[gen].get(uID.hashCode()).type2;
+		int type = pokemons[gen].get(uID.hashCode()).type2;
+		if (type == -1) {
+			type = pokemons[gen].get(uID.originalHashCode()).type2;
+		}
+		return type;
 	}
 	
 	@SuppressWarnings("unchecked")

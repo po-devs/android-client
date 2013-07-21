@@ -64,8 +64,8 @@ public class BattleMove implements SerializeBytes {
 	
 	public String descAndEffects() {
 		String s = "";
-		s += "Power: " + MoveInfo.power(num);
-		s += "\nAccuracy: " + MoveInfo.accuracy(num);
+		s += "Power: " + MoveInfo.powerString(num);
+		s += "\nAccuracy: " + MoveInfo.accuracyString(num);
 		s += "\n";
 		s += "\nEffect: " + MoveInfo.effect(num);
 		return s;

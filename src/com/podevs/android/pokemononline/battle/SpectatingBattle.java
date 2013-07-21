@@ -211,6 +211,7 @@ public class SpectatingBattle {
 			break;
 		} case UseAttack: {
 			short attack = msg.readShort();
+
 			int color;
 			try {
 				color = MoveInfo.type(attack);

@@ -47,6 +47,14 @@ public class UniqueID implements SerializeBytes {
 	public int hashCode() {
 		return (int)pokeNum + subNum*65536;
 	}
+	
+	public int originalHashCode() {
+		return (int)pokeNum;
+	}
+	
+	static public int hashCode(int pokeNum, int subNum) {
+		return (int)pokeNum + subNum*65536;
+	}
 
 	public void serializeBytes(Baos bytes) {
 		bytes.putShort(pokeNum);
