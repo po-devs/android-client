@@ -442,7 +442,7 @@ public class SpectatingBattle {
 			byte foe = msg.readByte();
 			short berry = msg.readShort();
 			short other = msg.readShort();
-			String s = itemMessage(item, part);
+			String s = ItemInfo.message(item, part);
             if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", Stat.values()[other].toString());
             s = s.replaceAll("%s", currentPoke(player).nick);
             if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
@@ -512,7 +512,7 @@ public class SpectatingBattle {
 			byte type = msg.readByte();
 			byte foe = msg.readByte();
 			short other = msg.readShort();
-			System.out.println("OTHER IS: " + other);
+
 			String s = netServ.db.query("SELECT Effect" + part + " FROM [Ability_message] WHERE _id = " + (ab + 1));
 	        if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", netServ.getResources().getString((Stat.values()[other].rstring())));
 	        s = s.replaceAll("%s", currentPoke(player).nick);
@@ -658,18 +658,6 @@ public class SpectatingBattle {
 	private void removeSpectator(int id) {
 		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
 		spectators.remove(id);
-	}
-	
-	public static String itemMessage(int item, int part)
-	{
-		try {
-			if (item < 8000)
-				return netServ.db.query("SELECT EFFECT" + part + " FROM [Item_message] WHERE _id = " + (item + 1));
-			else
-				return netServ.db.query("SELECT EFFECT" + part + " FROM [Berry_message] WHERE _id = " + (item - 7999));
-		} catch (SQLiteException e) {
-			return "";
-		}
 	}
 	
 	protected enum TempPokeChange {

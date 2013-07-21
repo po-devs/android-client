@@ -33,10 +33,12 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals("Stall", AbilityInfo.name(100));
 	}
 	
-	public void testItemNames() {
+	public void testItems() {
 		InfoConfig.context = getContext();
 		
 		assertEquals("Odd Incense", ItemInfo.name(20));
 		assertEquals("Leppa Berry", ItemInfo.name(8005));
+		assertEquals("The %i sharply raised %s's %st!", ItemInfo.message(8009, 0));
+		assertEquals("The %i sharply lowered %s's %st!", ItemInfo.message(8009, 1));
 	}
 }
