@@ -6,14 +6,18 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 
 public class TeambuilderActivity extends Activity {
 	protected ViewPager viewPager;
 
 	View mainLayout, teamLayout;
+	ListedPokemon pokeList[] = new ListedPokemon[6];
+	
 	private class MyAdapter extends PagerAdapter
 	{
 		@Override
@@ -53,6 +57,13 @@ public class TeambuilderActivity extends Activity {
 		teamLayout = getLayoutInflater().inflate(R.layout.battle_teamscreen, null);
 		
 		viewPager.setAdapter(new MyAdapter());
+		
+		for (int i = 0; i < 6; i++) {
+			RelativeLayout whole = (RelativeLayout)teamLayout.findViewById(
+					InfoConfig.resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
+			pokeList[i] = new ListedPokemon(whole);
+		}
+		
 		setContentView(viewPager);
     }
 }
