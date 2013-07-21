@@ -58,7 +58,7 @@ public class TeambuilderActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         viewPager = (ViewPager) new ViewPager(this);
-		mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+		mainLayout = getLayoutInflater().inflate(R.layout.teambuilder_root, null);
 		teamLayout = getLayoutInflater().inflate(R.layout.battle_teamscreen, null);
 		
 		viewPager.setAdapter(new MyAdapter());
