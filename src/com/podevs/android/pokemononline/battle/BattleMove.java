@@ -15,10 +15,6 @@ public class BattleMove implements SerializeBytes {
 	public short num = 0;
 	public String name = "No Move";
 	public byte type = (byte) Type.Curse.ordinal();
-	private String power = "--";
-	private String accuracy = "--";
-	private String description = "";
-	private String effect = "";
 	
 	public String toString() {
 		return name;
@@ -45,9 +41,6 @@ public class BattleMove implements SerializeBytes {
 		name = MoveInfo.name(n);
 		type = MoveInfo.type(n);
 		totalPP = (byte) (MoveInfo.pp(n)*8/5);
-		power = MoveInfo.power(n);
-		effect = MoveInfo.effect(n);
-		accuracy = MoveInfo.accuracy(n);
 	}
 	
 	public BattleMove(BattleMove bm) {
@@ -56,10 +49,6 @@ public class BattleMove implements SerializeBytes {
 		num = bm.num;
 		name = bm.name;
 		type = bm.type;
-		power = bm.power;
-		accuracy = bm.accuracy;
-		description = bm.description;
-		effect = bm.effect;
 	}
 	
 	public BattleMove(Bais msg, DataBaseHelper db) {
@@ -76,11 +65,10 @@ public class BattleMove implements SerializeBytes {
 	
 	public String descAndEffects() {
 		String s = "";
-		s += "Power: " + power;
-		s += "\nAccuracy: " + accuracy;
+		s += "Power: " + MoveInfo.power(num);
+		s += "\nAccuracy: " + MoveInfo.accuracy(num);
 		s += "\n";
-		s += "\nDescription: " + description;
-		s += "\nEffect: " + effect;
+		s += "\nEffect: " + MoveInfo.effect(num);
 		return s;
 	}
 }
