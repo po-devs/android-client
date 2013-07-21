@@ -69,8 +69,6 @@ public class TeambuilderActivity extends FragmentActivity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	InfoConfig.setContext(this);
-
         super.onCreate(savedInstanceState);
 
         viewPager = (ViewPager) new ViewPager(this);
@@ -99,7 +97,7 @@ public class TeambuilderActivity extends FragmentActivity {
         importbutton.setOnClickListener(listener);
         
         /* Updates the team */
-        onTeamImported();
+        updateTeam();
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -184,11 +182,15 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
 	}
     
-    /* Triggers when team imported successfully */
-    public void onTeamImported() {
+    public void updateTeam() {
     	for (int i = 0; i < 6; i++) {
 			pokeList[i].update(team.poke(i), true);
 		}
+    }
+    
+    /* Triggers when team imported successfully */
+    public void onTeamImported() {
+    	setResult(RESULT_OK);
     }
     
     private OnClickListener listener = new OnClickListener() {

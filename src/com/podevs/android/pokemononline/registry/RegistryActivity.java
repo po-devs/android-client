@@ -1,5 +1,6 @@
 package com.podevs.android.pokemononline.registry;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
@@ -40,6 +41,7 @@ import com.podevs.android.utilities.Baos;
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
 	
 	static final String TAG = "RegistryActivity";
+	static final int TEAMBUILDER_CODE = 1;
 	
 	private ListView servers;
 	private boolean viewToggle = false;
@@ -179,11 +181,19 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				RegistryActivity.this.finish();
     		}
     		else if (v == findViewById(R.id.importteambutton)) {
-    			startActivity(new Intent(RegistryActivity.this, TeambuilderActivity.class));
-    			RegistryActivity.this.finish();
+    			startActivityForResult(new Intent(RegistryActivity.this, TeambuilderActivity.class), TEAMBUILDER_CODE);
     		}
     	}
     };
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		if (requestCode == TEAMBUILDER_CODE) {
+			/* If the teambuilder did something, reload the team */
+			if (resultCode == Activity.RESULT_OK) {
+				meLoginPlayer = new FullPlayerInfo(RegistryActivity.this);
+			}
+		}
+	}
     	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
