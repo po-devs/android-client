@@ -5,17 +5,16 @@ import java.nio.channels.UnresolvedAddressException;
 import java.text.ParseException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.podevs.android.pokemononline.Command;
-import com.podevs.android.pokemononline.PokeClientSocket;
-import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.podevs.android.pokemononline.Command;
+import com.podevs.android.pokemononline.PokeClientSocket;
+import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.utilities.Bais;
 
 public class RegistryConnectionService extends Service {
 	public interface RegistryCommandListener {
@@ -35,6 +34,11 @@ public class RegistryConnectionService extends Service {
 	static final String TAG = "Pokemon Online Registry";
 
 	public class LocalBinder extends Binder {
+		/* Since the socket is blocking, we need to be able to interrupt it
+		 * when no longer needing the registry
+		 */
+		PokeClientSocket socket = null;
+		
 		public LocalBinder() {
 		}
 		
@@ -45,6 +49,10 @@ public class RegistryConnectionService extends Service {
 		
 		synchronized void disconnect() {
 			mListener = null;
+			if (socket != null) {
+				socket.close();
+				socket = null;
+			}
 		}
 		
 		synchronized RegistryCommandListener listener() {
@@ -88,6 +96,7 @@ public class RegistryConnectionService extends Service {
 				try {
 					Log.v(TAG, "Starting a registry request...");
 					PokeClientSocket socket = new PokeClientSocket("registry.pokemon-online.eu", 5090);
+					binder.socket = socket;
 					while(true) {
 						try {
 						    handleMsg(socket, socket.getMsg(), binder.listener());
@@ -100,12 +109,6 @@ public class RegistryConnectionService extends Service {
 	        				// TODO die completely
 	        				break;
 	        			}
-						
-						/* If we got disconnected, no point in continuing */
-						if (binder.listener() == null) {
-							socket.close();
-							break;
-						}
 					}
 				}
 				catch (IOException e) {

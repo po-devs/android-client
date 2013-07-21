@@ -1,4 +1,4 @@
-package com.podevs.android.pokemononline.registry;
+package com.podevs.android.pokemononline.teambuilder;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,7 +43,7 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 
 					intent.setType("file/*.tp");
 					intent = Intent.createChooser(intent, "File explorer");
-					getActivity().startActivityForResult(intent, RegistryActivity.PICKFILE_RESULT_CODE);
+					getActivity().startActivityForResult(intent, TeambuilderActivity.PICKFILE_RESULT_CODE);
 				} else if (option == 2) { // From QR Code
 					AlertDialog result = (new IntentIntegrator(getActivity())).initiateScan();
 					if (result != null)

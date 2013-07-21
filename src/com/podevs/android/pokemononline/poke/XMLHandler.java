@@ -100,7 +100,7 @@ public class XMLHandler extends DefaultHandler {
 	@Override
 	public void characters(char ch[], int start, int length) {
 		if (inMove) {
-			myParsedTeam.pokes[numPoke].moves[numMove] = (short)Integer.parseInt(new String(ch, start, length));
+			myParsedTeam.pokes[numPoke].moves[numMove].num = (short)Integer.parseInt(new String(ch, start, length));
 		}
 		else if (inDV) {
 			myParsedTeam.pokes[numPoke].DVs[numDV] = (byte)(Integer.parseInt(new String(ch, start, length)));

@@ -55,7 +55,10 @@ import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.ShallowShownPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
@@ -443,9 +446,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			        	attackNames[i].setText(move.toString());
 			        	String type;
 			        	if (move.num == 237)
-			        		type = Type.values()[battlePoke.hiddenPowerType()].toString();
+			        		type = TypeInfo.name(battlePoke.hiddenPowerType());
 			        	else
-			        		type = move.getTypeString();
+			        		type = TypeInfo.name(MoveInfo.type(move.num()));
 			        	type = type.toLowerCase(Locale.UK);
 			        	attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
 					      		"drawable", InfoConfig.pkgName));
@@ -982,7 +985,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	}
         	return null;
         case MoveInfo:
-        	dialog = builder.setTitle(lastClickedMove.name)
+        	dialog = builder.setTitle(lastClickedMove.toString())
         	.setMessage(lastClickedMove.descAndEffects())
         	.setOnCancelListener(new DialogInterface.OnCancelListener() {
         		public void onCancel(DialogInterface dialog) {
