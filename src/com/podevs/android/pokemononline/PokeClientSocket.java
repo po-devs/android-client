@@ -55,7 +55,9 @@ public class PokeClientSocket {
 		        bytesToSend.write(msgType);
 		        
 		        try {
-		            bytesToSend.write(msgToSend.toByteArray());
+		        	if (msgToSend != null) {
+		        		bytesToSend.write(msgToSend.toByteArray());
+		        	}
 		        } catch (IOException e) {
 		            e.printStackTrace();
 		            try {
