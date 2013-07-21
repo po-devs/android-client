@@ -16,6 +16,8 @@ public class PokeClientSocket {
 	private SocketChannel schan = null;
 	@SuppressWarnings("unused")
 	private final static String TAG = "PokeClientSocket";
+	// 4 bytes for length and 1 for type.
+    private final static int OVERHEAD_SIZE = 5;
 	public final static int CONNECT_TIMEOUT = 10000;
 
 	public PokeClientSocket(String inIpAddr, int inPortNum) throws SocketTimeoutException, IOException
@@ -45,34 +47,26 @@ public class PokeClientSocket {
 		
 		public void run() {
 			try {
-		        Baos bytesToSend = new Baos();
-		        if (msgToSend == null) {
-		            // Empty message, just need byte for msgType.
-		            bytesToSend.putInt(1);
+			    ByteBuffer buf;
+
+                if (msgToSend == null) {
+                    // "Empty" message
+                    buf = ByteBuffer.allocate(OVERHEAD_SIZE);
+                    buf.order(ByteOrder.BIG_ENDIAN);
+                    buf.putInt(1);
+                    buf.put(msgType);
 		        } else {
-		            bytesToSend.putInt(msgToSend.size() + 1);
-		        }
-		        bytesToSend.write(msgType);
-		        
-		        try {
-		            bytesToSend.write(msgToSend.toByteArray());
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		            try {
-		                bytesToSend.close();
-		            } catch (IOException e1) {
-		                e1.printStackTrace();
-		            }
+	                buf = ByteBuffer.allocate(OVERHEAD_SIZE + msgToSend.size());
+	                buf.order(ByteOrder.BIG_ENDIAN);
+		            buf.putInt(1 + msgToSend.size());
+		            buf.put(msgType);
+		            buf.put(msgToSend.toByteArray());
 		        }
 		        
-				ByteBuffer b = ByteBuffer.allocate(bytesToSend.size());
-				b.order(ByteOrder.BIG_ENDIAN);
-				b.put(bytesToSend.toByteArray());
-				b.rewind();
-				schan.write(b);
+				buf.rewind();
+				schan.write(buf);
 			} catch (IOException e) {
 				e.printStackTrace();
-				System.exit(-1);
 			}
 		}
 	}
