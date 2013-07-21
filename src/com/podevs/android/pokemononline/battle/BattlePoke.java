@@ -1,16 +1,18 @@
 package com.podevs.android.pokemononline.battle;
 
 import com.podevs.android.pokemononline.poke.Gen;
+import com.podevs.android.pokemononline.poke.Move;
+import com.podevs.android.pokemononline.poke.Poke;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
-import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
-import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
+import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
 // This class represents your poke during a battle.
-public class BattlePoke extends ShallowBattlePoke {
+public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public short currentHP = 0;
 	public short totalHP = 0;
 	short item = 0;
@@ -38,9 +40,7 @@ public class BattlePoke extends ShallowBattlePoke {
 		shiny = msg.readBool();
 		level = msg.readByte();
 		item = msg.readShort();
-		itemString = ItemInfo.name(item);
 		ability = msg.readShort();
-		abilityString = AbilityInfo.name(ability);
 		happiness = msg.readByte();
 		pokeName = PokemonInfo.name(uID);
 		types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
@@ -83,14 +83,46 @@ public class BattlePoke extends ShallowBattlePoke {
 			b.write(DVs[i]);
 	}
 	
-	public int hiddenPowerType() {
-		return ( ( ( (DVs[0] & 1) + 2 * (DVs[1] & 1) + 4 * (DVs[2] & 1) + 8 * (DVs[5] & 1) + 16 * (DVs[3] & 1) + 32 * (DVs[4] & 1) ) * 15) / 63 ) + 1;
-	}
-	
 	public String printStats() {
 		String s = "";
 		for (int i = 0; i < 5; i++)
 			s += (i == 0 ? "" : "\n") + stats[i];
 		return s;
+	}
+
+	public int ability() {
+		return ability;
+	}
+
+	public int item() {
+		return item;
+	}
+
+	public int totalHP() {
+		return totalHP;
+	}
+
+	public int currentHP() {
+		return currentHP;
+	}
+
+	public CharSequence nick() {
+		return nick;
+	}
+
+	public UniqueID uID() {
+		return uID;
+	}
+
+	public Move move(int j) {
+		return moves[j];
+	}
+
+	public int hiddenPowerType() {
+		return HiddenPowerInfo.hiddenPowerType(this);
+	}
+	
+	public int dv(int i) {
+		return DVs[i];
 	}
 }

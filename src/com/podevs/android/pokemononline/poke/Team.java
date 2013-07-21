@@ -29,6 +29,10 @@ public class Team implements SerializeBytes {
 			pokes[i] = new TeamPoke();
 	}
 	
+	public TeamPoke poke(int i) {
+		return pokes[i];
+	}
+	
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
 		

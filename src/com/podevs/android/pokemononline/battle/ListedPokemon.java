@@ -8,15 +8,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.poke.Poke;
+import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 
 public class ListedPokemon {
 	TextView name, item, ability, hp;
 	ImageView icon;
 	TextView [] moves = new TextView[4];
 	RelativeLayout whole;
-	
+		
 	public ListedPokemon(RelativeLayout whole2) {
 		init(whole2);
 	}
@@ -37,21 +41,21 @@ public class ListedPokemon {
 		icon = (ImageView) whole.findViewById(R.id.pokeViewIcon);
 	}
 	
-	void update(BattlePoke poke, boolean canSwitch) {
-		icon.setImageDrawable(PokemonInfo.icon(poke.uID));
-		name.setText(poke.nick);
-		hp.setText(poke.currentHP + "/" + poke.totalHP);
-		item.setText(poke.itemString);
-		ability.setText(poke.abilityString);
+	public void update(Poke poke, boolean canSwitch) {
+		icon.setImageDrawable(PokemonInfo.icon(poke.uID()));
+		name.setText(poke.nick());
+		hp.setText(poke.currentHP() + "/" + poke.totalHP());
+		item.setText(ItemInfo.name(poke.item()));
+		ability.setText(AbilityInfo.name(poke.ability()));
 		for (int j = 0; j < 4; j++) {
-			moves[j].setText(poke.moves[j].toString());
+			moves[j].setText(poke.move(j).toString());
 			moves[j].setShadowLayer((float)1, 1, 1, InfoConfig.resources.getColor(
 					canSwitch ? R.color.poke_text_shadow_enabled : R.color.poke_text_shadow_disabled));
         	String type;
-        	if (poke.moves[j].num == 237)
-        		type = Type.values()[poke.hiddenPowerType()].toString();
+        	if (poke.move(j).num() == 237)
+        		type = TypeInfo.name(poke.hiddenPowerType());
         	else
-        		type = poke.moves[j].getTypeString();
+        		type = TypeInfo.name(poke.move(j).num());
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
 		      		"drawable", InfoConfig.pkgName));

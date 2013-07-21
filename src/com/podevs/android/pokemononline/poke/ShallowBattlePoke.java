@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 
-import com.podevs.android.pokemononline.battle.Type;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;

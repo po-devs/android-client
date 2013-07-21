@@ -7,9 +7,12 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
+import com.podevs.android.pokemononline.poke.PokeParser;
+import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 
 public class TeambuilderActivity extends Activity {
@@ -17,6 +20,8 @@ public class TeambuilderActivity extends Activity {
 
 	View mainLayout, teamLayout;
 	ListedPokemon pokeList[] = new ListedPokemon[6];
+	
+	Team team;
 	
 	private class MyAdapter extends PagerAdapter
 	{
@@ -62,6 +67,18 @@ public class TeambuilderActivity extends Activity {
 			RelativeLayout whole = (RelativeLayout)teamLayout.findViewById(
 					InfoConfig.resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
 			pokeList[i] = new ListedPokemon(whole);
+		}
+		
+		try {
+			team = (new PokeParser(this)).getTeam();
+		} catch (NumberFormatException e) {
+			// The file could not be parsed correctly
+			Toast.makeText(this, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
+			team = new Team();
+		}
+		
+		for (int i = 0; i < 6; i++) {
+			pokeList[i].update(team.poke(i), true);
 		}
 		
 		setContentView(viewPager);

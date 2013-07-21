@@ -1,6 +1,7 @@
 package com.podevs.android.pokemononline.player;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ public class FullPlayerInfo implements SerializeBytes {
 		profile = new PlayerProfile(context);
 		
 		try {
-			context.openFileInput("team.xml");
+			context.openFileInput("team.xml").close();
 			team = (new PokeParser(context)).getTeam();
 			isDefault = false;
 		} catch (FileNotFoundException e) {
@@ -49,6 +50,8 @@ public class FullPlayerInfo implements SerializeBytes {
 			// The file could not be parsed correctly
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
 			team = new Team();
+		} catch (IOException e) {
+			
 		}
 	}
 	

@@ -2,13 +2,13 @@ package com.podevs.android.pokemononline.test;
 
 import android.test.AndroidTestCase;
 
-import com.podevs.android.pokemononline.battle.Type;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 
 public class TestDatabase extends AndroidTestCase {
 	public void testPokemons() {
