@@ -1,7 +1,10 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
+import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
@@ -43,6 +46,42 @@ public class PokemonInfo {
 			type = pokemons[gen].get(uID.originalHashCode()).type2;
 		}
 		return type;
+	}
+	
+	public static Drawable icon(UniqueID uid) {
+		Resources resources = InfoConfig.context.getResources();
+		int resID = resources.getIdentifier("pi" + uid.pokeNum +
+				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
+				"_icon", "drawable", InfoConfig.pkgName);
+		if (resID == 0)
+			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
+					"drawable", InfoConfig.pkgName);
+		return resources.getDrawable(resID);
+	}
+	
+	public static String sprite(ShallowBattlePoke poke, boolean front) {
+        String res;
+    	UniqueID uID;
+    	if (poke.specialSprites.isEmpty())
+    		uID = poke.uID;
+    	else
+    		uID = poke.specialSprites.peek();
+    	if (uID.pokeNum < 0)
+    		res = "empty_sprite";
+    	else {
+        	res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
+        			(front ? "_front" : "_back");
+    		if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0)
+    			// Special female sprite
+    			res = res + "f" + (poke.shiny ? "s" : "");
+    	}
+        System.out.println("SPRITE: " + res);
+        int ident = InfoConfig.resources.getIdentifier(res, "drawable", InfoConfig.pkgName);
+        if (ident == 0)
+        	// No sprite found. Default to missingNo.
+        	return "missingno.png";
+        else
+        	return res + ".png";
 	}
 	
 	@SuppressWarnings("unchecked")

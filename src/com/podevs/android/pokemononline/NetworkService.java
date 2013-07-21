@@ -295,7 +295,7 @@ public class NetworkService extends Service {
 		super.onCreate();
 		
 		/* The context needed for the database */
-		InfoConfig.context = this;
+		InfoConfig.setContext(this);
 		
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

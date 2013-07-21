@@ -44,7 +44,7 @@ public class TeambuilderActivity extends Activity {
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	InfoConfig.context = this;
+    	InfoConfig.setContext(this);
 
         super.onCreate(savedInstanceState);
 

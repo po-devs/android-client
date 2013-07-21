@@ -78,7 +78,7 @@ public class RegistryConnectionService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		
-		InfoConfig.context = this;
+		InfoConfig.setContext(this);
 	}
 	
 	private void connect(final LocalBinder binder) {
