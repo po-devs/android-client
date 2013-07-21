@@ -345,7 +345,7 @@ public class NetworkService extends Service {
 					}
 					return;
 				}
-				//socket.sendMessage(meLoginPlayer.serializeBytes(), Command.Login);
+
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
 				
@@ -364,7 +364,7 @@ public class NetworkService extends Service {
 				
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, 
 				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
-				loginCmd.putFlags(new boolean []{true,true,true,defaultChannel != null, autoJoinChannels != null,
+				loginCmd.putFlags(new boolean []{true, true, true, defaultChannel != null, autoJoinChannels != null,
 						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid()}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
@@ -376,7 +376,7 @@ public class NetworkService extends Service {
 				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
 				/* Data Flags: supportsZipCompression, isLadderEnabled, wantsIdsWithMessages, isIdle */
-				loginCmd.putFlags(new boolean []{false,true,true,getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false)});
+				loginCmd.putFlags(new boolean []{false, true, true, getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false)});
 				
 				/* Reconnect even if all the bits are different */
 				loginCmd.write(0);
@@ -451,8 +451,7 @@ public class NetworkService extends Service {
 	private void readSocketMessages(PokeClientSocket socket) {
 		while(!halted && socket.isConnected()) {
 			try {
-				// Get some data from the wire
-				socket.recvMessagePoll();
+				handleMsg(socket.getMsg());
 			} catch (IOException e) {
 				// Disconnected
 				break;
@@ -461,19 +460,6 @@ public class NetworkService extends Service {
 				// No way to recover.
 				// TODO die completely
 				break;
-			}
-			Baos tmp;
-			// Handle any messages that completed
-			while ((tmp = socket.getMsg()) != null) {
-				Bais msg = new Bais(tmp.toByteArray());
-				handleMsg(msg);
-			}
-
-			/* Do not use too much CPU */
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}
