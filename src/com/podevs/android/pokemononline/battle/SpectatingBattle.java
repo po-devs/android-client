@@ -28,6 +28,7 @@ import com.podevs.android.pokemononline.poke.PokeEnums.Weather;
 import com.podevs.android.pokemononline.poke.PokeEnums.WeatherState;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.StringUtilities;
@@ -424,7 +425,7 @@ public class SpectatingBattle {
 			if(other  != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + other));
 			s = s.replaceAll("%d", new Short(other).toString());
 			s = s.replaceAll("%q", q);
-			if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", itemName(other));
+			if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
 			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT name FROM [Abilities] WHERE _id = " + (other + 1)));
 			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT name FROM [Pokemons] WHERE Num = " + other));
 			
@@ -443,7 +444,7 @@ public class SpectatingBattle {
             if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", Stat.values()[other].toString());
             s = s.replaceAll("%s", currentPoke(player).nick);
             if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
-            if(berry != -1) s = s.replaceAll("%i", itemName(berry));
+            if(berry != -1) s = s.replaceAll("%i", ItemInfo.name(berry));
             if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + other));
             /* Balloon gets a really special treatment */
             if (item == 35)
@@ -521,7 +522,7 @@ public class SpectatingBattle {
 	        if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT Name FROM [Moves] WHERE _id = " + other));
 	        // Below commented out in PO code
 	        //            mess.replace("%d", QString: {:number(other));
-	        if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", itemName(other));
+	        if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
 	        if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT Name FROM [Abilities] WHERE _id = " + (other + 1)));
 	        if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT Name FROM [Pokemons] WHERE _id = " + other));
 	        if (type == Type.Normal.ordinal()) {
@@ -655,20 +656,6 @@ public class SpectatingBattle {
 	private void removeSpectator(int id) {
 		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
 		spectators.remove(id);
-	}
-	
-
-	public static String itemName(int itemnum) {
-		// I don't know how Java is okay with me referencing the non-static
-		// netServ in a static context, but I'll take it
-		try {
-			if (itemnum < 8000)
-				return netServ.db.query("SELECT Name FROM [Items] WHERE _id = " + (itemnum + 1));
-			else
-				return netServ.db.query("SELECT Name FROM [Berries] WHERE _id = " + (itemnum - 7999));
-		} catch (SQLiteException e) {
-			return "";
-		}
 	}
 	
 	public static String itemMessage(int item, int part)

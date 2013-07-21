@@ -4,6 +4,8 @@ import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
+import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -36,9 +38,9 @@ public class BattlePoke extends ShallowBattlePoke {
 		shiny = msg.readBool();
 		level = msg.readByte();
 		item = msg.readShort();
-		itemString = Battle.itemName(item); // XXX This is probably how we should do all of these instead of passing db around
+		itemString = ItemInfo.name(item);
 		ability = msg.readShort();
-		abilityString = db.query("SELECT Name FROM [Abilities] WHERE _id = " + (ability + 1));
+		abilityString = AbilityInfo.name(ability);
 		happiness = msg.readByte();
 		getTypes(db, gen.num);
 		getName(db);

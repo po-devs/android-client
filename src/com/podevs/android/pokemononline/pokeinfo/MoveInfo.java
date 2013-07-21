@@ -1,13 +1,9 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import android.content.Context;
 import android.util.SparseArray;
+
+import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
+import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 
 public class MoveInfo {
 	private static class Move {
@@ -78,72 +74,15 @@ public class MoveInfo {
 	}
 	
 	private static void loadPokeEffects() {
-		fill("db/moves/5G/effect.txt", new Filler() {
+		InfoFiller.fill("db/moves/5G/effect.txt", new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
 			}
 		});
 	}
 
-	public static interface Filler {
-		void fill(int i, String s);
-	}
-	
-	public static abstract class FillerByte implements Filler {
-		public void fill(int i, String s) {
-			fillIntByte(i, (byte)Integer.parseInt(s));
-		}
-		
-		abstract void fillIntByte(int i, byte b);
-	}
-	
-	private static void fill(String file, Filler filler) {
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
-
-		try {
-			while (buf.ready()) {
-				String str = buf.readLine();
-				/*
-				 * Test for BOM
-				 */
-				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
-					str = str.substring(1);
-				}
-				
-				int spaceIndex = str.indexOf(' ');
-				
-				if (spaceIndex < 0) {
-					break;
-				}
-				
-				filler.fill(Integer.parseInt(str.substring(0, spaceIndex)), str.substring(spaceIndex + 1));
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			assetsDB.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	private static void loadPokePPs() {
-		fill("db/moves/5G/pp.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/5G/pp.txt", new FillerByte() {
 			@Override
 			void fillIntByte(int i, byte b) {
 				moveNames.get(i).pp = b;
@@ -152,7 +91,7 @@ public class MoveInfo {
 	}
 	
 	private static void loadPokeAccuracies() {
-		fill("db/moves/5G/accuracy.txt", new Filler() {
+		InfoFiller.fill("db/moves/5G/accuracy.txt", new Filler() {
 			public void fill(int i, String b) {
 				moveNames.get(i).accuracy = b;
 			}
@@ -160,7 +99,7 @@ public class MoveInfo {
 	}
 	
 	private static void loadPokePowers() {
-		fill("db/moves/5G/power.txt", new Filler() {
+		InfoFiller.fill("db/moves/5G/power.txt", new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).power = s;
 			}
@@ -168,7 +107,7 @@ public class MoveInfo {
 	}
 
 	private static void loadPokeTypes() {
-		fill("db/moves/5G/type.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/5G/type.txt", new FillerByte() {
 			@Override
 			void fillIntByte(int i, byte b) {
 				moveNames.get(i).type = b;
@@ -177,53 +116,10 @@ public class MoveInfo {
 	}
 
 	private static void loadPokeMoves() {
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open("db/moves/moves.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
-
-		try {
-			while (buf.ready()) {
-				String str = buf.readLine();
-				/*
-				 * Test for BOM
-				 */
-				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
-					str = str.substring(1);
-				}
-				
-				int spaceIndex = str.indexOf(' ');
-				
-				if (spaceIndex < 0) {
-					break;
-				}
-				
-				int key = Integer.parseInt(str.substring(0, spaceIndex));
-				String val = str.substring(spaceIndex + 1); 
-				moveNames.put(key, new Move(val));
+		InfoFiller.fill("db/moves/moves.txt", new Filler() {
+			public void fill(int i, String b) {
+				moveNames.put(i, new Move(b));
 			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			assetsDB.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private static Context getContext() {
-		return InfoConfig.context;
+		});
 	}
 }
