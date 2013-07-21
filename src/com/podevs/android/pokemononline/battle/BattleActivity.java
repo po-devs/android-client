@@ -55,6 +55,7 @@ import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.ShallowShownPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
@@ -447,7 +448,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			        	if (move.num == 237)
 			        		type = TypeInfo.name(battlePoke.hiddenPowerType());
 			        	else
-			        		type = TypeInfo.name(move.num());
+			        		type = TypeInfo.name(MoveInfo.type(move.num()));
 			        	type = type.toLowerCase(Locale.UK);
 			        	attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
 					      		"drawable", InfoConfig.pkgName));

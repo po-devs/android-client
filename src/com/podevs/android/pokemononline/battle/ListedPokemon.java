@@ -12,6 +12,7 @@ import com.podevs.android.pokemononline.poke.Poke;
 import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 
@@ -55,7 +56,7 @@ public class ListedPokemon {
         	if (poke.move(j).num() == 237)
         		type = TypeInfo.name(poke.hiddenPowerType());
         	else
-        		type = TypeInfo.name(poke.move(j).num());
+        		type = TypeInfo.name(MoveInfo.type(poke.move(j).num()));
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
 		      		"drawable", InfoConfig.pkgName));

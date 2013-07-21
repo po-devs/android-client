@@ -1,17 +1,8 @@
 package com.podevs.android.pokemononline.registry;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.zip.InflaterInputStream;
-
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -37,20 +28,18 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.player.FullPlayerInfo;
 import com.podevs.android.pokemononline.registry.RegistryConnectionService.RegistryCommandListener;
 import com.podevs.android.pokemononline.registry.ServerListAdapter.Server;
+import com.podevs.android.pokemononline.teambuilder.TeambuilderActivity;
 import com.podevs.android.utilities.Baos;
 
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
 	
 	static final String TAG = "RegistryActivity";
-	static final int PICKFILE_RESULT_CODE = 1;
 	
 	private ListView servers;
 	private boolean viewToggle = false;
@@ -190,95 +179,12 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				RegistryActivity.this.finish();
     		}
     		else if (v == findViewById(R.id.importteambutton)) {
-    			new SelectImportMethodDialogFragment().show(getSupportFragmentManager(), "select-import-method");
+    			startActivity(new Intent(RegistryActivity.this, TeambuilderActivity.class));
+    			RegistryActivity.this.finish();
     		}
     	}
     };
-    
-    /* Triggers when team imported successfully */
-    public void onTeamImportedFromFile(FullPlayerInfo fullPlayerInfo) {
-    	meLoginPlayer = fullPlayerInfo;
-    }
-    
-	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		if (requestCode == PICKFILE_RESULT_CODE) {
-			if (resultCode == Activity.RESULT_OK) {
-				String path = intent.getData().getPath();
-			    
-				try {
-					{
-						// Copy imported file to default team location
-						FileInputStream team = new FileInputStream(path);
-						FileOutputStream saveTeam = openFileOutput("team.xml", Context.MODE_PRIVATE);
-	
-						byte[] buffer = new byte[1024];
-						int length;
-						while ((length = team.read(buffer))>0)
-							saveTeam.write(buffer, 0, length);
-						saveTeam.flush();
-						saveTeam.close();
-						team.close();
-					}
-					
-					FullPlayerInfo fullPlayerInfo = new FullPlayerInfo(this);
-					
-					if (!fullPlayerInfo.isDefault) {
-						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
-												
-						/* Tells the activity that the team was successfully imported */
-						onTeamImportedFromFile(fullPlayerInfo);
-					} else {
-						Toast.makeText(this, "Team from " + path + " could not be parsed successfully. Is the file a valid team?", Toast.LENGTH_LONG).show();
-					}
-				} catch (IOException e) {
-					System.out.println("Team not found");
-					Toast.makeText(this, path + " could not be opened. Does the file exist?", Toast.LENGTH_LONG).show();
-				}
-			}
-		} else {
-			IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-			if (scanResult != null && "QR_CODE".equals(scanResult.getFormatName())) {
-				try {
-					/* TODO: Maybe avoid writing into team.xml the first try. Maybe give the FullPlayerInfo
-					 * Constructor something other than a file handle.
-					 */
-					byte[] qrRead = intent.getByteArrayExtra("SCAN_RESULT_BYTES");
-					if (qrRead == null)
-						Toast.makeText(RegistryActivity.this, "Team from QR code could not be parsed successfully.", Toast.LENGTH_LONG).show();
-					// Discard the first 4 bits. These set the mode of the qr data (always the same for us)
-					for(int i = 0; i < qrRead.length - 1; i++)
-						// The new byte is your lower 4 bits and the upper 4 bits of the next guy
-						qrRead[i] = (byte) (((qrRead[i] & 0xf) << 4) | ((qrRead[i+1] & 0xf0) >>> 4));
-					// Read in the length (two bytes)
-					int qrLen = ((int)(qrRead[0]) << 8) | ((int)qrRead[1] & 0xff);
-					InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(qrRead, 2, qrLen));
-					FileOutputStream saveTeam = openFileOutput("team.xml", Context.MODE_PRIVATE);
-					byte[] buffer = new byte[1024];
-					int length;
-					while ((length = iis.read(buffer))>0)
-						saveTeam.write(buffer, 0, length);
-					saveTeam.flush();
-					saveTeam.close();
-	
-					/* Acts as if we imported a new team, i.e. loads from file */
-					onTeamImportedFromFile(new FullPlayerInfo(this));
-					
-					if (!meLoginPlayer.isDefault)
-						Toast.makeText(RegistryActivity.this, "Team successfully imported from QR code", Toast.LENGTH_SHORT).show();
-					else {
-						Toast.makeText(RegistryActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
-						deleteFile("team.xml");
-					}
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					Toast.makeText(RegistryActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
-				}
-			}
-		}
-	}
-	
+    	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
