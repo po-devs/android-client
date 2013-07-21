@@ -42,21 +42,12 @@ public class BattleMove implements SerializeBytes {
 	
 	public BattleMove(int n, DataBaseHelper db) {
 		num = (short) n;
-		name = MoveInfo.name(db, n);
-		try {
-			type = new Byte(db.query("SELECT type FROM [Moves] WHERE _id = " + num));
-		} catch (NumberFormatException e) {
-			type = new Byte((byte)Type.Curse.ordinal());
-		}
-		try {
-			totalPP = (byte)(new Byte(db.query("SELECT pp FROM [Moves] WHERE _id = " + num)) * 1.6);
-		} catch (NumberFormatException e) {
-			totalPP = 0;
-		}
-		power = db.query("SELECT power FROM [Moves] WHERE _id = " + num);
-		accuracy = db.query("SELECT accuracy FROM [Moves] WHERE _id = " + num);
-		//description = db.query("SELECT description FROM [Moves] WHERE _id = " + num);
-		effect = db.query("SELECT effect FROM [Moves] WHERE _id = " + num);
+		name = MoveInfo.name(n);
+		type = MoveInfo.type(n);
+		totalPP = (byte) (MoveInfo.pp(n)*8/5);
+		power = MoveInfo.power(n);
+		effect = MoveInfo.effect(n);
+		accuracy = MoveInfo.accuracy(n);
 	}
 	
 	public BattleMove(BattleMove bm) {

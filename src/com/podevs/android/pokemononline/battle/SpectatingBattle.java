@@ -218,7 +218,7 @@ public class SpectatingBattle {
 			boolean silent = msg.readBool();
 			if (!silent) {
 			writeToHist(Html.fromHtml("<br>" + tu(currentPoke(player).nick +
-					" used <font color =" + TypeColor.values()[color] + MoveInfo.name(netServ.db, attack) + "</font>!")));
+					" used <font color =" + TypeColor.values()[color] + MoveInfo.name(attack) + "</font>!")));
 			}
 			break;
 		} case BeginTurn: {
