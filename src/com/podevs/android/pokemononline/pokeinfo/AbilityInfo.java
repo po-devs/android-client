@@ -1,14 +1,14 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import android.util.SparseArray;
+import java.util.Vector;
 
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 
 public class AbilityInfo {
-	private static SparseArray<String> abilityNames = new SparseArray<String>();
+	private static Vector<String> abilityNames = null;
 	
 	public static String name(int item) {
-		if (abilityNames.indexOfKey(item) < 0) {
+		if (abilityNames == null) {
 			loadAbilityNames();
 		}
 		
@@ -16,9 +16,11 @@ public class AbilityInfo {
 	}
 
 	private static void loadAbilityNames() {
+		abilityNames = new Vector<String>();
+		
 		InfoFiller.fill("db/abilities/abilities.txt", new Filler() {
 			public void fill(int i, String b) {
-				abilityNames.put(i, b);
+				abilityNames.addElement(b);
 			}
 		});
 	}

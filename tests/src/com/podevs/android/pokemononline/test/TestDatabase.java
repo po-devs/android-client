@@ -23,6 +23,8 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals("Focus Punch", MoveInfo.name(264));
 		assertEquals("150", MoveInfo.power(264));
 		assertEquals(Type.Fighting.ordinal(), MoveInfo.type(264));
+		assertEquals("%f can no longer escape!", MoveInfo.message(12, 0));
+		assertEquals("It's a one hit KO!", MoveInfo.message(43, 1));
 	}
 	
 	public void testAbilityNames() {

@@ -1,5 +1,7 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
+import java.util.Vector;
+
 import android.util.SparseArray;
 
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
@@ -19,7 +21,8 @@ public class MoveInfo {
 		}
 	}
 	
-	private static SparseArray<Move> moveNames = new SparseArray<Move>();
+	private static Vector<Move> moveNames = null;
+	private static SparseArray<String> moveMessages = null;
 	
 	public static String name(int num) {
 		testLoad(num);
@@ -28,7 +31,7 @@ public class MoveInfo {
 	}
 	
 	private static void testLoad(int num) {
-		if (moveNames.indexOfKey(num) < 0) {
+		if (moveNames == null) {
 			loadPokeMoves();
 		}
 	}
@@ -71,6 +74,19 @@ public class MoveInfo {
 			loadPokeEffects();
 		}
 		return moveNames.get(num).effect;
+	}
+
+	public static String message(int num, int part) {
+		if (moveMessages == null) {
+			 loadMoveMessages();
+		}
+		
+		String parts [] = ((String)moveMessages.get(num, "")).split("\\|");
+		try {
+			return parts[part];
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			return "";
+		}
 	}
 	
 	private static void loadPokeEffects() {
@@ -116,9 +132,19 @@ public class MoveInfo {
 	}
 
 	private static void loadPokeMoves() {
+		moveNames = new Vector<Move>();
 		InfoFiller.fill("db/moves/moves.txt", new Filler() {
 			public void fill(int i, String b) {
-				moveNames.put(i, new Move(b));
+				moveNames.addElement(new Move(b));
+			}
+		});
+	}
+	
+	private static void loadMoveMessages() {
+		moveMessages = new SparseArray<String>();
+		InfoFiller.fill("db/moves/move_message.txt", new Filler() {
+			public void fill(int i, String b) {
+				moveMessages.put(i, b);
 			}
 		});
 	}

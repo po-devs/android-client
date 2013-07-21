@@ -28,8 +28,10 @@ import com.podevs.android.pokemononline.poke.PokeEnums.Weather;
 import com.podevs.android.pokemononline.poke.PokeEnums.WeatherState;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.StringUtilities;
 
@@ -416,18 +418,18 @@ public class SpectatingBattle {
 			short other = msg.readShort();
 			String q = msg.readString();
 			
-			String s = netServ.db.query("SELECT EFFECT" + part + " FROM [Move_message] WHERE _id = " + move);
+			String s = MoveInfo.message(move, part);
 			s = s.replaceAll("%s", currentPoke(player).nick);
 			s = s.replaceAll("%ts", players[player].nick());
 			s = s.replaceAll("%tf", players[(player == 0 ? 1 : 0)].nick());
 			if(type  != -1) s = s.replaceAll("%t", Type.values()[type].toString());
 			if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
-			if(other  != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + other));
+			if(other  != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
 			s = s.replaceAll("%d", new Short(other).toString());
 			s = s.replaceAll("%q", q);
 			if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
-			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT name FROM [Abilities] WHERE _id = " + (other + 1)));
-			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT name FROM [Pokemons] WHERE Num = " + other));
+			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", AbilityInfo.name(other));
+			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other, 0)));
 			
 			writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(StringUtilities.escapeHtml(s)) + "</font>"));
 			break;
@@ -445,7 +447,7 @@ public class SpectatingBattle {
             s = s.replaceAll("%s", currentPoke(player).nick);
             if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
             if(berry != -1) s = s.replaceAll("%i", ItemInfo.name(berry));
-            if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT name FROM [Moves] WHERE _id = " + other));
+            if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
             /* Balloon gets a really special treatment */
             if (item == 35)
                 writeToHist(Html.fromHtml("<br><b>" + tu(StringUtilities.escapeHtml(s)) + "</b>"));
