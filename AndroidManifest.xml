@@ -35,6 +35,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.podevs.android.pokemononline.teambuilder.TeambuilderActivity"
+            android:label="@string/teambuilder"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.podevs.android.pokemononline.chat.ChatActivity"
             android:parentActivityName="com.podevs.android.pokemononline.registry.RegistryActivity"
             android:configChanges="orientation"
