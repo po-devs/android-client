@@ -1,11 +1,14 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import java.util.Vector;
+import java.util.ArrayList;
+
+import android.util.SparseArray;
 
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 
 public class AbilityInfo {
-	private static Vector<String> abilityNames = null;
+	private static ArrayList<String> abilityNames = null;
+	private static SparseArray<String> abilityMessages = null;
 	
 	public static String name(int item) {
 		if (abilityNames == null) {
@@ -14,13 +17,35 @@ public class AbilityInfo {
 		
 		return abilityNames.get(item);
 	}
+	
+	public static String message(int num, int part) {
+		if (abilityMessages == null) {
+			 loadAbilityMessages();
+		}
+		
+		String parts [] = ((String)abilityMessages.get(num, "")).split("\\|");
+		try {
+			return parts[part];
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			return "";
+		}
+	}
 
 	private static void loadAbilityNames() {
-		abilityNames = new Vector<String>();
+		abilityNames = new ArrayList<String>();
 		
 		InfoFiller.fill("db/abilities/abilities.txt", new Filler() {
 			public void fill(int i, String b) {
-				abilityNames.addElement(b);
+				abilityNames.add(b);
+			}
+		});
+	}
+	
+	private static void loadAbilityMessages() {
+		abilityMessages = new SparseArray<String>();
+		InfoFiller.fill("db/abilities/ability_messages.txt", new Filler() {
+			public void fill(int i, String b) {
+				abilityMessages.put(i, b);
 			}
 		});
 	}

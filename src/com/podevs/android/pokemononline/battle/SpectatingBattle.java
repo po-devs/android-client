@@ -7,7 +7,6 @@ import java.util.Random;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteException;
 import android.os.SystemClock;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -182,7 +181,7 @@ public class SpectatingBattle {
 			pokes[player][fromSpot] = tempPoke;
 			
 			if(msg.available() > 0) // this is the first time you've seen it
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, netServ.db, conf.gen);
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
 			
 			if(activity != null) {
 				activity.updatePokes(player);
@@ -212,9 +211,9 @@ public class SpectatingBattle {
 			break;
 		} case UseAttack: {
 			short attack = msg.readShort();
-			Integer color;
+			int color;
 			try {
-				color = Integer.valueOf(netServ.db.query("SELECT type FROM [Moves] WHERE _id = " + attack));
+				color = MoveInfo.type(attack);
 			} catch (NumberFormatException e) {
 				color = Type.Curse.ordinal();
 			}
@@ -513,7 +512,7 @@ public class SpectatingBattle {
 			byte foe = msg.readByte();
 			short other = msg.readShort();
 
-			String s = netServ.db.query("SELECT Effect" + part + " FROM [Ability_message] WHERE _id = " + (ab + 1));
+			String s = AbilityInfo.message(ab, part);
 	        if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", netServ.getResources().getString((Stat.values()[other].rstring())));
 	        s = s.replaceAll("%s", currentPoke(player).nick);
 	        // Below commented out in PO code
@@ -521,12 +520,12 @@ public class SpectatingBattle {
 	        //            mess.replace("%tf", name(!spot));
 	        if(type  != -1) s = s.replaceAll("%t", Type.values()[type].toString());
 	        if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
-	        if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", netServ.db.query("SELECT Name FROM [Moves] WHERE _id = " + other));
+	        if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
 	        // Below commented out in PO code
 	        //            mess.replace("%d", QString: {:number(other));
 	        if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
-	        if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", netServ.db.query("SELECT Name FROM [Abilities] WHERE _id = " + (other + 1)));
-	        if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", netServ.db.query("SELECT Name FROM [Pokemons] WHERE _id = " + other));
+	        if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", AbilityInfo.name(other));
+	        if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other, 0)));
 	        if (type == Type.Normal.ordinal()) {
 	        	writeToHist("\n" + tu(StringUtilities.escapeHtml(s)));
 	        } else {

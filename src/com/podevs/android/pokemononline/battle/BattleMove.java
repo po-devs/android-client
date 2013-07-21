@@ -2,7 +2,6 @@ package com.podevs.android.pokemononline.battle;
 
 import android.graphics.Color;
 
-import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
@@ -36,7 +35,7 @@ public class BattleMove implements SerializeBytes {
 	
 	public BattleMove() {}
 	
-	public BattleMove(int n, DataBaseHelper db) {
+	public BattleMove(int n) {
 		num = (short) n;
 		name = MoveInfo.name(n);
 		type = MoveInfo.type(n);
@@ -51,8 +50,8 @@ public class BattleMove implements SerializeBytes {
 		type = bm.type;
 	}
 	
-	public BattleMove(Bais msg, DataBaseHelper db) {
-		this(msg.readShort(), db);
+	public BattleMove(Bais msg) {
+		this(msg.readShort());
 		currentPP = msg.readByte();
 		totalPP = msg.readByte();
 	}

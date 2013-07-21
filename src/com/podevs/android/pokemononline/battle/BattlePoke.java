@@ -1,11 +1,11 @@
 package com.podevs.android.pokemononline.battle;
 
-import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -29,7 +29,7 @@ public class BattlePoke extends ShallowBattlePoke {
 	int[] DVs = new int[6];
 	int[] EVs = new int[6];
 	
-	public BattlePoke(Bais msg, DataBaseHelper db, Gen gen) {
+	public BattlePoke(Bais msg, Gen gen) {
 		uID = new UniqueID(msg);
 		nick = msg.readString();
 		totalHP = msg.readShort();
@@ -42,13 +42,14 @@ public class BattlePoke extends ShallowBattlePoke {
 		ability = msg.readShort();
 		abilityString = AbilityInfo.name(ability);
 		happiness = msg.readByte();
-		getTypes(db, gen.num);
-		getName(db);
+		pokeName = PokemonInfo.name(uID);
+		types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
+		types[1] = Type.values()[PokemonInfo.type2(uID, gen.num)];
 		
 		for(int i = 0; i < 5; i++)
 			stats[i] = msg.readShort();
 		for(int i = 0; i < 4; i++)
-			moves[i] = new BattleMove(msg, db);
+			moves[i] = new BattleMove(msg);
 		/* EVs and DVs are QLists on the server end,
 		 * so we need to discard the int representing
 		 * the number of items in the list. */

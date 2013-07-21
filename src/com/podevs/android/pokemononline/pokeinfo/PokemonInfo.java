@@ -1,18 +1,19 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
+import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 
 public class PokemonInfo {
 	private static SparseArray<String> pokeNames = new SparseArray<String>();
+	private static SparseArray<PokeGenData> pokemons[] = null;
+
+	private static class PokeGenData {
+		byte type1 = -1;
+		byte type2 = -1;
+	}
 	
 	public static String name(UniqueID uID) {
 		int num = uID.hashCode();
@@ -24,54 +25,57 @@ public class PokemonInfo {
 		return pokeNames.get(num);
 	}
 	
-	private static void loadPokeNames() {
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open("db/pokes/pokemons.txt");
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+	public static int type1(UniqueID uID, int gen) {
+		testLoad(uID, gen);
 		
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
-
-		try {
-			while (buf.ready()) {
-				String str = buf.readLine();
-				/*
-				 * Test for BOM
-				 */
-				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
-					str = str.substring(1);
-				}
-				
-				int spaceIndex = str.indexOf(' ');
-				
-				if (spaceIndex < 0) {
-					break;
-				}
-				
-				int key = new UniqueID(str.substring(0, spaceIndex)).hashCode();
-				String val = str.substring(spaceIndex + 1); 
-				pokeNames.put(key, val);
-			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		try {
-			assetsDB.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		return pokemons[gen].get(uID.hashCode()).type1;
 	}
 	
-	private static Context getContext() {
-		return InfoConfig.context;
+	public static int type2(UniqueID uID, int gen) {
+		testLoad(uID, gen);
+		
+		return pokemons[gen].get(uID.hashCode()).type2;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void testLoad(UniqueID uID, int gen) {
+		if (pokemons == null) {
+			pokemons = new SparseArray[6];
+		}
+		if (pokemons[gen] == null) {
+			pokemons[gen] = new SparseArray<PokemonInfo.PokeGenData>();
+		}
+		if (pokemons[gen].indexOfKey(uID.hashCode()) == (byte)-1) {
+			loadTypes(gen);
+		}
+	}
+
+	private static void loadPokeNames() {
+		InfoFiller.uIDfill("db/pokes/pokemons.txt", new Filler() {
+			public void fill(int i, String s) {
+				pokeNames.put(i, s);
+			}
+		});
+	}
+	
+	private static void loadTypes(final int gen) {
+		/* First load all the released pokemon and prepare the "data containers" */
+		InfoFiller.uIDfill("db/pokes/" + gen  + "G/released.txt", new Filler() {
+			public void fill(int i, String s) {
+				pokemons[gen].put(i, new PokeGenData());
+			}
+		});
+		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				pokemons[gen].get(i).type1 = b;
+			}
+		});
+		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type2.txt", new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				pokemons[gen].get(i).type2 = b;
+			}
+		});
 	}
 }

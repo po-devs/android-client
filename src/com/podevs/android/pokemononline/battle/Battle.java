@@ -29,7 +29,7 @@ public class Battle extends SpectatingBattle {
 	public Battle(BattleConf bc, Bais msg, PlayerInfo p1, PlayerInfo p2, int meID, int bID, NetworkService ns) {
 		super(bc, p1, p2, bID, ns);
 
-		myTeam = new BattleTeam(msg, netServ.db, conf.gen);
+		myTeam = new BattleTeam(msg, conf.gen);
 		
 		// Only supporting singles for now
 		numberOfSlots = 2;
@@ -109,7 +109,7 @@ public class Battle extends SpectatingBattle {
 			pokes[player][fromSpot] = tempPoke;
 			
 			if(msg.available() > 0) // this is the first time you've seen it
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, netServ.db, conf.gen);
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
 			
 			if(activity != null) {
 				activity.updatePokes(player);
@@ -155,7 +155,7 @@ public class Battle extends SpectatingBattle {
 			case TempMove:
 			case DefMove:
 				byte slot = msg.readByte();
-				BattleMove newMove = new BattleMove(msg.readShort(), netServ.db);
+				BattleMove newMove = new BattleMove(msg.readShort());
 				displayedMoves[slot] = newMove;
 				if (id == TempPokeChange.DefMove.ordinal()) {
 					myTeam.pokes[0].moves[slot] = newMove;

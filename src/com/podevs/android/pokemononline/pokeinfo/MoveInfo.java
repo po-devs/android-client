@@ -1,6 +1,6 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import android.util.SparseArray;
 
@@ -21,7 +21,7 @@ public class MoveInfo {
 		}
 	}
 	
-	private static Vector<Move> moveNames = null;
+	private static ArrayList<Move> moveNames = null;
 	private static SparseArray<String> moveMessages = null;
 	
 	public static String name(int num) {
@@ -100,7 +100,7 @@ public class MoveInfo {
 	private static void loadPokePPs() {
 		InfoFiller.fill("db/moves/5G/pp.txt", new FillerByte() {
 			@Override
-			void fillIntByte(int i, byte b) {
+			void fillByte(int i, byte b) {
 				moveNames.get(i).pp = b;
 			}
 		});
@@ -125,17 +125,17 @@ public class MoveInfo {
 	private static void loadPokeTypes() {
 		InfoFiller.fill("db/moves/5G/type.txt", new FillerByte() {
 			@Override
-			void fillIntByte(int i, byte b) {
+			void fillByte(int i, byte b) {
 				moveNames.get(i).type = b;
 			}
 		});
 	}
 
 	private static void loadPokeMoves() {
-		moveNames = new Vector<Move>();
+		moveNames = new ArrayList<Move>();
 		InfoFiller.fill("db/moves/moves.txt", new Filler() {
 			public void fill(int i, String b) {
-				moveNames.addElement(new Move(b));
+				moveNames.add(new Move(b));
 			}
 		});
 	}

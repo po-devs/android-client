@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 
-import com.podevs.android.pokemononline.DataBaseHelper;
 import com.podevs.android.pokemononline.battle.Type;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -28,15 +28,16 @@ public class ShallowBattlePoke implements SerializeBytes {
 	
 	public ShallowBattlePoke() {}; // For pokes who have not been sent out;
 	
-	public ShallowBattlePoke(Bais msg, boolean isMe, DataBaseHelper db, Gen gen) {
+	public ShallowBattlePoke(Bais msg, boolean isMe, Gen gen) {
 		uID = new UniqueID(msg);
 		rnick = nick = msg.readString();
 		if (!isMe) {
 			nick = "the foe's " + nick;
 			
 			// A little optimization; these only matter if it's not your poke
-			getName(db);
-			getTypes(db, gen.num);
+			pokeName = PokemonInfo.name(uID);
+			types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
+			types[1] = Type.values()[PokemonInfo.type2(uID, gen.num)];
 		}
 		lifePercent = msg.readByte();
 		fullStatus = msg.readInt();
@@ -61,30 +62,7 @@ public class ShallowBattlePoke implements SerializeBytes {
 		if(types[1] != Type.Curse) s.append("/" + types[1]);
 		return s;
 	}
-	
-	protected void getName(DataBaseHelper db) {
-		pokeName = db.query("SELECT Name from [Pokemons] WHERE (Num = " + 
-				uID.pokeNum + ") AND (Forme = " + uID.subNum + ")");
-	}
-	
-	
-	protected void getTypes(DataBaseHelper db, byte gen) {
-		for(int i = 0; i < 2; i++) {
-			String res = db.query("SELECT G" + gen + "T" + (i+1) + " from [Pokemons] WHERE (Num = " +
-					uID.pokeNum + ") AND (Forme = " + uID.subNum + ")");
-			if (uID.subNum != 0 && res.length() == 0)
-				// No type specified for this forme,
-				// attempt to lookup for base forme
-				res = db.query("SELECT G" + gen + "T" + (i+1) + " from [Pokemons] WHERE (Num = " +
-						uID.pokeNum + ") AND (Forme = 0)");
-			if (res.length() == 0 || res.equals(DataBaseHelper.ERROR))
-				// This should never happen but not having a type is probably bad
-				// give it curse type at least
-				res = Integer.valueOf(Type.Curse.ordinal()).toString();
-			types[i] = Type.values()[Integer.valueOf(res)];
-		}
-	}
-	
+
 	public void changeStatus(byte status) {
 		/* Clears past status */
 		fullStatus = fullStatus & ~( (1 << Status.Koed.poValue()) | 0x3F);

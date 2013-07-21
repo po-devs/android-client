@@ -11,10 +11,12 @@ import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 
 public class TestDatabase extends AndroidTestCase {
-	public void testPokemonNames() {
+	public void testPokemons() {
 		InfoConfig.context = getContext();
 		
 		assertEquals("Pikachu", PokemonInfo.name(new UniqueID(25, 0)));
+		assertEquals(12, PokemonInfo.type1(new UniqueID(25, 0), 5));
+		assertEquals(17, PokemonInfo.type2(new UniqueID(25, 0), 5));
 	}
 
 	public void testMoves() {
@@ -27,10 +29,11 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals("It's a one hit KO!", MoveInfo.message(43, 1));
 	}
 	
-	public void testAbilityNames() {
+	public void testAbilities() {
 		InfoConfig.context = getContext();
 		
 		assertEquals("Stall", AbilityInfo.name(100));
+		assertEquals("%s's Effect Spore activates!", AbilityInfo.message(16, 0));
 	}
 	
 	public void testItems() {

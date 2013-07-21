@@ -71,7 +71,6 @@ public class NetworkService extends Service {
 	private String salt = null;
 	public boolean failedConnect = false;
 	private boolean reconnectDenied = false;
-	public DataBaseHelper db;
 	public String serverName = "Not Connected";
 	private volatile boolean halted = false;
 	public final ProtocolVersion version = new ProtocolVersion();
@@ -293,7 +292,6 @@ public class NetworkService extends Service {
 	@Override
 	// This is called once
 	public void onCreate() {
-		db = new DataBaseHelper(NetworkService.this);
 		super.onCreate();
 		
 		/* The context needed for the database */
