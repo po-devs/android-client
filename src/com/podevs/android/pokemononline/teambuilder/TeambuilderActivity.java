@@ -32,7 +32,7 @@ import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 public class TeambuilderActivity extends FragmentActivity {
 	protected ViewPager viewPager;
 
-	View mainLayout, teamLayout;
+	View mainLayout, teamLayout, editPokeLayout;
 	ListedPokemon pokeList[] = new ListedPokemon[6];
 	
 	Team team;
@@ -43,7 +43,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	{
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 		
 		@Override
@@ -51,6 +51,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			switch (position) {
 			case 0: container.addView(mainLayout);return mainLayout;
 			case 1: container.addView(teamLayout);return teamLayout;
+			case 2: container.addView(editPokeLayout);return editPokeLayout;
 			}
 			return null;
 		}
@@ -74,6 +75,7 @@ public class TeambuilderActivity extends FragmentActivity {
         viewPager = (ViewPager) new ViewPager(this);
 		mainLayout = getLayoutInflater().inflate(R.layout.teambuilder_root, null);
 		teamLayout = getLayoutInflater().inflate(R.layout.battle_teamscreen, null);
+		editPokeLayout = getLayoutInflater().inflate(R.layout.edit_pokemon, null);
 		
 		viewPager.setAdapter(new MyAdapter());
 		
@@ -95,6 +97,13 @@ public class TeambuilderActivity extends FragmentActivity {
         Button importbutton = (Button)mainLayout.findViewById(R.id.importteambutton);
         //Register onClick listener
         importbutton.setOnClickListener(listener);
+        
+        Button editTeamButton = (Button)mainLayout.findViewById(R.id.editteam);
+        editTeamButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				viewPager.setCurrentItem(1, true);	
+			}
+		});
         
         /* Updates the team */
         updateTeam();

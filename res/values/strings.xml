@@ -64,4 +64,14 @@
 	<string name="idle">Idle</string>
 	<string name="register">Register your name</string>
 	<string name="teambuilder">Teambuilder</string>
+	<string name="primary_info">Primary Info</string>
+	<string name="trainer_name">Trainer Name</string>
+	<string name="color">Color</string>
+	<string name="team">Team</string>
+	<string name="team_tier">Team Tier</string>
+	<string name="edit_team">Edit Team</string>
+	<string name="optional">Optional</string>
+	<string name="trainerinfo">Trainer Information</string>
+	<string name="winningmessage">Winning Message</string>
+	<string name="losingmessage">Losing Message</string>
 </resources>

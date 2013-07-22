@@ -2,27 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal">
+    android:orientation="horizontal" >
 
     <TextView
         android:id="@+id/servername"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="2"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textIsSelectable="true" />
 
     <TextView
         android:id="@+id/players"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/connection"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="2"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textIsSelectable="false" />
 
 </LinearLayout>

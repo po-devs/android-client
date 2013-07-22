@@ -1,15 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/importteambutton"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/importteam" />
-        
-     </RelativeLayout>
+            android:text="@string/primary_info"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:id="@+id/nameColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:hint="@string/trainer_name" />
+
+            <Button
+                android:id="@+id/color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/color" />
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/avatarChooser"
+            android:layout_width="match_parent"
+            android:layout_height="96dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/team"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <AutoCompleteTextView
+            android:id="@+id/teamTier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/team_tier" >
+        </AutoCompleteTextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/importteambutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/importteam" />
+
+            <Button
+                android:id="@+id/editteam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/edit_team" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/optional"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/trainerInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/trainerinfo"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/winning_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/winningmessage"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/losing_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/losingmessage"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+
+</LinearLayout>
