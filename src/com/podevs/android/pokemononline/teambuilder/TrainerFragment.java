@@ -24,6 +24,7 @@ import com.podevs.android.utilities.QColor;
 public class TrainerFragment extends Fragment {
 	protected static final String TAG = "Trainer menu";
 	PlayerProfile p = null;
+	boolean profileChanged = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class TrainerFragment extends Fragment {
 				}
 			}
 		});
+		
+		colorButton.setTag(R.id.color, p.color.colorInt);
 
 		return v;
 	}
@@ -105,6 +108,7 @@ public class TrainerFragment extends Fragment {
 		if (requestCode == TeambuilderActivity.PICKCOLOR_RESULT_CODE && resultCode == Activity.RESULT_OK) {
 			int colorInt = data.getIntExtra("org.openintents.extra.COLOR", p.color.colorInt);
 			p.color = new QColor(colorInt);
+			profileChanged = true;
 		}
 	}
 
@@ -117,11 +121,13 @@ public class TrainerFragment extends Fragment {
 		p2.trainerInfo.info = ((EditText)v.findViewById(R.id.trainerInfo)).getText().toString();
 		p2.trainerInfo.winMsg = ((EditText)v.findViewById(R.id.winning_message)).getText().toString();
 		p2.trainerInfo.loseMsg = ((EditText)v.findViewById(R.id.losing_message)).getText().toString();
+		p2.color = p.color;
 
-		if (!p2.equals(p)) {
+		if (profileChanged || !p2.equals(p)) {
 			getActivity().setResult(Activity.RESULT_OK);
 			p2.save(getActivity());
 			p = p2;
+			profileChanged = false;
 		}
 
 		if (!((EditText)v.findViewById(R.id.teamTier)).getText().toString()
