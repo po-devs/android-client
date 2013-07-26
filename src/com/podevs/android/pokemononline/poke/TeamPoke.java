@@ -1,6 +1,8 @@
 package com.podevs.android.pokemononline.poke;
 
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -169,11 +171,11 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public int totalHP() {
-		return 0;
+		return PokemonInfo.calcStat(this, Stats.Hp.ordinal(), gen.num);
 	}
 
 	public int currentHP() {
-		return 0;
+		return totalHP();
 	}
 
 	public CharSequence nick() {
@@ -194,5 +196,13 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public int dv(int i) {
 		return DVs[i];
+	}
+
+	public int ev(int i) {
+		return EVs[i];
+	}
+
+	public int level() {
+		return level;
 	}
 }

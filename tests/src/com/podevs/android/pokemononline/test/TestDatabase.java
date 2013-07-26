@@ -8,6 +8,7 @@ import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 
 public class TestDatabase extends AndroidTestCase {
@@ -17,13 +18,14 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals("Pikachu", PokemonInfo.name(new UniqueID(25, 0)));
 		assertEquals(12, PokemonInfo.type1(new UniqueID(25, 0), 5));
 		assertEquals(17, PokemonInfo.type2(new UniqueID(25, 0), 5));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal()));
 	}
 
 	public void testMoves() {
 		InfoConfig.context = getContext();
 		
 		assertEquals("Focus Punch", MoveInfo.name(264));
-		assertEquals("150", MoveInfo.power(264));
+		assertEquals((byte)150, MoveInfo.power(264));
 		assertEquals(Type.Fighting.ordinal(), MoveInfo.type(264));
 		assertEquals("%f can no longer escape!", MoveInfo.message(12, 0));
 		assertEquals("It's a one hit KO!", MoveInfo.message(43, 1));

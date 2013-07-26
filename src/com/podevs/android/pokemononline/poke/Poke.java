@@ -20,4 +20,7 @@ public interface Poke {
 
 	int dv(int i);
 
+	int ev(int i);
+
+	int level();
 }

@@ -125,4 +125,12 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public int dv(int i) {
 		return DVs[i];
 	}
+
+	public int ev(int i) {
+		return EVs[i];
+	}
+
+	public int level() {
+		return level;
+	}
 }

@@ -4,26 +4,37 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
+import com.podevs.android.pokemononline.poke.Poke;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
+import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 
 public class PokemonInfo {
-	private static SparseArray<String> pokeNames = new SparseArray<String>();
+	private static SparseArray<String> pokeNames = null;
 	private static SparseArray<PokeGenData> pokemons[] = null;
+	private static SparseArray<PokeData> pokemonsg = null;
 
+	/* Data depending on a gen:
+	 * ability, type, evolutions, ...
+	 */
 	private static class PokeGenData {
 		byte type1 = -1;
 		byte type2 = -1;
 	}
 	
+	/* Global data:
+	 * base stats, weight, height, ...
+	 */
+	private static class PokeData {
+		byte stats[] = null;
+	}
+	
 	public static String name(UniqueID uID) {
 		int num = uID.hashCode();
 		
-		if (pokeNames.indexOfKey(num) < 0) {
-			loadPokeNames();
-		}
+		loadPokeNames();
 		
 		return pokeNames.get(num);
 	}
@@ -48,6 +59,44 @@ public class PokemonInfo {
 		return type;
 	}
 	
+	public static int stat(UniqueID uId, int stat) {
+		loadStats();
+		byte stats[] = pokemonsg.get(uId.hashCode()).stats;
+		
+		if (stats == null) {
+			stats = pokemonsg.get(uId.originalHashCode()).stats;
+		}
+		return stats[stat];
+	}
+	
+	public static int calcStat(Poke poke, int stat, int gen) {
+		if (stat == Stats.Hp.ordinal()) {
+			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
+					+ 5 + poke.level();
+		} else {
+			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
+		}
+	}
+	
+	private static boolean statsLoaded = false;
+	private static void loadStats() {
+		loadPokeNames();
+		if (statsLoaded) {
+			return;
+		}
+		statsLoaded = true;
+		InfoFiller.uIDfill("db/pokes/stats.txt", new Filler() {
+			public void fill(int i, String s) {
+				byte [] stats = new byte[6];
+				String [] bstats = s.split(" ");
+				for (int j = 0; j < 6; j++) {
+					stats[j] = (byte)Integer.parseInt(bstats[j]);
+				}
+				pokemonsg.get(i).stats = stats;
+			}
+		});
+	}
+
 	public static Drawable icon(UniqueID uid) {
 		Resources resources = InfoConfig.context.getResources();
 		int resID = resources.getIdentifier("pi" + uid.pokeNum +
@@ -98,9 +147,15 @@ public class PokemonInfo {
 	}
 
 	private static void loadPokeNames() {
+		if (pokeNames != null) {
+			return;
+		}
+		pokeNames = new SparseArray<String>();
+		pokemonsg = new SparseArray<PokemonInfo.PokeData>();
 		InfoFiller.uIDfill("db/pokes/pokemons.txt", new Filler() {
 			public void fill(int i, String s) {
 				pokeNames.put(i, s);
+				pokemonsg.put(i, new PokeData());
 			}
 		});
 	}
