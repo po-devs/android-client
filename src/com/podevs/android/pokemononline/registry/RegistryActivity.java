@@ -189,9 +189,10 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == TEAMBUILDER_CODE) {
 			/* If the teambuilder did something, reload the team */
-			if (resultCode == Activity.RESULT_OK) {
+			//if (resultCode == Activity.RESULT_OK) {
 				meLoginPlayer = new FullPlayerInfo(RegistryActivity.this);
-			}
+				editName.setText(meLoginPlayer.nick());
+			//}
 		}
 	}
     	

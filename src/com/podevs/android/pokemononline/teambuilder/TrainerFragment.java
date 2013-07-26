@@ -44,7 +44,7 @@ public class TrainerFragment extends Fragment {
 			}
 		});
         
-        ((EditText)v.findViewById(R.id.name)).setText(p.nick);
+        ((EditText)v.findViewById(R.id.name)).append(p.nick);
         ((EditText)v.findViewById(R.id.trainerInfo)).setText(p.trainerInfo.info);
         ((EditText)v.findViewById(R.id.winning_message)).setText(p.trainerInfo.winMsg);
         ((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
