@@ -117,4 +117,8 @@ public class PlayerProfile implements SerializeBytes {
 		
 		editor.commit();
 	}
+	
+	public boolean equals(PlayerProfile p) {
+		return trainerInfo.equals(p.trainerInfo) && nick.equals(p.nick) && color.equals(p.color);
+	}
 }

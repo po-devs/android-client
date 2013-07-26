@@ -1,5 +1,8 @@
 package com.podevs.android.pokemononline.poke;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
@@ -186,7 +189,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		return uID;
 	}
 
-	public Move move(int j) {
+	public TeamMove move(int j) {
 		return moves[j];
 	}
 
@@ -204,5 +207,36 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public int level() {
 		return level;
+	}
+
+	public void save(Document doc, Element poke) {
+		poke.setAttribute("Num", String.valueOf(uID.pokeNum));
+		poke.setAttribute("Forme", String.valueOf(uID.subNum));
+		poke.setAttribute("NickName", nick);
+		poke.setAttribute("Item", String.valueOf(item));
+		poke.setAttribute("Ability", String.valueOf(ability));
+		poke.setAttribute("Gender", String.valueOf(gender));
+		poke.setAttribute("Lvl", String.valueOf(level));
+		poke.setAttribute("Shiny", String.valueOf(shiny));
+		poke.setAttribute("Nature", String.valueOf(nature));
+		poke.setAttribute("Happiness", String.valueOf(happiness));
+		
+		for (int i = 0; i < 4; i++) {
+			Element move = doc.createElement("Move");
+			this.move(i).save(move);
+			poke.appendChild(move);
+		}
+		
+		for (int i = 0; i < 6; i++) {
+			Element ev = doc.createElement("EV");
+			ev.setTextContent(String.valueOf(this.ev(i)));
+			poke.appendChild(ev);
+		}
+		
+		for (int i = 0; i < 6; i++) {
+			Element iv = doc.createElement("DV");
+			iv.setTextContent(String.valueOf(this.dv(i)));
+			poke.appendChild(iv);
+		}
 	}
 }

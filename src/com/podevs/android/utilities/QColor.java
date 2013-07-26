@@ -69,6 +69,10 @@ public class QColor implements SerializeBytes {
 		}
 	}
 	
+	public boolean equals(QColor c) {
+		return toHexString().equals(c.toHexString());
+	}
+	
 	public boolean isValid() {
 		return !invalid;
 	}

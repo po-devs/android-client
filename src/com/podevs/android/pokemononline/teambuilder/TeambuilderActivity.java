@@ -28,7 +28,8 @@ public class TeambuilderActivity extends FragmentActivity {
 	protected ViewPager viewPager;
 	
 	Team team;
-	TeamFragment teamfrag = null;
+	TeamFragment teamFragment = null;
+	TrainerFragment trainerFragment = null;
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
 	
@@ -46,9 +47,9 @@ public class TeambuilderActivity extends FragmentActivity {
 		@Override
 		public Fragment getItem(int arg0) {
 			if (arg0 == 0) {
-				return new TrainerFragment();
+				return (trainerFragment = new TrainerFragment());
 			} else {
-				return (teamfrag = new TeamFragment());
+				return (teamFragment = new TeamFragment());
 			}
 		}
 	}
@@ -74,8 +75,11 @@ public class TeambuilderActivity extends FragmentActivity {
     }
     
     private void updateTeam() {
-		if (teamfrag != null) {
-			teamfrag.updateTeam();
+		if (teamFragment != null) {
+			teamFragment.updateTeam();
+		}
+		if (trainerFragment != null) {
+			trainerFragment.updateTeam();
 		}
 	}
 

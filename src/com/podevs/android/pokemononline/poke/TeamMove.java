@@ -1,5 +1,7 @@
 package com.podevs.android.pokemononline.poke;
 
+import org.w3c.dom.Element;
+
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 
 public class TeamMove implements Move {
@@ -15,5 +17,9 @@ public class TeamMove implements Move {
 	
 	public String toString() {
 		return MoveInfo.name(num);
+	}
+
+	public void save(Element move) {
+		move.setTextContent(String.valueOf(num));
 	}
 }

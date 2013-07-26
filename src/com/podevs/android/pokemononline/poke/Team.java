@@ -1,5 +1,22 @@
 package com.podevs.android.pokemononline.poke;
 
+import java.io.FileNotFoundException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import android.content.Context;
+
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -7,7 +24,7 @@ import com.podevs.android.utilities.SerializeBytes;
 public class Team implements SerializeBytes {
 	public Gen gen = new Gen();
 
-	protected String defaultTier = "";
+	public String defaultTier = "";
 	protected TeamPoke[] pokes = new TeamPoke[6];
 	
 	/* Used internally only */
@@ -50,5 +67,59 @@ public class Team implements SerializeBytes {
 
 	public boolean isValid() {
 		return pokes[0].uID.pokeNum != 0;
+	}
+
+	public void save(Context c) {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return;
+		}
+ 
+		// root elements
+		Document doc = docBuilder.newDocument();
+		Element rootElement = doc.createElement("Team");
+		doc.appendChild(rootElement);
+		
+		rootElement.setAttribute("defaultTier", defaultTier);
+		rootElement.setAttribute("gen", String.valueOf(gen.num));
+		rootElement.setAttribute("subgen", String.valueOf(gen.subNum));
+		
+		for (int i = 0; i < 6; i++) {
+			Element poke = doc.createElement("Pokemon");
+			this.poke(i).save(doc, poke);
+			rootElement.appendChild(poke);
+		}
+
+		// write the content into xml file
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = transformerFactory.newTransformer();
+		} catch (TransformerConfigurationException e1) {
+			e1.printStackTrace();
+			return;
+		}
+		DOMSource source = new DOMSource(doc);
+		StreamResult result;
+		try {
+			result = new StreamResult(c.openFileOutput("team.xml", 0));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+			return;
+		}
+ 
+		// Output to console for testing
+		// StreamResult result = new StreamResult(System.out);
+ 
+		try {
+			transformer.transform(source, result);
+		} catch (TransformerException e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 }
