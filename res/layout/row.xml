@@ -9,23 +9,20 @@
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="2"
-        android:singleLine="true"
-        android:textIsSelectable="true" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/players"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:singleLine="true"
-        android:textIsSelectable="false" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/connection"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
         android:layout_weight="2"
-        android:singleLine="true"
-        android:textIsSelectable="false" />
+        android:singleLine="true" />
 
 </LinearLayout>
