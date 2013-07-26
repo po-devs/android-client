@@ -4,7 +4,7 @@ import android.graphics.Color;
 
 
 public class QColor implements SerializeBytes {
-	protected int colorInt = Color.BLACK;
+	public int colorInt = Color.BLACK;
 	public boolean invalid = true;
 	
 	public QColor(Bais msg) {
@@ -32,6 +32,11 @@ public class QColor implements SerializeBytes {
 	public QColor() {
 		invalid = true;
 		colorInt = Color.BLACK;
+	}
+	
+	public QColor(int colorInt) {
+		invalid = false;
+		this.colorInt = colorInt;
 	}
 	
 	public QColor(String hex) {
@@ -70,7 +75,7 @@ public class QColor implements SerializeBytes {
 	}
 	
 	public boolean equals(QColor c) {
-		return toHexString().equals(c.toHexString());
+		return (c.invalid && invalid) || (!c.invalid && !invalid && colorInt == c.colorInt);
 	}
 	
 	public boolean isValid() {

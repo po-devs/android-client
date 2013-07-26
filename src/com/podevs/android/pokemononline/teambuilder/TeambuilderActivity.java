@@ -32,6 +32,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	TrainerFragment trainerFragment = null;
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
+	public static final int PICKCOLOR_RESULT_CODE = 1;
 	
 	private class MyAdapter extends FragmentPagerAdapter
 	{
@@ -117,7 +118,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					Toast.makeText(this, path + " could not be opened. Does the file exist?", Toast.LENGTH_LONG).show();
 				}
 			}
-		} else {
+		} else if (requestCode == IntentIntegrator.REQUEST_CODE) {
 			IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 			if (scanResult != null && "QR_CODE".equals(scanResult.getFormatName())) {
 				try {
@@ -162,6 +163,8 @@ public class TeambuilderActivity extends FragmentActivity {
 					Toast.makeText(TeambuilderActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
 				}
 			}
+		} else {
+			super.onActivityResult(requestCode, resultCode, intent);
 		}
 	}
     
