@@ -1,26 +1,36 @@
 package com.podevs.android.pokemononline.teambuilder;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.player.PlayerProfile;
 import com.podevs.android.pokemononline.poke.Team;
+import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.QColor;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TrainerFragment extends Fragment {
 	protected static final String TAG = "Trainer menu";
 	PlayerProfile p = null;
@@ -74,8 +84,83 @@ public class TrainerFragment extends Fragment {
 		});
 		
 		colorButton.setTag(R.id.color, p.color.colorInt);
+		
+		final ViewPager avatars = (ViewPager)v.findViewById(R.id.avatarChooser);
+		avatars.setCurrentItem(p.trainerInfo.avatar);
+		avatars.setAdapter(new AvatarAdapter());
 
+		avatars.setOnPageChangeListener(new OnPageChangeListener() {
+			private View selected = null;
+			
+			public void onPageSelected(int pos) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					View current = avatars.getChildAt(avatars.getCurrentItem());
+					
+					if (current == selected) {
+						return;
+					}
+					
+					if (selected != null) {
+						selected.setAlpha(0.4f);
+					}
+					selected = avatars.getChildAt(avatars.getCurrentItem());
+					selected.setAlpha(1.0f);
+				}
+			}
+			
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				
+			}
+			
+			public void onPageScrollStateChanged(int pos) {
+				//this.onPageSelected(pos);
+			}
+		});
+		
 		return v;
+	}
+	
+	private class AvatarAdapter extends PagerAdapter {
+		SparseArray<View> items = new SparseArray<View>();
+		
+		@Override
+		public int getCount() {
+			return 301;
+		}
+
+		@Override
+		public float getPageWidth(int position) {
+			return 0.25f;
+		}
+
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			Resources resources = InfoConfig.resources;
+			int id =  resources.getIdentifier("t" + position, "drawable", InfoConfig.pkgName);
+			ImageView v = new ImageView(getActivity());
+			v.setImageResource(id);
+
+			container.addView(v);
+			items.put(position, v);
+			
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && items.size() > 1) {
+				v.setAlpha(0.4f);
+			}
+			
+			return v;
+			
+		}
+		
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return (Object)arg0 == arg1;
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View)object);
+			items.remove(position);
+		}
 	}
 
 	private AlertDialog showDownloadDialog() {
@@ -97,7 +182,6 @@ public class TrainerFragment extends Fragment {
 			}
 		});
 		downloadDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
 			public void onClick(DialogInterface dialogInterface, int i) {}
 		});
 		return downloadDialog.show();
@@ -122,6 +206,7 @@ public class TrainerFragment extends Fragment {
 		p2.trainerInfo.winMsg = ((EditText)v.findViewById(R.id.winning_message)).getText().toString();
 		p2.trainerInfo.loseMsg = ((EditText)v.findViewById(R.id.losing_message)).getText().toString();
 		p2.color = p.color;
+		p2.trainerInfo.avatar = (short) ((ViewPager)v.findViewById(R.id.avatarChooser)).getCurrentItem();
 
 		if (profileChanged || !p2.equals(p)) {
 			getActivity().setResult(Activity.RESULT_OK);

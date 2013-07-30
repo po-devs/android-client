@@ -50,6 +50,11 @@ public class PlayerProfile implements SerializeBytes {
 			this.loseMsg = loseMsg;
 			this.tieMsg = tieMsg;
 		}
+		
+		public boolean equals(TrainerInfo other) {
+			return avatar == other.avatar && info.equals(other.info) && winMsg.equals(other.winMsg)
+					&& loseMsg.equals(other.loseMsg) && tieMsg.equals(other.loseMsg);
+		}
 
 		public void serializeBytes(Baos b) {
 			Baos output = new Baos();
