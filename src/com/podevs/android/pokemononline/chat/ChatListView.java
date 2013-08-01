@@ -6,20 +6,18 @@ import android.view.MotionEvent;
 import android.widget.ListView;
 
 public class ChatListView extends ListView {
-
-public ChatListView(Context context, AttributeSet attrs, int defStyle) {
+	public ChatListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-public ChatListView(Context context, AttributeSet attrs) {
+	public ChatListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ChatListView(Context context) {
 		super(context);
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		if ((ev.getAction() & MotionEvent.ACTION_UP) != 0) {

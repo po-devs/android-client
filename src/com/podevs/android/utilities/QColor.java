@@ -29,6 +29,20 @@ public class QColor implements SerializeBytes {
 		}
 	}
 	
+	public void serializeBytes(Baos bytes) {
+		if (invalid) {
+			bytes.write(0); // Invalid spec
+		} else {
+			bytes.write(1); // RGB spec
+		}
+		
+		bytes.putShort((short)(Color.alpha(colorInt) << 8));
+		bytes.putShort((short)(Color.red(colorInt) << 8));
+		bytes.putShort((short)(Color.green(colorInt) << 8));
+		bytes.putShort((short)(Color.blue(colorInt) << 8));
+		bytes.putShort((short)0);
+	}
+	
 	public QColor() {
 		invalid = true;
 		colorInt = Color.BLACK;
@@ -47,20 +61,6 @@ public class QColor implements SerializeBytes {
 			colorInt = Color.parseColor(hex);
 			invalid = false;
 		}
-	}
-	
-	public void serializeBytes(Baos bytes) {
-		if (invalid) {
-			bytes.write(0); // Invalid spec
-		} else {
-			bytes.write(1); // RGB spec
-		}
-		
-		bytes.putShort((short)Color.alpha(colorInt));
-		bytes.putShort((short)Color.red(colorInt));
-		bytes.putShort((short)Color.green(colorInt));
-		bytes.putShort((short)Color.blue(colorInt));
-		bytes.putShort((short)0);
 	}
 	
 	public String toHexString() {

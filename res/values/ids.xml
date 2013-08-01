@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item
-        type="id"
-        name="position" />
-    <item
-        type="id"
-        name="associated_pm" />
-    <item type="id" name="networkService"/>
+
+    <item name="position" type="id"/>
+    <item name="associated_pm" type="id"/>
+    <item name="networkService" type="id"/>
+    <item name="avatar" type="id"/>
+
 </resources>

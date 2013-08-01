@@ -11,7 +11,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/movename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/primary_info"
@@ -88,7 +88,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/pps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/optional"

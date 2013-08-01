@@ -8,8 +8,8 @@ import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 
 public class MoveInfo {
-	private static class Move {
-		String name;
+	public static class Move {
+		public String name;
 		byte type = 0;
 		byte pp = 5;
 		byte accuracy = 0;
