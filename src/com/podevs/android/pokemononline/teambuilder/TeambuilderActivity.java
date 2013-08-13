@@ -30,9 +30,11 @@ public class TeambuilderActivity extends FragmentActivity {
 	Team team;
 	TeamFragment teamFragment = null;
 	TrainerFragment trainerFragment = null;
+	EditPokemonFragment pokeFragment = null;
+	int currentPoke = -1;
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
-	public static final int PICKCOLOR_RESULT_CODE = 1;
+	public static final int PICKCOLOR_RESULT_CODE = 2;
 	
 	private class MyAdapter extends FragmentPagerAdapter
 	{
@@ -42,15 +44,17 @@ public class TeambuilderActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 2 + (currentPoke == -1 ? 0 : 1);
 		}
 
 		@Override
 		public Fragment getItem(int arg0) {
 			if (arg0 == 0) {
 				return (trainerFragment = new TrainerFragment());
-			} else {
+			} else if (arg0 == 1) {
 				return (teamFragment = new TeamFragment());
+			} else {
+				return pokeFragment = new EditPokemonFragment();
 			}
 		}
 	}
@@ -177,4 +181,14 @@ public class TeambuilderActivity extends FragmentActivity {
     void onImportClicked() {
 		new SelectImportMethodDialogFragment().show(getSupportFragmentManager(), "select-import-method");
     };
+    
+    public void editPoke(int pos) {
+    	currentPoke = pos;
+    	
+    	if (pokeFragment != null) {
+    		pokeFragment.setPoke(team.poke(pos));
+    	}
+    	
+    	viewPager.setCurrentItem(2, true);
+    }
 }

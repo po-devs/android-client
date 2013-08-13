@@ -42,6 +42,10 @@ public class ListedPokemon {
 		icon = (ImageView) whole.findViewById(R.id.pokeViewIcon);
 	}
 	
+	public void update(Poke poke) {
+		this.update(poke, true);
+	}
+	
 	public void update(Poke poke, boolean canSwitch) {
 		icon.setImageDrawable(PokemonInfo.icon(poke.uID()));
 		name.setText(poke.nick());
