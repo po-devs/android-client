@@ -15,6 +15,7 @@ public class PokemonInfo {
 	private static SparseArray<String> pokeNames = null;
 	private static SparseArray<PokeGenData> pokemons[] = null;
 	private static SparseArray<PokeData> pokemonsg = null;
+	private static int pokeCount = 0;
 
 	/* Data depending on a gen:
 	 * ability, type, evolutions, ...
@@ -29,6 +30,7 @@ public class PokemonInfo {
 	 */
 	private static class PokeData {
 		byte stats[] = null;
+		byte maxForme = 0;
 	}
 	
 	public static String name(UniqueID uID) {
@@ -88,9 +90,13 @@ public class PokemonInfo {
 		InfoFiller.uIDfill("db/pokes/stats.txt", new Filler() {
 			public void fill(int i, String s) {
 				byte [] stats = new byte[6];
-				String [] bstats = s.split(" ");
+				int curIndex = 0;
+				
+				/* faster than using a split (using test project to measure times) */
 				for (int j = 0; j < 6; j++) {
-					stats[j] = (byte)Integer.parseInt(bstats[j]);
+					int nextIndex = s.indexOf(' ', curIndex);
+					stats[j] = (byte)Integer.parseInt(s.substring(curIndex, nextIndex == - 1 ? s.length() : nextIndex));
+					curIndex = nextIndex+1;
 				}
 				pokemonsg.get(i).stats = stats;
 			}
@@ -106,6 +112,17 @@ public class PokemonInfo {
 			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
 					"drawable", InfoConfig.pkgName);
 		return resources.getDrawable(resID);
+	}
+	
+	public static int iconRes(UniqueID uid) {
+		Resources resources = InfoConfig.context.getResources();
+		int resID = resources.getIdentifier("pi" + uid.pokeNum +
+				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
+				"_icon", "drawable", InfoConfig.pkgName);
+		if (resID == 0)
+			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
+					"drawable", InfoConfig.pkgName);
+		return resID;
 	}
 	
 	public static String sprite(ShallowBattlePoke poke, boolean front) {
@@ -124,7 +141,7 @@ public class PokemonInfo {
     			// Special female sprite
     			res = res + "f" + (poke.shiny ? "s" : "");
     	}
-        System.out.println("SPRITE: " + res);
+
         int ident = InfoConfig.resources.getIdentifier(res, "drawable", InfoConfig.pkgName);
         if (ident == 0)
         	// No sprite found. Default to missingNo.
@@ -156,6 +173,12 @@ public class PokemonInfo {
 			public void fill(int i, String s) {
 				pokeNames.put(i, s);
 				pokemonsg.put(i, new PokeData());
+				
+				if (i > 16000) {
+					pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+				} else {
+					pokeCount = i;
+				}
 			}
 		});
 	}
@@ -179,5 +202,17 @@ public class PokemonInfo {
 				pokemons[gen].get(i).type2 = b;
 			}
 		});
+	}
+
+	public static int numberOfPokemons() {
+		loadPokeNames();
+		
+		return pokeCount;
+	}
+	
+	public static int totalNumberOfPokemons() {
+		loadPokeNames();
+		
+		return pokeNames.size();
 	}
 }

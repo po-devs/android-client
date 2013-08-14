@@ -1,5 +1,6 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
+
 public class TypeInfo {
 	public enum Type {
 		Normal, //0
@@ -21,8 +22,12 @@ public class TypeInfo {
 		Dark, //16
 		Curse //17
 	}
-	
+
 	public static String name(int num) {
 		return Type.values()[num].toString();
+	}
+
+	public static int typeRes(int num) {
+		return InfoConfig.context.getResources().getIdentifier("type" + num, "drawable", InfoConfig.pkgName);
 	}
 }

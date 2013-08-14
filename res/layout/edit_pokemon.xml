@@ -10,29 +10,9 @@
         android:layout_height="wrap_content"
         layout="@layout/listed_pokemon" />
 
-    <ViewSwitcher
-        android:id="@+id/viewSwitcher1"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/editpokeviewpager"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
-
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <ListView
-            android:id="@+id/moves"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-        </ListView>
-
-    </ViewSwitcher>
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

@@ -187,6 +187,8 @@ public class TeambuilderActivity extends FragmentActivity {
     	
     	if (pokeFragment != null) {
     		pokeFragment.setPoke(team.poke(pos));
+    	} else {
+    		viewPager.getAdapter().notifyDataSetChanged();
     	}
     	
     	viewPager.setCurrentItem(2, true);

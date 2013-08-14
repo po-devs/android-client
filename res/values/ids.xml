@@ -6,5 +6,6 @@
     <item name="networkService" type="id"/>
     <item name="avatar" type="id"/>
     <item name="poke" type="id"/>
+    <item name="fragment" type="id"/>
 
 </resources>
