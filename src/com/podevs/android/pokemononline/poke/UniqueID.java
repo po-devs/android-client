@@ -33,6 +33,11 @@ public class UniqueID implements SerializeBytes {
 		}
 	}
 
+	public UniqueID(int i) {
+		pokeNum = (short) (i & (1 << 16));
+		subNum = (byte) (i >> 16);
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		try {

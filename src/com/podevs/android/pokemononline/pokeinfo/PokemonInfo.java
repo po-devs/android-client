@@ -1,5 +1,7 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
+import java.util.HashMap;
+
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
@@ -12,6 +14,7 @@ import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 
 public class PokemonInfo {
+	private static HashMap<String, UniqueID> namesToIds = null;
 	private static SparseArray<String> pokeNames = null;
 	private static SparseArray<PokeGenData> pokemons[] = null;
 	private static SparseArray<PokeData> pokemonsg = null;
@@ -169,6 +172,7 @@ public class PokemonInfo {
 		}
 		pokeNames = new SparseArray<String>();
 		pokemonsg = new SparseArray<PokemonInfo.PokeData>();
+		namesToIds = new HashMap<String, UniqueID>();
 		InfoFiller.uIDfill("db/pokes/pokemons.txt", new Filler() {
 			public void fill(int i, String s) {
 				pokeNames.put(i, s);
@@ -179,6 +183,7 @@ public class PokemonInfo {
 				} else {
 					pokeCount = i;
 				}
+				namesToIds.put(s, new UniqueID(i));
 			}
 		});
 	}
@@ -214,5 +219,9 @@ public class PokemonInfo {
 		loadPokeNames();
 		
 		return pokeNames.size();
+	}
+
+	public static String[] nameArray() {
+		return namesToIds.keySet().toArray(new String[namesToIds.size()]);
 	}
 }
