@@ -570,6 +570,8 @@ public class NetworkService extends Service {
 			players.put(myid, me);
 			break;
 		} case TierSelection: {
+			superTier.reset();
+
 			msg.readInt(); // Number of tiers
 			Tier prevTier = new Tier(msg.readByte(), msg.readString());
 			prevTier.parentTier = superTier;
@@ -592,6 +594,8 @@ public class NetworkService extends Service {
 				}
 				prevTier = t;
 			}
+			
+			superTier.save(this);
 			break;
 		} case ChannelsList: {
 			int numChannels = msg.readInt();

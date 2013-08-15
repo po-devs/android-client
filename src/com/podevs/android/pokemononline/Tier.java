@@ -1,8 +1,13 @@
 package com.podevs.android.pokemononline;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.widget.ArrayAdapter;
 
 public class Tier {
@@ -25,8 +30,39 @@ public class Tier {
 		subTiers.add(t);
 	}
 	
+	public void reset() {
+		subTiers = new ArrayList<Tier>();
+	}
+	
 	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {
 		ArrayAdapter<Tier> aat = new ArrayAdapter<Tier>(c, textViewResId, subTiers);
 		return aat;
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public void save(Context ctx) {
+		SharedPreferences prefs = ctx.getSharedPreferences("tiers", Context.MODE_PRIVATE);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			prefs.edit().putStringSet("list", getTierSet()).commit();
+		}
+	}
+
+	private Set<String> getTierSet() {
+		Set<String> ret = new HashSet<String>();
+		
+		getTierSet(ret);
+		
+		return ret;
+	}
+
+	private void getTierSet(Set<String> ret) {
+		if (subTiers.size() > 0) {
+			for (Tier t: subTiers) {
+				t.getTierSet(ret);
+			}
+		} else {
+			ret.add(name);
+		}
 	}
 }

@@ -1,9 +1,12 @@
 package com.podevs.android.pokemononline.teambuilder;
 
+import java.util.Set;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -19,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -66,7 +71,16 @@ public class TrainerFragment extends Fragment {
 		((EditText)v.findViewById(R.id.trainerInfo)).setText(p.trainerInfo.info);
 		((EditText)v.findViewById(R.id.winning_message)).setText(p.trainerInfo.winMsg);
 		((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
-		((EditText)v.findViewById(R.id.teamTier)).setText(((TeambuilderActivity)getActivity()).team.defaultTier);
+		((AutoCompleteTextView)v.findViewById(R.id.teamTier)).setText(((TeambuilderActivity)getActivity()).team.defaultTier);
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			Set<String> set = getActivity().getSharedPreferences("tiers", Context.MODE_PRIVATE).getStringSet("list", null);
+			
+			if (set != null) {
+				((AutoCompleteTextView)v.findViewById(R.id.teamTier)).setAdapter(new ArrayAdapter<String>(getActivity(),
+		                 android.R.layout.simple_dropdown_item_1line, (String[])set.toArray()));
+			}
+		}
 
 		Button colorButton = (Button)v.findViewById(R.id.color);
 		colorButton.setOnClickListener(new OnClickListener() {
