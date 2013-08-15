@@ -71,14 +71,16 @@ public class TrainerFragment extends Fragment {
 		((EditText)v.findViewById(R.id.trainerInfo)).setText(p.trainerInfo.info);
 		((EditText)v.findViewById(R.id.winning_message)).setText(p.trainerInfo.winMsg);
 		((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
-		((AutoCompleteTextView)v.findViewById(R.id.teamTier)).setText(((TeambuilderActivity)getActivity()).team.defaultTier);
+		
+		AutoCompleteTextView teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
+		teamTier.setText(((TeambuilderActivity)getActivity()).team.defaultTier);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			Set<String> set = getActivity().getSharedPreferences("tiers", Context.MODE_PRIVATE).getStringSet("list", null);
 			
 			if (set != null) {
-				((AutoCompleteTextView)v.findViewById(R.id.teamTier)).setAdapter(new ArrayAdapter<String>(getActivity(),
-		                 android.R.layout.simple_dropdown_item_1line, (String[])set.toArray()));
+				teamTier.setAdapter(new ArrayAdapter<String>(getActivity(),
+		                 android.R.layout.simple_dropdown_item_1line, set.toArray(new String[set.size()])));
 			}
 		}
 

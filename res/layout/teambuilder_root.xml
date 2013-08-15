@@ -58,6 +58,7 @@
             android:id="@+id/teamTier"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:completionThreshold="1"
             android:hint="@string/team_tier" >
         </AutoCompleteTextView>
 
@@ -117,7 +118,6 @@
             android:layout_weight="1"
             android:hint="@string/losingmessage"
             android:inputType="textMultiLine" />
-
     </LinearLayout>
 
 </LinearLayout>
