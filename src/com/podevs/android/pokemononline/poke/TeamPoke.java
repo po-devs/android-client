@@ -126,6 +126,36 @@ public class TeamPoke implements SerializeBytes, Poke {
 		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 10;
 	}
 	
+	public void setNum(UniqueID id) {
+		if (uID == id) {
+			return;
+		}
+		
+		uID = id;
+		nick = PokemonInfo.name(id);
+		shiny = false;
+		item = 15; //leftovers
+		gender = 1;
+		nature = 0;
+		
+		if (gen.num > 2) {
+			ability = PokemonInfo.abilities(id, gen.num)[0];
+		}		
+		
+		happiness = 0;
+		level = 100;
+		moves[0] = new TeamMove(0);
+		moves[1] = new TeamMove(0);
+		moves[2] = new TeamMove(0);
+		moves[3] = new TeamMove(0);
+		if (gen.num > 2) {
+			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+		} else {
+			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+		}
+		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
+	}
+	
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
 //		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,

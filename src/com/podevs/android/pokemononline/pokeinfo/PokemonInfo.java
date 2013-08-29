@@ -26,6 +26,7 @@ public class PokemonInfo {
 	private static class PokeGenData {
 		byte type1 = -1;
 		byte type2 = -1;
+		short ability[] = null;
 	}
 	
 	/* Global data:
@@ -223,5 +224,42 @@ public class PokemonInfo {
 
 	public static String[] nameArray() {
 		return namesToIds.keySet().toArray(new String[namesToIds.size()]);
+	}
+
+	public static short[] abilities(UniqueID id, int gen) {
+		testLoadAbilities(id, gen);
+		
+		short abilities[] = pokemons[gen].get(id.hashCode()).ability;
+		
+		if (abilities == null) {
+			abilities = pokemons[gen].get(id.originalHashCode()).ability;
+		}
+		return abilities;
+	}
+
+	private static boolean abilitiesLoaded = false;
+	private static void testLoadAbilities(UniqueID id, final int gen) {
+		if (!abilitiesLoaded) {
+			testLoad(id, gen);
+			
+			InfoFiller.uIDfill("db/pokes/" + gen  + "G/ability1.txt", new Filler() {
+				public void fill(int i, String s) {
+					pokemons[gen].get(i).ability = new short[3];
+					pokemons[gen].get(i).ability[0] = Short.parseShort(s);
+				}
+			});
+			InfoFiller.uIDfill("db/pokes/" + gen  + "G/ability2.txt", new Filler() {
+				public void fill(int i, String s) {
+					pokemons[gen].get(i).ability[1] = Short.parseShort(s);
+				}
+			});
+			InfoFiller.uIDfill("db/pokes/" + gen  + "G/ability3.txt", new Filler() {
+				public void fill(int i, String s) {
+					pokemons[gen].get(i).ability[2] = Short.parseShort(s);
+				}
+			});
+			
+			abilitiesLoaded = true;
+		}
 	}
 }
