@@ -21,6 +21,9 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 	private TeamPoke poke = null;
 	private ViewPager pager = null;
 	
+	private PokemonChooserFragment pokemonChooser;
+	private PokemonDetailsFragment pokemonDetails;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,11 +52,20 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 	
 	public void setPoke(TeamPoke poke) {
 		this.poke = poke;
+		if (pokemonDetails != null) {
+			pokemonDetails.setPoke(poke, false);
+		}
 		updatePoke();
 	}
 	
 	public void updatePoke() {
 		pokeList.update(poke);
+		if (pokemonChooser != null) {
+			pokemonChooser.setDetails(poke.uID(), poke.nick);
+		}
+		if (pokemonDetails != null) {
+			pokemonDetails.updatePoke();
+		}
 	}
 
 	@Override
@@ -74,9 +86,13 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		@Override
 		public Fragment getItem(int arg0) {
 			if (arg0 == 0) {
-				PokemonChooserFragment ret = new PokemonChooserFragment();
-				ret.setOnPokemonChosenListener(EditPokemonFragment.this);
-				return ret;
+				pokemonChooser = new PokemonChooserFragment();
+				pokemonChooser.setDetails(poke.uID(), poke.nick);
+				pokemonChooser.setOnPokemonChosenListener(EditPokemonFragment.this);
+				return pokemonChooser;
+			} else if (arg0 == 1) {
+				pokemonDetails = new PokemonDetailsFragment();
+				return pokemonDetails;
 			} else {
 				return new MoveChooserFragment();
 			}
@@ -84,7 +100,7 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 
 		@Override
 		public int getCount() {
-			return 2;
+			return 3;
 		}
 		
 	}

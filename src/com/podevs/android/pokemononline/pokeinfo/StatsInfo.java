@@ -9,4 +9,17 @@ public class StatsInfo {
 		SpDefense, //4
 		Speed //5
 	}
+	
+	static private String[] shortcuts = {
+		"HP",
+		"Att",
+		"Def",
+		"SpD",
+		"SpA",
+		"Spe"
+	};
+	
+	static public String Shortcut(int pos) {
+		return shortcuts[pos];
+	}
 }

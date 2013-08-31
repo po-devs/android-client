@@ -20,7 +20,9 @@ import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 public class PokemonChooserFragment extends Fragment {
 	UniqueID chosenId = null;
 	ListView pokeList = null;
+	String nick = null;
 	PokemonChooserListener listener = null;
+	AutoCompleteTextView pokeChoice = null;
 	
 	public interface PokemonChooserListener {
 		public void onPokemonChosen(UniqueID id, String nickname);
@@ -38,7 +40,7 @@ public class PokemonChooserFragment extends Fragment {
 		pokeList = (ListView)v.findViewById(R.id.pokeList);
 		pokeList.setAdapter(new PokeListAdapter());
 		
-		final AutoCompleteTextView pokeChoice = (AutoCompleteTextView)v.findViewById(R.id.pokemonChoice);
+		pokeChoice = (AutoCompleteTextView)v.findViewById(R.id.pokemonChoice);
 		final ArrayAdapter<String> pokeChoiceAdapater = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, PokemonInfo.nameArray());
 		pokeChoice.setAdapter(pokeChoiceAdapater);
 		
@@ -71,9 +73,25 @@ public class PokemonChooserFragment extends Fragment {
 			}
 		});
 		
+		if (nick != null) {
+			setDetails(chosenId, nick);
+			nick = null;
+		}
+		
 		return v;
 	}
 	
+	protected void setDetails(UniqueID number, String nick) {
+		chosenId = number;
+		if (pokeChoice != null) {
+			pokeChoice.setText(nick);
+			pokeChoice.dismissDropDown();
+			updateList();
+		} else {
+			this.nick = nick;
+		}
+	}
+
 	protected void updateList() {
 		pokeList.setSelection(chosenId.pokeNum);
 	}

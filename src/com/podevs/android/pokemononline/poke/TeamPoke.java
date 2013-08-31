@@ -106,7 +106,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public TeamPoke() {
 		uID = new UniqueID();
 		nick = "";
-		item = 71;
+		item = 71; //leftovers
 		ability = 98;
 		nature = 0;
 		gender = 1;
