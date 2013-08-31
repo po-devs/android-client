@@ -262,4 +262,8 @@ public class PokemonInfo {
 			abilitiesLoaded = true;
 		}
 	}
+
+	public static UniqueID number(String name) {
+		return namesToIds.get(name);
+	}
 }

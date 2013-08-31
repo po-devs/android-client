@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.UniqueID;
-import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;

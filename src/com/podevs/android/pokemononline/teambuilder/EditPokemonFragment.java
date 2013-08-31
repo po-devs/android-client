@@ -13,11 +13,13 @@ import android.widget.RelativeLayout;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.TeamPoke;
+import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.teambuilder.PokemonChooserFragment.PokemonChooserListener;
 
-public class EditPokemonFragment extends Fragment {
-	ListedPokemon pokeList;
-	TeamPoke poke = null;
-	ViewPager pager = null;
+public class EditPokemonFragment extends Fragment implements PokemonChooserListener {
+	private ListedPokemon pokeList;
+	private TeamPoke poke = null;
+	private ViewPager pager = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,16 +32,27 @@ public class EditPokemonFragment extends Fragment {
 		View v = inflater.inflate(R.layout.edit_pokemon, container, false);
 		
 		pokeList = new ListedPokemon((RelativeLayout)v.findViewById(R.id.pokeViewLayout));
-		pokeList.update(activity().team.poke(activity().currentPoke));
 		
 		pager = (ViewPager)v.findViewById(R.id.editpokeviewpager);
 		pager.setAdapter(new EditPokeAdapter(getFragmentManager()));
 		
+		setPoke(activity().team.poke(activity().currentPoke));
+		
+		pokeList.setOnImageClickListener(new View.OnClickListener() {
+			public void onClick(View arg0) {
+				pager.setCurrentItem(0);
+			}
+		});
 		
 		return v;
 	}
 	
 	public void setPoke(TeamPoke poke) {
+		this.poke = poke;
+		updatePoke();
+	}
+	
+	public void updatePoke() {
 		pokeList.update(poke);
 	}
 
@@ -61,7 +74,9 @@ public class EditPokemonFragment extends Fragment {
 		@Override
 		public Fragment getItem(int arg0) {
 			if (arg0 == 0) {
-				return new PokemonChooserFragment();
+				PokemonChooserFragment ret = new PokemonChooserFragment();
+				ret.setOnPokemonChosenListener(EditPokemonFragment.this);
+				return ret;
 			} else {
 				return new MoveChooserFragment();
 			}
@@ -72,5 +87,16 @@ public class EditPokemonFragment extends Fragment {
 			return 2;
 		}
 		
+	}
+
+	public void onPokemonChosen(UniqueID id, String nickname) {
+		poke.setNum(id);
+		if (nickname.length() > 0) {
+			poke.nick = nickname;
+		}
+		
+		updatePoke();
+		
+		pager.setCurrentItem(1);
 	}
 }

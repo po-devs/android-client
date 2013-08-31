@@ -2,6 +2,7 @@ package com.podevs.android.pokemononline.battle;
 
 import java.util.Locale;
 
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -87,4 +88,8 @@ public class ListedPokemon {
     	v.setEnabled(enabled);
     	v.setTextColor(v.getTextColors().withAlpha(enabled ? 255 : 128).getDefaultColor());
     }
+
+	public void setOnImageClickListener(OnClickListener onClickListener) {
+		icon.setOnClickListener(onClickListener);
+	}
 }
