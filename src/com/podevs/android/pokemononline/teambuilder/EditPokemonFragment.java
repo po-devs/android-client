@@ -15,8 +15,9 @@ import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.teambuilder.PokemonChooserFragment.PokemonChooserListener;
+import com.podevs.android.pokemononline.teambuilder.PokemonDetailsFragment.PokemonDetailsListener;
 
-public class EditPokemonFragment extends Fragment implements PokemonChooserListener {
+public class EditPokemonFragment extends Fragment implements PokemonChooserListener, PokemonDetailsListener {
 	private ListedPokemon pokeList;
 	private TeamPoke poke = null;
 	private ViewPager pager = null;
@@ -59,13 +60,17 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 	}
 	
 	public void updatePoke() {
-		pokeList.update(poke);
+		updateHeader();
 		if (pokemonChooser != null) {
 			pokemonChooser.setDetails(poke.uID(), poke.nick);
 		}
 		if (pokemonDetails != null) {
 			pokemonDetails.updatePoke();
 		}
+	}
+
+	private void updateHeader() {
+		pokeList.update(poke);
 	}
 
 	@Override
@@ -92,6 +97,7 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 				return pokemonChooser;
 			} else if (arg0 == 1) {
 				pokemonDetails = new PokemonDetailsFragment();
+				pokemonDetails.listener = EditPokemonFragment.this;
 				return pokemonDetails;
 			} else {
 				return new MoveChooserFragment();
@@ -114,5 +120,9 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		updatePoke();
 		
 		pager.setCurrentItem(1);
+	}
+
+	public void onPokemonEdited() {
+		updateHeader();
 	}
 }

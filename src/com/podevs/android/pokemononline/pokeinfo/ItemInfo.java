@@ -1,12 +1,17 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
-import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.util.SparseArray;
+
+import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 
 public class ItemInfo {
 	private static SparseArray<String> itemNames = new SparseArray<String>();
 	private static SparseArray<String> itemMessages = null;
+	private static int usefulItems[] = null;
 	
 	public static String name(int item) {
 		if (itemNames.indexOfKey(item) < 0) {
@@ -27,6 +32,14 @@ public class ItemInfo {
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			return "";
 		}
+	}
+	
+	public static int[] usefulItems() {
+		if (usefulItems == null) {
+			loadUsefulItems();
+		}
+		
+		return usefulItems;
 	}
 
 	private static void loadItemNames() {
@@ -54,5 +67,28 @@ public class ItemInfo {
 				itemMessages.put(8000+i, b);
 			}
 		});
+	}
+	
+	private static void loadUsefulItems() {
+		final ArrayList<Integer> items = new ArrayList<Integer>();
+		
+		InfoFiller.fill("db/items/item_useful.txt", new Filler() {
+			public void fill(int i, String s) {
+				items.add(Integer.valueOf(i));
+			}
+		});
+		
+		/* Sort item names */
+		Collections.sort(items, new Comparator<Integer>() {
+			public int compare(Integer lhs, Integer rhs) {
+				return name(lhs).compareTo(name(rhs));
+			}
+		});
+		
+		usefulItems = new int[items.size()];
+		
+		for (int i = 0; i < items.size(); i++) {
+			usefulItems[i] = items.get(i).intValue();
+		}
 	}
 }

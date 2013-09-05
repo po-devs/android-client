@@ -16,18 +16,24 @@ import android.widget.Spinner;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
+import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.NatureInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 
 
 public class PokemonDetailsFragment extends Fragment {
+	public interface PokemonDetailsListener {
+		public void onPokemonEdited();
+	}
+	
 	private TeamPoke poke = null;
 	private EVSlider sliders[] = null;
 	private Spinner itemChooser = null;
 	private Spinner abilityChooser = null;
 	private Spinner natureChooser = null;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter, natureChooserAdapter;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter;
 	private CheckBox happiness = null;
+	public PokemonDetailsListener listener = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,16 +53,20 @@ public class PokemonDetailsFragment extends Fragment {
 		abilityChooser = (Spinner)v.findViewById(R.id.abilitychoice);
 		itemChooser = (Spinner)v.findViewById(R.id.itemchoice);
 		natureChooser = (Spinner)v.findViewById(R.id.nature);
+		
+		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		int usefulItems[] = ItemInfo.usefulItems();
+		for (int i = 0; i < usefulItems.length; i++) {
+			itemChooserAdapter.add(ItemInfo.name(usefulItems[i]));
+		}
+		itemChooser.setAdapter(itemChooserAdapter);
 
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		abilityChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-
-		// Specify the layout to use when the list of choices appears
-		abilityChooserAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner
 		abilityChooser.setAdapter(abilityChooserAdapter);
 		
-		natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		for (int i = 0; i < NatureInfo.count(); i++) {
 			natureChooserAdapter.add(NatureInfo.boostedName(i));
 		}
@@ -80,7 +90,41 @@ public class PokemonDetailsFragment extends Fragment {
 			}
 		});
 		
+		itemChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				poke.item = (short)ItemInfo.usefulItems()[arg2];
+				notifyUpdated();
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
+		abilityChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				short abilities [] = PokemonInfo.abilities(poke.uID(), poke.gen.num);
+				for (int i = 0; i < abilities.length; i++) {
+					if (AbilityInfo.name(abilities[i]) == abilityChooserAdapter.getItem(arg2)) {
+						poke.ability = abilities[i];
+						notifyUpdated();
+						break;
+					}
+				}
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
 		return v;
+	}
+	
+	public void notifyUpdated() {
+		if (listener != null) {
+			listener.onPokemonEdited();
+		}
 	}
 
 	public void setPoke(TeamPoke poke) {
@@ -126,5 +170,14 @@ public class PokemonDetailsFragment extends Fragment {
 		}
 		
 		natureChooser.setSelection(poke.nature);
+		
+		int usefulItems[] = ItemInfo.usefulItems();
+		int pokeitem = poke.item();
+		for (int i = 0; i < usefulItems.length; i++) {
+			if (usefulItems[i] == pokeitem) {
+				itemChooser.setSelection(i);
+				break;
+			}
+		}
 	}
 }
