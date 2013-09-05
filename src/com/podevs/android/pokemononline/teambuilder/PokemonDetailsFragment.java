@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,6 +16,7 @@ import android.widget.Spinner;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
+import com.podevs.android.pokemononline.pokeinfo.NatureInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 
 
@@ -22,7 +25,8 @@ public class PokemonDetailsFragment extends Fragment {
 	private EVSlider sliders[] = null;
 	private Spinner itemChooser = null;
 	private Spinner abilityChooser = null;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter;
+	private Spinner natureChooser = null;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter, natureChooserAdapter;
 	private CheckBox happiness = null;
 
 	@Override
@@ -42,6 +46,7 @@ public class PokemonDetailsFragment extends Fragment {
 		happiness = (CheckBox)v.findViewById(R.id.happiness);
 		abilityChooser = (Spinner)v.findViewById(R.id.abilitychoice);
 		itemChooser = (Spinner)v.findViewById(R.id.itemchoice);
+		natureChooser = (Spinner)v.findViewById(R.id.nature);
 
 		// Create an ArrayAdapter using the string array and a default spinner layout
 		abilityChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
@@ -51,6 +56,12 @@ public class PokemonDetailsFragment extends Fragment {
 		// Apply the adapter to the spinner
 		abilityChooser.setAdapter(abilityChooserAdapter);
 		
+		natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		for (int i = 0; i < NatureInfo.count(); i++) {
+			natureChooserAdapter.add(NatureInfo.boostedName(i));
+		}
+		natureChooser.setAdapter(natureChooserAdapter);
+		
 		setPoke(activity().team.poke(activity().currentPoke));
 		
 		happiness.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -58,7 +69,17 @@ public class PokemonDetailsFragment extends Fragment {
 				poke.happiness = (byte)(isChecked ? 255 : 0);
 			}
 		});
+		
+		natureChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				poke.nature = (byte)arg2;
+			}
 
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
 		return v;
 	}
 
@@ -103,5 +124,7 @@ public class PokemonDetailsFragment extends Fragment {
 		} else {
 			happiness.setChecked(true);
 		}
+		
+		natureChooser.setSelection(poke.nature);
 	}
 }
