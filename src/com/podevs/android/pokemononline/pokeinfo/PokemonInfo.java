@@ -87,7 +87,13 @@ public class PokemonInfo {
 			return moves(uId.original(), gen);
 		}
 		
-		return pokemons[gen].get(uId.hashCode()).moves;
+		short ret[] = pokemons[gen].get(uId.hashCode()).moves;
+		
+		if (ret == null) {
+			return new short[0];
+		} else {
+			return ret;
+		}
 	}
 	
 	private static void convertMoveStringIfNeeded(UniqueID uId, int gen) {

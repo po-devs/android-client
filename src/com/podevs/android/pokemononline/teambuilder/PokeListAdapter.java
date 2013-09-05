@@ -3,7 +3,6 @@ package com.podevs.android.pokemononline.teambuilder;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -15,7 +14,7 @@ import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 
-public class PokeListAdapter implements Adapter, ListAdapter {
+public class PokeListAdapter implements ListAdapter {
 	private Gen gen = new Gen();
 	
 	public int getCount() {
