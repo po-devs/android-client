@@ -304,4 +304,40 @@ public class TeamPoke implements SerializeBytes, Poke {
 			setNum(new UniqueID(uID.pokeNum, ItemInfo.plateType(item)));
 		}
 	}
+
+	public boolean hasMove(int move) {
+		return move(0).num == move || move(1).num == move || move(2).num == move || move(3).num == move;
+	}
+	
+	public boolean addMove(int move) {
+		if (!hasMove(0)) {
+			return false;
+		}
+		
+		for (int i = 0; i < 4; i++) {
+			if (move(i).num == 0) {
+				moves[i] = new TeamMove(move);
+				return true;
+			}
+		}
+		
+		//never reached
+		return false;
+	}
+
+	public boolean removeMove(int move) {
+		if (!hasMove(move)) {
+			return false;
+		}
+		
+		for (int i = 0; i < 4; i++) {
+			if (move(i).num == move) {
+				moves[i] = new TeamMove(0);
+				return true;
+			}
+		}
+		
+		//never reached
+		return false;
+	}
 }

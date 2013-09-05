@@ -14,10 +14,11 @@ import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.teambuilder.MoveChooserFragment.MoveChooserListener;
 import com.podevs.android.pokemononline.teambuilder.PokemonChooserFragment.PokemonChooserListener;
 import com.podevs.android.pokemononline.teambuilder.PokemonDetailsFragment.PokemonDetailsListener;
 
-public class EditPokemonFragment extends Fragment implements PokemonChooserListener, PokemonDetailsListener {
+public class EditPokemonFragment extends Fragment implements PokemonChooserListener, PokemonDetailsListener, MoveChooserListener {
 	private ListedPokemon pokeList;
 	private TeamPoke poke = null;
 	private ViewPager pager = null;
@@ -46,6 +47,18 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		pokeList.setOnImageClickListener(new View.OnClickListener() {
 			public void onClick(View arg0) {
 				pager.setCurrentItem(0);
+			}
+		});
+		
+		pokeList.setOnDetailsClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				pager.setCurrentItem(1);
+			}
+		});
+		
+		pokeList.setOnMoveClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				pager.setCurrentItem(2);
 			}
 		});
 		
@@ -107,7 +120,9 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 				pokemonDetails.listener = EditPokemonFragment.this;
 				return pokemonDetails;
 			} else {
-				return (moveChooser = new MoveChooserFragment());
+				moveChooser = new MoveChooserFragment();
+				moveChooser.listener = EditPokemonFragment.this;
+				return moveChooser;
 			}
 		}
 
@@ -135,5 +150,9 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		} else {
 			updatePoke();
 		}
+	}
+
+	public void onMovesetChanged() {
+		updateHeader();
 	}
 }

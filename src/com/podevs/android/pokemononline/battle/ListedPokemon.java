@@ -92,4 +92,17 @@ public class ListedPokemon {
 	public void setOnImageClickListener(OnClickListener onClickListener) {
 		icon.setOnClickListener(onClickListener);
 	}
+	
+	public void setOnMoveClickListener(OnClickListener onClickListener) {
+		for (int i = 0; i < 4; i++) {
+			moves[i].setOnClickListener(onClickListener);
+		}
+	}
+	
+	public void setOnDetailsClickListener(OnClickListener onClickListener) {
+		name.setOnClickListener(onClickListener);
+		item.setOnClickListener(onClickListener);
+		ability.setOnClickListener(onClickListener);
+		hp.setOnClickListener(onClickListener);
+	}
 }
