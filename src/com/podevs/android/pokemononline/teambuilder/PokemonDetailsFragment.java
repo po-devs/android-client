@@ -19,9 +19,10 @@ import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.NatureInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.teambuilder.EVSlider.EVListener;
 
 
-public class PokemonDetailsFragment extends Fragment {
+public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public interface PokemonDetailsListener {
 		public void onPokemonEdited();
 	}
@@ -48,6 +49,10 @@ public class PokemonDetailsFragment extends Fragment {
 				new EVSlider(v.findViewById(R.id.spdefev), 4),
 				new EVSlider(v.findViewById(R.id.speedev), 5)
 		};
+		
+		for (int i = 0; i < sliders.length; i++) {
+			sliders[i].listener = this;
+		}
 
 		happiness = (CheckBox)v.findViewById(R.id.happiness);
 		abilityChooser = (Spinner)v.findViewById(R.id.abilitychoice);
@@ -178,6 +183,22 @@ public class PokemonDetailsFragment extends Fragment {
 				itemChooser.setSelection(i);
 				break;
 			}
+		}
+	}
+
+	public void onEVChanged(int stat, int ev) {
+		int totalEVs = poke.totalEVs() - poke.ev(stat) + ev;
+		
+		if (totalEVs > 508) {
+			ev = 508 - (poke.totalEVs() - poke.ev(stat));
+			sliders[stat].setNum(ev);
+		}
+		
+		poke.EVs[stat] = (byte)ev;
+		
+		/* Did hps change ? */
+		if (stat == 0) {
+			notifyUpdated();
 		}
 	}
 }

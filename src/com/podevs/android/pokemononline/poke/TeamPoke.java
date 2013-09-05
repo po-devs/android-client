@@ -232,7 +232,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public int ev(int i) {
-		return EVs[i];
+		return EVs[i] >= 0 ? EVs[i] : (EVs[i] + 255);
 	}
 
 	public int level() {
@@ -268,5 +268,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 			iv.setTextContent(String.valueOf(this.dv(i)));
 			poke.appendChild(iv);
 		}
+	}
+
+	public int totalEVs() {
+		return ev(0) + ev(1) + ev(2) + ev(3) + ev(4) + ev(5);
 	}
 }

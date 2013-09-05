@@ -10,11 +10,17 @@ import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo;
 
 public class EVSlider {
+	public interface EVListener {
+		public void onEVChanged(int stat, int ev);
+	}
+	
 	private SeekBar slider;
 	private TextView label;
 	private EditText edit;
+	public EVListener listener;
 	
-	EVSlider(View lay, int stat) {
+	
+	EVSlider(View lay, final int stat) {
 		slider = (SeekBar)lay.findViewById(R.id.slider);
 		label = (TextView)lay.findViewById(R.id.label);
 		edit = (EditText)lay.findViewById(R.id.edit);
@@ -35,7 +41,13 @@ public class EVSlider {
 					return;
 				}
 				
-				edit.setText("" + progress);
+				/* Steps of 4 */
+				int pr = (progress / 4) * 4;
+				
+				setNum(pr);
+				if (listener != null) {
+					listener.onEVChanged(stat, pr);
+				}
 			}
 		});
 	}
