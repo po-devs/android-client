@@ -62,7 +62,7 @@ public class MoveInfo {
 		if (acc == 101) {
 			return "--";
 		} else {
-			return String.valueOf(num);
+			return String.valueOf(acc);
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class MoveInfo {
 		} else if (pow == 1) {
 			return "???";
 		} else {
-			return String.valueOf(num);
+			return String.valueOf(pow >= 0 ? pow : (pow + 255));
 		}
 	}
 	

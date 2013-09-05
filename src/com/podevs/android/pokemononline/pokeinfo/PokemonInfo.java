@@ -87,13 +87,13 @@ public class PokemonInfo {
 			return moves(uId.original(), gen);
 		}
 		
-		return null;
+		return pokemons[gen].get(uId.hashCode()).moves;
 	}
 	
 	private static void convertMoveStringIfNeeded(UniqueID uId, int gen) {
 		PokeGenData poke = pokemons[gen].get(uId.hashCode());
 		if (poke.moveString != null) {
-			String moves[] = ("0 " + poke.moveString).split(" ");
+			String moves[] = poke.moveString.split(" ");
 			
 			Arrays.sort(moves, new Comparator<String>() {
 				public int compare(String lhs, String rhs) {

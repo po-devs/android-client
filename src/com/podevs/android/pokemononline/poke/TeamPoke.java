@@ -128,42 +128,51 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 	
 	public void setNum(UniqueID id) {
-		if (uID == id) {
+		if (uID.equals(id)) {
 			return;
 		}
 		
+		boolean fullReset = uID.pokeNum != id.pokeNum;
+		
 		uID = id;
-		nick = PokemonInfo.name(id);
-		shiny = false;
-		item = 15; //leftovers
+		if (fullReset) {
+			nick = PokemonInfo.name(id);
+			shiny = false;
+			item = 15; //leftovers
+		}
 		if (id.subNum != 0) {
-			if (id.pokeNum == 487 && id.subNum == 1) {
+			if (id.pokeNum == 487) {
 				/* Giratina-O */
-				item = 213; // griseous orb
+				item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
 			} else if (id.pokeNum == 493 && id.subNum != 0) {
 				/* Arceus */
 				item = ItemInfo.plateForType(id.subNum);
 			}
 		}
-		gender = 1;
-		nature = 0;
+		
+		if (fullReset) {
+			gender = 1;
+			nature = 0;
+		}
 		
 		if (gen.num > 2) {
 			ability = PokemonInfo.abilities(id, gen.num)[0];
 		}		
 		
-		happiness = 0;
-		level = 100;
-		moves[0] = new TeamMove(0);
-		moves[1] = new TeamMove(0);
-		moves[2] = new TeamMove(0);
-		moves[3] = new TeamMove(0);
-		if (gen.num > 2) {
-			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
-		} else {
-			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+		if (fullReset) {
+			happiness = 0;
+			level = 100;
+			moves[0] = new TeamMove(0);
+			moves[1] = new TeamMove(0);
+			moves[2] = new TeamMove(0);
+			moves[3] = new TeamMove(0);
+			if (gen.num > 2) {
+				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+			} else {
+				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+			}
+			EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
 		}
-		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
 	}
 	
 	public void serializeBytes(Baos bytes) {
