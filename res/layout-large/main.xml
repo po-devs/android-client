@@ -83,7 +83,7 @@
             android:id="@+id/importteambutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="@string/teambuilder" 
             android:textSize="19sp">
@@ -93,7 +93,7 @@
             android:id="@+id/connectbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="@string/connect"
             android:textSize="19sp" >
