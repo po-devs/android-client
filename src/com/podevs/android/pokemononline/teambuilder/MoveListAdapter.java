@@ -42,7 +42,7 @@ public class MoveListAdapter implements ListAdapter {
 		power.setText("pow: " + MoveInfo.powerString(move));
 
 		TextView pps = (TextView)view.findViewById(R.id.pps);
-		pps.setText("pps: " + MoveInfo.pp(move));
+		pps.setText("pp: " + MoveInfo.pp(move));
 
 		TextView accuracy = (TextView)view.findViewById(R.id.accuracy);
 		accuracy.setText("acc: " +MoveInfo.accuracyString(move));

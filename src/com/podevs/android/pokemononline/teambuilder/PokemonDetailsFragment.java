@@ -82,6 +82,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		happiness.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				poke.happiness = (byte)(isChecked ? 255 : 0);
+				activity().teamChanged = true;
 			}
 		});
 		
@@ -89,6 +90,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				poke.nature = (byte)arg2;
+				activity().teamChanged = true;
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -207,6 +209,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		/* Did hps change ? */
 		if (stat == 0) {
 			notifyUpdated();
+		} else {
+			activity().teamChanged = true;
 		}
 	}
 }

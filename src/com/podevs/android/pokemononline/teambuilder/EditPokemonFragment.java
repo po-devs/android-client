@@ -142,6 +142,8 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		updatePoke();
 		
 		pager.setCurrentItem(1);
+		
+		activity().teamChanged = true;
 	}
 
 	public void onPokemonEdited(boolean updateAll) {
@@ -150,9 +152,13 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		} else {
 			updatePoke();
 		}
+		
+		activity().teamChanged = true;
 	}
 
 	public void onMovesetChanged() {
 		updateHeader();
+		
+		activity().teamChanged = true;
 	}
 }

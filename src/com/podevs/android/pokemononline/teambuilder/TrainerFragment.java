@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -74,6 +76,22 @@ public class TrainerFragment extends Fragment {
 		
 		AutoCompleteTextView teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
 		teamTier.setText(((TeambuilderActivity)getActivity()).team.defaultTier);
+		
+		teamTier.addTextChangedListener(new TextWatcher() {
+			
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+			
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			
+			}
+			
+			public void afterTextChanged(Editable s) {
+				((TeambuilderActivity)getActivity()).team.defaultTier = s.toString();
+				((TeambuilderActivity)getActivity()).teamChanged = true;
+			}
+		});
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			Set<String> set = getActivity().getSharedPreferences("tiers", Context.MODE_PRIVATE).getStringSet("list", null);
@@ -218,12 +236,6 @@ public class TrainerFragment extends Fragment {
 			p2.save(getActivity());
 			p = p2;
 			profileChanged = false;
-		}
-
-		if (!((EditText)v.findViewById(R.id.teamTier)).getText().toString()
-				.equals(getTeam().defaultTier)) {
-			getTeam().defaultTier = ((EditText)v.findViewById(R.id.teamTier)).getText().toString();
-			getTeam().save(getActivity());
 		}
 
 		super.onPause();

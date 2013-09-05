@@ -76,4 +76,7 @@
 	<string name="losingmessage">Losing Message</string>
 	<string name="pokemon">Pokémon</string>
 	<string name="done">OK</string>
+	<string name="save_team">Do you want to save changes to the team?</string>
+	<string name="save">Save</string>
+	<string name="no_save">Do not save</string>
 </resources>

@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.zip.InflaterInputStream;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,31 @@ import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
 
 public class TeambuilderActivity extends FragmentActivity {
+	@Override
+	public void onBackPressed() {
+		if (!teamChanged) {
+			super.onBackPressed();
+			return;
+		}
+		
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.save_team)
+               .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                       team.save(TeambuilderActivity.this);
+                       TeambuilderActivity.this.finish();
+                   }
+               })
+               .setNegativeButton(R.string.no_save, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                	   TeambuilderActivity.this.finish();
+                   }
+               });
+        // Create the AlertDialog object and return it
+        builder.create().show();
+	}
+
 	protected ViewPager viewPager;
 	
 	Team team;
@@ -32,6 +59,8 @@ public class TeambuilderActivity extends FragmentActivity {
 	TrainerFragment trainerFragment = null;
 	EditPokemonFragment pokeFragment = null;
 	int currentPoke = -1;
+
+	public boolean teamChanged = false;
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
 	public static final int PICKCOLOR_RESULT_CODE = 2;
