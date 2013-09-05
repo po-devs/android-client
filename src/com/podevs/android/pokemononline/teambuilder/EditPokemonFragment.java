@@ -122,7 +122,11 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		pager.setCurrentItem(1);
 	}
 
-	public void onPokemonEdited() {
-		updateHeader();
+	public void onPokemonEdited(boolean updateAll) {
+		if (!updateAll) {
+			updateHeader();
+		} else {
+			updatePoke();
+		}
 	}
 }

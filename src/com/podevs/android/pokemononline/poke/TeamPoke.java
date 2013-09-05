@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
+import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 import com.podevs.android.utilities.Bais;
@@ -106,8 +107,8 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public TeamPoke() {
 		uID = new UniqueID();
 		nick = "";
-		item = 71; //leftovers
-		ability = 98;
+		item = 0;
+		ability = 0;
 		nature = 0;
 		gender = 1;
 		gen = new Gen();
@@ -118,12 +119,12 @@ public class TeamPoke implements SerializeBytes, Poke {
 		moves[1] = 213;
 		moves[2] = 412;
 		moves[3] = 210;*/
-		moves[0] = new TeamMove(118);
-		moves[1] = new TeamMove(227);
-		moves[2] = new TeamMove(150);
-		moves[3] = new TeamMove(271);
+		moves[0] = new TeamMove(0);
+		moves[1] = new TeamMove(0);
+		moves[2] = new TeamMove(0);
+		moves[3] = new TeamMove(0);
 		DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
-		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 10;
+		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 80;
 	}
 	
 	public void setNum(UniqueID id) {
@@ -135,6 +136,15 @@ public class TeamPoke implements SerializeBytes, Poke {
 		nick = PokemonInfo.name(id);
 		shiny = false;
 		item = 15; //leftovers
+		if (id.subNum != 0) {
+			if (id.pokeNum == 487 && id.subNum == 1) {
+				/* Giratina-O */
+				item = 213; // griseous orb
+			} else if (id.pokeNum == 493 && id.subNum != 0) {
+				/* Arceus */
+				item = ItemInfo.plateForType(id.subNum);
+			}
+		}
 		gender = 1;
 		nature = 0;
 		
@@ -272,5 +282,17 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public int totalEVs() {
 		return ev(0) + ev(1) + ev(2) + ev(3) + ev(4) + ev(5);
+	}
+
+	public void setItem(short s) {
+		item = s;
+		
+		if (uID.pokeNum == 487) {
+			/* Giratina */
+			setNum(new UniqueID(uID.pokeNum, item == 213 ? 1 : 0));
+		} else if (uID.pokeNum == 493) {
+			/* Arceus */
+			setNum(new UniqueID(uID.pokeNum, ItemInfo.plateType(item)));
+		}
 	}
 }

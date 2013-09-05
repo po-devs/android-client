@@ -24,7 +24,7 @@ import com.podevs.android.pokemononline.teambuilder.EVSlider.EVListener;
 
 public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public interface PokemonDetailsListener {
-		public void onPokemonEdited();
+		public void onPokemonEdited(boolean updateAll);
 	}
 	
 	private TeamPoke poke = null;
@@ -98,8 +98,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		itemChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				poke.item = (short)ItemInfo.usefulItems()[arg2];
-				notifyUpdated();
+				int orid = poke.uID().hashCode();
+				
+				poke.setItem((short)ItemInfo.usefulItems()[arg2]);
+				notifyUpdated(orid != poke.uID().hashCode());
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -128,7 +130,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	
 	public void notifyUpdated() {
 		if (listener != null) {
-			listener.onPokemonEdited();
+			listener.onPokemonEdited(false);
+		}
+	}
+	
+	public void notifyUpdated(boolean b) {
+		if (listener != null) {
+			listener.onPokemonEdited(b);
 		}
 	}
 

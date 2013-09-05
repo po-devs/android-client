@@ -41,6 +41,31 @@ public class ItemInfo {
 		
 		return usefulItems;
 	}
+	
+	private static short plates[] = new short[] {
+		0,
+        188,
+        196,
+        201,
+        187,
+        199,
+        192,
+        198,
+        193,
+        189,
+        197,
+        194,
+        202,
+        195,
+        191,
+        185,
+        186,
+        0
+	};
+	
+	public static short plateForType(int type) {
+	    return plates[type];
+	}
 
 	private static void loadItemNames() {
 		InfoFiller.fill("db/items/items.txt", new Filler() {
@@ -90,5 +115,14 @@ public class ItemInfo {
 		for (int i = 0; i < items.size(); i++) {
 			usefulItems[i] = items.get(i).intValue();
 		}
+	}
+
+	public static int plateType(short item) {
+		for (int i = 0; i < plates.length; i++) {
+			if (item == plates[i]) {
+				return i;
+			}
+		}
+		return 0;
 	}
 }
