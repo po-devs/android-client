@@ -65,4 +65,8 @@ public class UniqueID implements SerializeBytes {
 		bytes.putShort(pokeNum);
 		bytes.write(subNum);
 	}
+
+	public UniqueID original() {
+		return new UniqueID(pokeNum);
+	}
 }

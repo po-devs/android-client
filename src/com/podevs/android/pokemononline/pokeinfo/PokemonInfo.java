@@ -1,5 +1,7 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import android.content.res.Resources;
@@ -27,6 +29,8 @@ public class PokemonInfo {
 		byte type1 = -1;
 		byte type2 = -1;
 		short ability[] = null;
+		short moves[] = null;
+		String moveString = null;
 	}
 	
 	/* Global data:
@@ -46,7 +50,7 @@ public class PokemonInfo {
 	}
 	
 	public static int type1(UniqueID uID, int gen) {
-		testLoad(uID, gen);
+		testLoad(gen);
 		
 		int type = pokemons[gen].get(uID.hashCode()).type1;
 		if (type == -1) {
@@ -56,7 +60,7 @@ public class PokemonInfo {
 	}
 	
 	public static int type2(UniqueID uID, int gen) {
-		testLoad(uID, gen);
+		testLoad(gen);
 		
 		int type = pokemons[gen].get(uID.hashCode()).type2;
 		if (type == -1) {
@@ -75,6 +79,51 @@ public class PokemonInfo {
 		return stats[stat] >= 0 ? stats[stat] : (stats[stat] + 255);
 	}
 	
+	public static short[] moves(UniqueID uId, int gen) {
+		testLoadMoves(gen);
+		convertMoveStringIfNeeded(uId, gen);
+		
+		if (pokemons[gen].get(uId.hashCode()).moves == null && uId.subNum != 0) {
+			return moves(uId.original(), gen);
+		}
+		
+		return null;
+	}
+	
+	private static void convertMoveStringIfNeeded(UniqueID uId, int gen) {
+		PokeGenData poke = pokemons[gen].get(uId.hashCode());
+		if (poke.moveString != null) {
+			String moves[] = ("0 " + poke.moveString).split(" ");
+			
+			Arrays.sort(moves, new Comparator<String>() {
+				public int compare(String lhs, String rhs) {
+					return MoveInfo.name(Integer.parseInt(lhs)).compareTo(MoveInfo.name(Integer.parseInt(rhs)));
+				}
+			});
+			
+			poke.moves = new short[moves.length];
+			
+			for (int i = 0; i < moves.length; i++) {
+				poke.moves[i] = (short)Integer.parseInt(moves[i]);
+			}
+			poke.moveString = null;
+		}
+	}
+
+	private static void testLoadMoves(final int gen) {
+		testLoad(gen);
+		
+		if (pokemons[gen].get(1).moveString != null || pokemons[gen].get(1).moves != null) {
+			return;
+		}
+		
+		InfoFiller.uIDfill("db/pokes/" + gen + "G/all_moves.txt", new Filler() {
+			public void fill(int i, String s) {
+				pokemons[gen].get(i).moveString = s;
+			}
+		});
+	}
+
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
 			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
@@ -155,14 +204,14 @@ public class PokemonInfo {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static void testLoad(UniqueID uID, int gen) {
+	private static void testLoad(int gen) {
 		if (pokemons == null) {
 			pokemons = new SparseArray[6];
 		}
 		if (pokemons[gen] == null) {
 			pokemons[gen] = new SparseArray<PokemonInfo.PokeGenData>();
 		}
-		if (pokemons[gen].indexOfKey(uID.hashCode()) == (byte)-1) {
+		if (pokemons[gen].indexOfKey(1) == (byte)-1) {
 			loadTypes(gen);
 		}
 	}
@@ -240,7 +289,7 @@ public class PokemonInfo {
 	private static boolean abilitiesLoaded = false;
 	private static void testLoadAbilities(UniqueID id, final int gen) {
 		if (!abilitiesLoaded) {
-			testLoad(id, gen);
+			testLoad(gen);
 			
 			InfoFiller.uIDfill("db/pokes/" + gen  + "G/ability1.txt", new Filler() {
 				public void fill(int i, String s) {
