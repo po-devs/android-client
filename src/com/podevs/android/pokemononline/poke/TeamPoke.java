@@ -63,7 +63,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		if (network.readBool()) { //nickname flag
 			nick = b.readString();
 		} else {
-			nick = "";
+			nick = PokemonInfo.name(uID);
 		}
 
 		if (network.readBool()) { //pokeball flag
@@ -106,7 +106,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	
 	public TeamPoke() {
 		uID = new UniqueID();
-		nick = "";
+		nick = PokemonInfo.name(uID);
 		item = 0;
 		ability = 0;
 		nature = 0;
@@ -259,14 +259,17 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public void save(Document doc, Element poke) {
+		if (nick.length() == 0) {
+			nick = PokemonInfo.name(uID);
+		}
 		poke.setAttribute("Num", String.valueOf(uID.pokeNum));
 		poke.setAttribute("Forme", String.valueOf(uID.subNum));
-		poke.setAttribute("NickName", nick);
+		poke.setAttribute("Nickname", nick);
 		poke.setAttribute("Item", String.valueOf(item));
 		poke.setAttribute("Ability", String.valueOf(ability));
 		poke.setAttribute("Gender", String.valueOf(gender));
 		poke.setAttribute("Lvl", String.valueOf(level));
-		poke.setAttribute("Shiny", String.valueOf(shiny));
+		poke.setAttribute("Shiny", String.valueOf(shiny ? 1 : 0));
 		poke.setAttribute("Nature", String.valueOf(nature));
 		poke.setAttribute("Happiness", String.valueOf(happiness));
 		

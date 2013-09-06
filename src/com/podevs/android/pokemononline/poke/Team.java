@@ -1,6 +1,7 @@
 package com.podevs.android.pokemononline.poke;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -84,7 +85,9 @@ public class Team implements SerializeBytes {
 		Element rootElement = doc.createElement("Team");
 		doc.appendChild(rootElement);
 		
-		rootElement.setAttribute("defaultTier", defaultTier);
+		if (defaultTier.length() > 0) {
+			rootElement.setAttribute("defaultTier", defaultTier);
+		}
 		rootElement.setAttribute("gen", String.valueOf(gen.num));
 		rootElement.setAttribute("subgen", String.valueOf(gen.subNum));
 		
@@ -119,7 +122,12 @@ public class Team implements SerializeBytes {
 			transformer.transform(source, result);
 		} catch (TransformerException e) {
 			e.printStackTrace();
-			return;
+		}
+		
+		try {
+			result.getOutputStream().close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

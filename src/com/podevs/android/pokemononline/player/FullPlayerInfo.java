@@ -40,18 +40,13 @@ public class FullPlayerInfo implements SerializeBytes {
 		profile = new PlayerProfile(context);
 		
 		try {
-			context.openFileInput("team.xml").close();
 			team = (new PokeParser(context)).getTeam();
 			isDefault = false;
-		} catch (FileNotFoundException e) {
-			Toast.makeText(context, "No team found. Loaded system default.", Toast.LENGTH_LONG).show();
-			team = new Team();
 		} catch (NumberFormatException e) {
 			// The file could not be parsed correctly
+			e.printStackTrace();
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
 			team = new Team();
-		} catch (IOException e) {
-			
 		}
 	}
 	

@@ -68,7 +68,13 @@ public class PokemonChooserFragment extends Fragment {
 		ok.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (listener != null && chosenId != null) {
-					listener.onPokemonChosen(chosenId, pokeChoice.getText().toString());
+					String nick = pokeChoice.getText().toString();
+					
+					if (nick.length() == 0) {
+						nick = PokemonInfo.name(chosenId);
+					}
+					
+					listener.onPokemonChosen(chosenId, nick);
 				}
 			}
 		});

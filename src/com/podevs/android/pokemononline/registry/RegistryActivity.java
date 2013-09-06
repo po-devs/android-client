@@ -33,6 +33,7 @@ import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.player.FullPlayerInfo;
+import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.registry.RegistryConnectionService.RegistryCommandListener;
 import com.podevs.android.pokemononline.registry.ServerListAdapter.Server;
 import com.podevs.android.pokemononline.teambuilder.TeambuilderActivity;
@@ -50,7 +51,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private EditText editAddr;
 	private EditText editName;
 	private boolean bound = false;
-	private FullPlayerInfo meLoginPlayer = new FullPlayerInfo();
+	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
 
 	enum RegistryDialog {
@@ -61,6 +62,10 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	if (InfoConfig.context == null) {
+    		InfoConfig.context = this;
+    	}
+
         super.onCreate(savedInstanceState);
 
         // If we are already connected to a server show ChatActivity instead of RegistryActivity

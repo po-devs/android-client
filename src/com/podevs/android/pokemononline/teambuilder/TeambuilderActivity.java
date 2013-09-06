@@ -29,6 +29,11 @@ import com.podevs.android.pokemononline.poke.Team;
 public class TeambuilderActivity extends FragmentActivity {
 	@Override
 	public void onBackPressed() {
+		if (viewPager.getCurrentItem() == 2) {
+			viewPager.setCurrentItem(1, true);
+			return;
+		}
+
 		if (!teamChanged) {
 			super.onBackPressed();
 			return;
@@ -83,7 +88,9 @@ public class TeambuilderActivity extends FragmentActivity {
 			} else if (arg0 == 1) {
 				return (teamFragment = new TeamFragment());
 			} else {
-				return pokeFragment = new EditPokemonFragment();
+				pokeFragment = new EditPokemonFragment();
+				pokeFragment.listener = teamFragment;
+				return pokeFragment;
 			}
 		}
 	}

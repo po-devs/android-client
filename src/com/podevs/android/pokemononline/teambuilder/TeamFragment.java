@@ -12,8 +12,9 @@ import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.pokemononline.teambuilder.EditPokemonFragment.EditPokemonListener;
 
-public class TeamFragment extends Fragment {
+public class TeamFragment extends Fragment implements EditPokemonListener {
 	ListedPokemon pokeList[] = new ListedPokemon[6];
 
 	@Override
@@ -55,7 +56,7 @@ public class TeamFragment extends Fragment {
 	}
 	
 	public void updateTeam() {
-		Team team = ((TeambuilderActivity)getActivity()).team;
+		Team team = activity().team;
 		for (int i = 0; i < 6; i++) {
 			pokeList[i].update(team.poke(i), true);
 		}
@@ -63,6 +64,10 @@ public class TeamFragment extends Fragment {
 	
 	private TeambuilderActivity activity() {
 		return (TeambuilderActivity) getActivity();
+	}
+
+	public void onPokemonEdited() {
+		pokeList[activity().currentPoke].update(activity().team.poke(activity().currentPoke));
 	}
 
 }

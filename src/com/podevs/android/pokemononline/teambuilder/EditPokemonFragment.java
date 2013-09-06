@@ -27,6 +27,12 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 	private PokemonDetailsFragment pokemonDetails = null;
 	private MoveChooserFragment moveChooser = null;
 	
+	public interface EditPokemonListener {
+		public void onPokemonEdited();
+	}
+	
+	public EditPokemonListener listener = null;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,6 +97,10 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 
 	private void updateHeader() {
 		pokeList.update(poke);
+		
+		if (listener != null) {
+			listener.onPokemonEdited();
+		}
 	}
 
 	@Override
