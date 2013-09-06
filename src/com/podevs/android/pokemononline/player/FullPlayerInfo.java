@@ -12,6 +12,7 @@ import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.QColor;
 import com.podevs.android.utilities.SerializeBytes;
+import com.podevs.android.utilities.StringUtilities;
 
 // Contains all the information about the player.
 // Used for logging into the server.
@@ -46,6 +47,8 @@ public class FullPlayerInfo implements SerializeBytes {
 			// The file could not be parsed correctly
 			e.printStackTrace();
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
+			
+			String teamS = StringUtilities.getFileContent(context, "team.xml");
 			team = new Team();
 		}
 	}
