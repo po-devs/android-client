@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="empty"></string>
+
+    <string name="empty"></string>
     <string name="choosename">Trainer Name</string>
     <string name="app_name">Pokémon Online</string>
     <string name="connect">Connect!</string>
@@ -18,7 +19,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="suggest_draw">Suggest Draw</string>
     <string name="return_to_chat">Return to Chat</string>
-	<string name="player_list">Player List</string>
+    <string name="player_list">Player List</string>
     <string name="channel_list">Channel List</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
@@ -38,45 +39,66 @@
     <string name="find_a_battle">Find Battle</string>
     <string name="enable_sounds">Pokémon Cries</string>
     <string name="stop_watching">Stop Watching</string>
-	<string name="crash_toast_text">Pokémon Online has crashed! Please help by e-mailing the resulting crash report.</string>
-	<string name="serv_name">Server Name</string>
-	<string name="players">Players</string>
-	<string name="serv_addr">Server Address</string>
-	<string name="connecttoserver">Connect to a Server</string>
-	<string name="major_compat_break_warning">There will be important problems when communicating with the server due to the android client being outdated</string>
-	<string name="minor_compat_break_warning">There may be minor problems when communicating with the server due to the android client being outdated</string>
-	<string name="new_server_features_warning">The server has new features that are not accessible with this android version!</string>
-	<string name="send_message">Send message</string>
-	<string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
-	<string name="struggle_attack">STRUGGLE</string>
-	<string name="info_box">Info Box</string>
-	<string name="hp_bar_description">hp bar</string>
-	<string name="gender_description">gender</string>
-	<string name="status_description">status</string>
-	<string name="sprite_description">sprite</string>
-	<string name="team_poke_icon">team poke icon</string>
-	<string name="no_netserv">Server connection failure</string>
-	<string name="private_messages">Private Messages</string>
-	<!-- <string name="player">Player</string>  -->
-	<string name="closePM">Close PM</string>
-	<string name="closeBattle">Leave Battle</string>
-	<string name="tierSelection">Tier Selection</string>
-	<string name="idle">Idle</string>
-	<string name="register">Register your name</string>
-	<string name="teambuilder">Teambuilder</string>
-	<string name="primary_info">Primary Info</string>
-	<string name="trainer_name">Trainer Name</string>
-	<string name="color">Color</string>
-	<string name="team">Team</string>
-	<string name="team_tier">Team Tier</string>
-	<string name="edit_team">Edit Team</string>
-	<string name="optional">Optional</string>
-	<string name="trainerinfo">Trainer Information</string>
-	<string name="winningmessage">Winning Message</string>
-	<string name="losingmessage">Losing Message</string>
-	<string name="pokemon">Pokémon</string>
-	<string name="done">OK</string>
-	<string name="save_team">Do you want to save changes to the team?</string>
-	<string name="save">Save</string>
-	<string name="no_save">Do not save</string>
+    <string name="crash_toast_text">Pokémon Online has crashed! Please help by e-mailing the resulting crash report.</string>
+    <string name="serv_name">Server Name</string>
+    <string name="players">Players</string>
+    <string name="serv_addr">Server Address</string>
+    <string name="connecttoserver">Connect to a Server</string>
+    <string name="major_compat_break_warning">There will be important problems when communicating with the server due to the android client being outdated</string>
+    <string name="minor_compat_break_warning">There may be minor problems when communicating with the server due to the android client being outdated</string>
+    <string name="new_server_features_warning">The server has new features that are not accessible with this android version!</string>
+    <string name="send_message">Send message</string>
+    <string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
+    <string name="struggle_attack">STRUGGLE</string>
+    <string name="info_box">Info Box</string>
+    <string name="hp_bar_description">hp bar</string>
+    <string name="gender_description">gender</string>
+    <string name="status_description">status</string>
+    <string name="sprite_description">sprite</string>
+    <string name="team_poke_icon">team poke icon</string>
+    <string name="no_netserv">Server connection failure</string>
+    <string name="private_messages">Private Messages</string>
+    <!-- <string name="player">Player</string> -->
+    <string name="closePM">Close PM</string>
+    <string name="closeBattle">Leave Battle</string>
+    <string name="tierSelection">Tier Selection</string>
+    <string name="idle">Idle</string>
+    <string name="register">Register your name</string>
+    <string name="teambuilder">Teambuilder</string>
+    <string name="primary_info">Primary Info</string>
+    <string name="trainer_name">Trainer Name</string>
+    <string name="color">Color</string>
+    <string name="team">Team</string>
+    <string name="team_tier">Team Tier</string>
+    <string name="edit_team">Edit Team</string>
+    <string name="optional">Optional</string>
+    <string name="trainerinfo">Trainer Information</string>
+    <string name="winningmessage">Winning Message</string>
+    <string name="losingmessage">Losing Message</string>
+    <string name="pokemon">Pokémon</string>
+    <string name="done">OK</string>
+    <string name="save_team">Do you want to save changes to the team?</string>
+    <string name="save">Save</string>
+    <string name="no_save">Do not save</string>
+    <string name="hiddenpower_choice">Hidden power type</string>
+
+    <string-array name="hp_array">
+        <item>Fighting</item>
+        <item>Flying</item>
+        <item>Poison</item>
+        <item>Ground</item>
+        <item>Rock</item>
+        <item>Bug</item>
+        <item>Ghost</item>
+        <item>Steel</item>
+        <item>Fire</item>
+        <item>Water</item>
+        <item>Grass</item>
+        <item>Electric</item>
+        <item>Psychic</item>
+        <item>Ice</item>
+        <item>Dragon</item>
+        <item>Dark</item>
+    </string-array>
+
 </resources>
