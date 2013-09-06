@@ -58,7 +58,6 @@ import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
-import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
@@ -615,6 +614,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			/* Is it a spectating battle or not? */
 			try {
 				activeBattle = (Battle) battle;
+				
+				/* Changed to two pages */
+				realViewSwitcher.getAdapter().notifyDataSetChanged();
 			} catch (ClassCastException ex) {
 
 			}

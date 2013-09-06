@@ -4,6 +4,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+
 
 public class XMLHandler extends DefaultHandler {
 	private boolean inMove = false;
@@ -32,9 +34,9 @@ public class XMLHandler extends DefaultHandler {
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
 		if (localName.equals("Team")) {
-			myParsedTeam.gen.num = (byte)Integer.parseInt(atts.getValue("gen"));
-			myParsedTeam.gen.subNum = (byte)Integer.parseInt(atts.getValue("subgen"));
-			myParsedTeam.defaultTier = atts.getValue("defaultTier");
+			myParsedTeam.gen.num = (byte)Integer.parseInt(atts.getValue("gen", "5"));
+			myParsedTeam.gen.subNum = (byte)Integer.parseInt(atts.getValue("subgen", "1"));
+			myParsedTeam.defaultTier = atts.getValue("defaultTier", "");
 			
 			for (int i = 0; i < 6; i++) {
 				myParsedTeam.pokes[i].gen = myParsedTeam.gen;
@@ -55,16 +57,17 @@ public class XMLHandler extends DefaultHandler {
 		else if (localName.equals("Pokemon")) {
 			TeamPoke poke = myParsedTeam.pokes[numPoke];
 			
-			poke.uID = new UniqueID(Integer.parseInt(atts.getValue("Num")), Integer.parseInt(atts.getValue("Forme")));
-			poke.nick = atts.getValue("Nickname");
-			poke.item = (short)Integer.parseInt(atts.getValue("Item"));
+			poke.uID = new UniqueID(Integer.parseInt(atts.getValue("Num", "0")), 
+					Integer.parseInt(atts.getValue("Forme", "0")));
+			poke.nick = atts.getValue("Nickname", PokemonInfo.name(poke.uID));
+			poke.item = (short)Integer.parseInt(atts.getValue("Item", "0"));
 			
-			poke.ability = (short) Integer.parseInt(atts.getValue("Ability"));
-			poke.nature = (byte) Integer.parseInt(atts.getValue("Nature"));
-			poke.gender = (byte) Integer.parseInt(atts.getValue("Gender"));
-			poke.shiny = Integer.parseInt(atts.getValue("Shiny")) != 0;
-			poke.happiness = (byte) Integer.parseInt(atts.getValue("Happiness"));
-			poke.level = (byte) Integer.parseInt(atts.getValue("Lvl"));
+			poke.ability = (short) Integer.parseInt(atts.getValue("Ability", "0"));
+			poke.nature = (byte) Integer.parseInt(atts.getValue("Nature", "0"));
+			poke.gender = (byte) Integer.parseInt(atts.getValue("Gender", "0"));
+			poke.shiny = Integer.parseInt(atts.getValue("Shiny", "0")) != 0;
+			poke.happiness = (byte) Integer.parseInt(atts.getValue("Happiness", "0"));
+			poke.level = (byte) Integer.parseInt(atts.getValue("Lvl", "0"));
 		}
 		else if (localName.equals("Move"))
 			inMove = true;

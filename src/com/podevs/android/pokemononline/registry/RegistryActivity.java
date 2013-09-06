@@ -1,6 +1,5 @@
 package com.podevs.android.pokemononline.registry;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
