@@ -135,7 +135,9 @@ public class PokemonInfo {
 			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
 					+ 5 + poke.level();
 		} else {
-			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
+			int base = ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
+			
+			return NatureInfo.boostStat(base, poke.nature(), stat);
 		}
 	}
 	

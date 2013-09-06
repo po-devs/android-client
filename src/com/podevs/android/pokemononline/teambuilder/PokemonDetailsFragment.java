@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.TeamPoke;
@@ -19,6 +20,7 @@ import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.NatureInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.StatsInfo;
 import com.podevs.android.pokemononline.teambuilder.EVSlider.EVListener;
 
 
@@ -29,6 +31,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	
 	private TeamPoke poke = null;
 	private EVSlider sliders[] = null;
+	private TextView labels[] = null;
 	private Spinner itemChooser = null;
 	private Spinner abilityChooser = null;
 	private Spinner natureChooser = null;
@@ -48,6 +51,14 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				new EVSlider(v.findViewById(R.id.spattev), 3),
 				new EVSlider(v.findViewById(R.id.spdefev), 4),
 				new EVSlider(v.findViewById(R.id.speedev), 5)
+		};
+		labels = new TextView[]{
+			(TextView)v.findViewById(R.id.hplabel),
+			(TextView)v.findViewById(R.id.attlabel),
+			(TextView)v.findViewById(R.id.deflabel),
+			(TextView)v.findViewById(R.id.spattlabel),
+			(TextView)v.findViewById(R.id.spdeflabel),
+			(TextView)v.findViewById(R.id.speedlabel)
 		};
 		
 		for (int i = 0; i < sliders.length; i++) {
@@ -91,6 +102,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 					int arg2, long arg3) {
 				poke.nature = (byte)arg2;
 				activity().teamChanged = true;
+				
+				updateStats();
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -166,6 +179,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		for (int i = 0; i < 6; i++) {
 			sliders[i].setNum(poke.ev(i));
 		}
+		
+		updateStats();
 
 		short[] abilities = PokemonInfo.abilities(poke.uID(), poke.gen.num);
 
@@ -195,6 +210,12 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			}
 		}
 	}
+	
+	public void updateStats() {
+		for (int i = 0; i < 6; i++) {
+			labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke.stat(i));
+		}
+	}
 
 	public void onEVChanged(int stat, int ev) {
 		int totalEVs = poke.totalEVs() - poke.ev(stat) + ev;
@@ -212,5 +233,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		} else {
 			activity().teamChanged = true;
 		}
+		
+		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + poke.stat(stat));
 	}
 }

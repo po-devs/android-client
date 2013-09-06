@@ -87,11 +87,15 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		if (pokemonChooser != null) {
 			pokemonChooser.setDetails(poke.uID(), poke.nick);
 		}
-		if (pokemonDetails != null) {
-			pokemonDetails.updatePoke();
-		}
+		updateDetails();
 		if (moveChooser != null) {
 			moveChooser.updatePoke();
+		}
+	}
+	
+	private void updateDetails() {
+		if (pokemonDetails != null) {
+			pokemonDetails.updatePoke();
 		}
 	}
 
@@ -166,9 +170,13 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		activity().teamChanged = true;
 	}
 
-	public void onMovesetChanged() {
+	public void onMovesetChanged(boolean stats) {
 		updateHeader();
 		
 		activity().teamChanged = true;
+		
+		if (stats) {
+			updateDetails();
+		}
 	}
 }

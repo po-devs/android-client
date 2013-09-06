@@ -23,4 +23,6 @@ public interface Poke {
 	int ev(int i);
 
 	int level();
+
+	int  nature();
 }

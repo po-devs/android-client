@@ -225,6 +225,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public int totalHP() {
 		return PokemonInfo.calcStat(this, Stats.Hp.ordinal(), gen.num);
 	}
+	
+	public int stat(int i) {
+		return PokemonInfo.calcStat(this, i, gen.num);
+	}
 
 	public int currentHP() {
 		return totalHP();
@@ -342,5 +346,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 		
 		//never reached
 		return false;
+	}
+
+	public int nature() {
+		return nature;
 	}
 }

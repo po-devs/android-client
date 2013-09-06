@@ -19,7 +19,7 @@ import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 
 public class MoveChooserFragment extends Fragment {
 	public interface MoveChooserListener {
-		public void onMovesetChanged();
+		public void onMovesetChanged(boolean stats);
 	}
 
 	ListView moveList = null;
@@ -53,7 +53,7 @@ public class MoveChooserFragment extends Fragment {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(true);
 
 					if (listener != null) {
-						listener.onMovesetChanged();
+						listener.onMovesetChanged(false);
 					}
 
 					/* Hidden Power */
@@ -63,8 +63,14 @@ public class MoveChooserFragment extends Fragment {
 				} else if (poke.removeMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
 
+					/* Hidden Power */
+					if (move == 237) {
+						for (int i = 0; i < 6; i++) {
+							poke.DVs[i] = 31;
+						}
+					}
 					if (listener != null) {
-						listener.onMovesetChanged();
+						listener.onMovesetChanged(move == 237);
 					}
 				}
 			}
@@ -76,7 +82,7 @@ public class MoveChooserFragment extends Fragment {
 	protected void buildHiddenPowerDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.hiddenpower_choice)
-			.setSingleChoiceItems(R.array.hp_array, poke.hiddenPowerType(), null)
+			.setSingleChoiceItems(R.array.hp_array, poke.hiddenPowerType()-1, null)
 			.setPositiveButton(R.string.ok, new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
@@ -90,7 +96,7 @@ public class MoveChooserFragment extends Fragment {
 						}
 						
 						if (listener != null) {
-							listener.onMovesetChanged();
+							listener.onMovesetChanged(true);
 						}
 					}
 				}

@@ -133,4 +133,8 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public int level() {
 		return level;
 	}
+
+	public int nature() {
+		return nature;
+	}
 }

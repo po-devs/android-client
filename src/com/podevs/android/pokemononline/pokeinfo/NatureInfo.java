@@ -1,6 +1,7 @@
 package com.podevs.android.pokemononline.pokeinfo;
 
 
+
 public class NatureInfo {
 
 	public enum Nature {
@@ -56,5 +57,10 @@ public class NatureInfo {
 		} else {
 			return name(i) + " (+" + StatsInfo.Shortcut(boosted) + ", -" + StatsInfo.Shortcut(hindered) + ")";
 		}
+	}
+
+	public static int boostStat(int base, int nature, int stat) {
+		int boost = (0 + boosted(nature) == stat ? 1 : 0) + (hindered(nature) == stat ? -1 : 0);
+		return base * (10+boost)/10;
 	}
 }
