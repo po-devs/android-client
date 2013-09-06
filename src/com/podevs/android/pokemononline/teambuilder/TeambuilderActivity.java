@@ -18,6 +18,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -122,7 +125,30 @@ public class TeambuilderActivity extends FragmentActivity {
 		if (trainerFragment != null) {
 			trainerFragment.updateTeam();
 		}
+		if (pokeFragment != null) {
+			pokeFragment.updateTeam();
+		}
 	}
+    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tboptions, menu);
+        return true;
+    }
+    
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case R.id.new_team:
+    		team = new Team();
+    		updateTeam();
+    		break;
+        }
+        return true;
+    }
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == PICKFILE_RESULT_CODE) {

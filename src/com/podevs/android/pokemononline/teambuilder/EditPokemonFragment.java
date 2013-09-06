@@ -179,4 +179,8 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 			updateDetails();
 		}
 	}
+
+	public void updateTeam() {
+		setPoke(activity().team.poke(activity().currentPoke));
+	}
 }

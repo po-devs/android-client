@@ -35,7 +35,7 @@ public class XMLHandler extends DefaultHandler {
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
 		if (localName.equals("Team")) {
-			myParsedTeam.gen.num = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), "5"));
+			myParsedTeam.gen.num = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("gen"), "5"));
 			myParsedTeam.gen.subNum = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), "1"));
 			myParsedTeam.defaultTier = StringUtilities.def(atts.getValue("defaultTier"), "");
 			

@@ -614,9 +614,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			/* Is it a spectating battle or not? */
 			try {
 				activeBattle = (Battle) battle;
-				
-				/* Changed to two pages */
-				realViewSwitcher.getAdapter().notifyDataSetChanged();
 			} catch (ClassCastException ex) {
 
 			}
@@ -642,6 +639,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        	pokeList[i] = new ListedPokemon(whole);		        	
 		        	whole.setOnClickListener(battleListener);
 		        }
+		        
+		        /* Changed to two pages */
+				realViewSwitcher.getAdapter().notifyDataSetChanged();
 			}
 
 			battleView.setBackgroundResource(resources.getIdentifier("bg" + battle.background, "drawable", InfoConfig.pkgName));
