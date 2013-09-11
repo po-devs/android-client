@@ -82,6 +82,7 @@
     <string name="no_save">Do not save</string>
     <string name="hiddenpower_choice">Hidden power type</string>
     <string name="new_team">Reset team</string>
+    <string name="full_happiness">100% Happiness</string>
 
     <string-array name="hp_array">
         <item>Fighting</item>
