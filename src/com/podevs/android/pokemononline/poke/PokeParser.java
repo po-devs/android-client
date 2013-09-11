@@ -20,11 +20,19 @@ public class PokeParser extends DefaultHandler
 {
 	private Team parsedTeam = new Team();
 	
+	public PokeParser(Context context, String file) {
+		init(context, file);
+	}
+	
 	public PokeParser(Context context) {
+		init(context, context.getSharedPreferences("team", 0).getString("file", "team.xml"));
+	}
+	
+	private void init(Context context, String file) {
 		FileInputStream in;
 		
 		try {
-			in = context.openFileInput("team.xml");
+			in = context.openFileInput(file);
 		} catch (FileNotFoundException e) {
 			return;
 		}

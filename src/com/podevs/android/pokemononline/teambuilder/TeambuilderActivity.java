@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.zip.InflaterInputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,9 +20,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -44,7 +49,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.save_team)
+        builder.setMessage(R.string.save_team_q)
                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                        team.save(TeambuilderActivity.this);
@@ -146,9 +151,118 @@ public class TeambuilderActivity extends FragmentActivity {
     		team = new Team();
     		updateTeam();
     		break;
+    	case R.id.load_team: {
+    		final CharSequence [] files = getTeamFiles();
+    		
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setTitle(R.string.load_team)
+    			.setSingleChoiceItems(files, Arrays.asList(files).indexOf(defaultFile()), null)
+    			.setPositiveButton(R.string.ok, new OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {
+    					ListView lw = ((AlertDialog)dialog).getListView();
+    					int w = lw.getCheckedItemPosition();
+    					
+    					String file = lw.getItemAtPosition(w).toString();
+    					getSharedPreferences("team", 0).edit().putString("file", file).commit();
+    					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
+    					updateTeam();
+    				}
+    			});
+    		builder.create().show();
+    		break;
+    	}
+    	case R.id.delete_team: {
+    		final CharSequence [] files = getTeamFiles();
+    		if (files.length <= 1) {
+    			Toast.makeText(this, "There's only one team, you can't delete it!", Toast.LENGTH_SHORT).show();
+    			break;
+    		}
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setTitle(R.string.delete_team)
+    			.setSingleChoiceItems(files, Arrays.asList(files).indexOf(defaultFile()), null)
+    			.setPositiveButton(R.string.ok, new OnClickListener() {
+    				public void onClick(DialogInterface dialog, int which) {
+    					ListView lw = ((AlertDialog)dialog).getListView();
+    					int w = lw.getCheckedItemPosition();
+    					
+    					String copy[] = new String[files.length-1];
+    					for (int i = 0; i < w; i++) {
+    						copy[i] = files[i].toString();
+    					}
+    					for (int i = w; i < copy.length; i++) {
+    						copy[i] = files[i+1].toString();
+    					}
+
+    					getSharedPreferences("team", 0).edit().putString("files", TextUtils.join("|", copy)).commit();
+    					
+    					if (defaultFile().equals(lw.getItemAtPosition(w).toString())) {
+    						getSharedPreferences("team", 0).edit().putString("file", copy[0]).commit();
+    					}
+    				}
+    			});
+    		builder.create().show();
+    		break;
+    	}
+    	case R.id.save_team: {
+    		// Set an EditText view to get user input 
+    		final EditText input = new EditText(this);
+    		
+    		new AlertDialog.Builder(this)
+	    	    .setTitle(R.string.save_team_as)
+	    	    .setMessage("Name of your neam team: ")
+	    	    .setView(input)
+	    	    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+	    	        public void onClick(DialogInterface dialog, int whichButton) {
+	    	            String file = input.getText().toString();
+	    	            
+	    	            if (file.contains("|") || file.contains(".") || file.contains("/")) {
+	    	            	Toast.makeText(TeambuilderActivity.this, "Team name can't have dots, pipes, or slashes.", Toast.LENGTH_SHORT).show();
+	    	            	return;
+	    	            }
+	    	            
+	    	            if (file.equals("import")) {
+	    	            	Toast.makeText(TeambuilderActivity.this, "This is a restricted team name! :)", Toast.LENGTH_SHORT).show();
+	    	            	return;
+	    	            }
+	    	            
+	    	            try {
+	    	            	openFileOutput(file+".xml", 0).close();
+	    	            } catch (Exception e) {
+	    	            	Toast.makeText(TeambuilderActivity.this, "Error with the team name: " + e.toString(), Toast.LENGTH_LONG).show();
+	    	            	return;
+						}
+	    	            
+	    	            setTeamFile(file+".xml");
+	    	            team.save(TeambuilderActivity.this);
+	    	        }
+	    	    }).show();
+    		break;
+    	}
         }
         return true;
     }
+	
+	private String defaultFile() {
+		return getSharedPreferences("team", 0).getString("file", "team.xml");
+	}
+
+	private CharSequence[] getTeamFiles() {
+		return getSharedPreferences("team", 0).getString("files", "team.xml").split("\\|");
+	}
+	
+	private void setTeamFile(String string) {
+		getSharedPreferences("team", 0).edit().putString("file", string).commit();
+		
+		CharSequence teams[] = getTeamFiles();
+		
+		for (int i = 0; i < teams.length; i++) {
+			if (teams[i].equals(string)) {
+				return;
+			}
+		}
+		
+		getSharedPreferences("team", 0).edit().putString("files", string+"|"+TextUtils.join("|", teams)).commit();
+	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == PICKFILE_RESULT_CODE) {
@@ -159,7 +273,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					{
 						// Copy imported file to default team location
 						FileInputStream team = new FileInputStream(path);
-						FileOutputStream saveTeam = openFileOutput("team.xml", Context.MODE_PRIVATE);
+						FileOutputStream saveTeam = openFileOutput("import.xml", Context.MODE_PRIVATE);
 	
 						byte[] buffer = new byte[1024];
 						int length;
@@ -171,7 +285,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					}
 					
 					try {
-						team = (new PokeParser(this)).getTeam();
+						team = (new PokeParser(this, "import.xml")).getTeam();
 						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
 						
 						/* Tells the activity that the team was successfully imported */
@@ -201,7 +315,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					// Read in the length (two bytes)
 					int qrLen = ((int)(qrRead[0]) << 8) | ((int)qrRead[1] & 0xff);
 					InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(qrRead, 2, qrLen));
-					FileOutputStream saveTeam = openFileOutput("team.xml", Context.MODE_PRIVATE);
+					FileOutputStream saveTeam = openFileOutput("import.xml", Context.MODE_PRIVATE);
 					byte[] buffer = new byte[1024];
 					int length;
 					while ((length = iis.read(buffer))>0)
@@ -210,14 +324,14 @@ public class TeambuilderActivity extends FragmentActivity {
 					saveTeam.close();
 	
 					try {
-						team = (new PokeParser(this)).getTeam();
+						team = (new PokeParser(this, "import.xml")).getTeam();
 						Toast.makeText(TeambuilderActivity.this, "Team successfully imported from QR code", Toast.LENGTH_SHORT).show();
 						
 						/* Tells the activity that the team was successfully imported */
 						onTeamImported();
 					} catch (NumberFormatException e) {
 						Toast.makeText(TeambuilderActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
-						deleteFile("team.xml");
+						deleteFile("import.xml");
 					}
 					
 					/* Acts as if we imported a new team, i.e. loads from file */

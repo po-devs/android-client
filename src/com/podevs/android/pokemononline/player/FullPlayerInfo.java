@@ -48,7 +48,7 @@ public class FullPlayerInfo implements SerializeBytes {
 			e.printStackTrace();
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
 			
-			String teamS = StringUtilities.getFileContent(context, "team.xml");
+			String teamS = StringUtilities.getFileContent(context, context.getSharedPreferences("team", 0).getString("file", "team.xml"));
 			team = new Team();
 		}
 	}

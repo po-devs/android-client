@@ -256,7 +256,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		} else {
 			activity().teamChanged = true;
 		}
-		
+
 		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + poke.stat(stat));
 	}
 }

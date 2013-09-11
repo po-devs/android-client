@@ -41,6 +41,7 @@ public class TrainerFragment extends Fragment {
 	protected static final String TAG = "Trainer menu";
 	PlayerProfile p = null;
 	boolean profileChanged = false;
+	AutoCompleteTextView teamTier = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,7 @@ public class TrainerFragment extends Fragment {
 		((EditText)v.findViewById(R.id.winning_message)).setText(p.trainerInfo.winMsg);
 		((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
 		
-		AutoCompleteTextView teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
+		teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
 		teamTier.setText(((TeambuilderActivity)getActivity()).team.defaultTier);
 		
 		teamTier.addTextChangedListener(new TextWatcher() {
@@ -246,6 +247,7 @@ public class TrainerFragment extends Fragment {
 	}
 
 	public void updateTeam() {
-		((EditText)getView().findViewById(R.id.teamTier)).setText(getTeam().defaultTier);
+		String tier = getTeam().defaultTier;
+		teamTier.setText(tier);
 	}
 }

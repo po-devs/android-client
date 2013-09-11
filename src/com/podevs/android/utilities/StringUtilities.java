@@ -40,7 +40,7 @@ public class StringUtilities {
 	public static String getFileContent(Context ctx, String path) {
 		FileInputStream in = null;
 		try {
-			in = ctx.openFileInput("team.xml");
+			in = ctx.openFileInput(path);
 		} catch (FileNotFoundException e) {
 			return "";
 		}
