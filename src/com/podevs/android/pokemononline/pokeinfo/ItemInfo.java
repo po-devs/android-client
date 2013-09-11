@@ -110,10 +110,29 @@ public class ItemInfo {
 			}
 		});
 		
-		usefulItems = new int[items.size()];
+		final ArrayList<Integer> berries = new ArrayList<Integer>();
+		
+		InfoFiller.fill("db/items/berries.txt", new Filler() {
+			public void fill(int i, String s) {
+				berries.add(8000+Integer.valueOf(i));
+			}
+		});
+		
+		/* Sort item names */
+		Collections.sort(berries, new Comparator<Integer>() {
+			public int compare(Integer lhs, Integer rhs) {
+				return name(lhs).compareTo(name(rhs));
+			}
+		});
+		
+		usefulItems = new int[items.size()+berries.size()];
 		
 		for (int i = 0; i < items.size(); i++) {
 			usefulItems[i] = items.get(i).intValue();
+		}
+		
+		for (int i = 0; i < berries.size(); i++) {
+			usefulItems[i+items.size()] = berries.get(i).intValue();
 		}
 	}
 
