@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -34,9 +31,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	private TextView labels[] = null;
 	private Spinner itemChooser = null;
 	private Spinner abilityChooser = null;
-	private Spinner natureChooser = null;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter;
-	private CheckBox happiness = null;
+	private Spinner natureChooser = null, genderChooser = null;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter;
 	public PokemonDetailsListener listener = null;
 
 	@Override
@@ -65,10 +61,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			sliders[i].listener = this;
 		}
 
-		happiness = (CheckBox)v.findViewById(R.id.happiness);
 		abilityChooser = (Spinner)v.findViewById(R.id.abilitychoice);
 		itemChooser = (Spinner)v.findViewById(R.id.itemchoice);
 		natureChooser = (Spinner)v.findViewById(R.id.nature);
+		genderChooser = (Spinner)v.findViewById(R.id.gender);
 		
 		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		int usefulItems[] = ItemInfo.usefulItems();
@@ -82,6 +78,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		// Apply the adapter to the spinner
 		abilityChooser.setAdapter(abilityChooserAdapter);
 		
+		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		genderChooser.setAdapter(genderChooserAdapter);
+		
 		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		for (int i = 0; i < NatureInfo.count(); i++) {
 			natureChooserAdapter.add(NatureInfo.boostedName(i));
@@ -89,13 +88,6 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		natureChooser.setAdapter(natureChooserAdapter);
 		
 		setPoke(activity().team.poke(activity().currentPoke));
-		
-		happiness.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				poke.happiness = (byte)(isChecked ? 255 : 0);
-				activity().teamChanged = true;
-			}
-		});
 		
 		natureChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
@@ -134,6 +126,18 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						break;
 					}
 				}
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
+		genderChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				poke.gender = (byte)(1+arg2);
+				notifyUpdated();
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -186,19 +190,37 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		abilityChooserAdapter.clear();
 		abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
+		if (abilities[0] == poke.ability) {
+			abilityChooser.setSelection(0);
+		}
 		if (abilities[1]!=0) {
 			abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
+			if (abilities[1] == poke.ability) {
+				abilityChooser.setSelection(1);
+			}
 		}
 		if (abilities[2]!=0) {
 			abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
+			if (abilities[2] == poke.ability) {
+				abilityChooser.setSelection(abilityChooserAdapter.getCount()-1);
+			}
 		}
 		
-		if (poke.happiness == 0) {
-			happiness.setChecked(false);
+		genderChooserAdapter.clear();
+		int genderChoice = PokemonInfo.gender(poke.uID());
+		if (genderChoice == 0) {
+			genderChooserAdapter.add("Neutral");
+		} else if (genderChoice == 1) {
+			genderChooserAdapter.add("Male");
+		} else if (genderChoice == 2) {
+			genderChooserAdapter.add("Female");
 		} else {
-			happiness.setChecked(true);
+			genderChooserAdapter.add("Male");
+			genderChooserAdapter.add("Female");
+			
+			genderChooser.setSelection(poke.gender == 1 ? 0 : 1);
 		}
-		
+	
 		natureChooser.setSelection(poke.nature);
 		
 		int usefulItems[] = ItemInfo.usefulItems();

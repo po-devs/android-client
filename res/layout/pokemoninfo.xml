@@ -35,11 +35,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <CheckBox
-                android:id="@+id/happiness"
-                android:layout_width="wrap_content"
+            <Spinner
+                android:id="@+id/gender"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/full_happiness" />
+                android:layout_weight="1" />
+
         </LinearLayout>
 
         <include
@@ -129,6 +130,7 @@
                 android:layout_weight="1"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

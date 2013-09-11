@@ -52,13 +52,15 @@ public class MoveChooserFragment extends Fragment {
 				if (!poke.hasMove(move) && poke.addMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(true);
 
-					if (listener != null) {
-						listener.onMovesetChanged(false);
-					}
-
 					/* Hidden Power */
 					if (move == 237) {
 						buildHiddenPowerDialog();
+					} else if (move == 216) { /* return */
+						poke.happiness = (byte)255;
+					}
+					
+					if (listener != null) {
+						listener.onMovesetChanged(false);
 					}
 				} else if (poke.removeMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
@@ -68,7 +70,10 @@ public class MoveChooserFragment extends Fragment {
 						for (int i = 0; i < 6; i++) {
 							poke.DVs[i] = 31;
 						}
+					} else if (move == 216) { /* return */
+						poke.happiness = 0;
 					}
+					
 					if (listener != null) {
 						listener.onMovesetChanged(move == 237);
 					}

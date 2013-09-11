@@ -39,6 +39,7 @@ public class PokemonInfo {
 	private static class PokeData {
 		byte stats[] = null;
 		byte maxForme = 0;
+		byte gender = 0;
 	}
 	
 	public static String name(UniqueID uID) {
@@ -322,5 +323,25 @@ public class PokemonInfo {
 
 	public static UniqueID number(String name) {
 		return namesToIds.get(name);
+	}
+
+	public static int gender(UniqueID uID) {
+		testLoadGenders();
+		return pokemonsg.get(uID.hashCode()).gender;
+	}
+	
+	private static boolean gendersLoaded = false;
+	private static void testLoadGenders() {
+		if (!gendersLoaded) {
+			loadPokeNames();
+			gendersLoaded = true;
+			
+			InfoFiller.uIDfill("db/pokes/gender.txt", new FillerByte() {
+				@Override
+				void fillByte(int i, byte b) {
+					pokemonsg.get(i).gender = b;
+				}
+			});
+		}
 	}
 }
