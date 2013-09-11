@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.podevs.android.pokemononline"
     android:installLocation="auto"
-    android:versionCode="29"
-    android:versionName="2.2" >
+    android:versionCode="30"
+    android:versionName="2.2.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
