@@ -14,8 +14,8 @@ public class StatsInfo {
 		"HP",
 		"Att",
 		"Def",
-		"SpD",
 		"SpA",
+		"SpD",
 		"Spe"
 	};
 	
