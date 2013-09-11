@@ -556,17 +556,25 @@ public class SpectatingBattle {
 			// XXX This prints out a lot of extra space
 			// writeToHist("\n");
 			break;
-		} case Clause: {
+		} case PointEstimate : {
+			byte first = msg.readByte();
+			byte second = msg.readByte();
+			
+			writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Variation:</b></font> " +
+					first + ", " + second));
+			break;
+		}
+		case Clause: {
 			if (player >= 0 && player < Clauses.values().length)
 				writeToHist("\n" + Clauses.values()[player].battleText());
 			break;
 		} case Rated: {
 			boolean rated = msg.readBool();
-			writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule: " +
-					(rated ? "Rated" : "Unrated") + "</b></font>"));
+			writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule:</b></font> " +
+					(rated ? "Rated" : "Unrated")));
             for (int i = 0; i < Clauses.values().length; i++) {
                 if ((conf.clauses & (1 << i)) > 0 ? true : false) {
-                    writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule: " +
+                    writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule: </b></font>" +
                     		Clauses.values()[i]));
                 }
             }
