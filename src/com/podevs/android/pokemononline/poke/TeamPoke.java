@@ -255,7 +255,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public int ev(int i) {
-		return EVs[i] >= 0 ? EVs[i] : (EVs[i] + 255);
+		return (EVs[i]+256)%256;
 	}
 
 	public int level() {

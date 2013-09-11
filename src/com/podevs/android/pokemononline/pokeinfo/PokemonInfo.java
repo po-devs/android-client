@@ -76,7 +76,7 @@ public class PokemonInfo {
 		if (stats == null) {
 			stats = pokemonsg.get(uId.originalHashCode()).stats;
 		}
-		return stats[stat] >= 0 ? stats[stat] : (stats[stat] + 255);
+		return (stats[stat] + 256) % 256;
 	}
 	
 	public static short[] moves(UniqueID uId, int gen) {
