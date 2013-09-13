@@ -15,7 +15,7 @@ import com.podevs.android.pokemononline.R;
 public class ServerListAdapter extends ArrayAdapter<ServerListAdapter.Server> {
 
 	public class Server {
-		Server(String name, String desc, String ip, short port, short players, short maxplayers) {
+		Server(String name, String desc, String ip, int port, short players, short maxplayers) {
 			this.name = name;
 			this.desc = desc;
 			this.ip = ip;
@@ -26,7 +26,7 @@ public class ServerListAdapter extends ArrayAdapter<ServerListAdapter.Server> {
 		public String name;
 		public String desc;
 		public String ip;
-		public short port;
+		public int port;
 		public short players;
 		public short maxplayers;
 		
@@ -41,7 +41,7 @@ public class ServerListAdapter extends ArrayAdapter<ServerListAdapter.Server> {
 		super(context, resource);
 	}
 
-	public void addServer(String name, String desc, String ip, short port, short players, short maxplayers) {
+	public void addServer(String name, String desc, String ip, int port, short players, short maxplayers) {
 		add(new Server(name, desc, ip, port, players, maxplayers));
 	}
 	

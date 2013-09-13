@@ -26,7 +26,7 @@ public class RegistryConnectionService extends Service {
 		 * Called when Registry sends us a new Server
 		 */
 		public abstract void NewServer(String name, String desc,
-				short players, String ip, short maxplayers, short port);
+				short players, String ip, short maxplayers, int port);
 	}
 	
 	private final ConcurrentHashMap<Intent, LocalBinder> binders = new ConcurrentHashMap<Intent, RegistryConnectionService.LocalBinder>();
@@ -138,7 +138,7 @@ public class RegistryConnectionService extends Service {
 			short players =  msg.readShort();
 			String ip =  msg.readString();
 			short maxplayers = msg.readShort();
-			short port = msg.readShort();
+			int port = (msg.readShort() + 65536) % 65536;
 
 			if (listener != null) {
 				listener.NewServer(name, desc, players, ip, maxplayers, port);

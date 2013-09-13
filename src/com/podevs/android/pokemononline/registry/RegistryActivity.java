@@ -154,9 +154,9 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     			} catch (ArrayIndexOutOfBoundsException e) {
 					// No need to act
     			}
-    			short portVal = -1;
+    			int portVal = -1;
 				try {
-					portVal = Short.parseShort(portString);
+					portVal = Integer.parseInt(portString);
 				} catch(NumberFormatException e) {
 					// No need to act
 				}
@@ -259,7 +259,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	}
 
 	public void NewServer(final String name, final String desc, final short players,
-			final String ip, final short maxplayers, final short port) {
+			final String ip, final short maxplayers, final int port) {
 		runOnUiThread(new Runnable() {
 			public void run() {
             	adapter.addServer(name, desc, ip, port, players, maxplayers);		
