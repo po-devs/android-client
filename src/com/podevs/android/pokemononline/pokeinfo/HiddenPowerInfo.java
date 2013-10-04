@@ -33,6 +33,7 @@ public class HiddenPowerInfo {
 		        	hiddenPowerConfigurations[type] = new byte[]{(byte)((i&1)!=0?31:30), (byte)((i&2)!=0?31:30),
 		        			(byte)((i&4)!=0?31:30),(byte)((i&8)!=0?31:30),
 		        			(byte)((i&16)!=0?31:30),(byte)((i&32)!=0?31:30)};
+		        	break;
 		        }
 		    }
 		}
