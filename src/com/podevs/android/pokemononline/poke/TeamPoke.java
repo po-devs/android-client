@@ -247,7 +247,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public int hiddenPowerType() {
-		return HiddenPowerInfo.hiddenPowerType(this);
+		return HiddenPowerInfo.Type(this);
 	}
 
 	public int dv(int i) {
@@ -350,5 +350,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public int nature() {
 		return nature;
+	}
+
+	public Gen gen() {
+		return gen;
 	}
 }

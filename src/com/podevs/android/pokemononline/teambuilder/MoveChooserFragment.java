@@ -93,7 +93,7 @@ public class MoveChooserFragment extends Fragment {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
 					
-					byte[] config = HiddenPowerInfo.configurationForType(type);
+					byte[] config = HiddenPowerInfo.configurationForType(type, poke.gen);
 					
 					if (config != null) {
 						for (int i = 0; i < 6; i++) {

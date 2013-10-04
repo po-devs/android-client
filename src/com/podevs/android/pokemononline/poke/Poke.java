@@ -13,6 +13,8 @@ public interface Poke {
 	CharSequence nick();
 
 	UniqueID uID();
+	
+	Gen gen();
 
 	Move move(int j);
 

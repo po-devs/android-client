@@ -20,7 +20,8 @@ public class TypeInfo {
 		Ice, //14
 		Dragon, //15
 		Dark, //16
-		Curse //17
+		Fairy, //17
+		Curse //18
 	}
 
 	public static String name(int num) {
