@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
+import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.Poke;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
@@ -31,13 +32,13 @@ public class PokemonInfo {
 		short ability[] = null;
 		short moves[] = null;
 		String moveString = null;
+		byte stats[] = null;
 	}
 	
 	/* Global data:
 	 * base stats, weight, height, ...
 	 */
 	private static class PokeData {
-		byte stats[] = null;
 		byte maxForme = 0;
 		byte gender = 0;
 	}
@@ -70,12 +71,12 @@ public class PokemonInfo {
 		return type;
 	}
 	
-	public static int stat(UniqueID uId, int stat) {
-		loadStats();
-		byte stats[] = pokemonsg.get(uId.hashCode()).stats;
+	public static int stat(UniqueID uId, int stat, int gen) {
+		loadStats(gen);
+		byte stats[] = pokemons[gen].get(uId.hashCode()).stats;
 		
 		if (stats == null) {
-			stats = pokemonsg.get(uId.originalHashCode()).stats;
+			stats = pokemons[gen].get(uId.originalHashCode()).stats;
 		}
 		return (stats[stat] + 256) % 256;
 	}
@@ -133,23 +134,21 @@ public class PokemonInfo {
 
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
-			return ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
+			return ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
 					+ 5 + poke.level();
 		} else {
-			int base = ((2*stat(poke.uID(), stat) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
+			int base = ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
 			
 			return NatureInfo.boostStat(base, poke.nature(), stat);
 		}
 	}
 	
-	private static boolean statsLoaded = false;
-	private static void loadStats() {
-		loadPokeNames();
-		if (statsLoaded) {
+	private static void loadStats(final int gen) {
+		testLoad(gen);
+		if (pokemons[gen].get(1).stats != null) {
 			return;
 		}
-		statsLoaded = true;
-		InfoFiller.uIDfill("db/pokes/stats.txt", new Filler() {
+		InfoFiller.uIDfill("db/pokes/" + gen + "stats.txt", new Filler() {
 			public void fill(int i, String s) {
 				byte [] stats = new byte[6];
 				int curIndex = 0;
@@ -160,30 +159,21 @@ public class PokemonInfo {
 					stats[j] = (byte)Integer.parseInt(s.substring(curIndex, nextIndex == - 1 ? s.length() : nextIndex));
 					curIndex = nextIndex+1;
 				}
-				pokemonsg.get(i).stats = stats;
+				pokemons[gen].get(i).stats = stats;
 			}
 		});
 	}
 
 	public static Drawable icon(UniqueID uid) {
-		Resources resources = InfoConfig.context.getResources();
-		int resID = resources.getIdentifier("pi" + uid.pokeNum +
-				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
-				"_icon", "drawable", InfoConfig.pkgName);
-		if (resID == 0)
-			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
-					"drawable", InfoConfig.pkgName);
-		return resources.getDrawable(resID);
+		return InfoConfig.context.getResources().getDrawable(iconRes(uid));
 	}
 	
 	public static int iconRes(UniqueID uid) {
 		Resources resources = InfoConfig.context.getResources();
-		int resID = resources.getIdentifier("pi" + uid.pokeNum +
-				(uid.subNum == 0 ? "" : "_" + uid.subNum) +
-				"_icon", "drawable", InfoConfig.pkgName);
+		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
+				(uid.subNum == 0 ? "" : "_" + uid.subNum), "drawable", InfoConfig.pkgName);
 		if (resID == 0)
-			resID = resources.getIdentifier("pi" + uid.pokeNum + "_icon",
-					"drawable", InfoConfig.pkgName);
+			resID = resources.getIdentifier("pi" + uid.pokeNum,	"drawable", InfoConfig.pkgName);
 		return resID;
 	}
 	
@@ -215,7 +205,7 @@ public class PokemonInfo {
 	@SuppressWarnings("unchecked")
 	private static void testLoad(int gen) {
 		if (pokemons == null) {
-			pokemons = new SparseArray[6];
+			pokemons = new SparseArray[Gen.maxGen+1];
 		}
 		if (pokemons[gen] == null) {
 			pokemons[gen] = new SparseArray<PokemonInfo.PokeGenData>();

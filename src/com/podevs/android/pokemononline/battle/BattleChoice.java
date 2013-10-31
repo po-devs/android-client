@@ -21,20 +21,24 @@ abstract class Choice implements SerializeBytes {
 class AttackChoice extends Choice {
 	byte attackSlot;
 	byte attackTarget;
+	boolean mega;
 	
-	public AttackChoice(byte as, byte at) {
+	public AttackChoice(byte as, byte at, boolean mega) {
 		attackSlot = as;
 		attackTarget = at;
+		this.mega= mega;  
 	}
 	
 	public AttackChoice(Bais msg) {
 		attackSlot = msg.readByte();
 		attackTarget = msg.readByte();
+		mega = msg.readBool();
 	}
 	
 	public void serializeBytes(Baos b) {
 		b.write(attackSlot);
 		b.write(attackTarget);
+		b.putBool(mega);
 	}
 }
 

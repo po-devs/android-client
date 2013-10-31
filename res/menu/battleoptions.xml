@@ -1,9 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-  xmlns:android="http://schemas.android.com/apk/res/android">
-  	<item android:title="@string/closeBattle" android:id="@+id/close"></item>
-    <item android:title="@string/cancel" android:id="@+id/cancel"></item>
-    <item android:title="@string/forfeit" android:id="@+id/forfeit"></item>
-    <item android:title="@string/suggest_draw" android:id="@+id/draw"></item>
-    <item android:title="@string/enable_sounds" android:id="@+id/sounds" android:checkable="true"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/megavolve"
+        android:checkable="true"
+        android:title="@string/megavolve">
+    </item>
+    <item
+        android:id="@+id/close"
+        android:title="@string/closeBattle">
+    </item>
+    <item
+        android:id="@+id/cancel"
+        android:title="@string/cancel">
+    </item>
+    <item
+        android:id="@+id/forfeit"
+        android:title="@string/forfeit">
+    </item>
+    <item
+        android:id="@+id/draw"
+        android:title="@string/suggest_draw">
+    </item>
+    <item
+        android:id="@+id/sounds"
+        android:checkable="true"
+        android:title="@string/enable_sounds">
+    </item>
+
 </menu>

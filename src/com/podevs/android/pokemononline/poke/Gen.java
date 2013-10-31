@@ -19,12 +19,14 @@ public class Gen implements SerializeBytes {
 	}
 	
 	public Gen() {
-		num = 5;
-		subNum = 1;
+		num = 6;
+		subNum = 0;
 	}
 
 	public void serializeBytes(Baos bytes) {
 		bytes.write(num);
 		bytes.write(subNum);
 	}
+	
+	static final public int maxGen = 6;
 }

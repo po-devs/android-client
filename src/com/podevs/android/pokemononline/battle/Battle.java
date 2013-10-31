@@ -17,20 +17,20 @@ import com.podevs.android.utilities.StringUtilities;
 
 public class Battle extends SpectatingBattle {
 	static private final String TAG = "Battle";	
-	
+
 	public BattleTeam myTeam;
 	public ShallowShownTeam oppTeam;
-	
-	public boolean allowSwitch, allowAttack, clicked = false;
+
+	public boolean allowSwitch, allowAttack, clicked, allowMega = false;
 	public boolean[] allowAttacks = new boolean[4];
 	public boolean shouldStruggle = false;
 	public BattleMove[] displayedMoves = new BattleMove[4];
-	
+
 	public Battle(BattleConf bc, Bais msg, PlayerInfo p1, PlayerInfo p2, int meID, int bID, NetworkService ns) {
 		super(bc, p1, p2, bID, ns);
 
 		myTeam = new BattleTeam(msg, conf.gen);
-		
+
 		// Only supporting singles for now
 		numberOfSlots = 2;
 		players[0] = p1;
@@ -40,27 +40,27 @@ public class Battle extends SpectatingBattle {
 			me = 1;
 			opp = 0;
 		}
-		
+
 		for (int i = 0; i < 4; i++)
 			displayedMoves[i] = new BattleMove();
 	}
-	
-	
+
+
 	public Baos constructCancel() {
 		Baos b = new Baos();
 		b.putInt(bID);
 		b.putBaos(new BattleChoice(me, ChoiceType.CancelType));
 		return b;
 	}
-	
-	public Baos constructAttack(byte attack) {
+
+	public Baos constructAttack(byte attack, boolean mega) {
 		Baos b = new Baos();
 		b.putInt(bID);
-		AttackChoice ac = new AttackChoice(attack, opp);
+		AttackChoice ac = new AttackChoice(attack, opp, mega);
 		b.putBaos(new BattleChoice(me, ac, ChoiceType.AttackType));
 		return b;
 	}
-	
+
 	public Baos constructSwitch(byte toSpot) {
 		Baos b = new Baos();
 		b.putInt(bID);
@@ -68,7 +68,7 @@ public class Battle extends SpectatingBattle {
 		b.putBaos(new BattleChoice(me, sc, ChoiceType.SwitchType));
 		return b;
 	}
-	
+
 	public Baos constructRearrange() {
 		Baos b = new Baos();
 		b.putInt(bID);
@@ -76,14 +76,14 @@ public class Battle extends SpectatingBattle {
 		b.putBaos(new BattleChoice(me, rc, ChoiceType.RearrangeType));
 		return b;
 	}
-	
+
 	public Baos constructDraw() {
 		Baos b = new Baos();
 		b.putInt(bID);
 		b.putBaos(new BattleChoice(me, ChoiceType.DrawType));
 		return b;
 	}
-	
+
 	@Override
 	public void dealWithCommand(BattleCommand bc, byte player, Bais msg)  {
 		switch(bc) {
@@ -94,23 +94,23 @@ public class Battle extends SpectatingBattle {
 			}
 			boolean silent = msg.readBool();
 			byte fromSpot = msg.readByte();
-			
+
 			BattlePoke temp = myTeam.pokes[0];
-			
+
 			myTeam.pokes[0] = myTeam.pokes[fromSpot];
 			myTeam.pokes[fromSpot] = temp;
-			
+
 			for (int i=0; i < 4; i++) {
 				displayedMoves[i] = new BattleMove(myTeam.pokes[0].moves[i]);
 			}
-			
+
 			ShallowBattlePoke tempPoke = pokes[player][0];
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
-			
+
 			if(msg.available() > 0) // this is the first time you've seen it
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
-			
+
 			if(activity != null) {
 				activity.updatePokes(player);
 				activity.updatePokeballs();
@@ -125,7 +125,7 @@ public class Battle extends SpectatingBattle {
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
-			
+
 			if(!silent)
 				writeToHist("\n" + tu((players[player].nick() + " sent out " + 
 						currentPoke(player).rnick + "!")));
@@ -133,10 +133,10 @@ public class Battle extends SpectatingBattle {
 		} case AbsStatusChange: {
 			byte poke = msg.readByte();
 			byte status = msg.readByte();
-			
+
 			if (poke < 0 || poke >= 6)
 				break;
-			
+
 			if (status != Status.Confused.poValue()) {
 				pokes[player][poke].changeStatus(status);
 				if (player == me)
@@ -150,7 +150,7 @@ public class Battle extends SpectatingBattle {
 			break;
 		} case TempPokeChange: {
 			byte id = msg.readByte();
-			
+
 			switch(TempPokeChange.values()[id]) {
 			case TempMove:
 			case DefMove:
@@ -213,22 +213,21 @@ public class Battle extends SpectatingBattle {
 			@SuppressWarnings("unused")
 			byte numSlot = msg.readByte(); //Which poke the choice is for
 			allowSwitch = msg.readBool();
-			System.out.println("Switch allowed: " + allowSwitch);
 			allowAttack = msg.readBool();
-			System.out.println("Attacks allowed: " + allowAttack);
+
 			for (int i = 0; i < 4; i++) {
-					allowAttacks[i] = msg.readBool();
-					System.out.print("Allow attack " + i + ": ");
-					System.out.println(allowAttacks[i]);
+				allowAttacks[i] = msg.readBool();
 			}
-			
+
+			allowMega = msg.readBool();
+
 			if (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3])
 				shouldStruggle = true;
 			else
 				shouldStruggle = false;
-			
+
 			clicked = false;
-			
+
 			if (activity != null)
 				activity.updateButtons();
 			break;
@@ -261,13 +260,13 @@ public class Battle extends SpectatingBattle {
 			}
 			break;
 		} case StraightDamage: {
-				if (player != me) {
-					super.dealWithCommand(bc, player, msg);
-				} else {
-					short damage = msg.readShort();
-					writeToHist("\n" + tu(currentPoke(player).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
-				}
-				break;
+			if (player != me) {
+				super.dealWithCommand(bc, player, msg);
+			} else {
+				short damage = msg.readShort();
+				writeToHist("\n" + tu(currentPoke(player).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
+			}
+			break;
 		} case SpotShifts: {
 			// TODO
 			break;
@@ -276,11 +275,11 @@ public class Battle extends SpectatingBattle {
 			shouldShowPreview = true;
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();
-			
+
 			String names[] = {PokemonInfo.name(oppTeam.poke(0).uID), PokemonInfo.name(oppTeam.poke(1).uID),
 					PokemonInfo.name(oppTeam.poke(2).uID), PokemonInfo.name(oppTeam.poke(3).uID),
 					PokemonInfo.name(oppTeam.poke(4).uID), PokemonInfo.name(oppTeam.poke(5).uID)};
-			
+
 			writeToHist(Html.fromHtml("<br><font color=\"blue\"><b>Opponent's team: </b></font>" + StringUtilities.join(names, " / ")));
 			break;
 		} case ChangePP: {

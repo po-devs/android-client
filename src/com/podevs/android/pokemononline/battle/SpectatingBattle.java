@@ -442,13 +442,14 @@ public class SpectatingBattle {
 			byte part = msg.readByte();
 			byte foe = msg.readByte();
 			short berry = msg.readShort();
-			short other = msg.readShort();
+			int other = msg.readInt();
 			String s = ItemInfo.message(item, part);
             if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", Stat.values()[other].toString());
             s = s.replaceAll("%s", currentPoke(player).nick);
             if(foe   != -1) s = s.replaceAll("%f", currentPoke(foe).nick);
             if(berry != -1) s = s.replaceAll("%i", ItemInfo.name(berry));
             if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
+            if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other)));
             /* Balloon gets a really special treatment */
             if (item == 35)
                 writeToHist(Html.fromHtml("<br><b>" + tu(StringUtilities.escapeHtml(s)) + "</b>"));

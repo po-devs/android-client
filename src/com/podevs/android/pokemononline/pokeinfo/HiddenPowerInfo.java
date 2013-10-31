@@ -7,19 +7,19 @@ import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 public class HiddenPowerInfo {
 	static public int Type(Poke p) {
 		return ( ( ( (p.dv(0) & 1) + 2 * (p.dv(1) & 1) + 4 * (p.dv(2) & 1) + 8 * (p.dv(5) & 1) + 
-				16 * (p.dv(3) & 1) + 32 * (p.dv(4) & 1) ) * (p.gen().num <= 5 ? 15 : 16)) / 63 ) + 1;
+				16 * (p.dv(3) & 1) + 32 * (p.dv(4) & 1) ) * (p.gen().num <= 5 ? 15 : 15)) / 63 ) + 1;
 	}
 	
 	static public int Type(Gen gen, int hpDv, int attDv, int defDv, int spAttDv, int spDefDv, int speedDv) {
 		return ( ( ( (hpDv & 1) + 2 * (attDv & 1) + 4 * (defDv & 1) + 8 * (speedDv & 1) + 
-				16 * (spAttDv & 1) + 32 * (spDefDv & 1) ) * (gen.num <= 5 ? 15 : 16)) / 63 ) + 1;
+				16 * (spAttDv & 1) + 32 * (spDefDv & 1) ) * (gen.num <= 5 ? 15 : 15)) / 63 ) + 1;
 	}
 	
 	static byte hiddenPowerConfigurations[][] = null; 
 	
 	static public byte[] configurationForType(final int type, Gen gen) {
 		if (hiddenPowerConfigurations == null) {
-			hiddenPowerConfigurations = new byte[Type.Curse.ordinal()][];
+			hiddenPowerConfigurations = new byte[Type.Curse.ordinal()-1][];
 		}
 		
 		if (type == 0 || type >= hiddenPowerConfigurations.length) {

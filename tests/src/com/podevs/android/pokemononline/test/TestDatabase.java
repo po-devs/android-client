@@ -18,7 +18,7 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals("Pikachu", PokemonInfo.name(new UniqueID(25, 0)));
 		assertEquals(12, PokemonInfo.type1(new UniqueID(25, 0), 5));
 		assertEquals(17, PokemonInfo.type2(new UniqueID(25, 0), 5));
-		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal()));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 5));
 	}
 
 	public void testMoves() {

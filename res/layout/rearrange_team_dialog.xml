@@ -45,7 +45,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi115_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <com.android.launcher.PokeDragIcon
@@ -59,7 +59,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi125_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <com.android.launcher.PokeDragIcon
@@ -73,7 +73,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi135_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <com.android.launcher.PokeDragIcon
@@ -87,7 +87,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi145_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <com.android.launcher.PokeDragIcon
@@ -101,7 +101,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi155_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <com.android.launcher.PokeDragIcon
@@ -115,7 +115,7 @@
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
             android:padding="6dp"
-            android:src="@drawable/pi165_icon" >
+            android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
         <TextView
@@ -139,7 +139,7 @@
             android:layout_marginTop="2dp"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
 
         <ImageView
@@ -152,7 +152,7 @@
             android:layout_toRightOf="@+id/foe_arrange_poke1"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
 
         <ImageView
@@ -165,7 +165,7 @@
             android:layout_toRightOf="@+id/foe_arrange_poke2"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
 
         <ImageView
@@ -178,7 +178,7 @@
             android:layout_toRightOf="@+id/foe_arrange_poke3"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
 
         <ImageView
@@ -191,7 +191,7 @@
             android:layout_toRightOf="@+id/foe_arrange_poke4"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
 
         <ImageView
@@ -204,7 +204,7 @@
             android:layout_toRightOf="@+id/foe_arrange_poke5"
             android:background="@drawable/battle_border_button_dark"
             android:padding="6dp"
-            android:src="@drawable/pi130_icon" >
+            android:src="@drawable/pi_0" >
         </ImageView>
     </RelativeLayout>
 

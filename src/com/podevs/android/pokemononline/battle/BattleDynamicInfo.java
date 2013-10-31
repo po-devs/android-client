@@ -11,6 +11,7 @@ public class BattleDynamicInfo implements SerializeBytes {
 	public static final byte STEALTHROCK = 8;
 	public static final byte TOXICSPIKES = 16;
 	public static final byte TOXICSPIKESL2 = 32;
+	public static final byte STICKYWEB = 64;
 	
 	byte[] boosts = new byte[7];
 	byte flags;
@@ -40,6 +41,7 @@ public class BattleDynamicInfo implements SerializeBytes {
 		if((flags & STEALTHROCK) != 0) s += "\nStealth Rock";
 		if((flags & TOXICSPIKES) != 0) s += "\nToxic Spikes";
 		if((flags & TOXICSPIKESL2) != 0) s += "\nToxic Spikes Lvl. 2";
+		if((flags & STICKYWEB) != 0) s += "\nSticky Web";
 		return s;
 	}
 	

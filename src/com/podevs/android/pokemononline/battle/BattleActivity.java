@@ -134,6 +134,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public Battle activeBattle = null;
 	
 	boolean useAnimSprites = true;
+	boolean megaClicked = false;
 	BattleMove lastClickedMove;
 	
 	Resources resources;
@@ -286,7 +287,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	
     	struggleLayout.setOnClickListener(new OnClickListener() {
     		public void onClick(View v) {
-    			netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1), Command.BattleMessage); // This is how you struggle
+    			netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked), Command.BattleMessage); // This is how you struggle
     		}
     	});
     }
@@ -534,6 +535,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 						}
 					}
 				}
+				megaClicked = false;
 				for(int i = 0; i < 6; i++) {
 					if (activeBattle.myTeam.pokes[i].status() != Status.Koed.poValue() && !activeBattle.clicked)
 						pokeList[i].setEnabled(i, activeBattle.allowSwitch);
@@ -778,7 +780,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		// Check to see if click was on attack button
     		for(int i = 0; i < 4; i++)
     			if(id == attackLayouts[i].getId())
-    				netServ.socket.sendMessage(activeBattle.constructAttack((byte)i), Command.BattleMessage);
+    				netServ.socket.sendMessage(activeBattle.constructAttack((byte)i, megaClicked), Command.BattleMessage);
     		// Check to see if click was on pokelist button
     		for(int i = 0; i < 6; i++) {
     			if(id == pokeList[i].whole.getId()) {
@@ -866,6 +868,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
+    	case R.id.megavolve:
+    		item.setChecked(!item.isChecked());
+    		megaClicked = item.isChecked();
+    		break;
     	case R.id.cancel:
     		netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);
     		break;
