@@ -19,3 +19,7 @@ local.properties
 .classpath
 .project
 tests/.settings/
+
+#IntelliJ files
+.idea
+*gradle*
