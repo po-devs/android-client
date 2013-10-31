@@ -23,12 +23,14 @@
 73 72#leech seed
 74 191#Growth
 76 104-3#solar beam
+78 198#spore
 80 93#petal dance
 82 30-40#dragon rage
 83 10#Fire spin
 87 152#Thunder
 90 43#Fissure
 91 13-1_89*2_222*2#Dig
+92 218#Toxic
 99 102#rage
 101 91#night shade
 102 81#mimic
@@ -51,6 +53,7 @@
 141 #1#Leech Life
 143 104-1#sky attack
 144 137#transform
+147 198#Spore
 149 99#psywave
 150 82#Splash
 153 37#explosion
@@ -71,6 +74,7 @@
 174 25#curse
 175 44#flail
 176 20#conversion2
+178 198#Cotton Spore
 179 44#flail
 180 123#spite
 182 27#Protect
@@ -208,6 +212,7 @@
 392 2#restore hp every turn
 393 68#magnet rise
 394 153#flareBlitz
+407 126#Dragon Rush
 409 #1#Drain punch
 415 132#switcheroo
 416 11#Giga impact
@@ -242,7 +247,7 @@
 484 167#HeavyBomber
 485 186#Synchro Noise
 486 182#Eleci Ball
-487 157#Soak
+487 157-10#Soak
 492 187#Trickery
 493 143-86#Simple Beam
 494 158#Assemble Crew
@@ -279,3 +284,29 @@
 558 193#Cross Flame
 559 194#Cross Thunder
 560 #
+562 199#Crafty shield
+566 126#Flying Press
+567 157-11#Forest's Curse
+569 104-6#Geomancy
+571 10#Infestation
+578 13-4#phantom force
+581 157-7#Trick or Treat
+584 200#Belch
+588 201#Electriy Terrain
+589 202#Electrify
+590 203#Fairy Lock
+591 204#Fell Stinger
+592 213#Flower Shield
+593 205#Grassy Terrain
+594 217#Ion Deluge
+595 206#King's Shield
+597 216#Magnetic Flux
+598 207#Mat Block
+599 208#Misty Terrain
+600 140#Parting Shot
+601 215#Powder
+603 214#Rototiller
+604 209#Spiky Shield
+605 210#Sticky Web
+606 211#Topsy Turvy
+607 212#Venom Drench

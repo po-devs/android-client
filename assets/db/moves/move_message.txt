@@ -66,8 +66,8 @@
 97 %s copied %f's stat changes!
 98 %s moved its status onto %f!
 102 %s's rage is building!
-103 %s got free of %f's %m!|%s blew away Leech Seed!|%s blew away Spikes!|%s blew away Toxic Spikes!|%s blew away Stealth Rock!
-104 %s prepared a gust of wind!|%s became cloaked in a harsh light!|%s tucked in its head!|%s absorbed light!|%s became cloaked in a freezing light!|%s became cloaked in freezing air!
+103 %s got free of %f's %m!|%s blew away Leech Seed!|%s blew away Spikes!|%s blew away Toxic Spikes!|%s blew away Stealth Rock!|%s blew away Sticky Web!
+104 %s prepared a gust of wind!|%s became cloaked in a harsh light!|%s tucked in its head!|%s absorbed light!|%s became cloaked in a freezing light!|%s became cloaked in freezing air!|%s is becoming one with the earth!
 105 %s recycled %i!
 106 %s went to sleep and became healthy!
 107 %s held on to the ground using its Suction Cups!|%s is solidly rooted to the ground!|%f was dragged out!
@@ -101,7 +101,7 @@
 151 %s planted its roots!|%s absorbed nutrients with its roots!
 155 %s and %f had their power shared!|%s and %f had their defenses shared!
 156 %s cancelled the items' effects!|The items are now working again!
-157 %s transformed into the Water type!
+157 %s transformed into the %t type!
 158 %f gained %a!
 160 %f's %i burned!
 162 %s gave %f its %i!
@@ -117,4 +117,15 @@
 179 %s prepares its %m!|It is completely synchronised with %f!|%ts's team is floundering in a swamp!
 180 %s prepares its %m!|It is completely synchronised with %f!|%ts's team is under an amplifying rainbow!
 190 %f took the kind offer!
-191 #
+199 %ts's team is protected by Crafty Shield!|%ts's team Crafty Shield was broken!
+201 The terrain became electrified!|Electricity on the terrain faded away.
+202 %f became electrified!
+203 Pokemon can no longer flee!|Fairy Lock's effect disappeared.
+205 The terrain became grassy!|Grass on the terrain faded away.|The Grassy Terrain heals the Pokemon on the field
+206 %s shielded itself against damage!
+207 %ts's team is protected by Mat Block!|%ts's team Mat Block was broken!
+208 Mist descended upon the battle field!|Mist vanished from the battle field!|Misty Terrain prevents %f from being inflicted by status!
+210 Sticky Web was put around %tf's team!|%s became entangled in Sticky Web!
+211 %f had its stat boosts reversed!
+215 %f was covered in powder!|%s exploded!
+217 Ions are storming the terrain!

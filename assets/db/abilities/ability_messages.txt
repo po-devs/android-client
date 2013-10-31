@@ -10,6 +10,7 @@
 14 %s's Snow Warning whipped up a hailstorm!|%s's Drizzle made it rain!|%s's Sand Stream whipped up a sandstorm!|%s's Drought intensified the sun's rays!
 15 %s restored HP using its Dry Skin!|%s's Dry Skin hurts it!
 16 %s's Effect Spore activates!
+17 %s's Overcoat protects it!
 18 %s's %a activates!
 19 %s's Flash Fire raised the power of its Fire-type moves!|%s's Flash Fire made %m ineffective!
 21 %s changed its type to %t!
@@ -60,3 +61,10 @@
 97 %s raised its Speed in fear!
 99 %s's Healing Heart cured %f's status!
 102 %s makes %tf's team too nervous to eat Berries!
+103 %s is radiating a %t aura!
+104 %f's %a prevents stats changes to affect %s!
+107 %s had its type changed to %t!
+113 Competitive sharply raised %s's Sp. Attack!
+115 %s's Gooey slows down %f!
+117 %s reversed all other Pokémon's auras!
+118 %s's Bulletproof blocked the attack!
