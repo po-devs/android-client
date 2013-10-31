@@ -861,6 +861,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     			menu.findItem(R.id.close).setVisible(false);
 	        	menu.findItem(R.id.cancel).setVisible(activeBattle.clicked);
     		}
+    		menu.findItem(R.id.megavolve).setVisible(activeBattle.allowMega);
+    		menu.findItem(R.id.megavolve).setChecked(megaClicked);
     	}
 		return true;
 	}
