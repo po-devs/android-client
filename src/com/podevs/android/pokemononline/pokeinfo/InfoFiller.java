@@ -19,7 +19,7 @@ public class InfoFiller {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		BufferedReader buf = null;
 		try {
 			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
@@ -36,27 +36,28 @@ public class InfoFiller {
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
-				
+
 				int spaceIndex = str.indexOf(' ');
-				
+
 				if (spaceIndex < 0) {
 					break;
 				}
-				
+
 				filler.fill(Integer.parseInt(str.substring(0, spaceIndex)), str.substring(spaceIndex + 1));
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		try {
 			assetsDB.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	static void uIDfill(String file, Filler filler) {
+
+	static void uIDfill(String file, Filler filler, boolean readAll) {
+
 		InputStream assetsDB = null;
 		try {
 			assetsDB = getContext().getAssets().open(file);
@@ -64,7 +65,7 @@ public class InfoFiller {
 			e.printStackTrace();
 			return;
 		}
-		
+
 		BufferedReader buf = null;
 		try {
 			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
@@ -81,48 +82,57 @@ public class InfoFiller {
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
-				
+
 				int spaceIndex = str.indexOf(' ');
-				
+
 				if (spaceIndex < 0) {
-					break;
+					if (!readAll) {
+						break;
+					} else {
+						filler.fill(new UniqueID(str).hashCode(), "");
+						continue;
+					}
 				}
-				
+
 				filler.fill(new UniqueID(str.substring(0, spaceIndex)).hashCode(), 
 						str.substring(spaceIndex + 1));
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		try {
 			assetsDB.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	static void uIDfill(String file, Filler filler) {
+		uIDfill(file, filler, false);
+	}
+
 	private static Context getContext() {
 		return InfoConfig.context;
 	}
-	
+
 	public static interface Filler {
 		void fill(int i, String s);
 	}
-	
+
 	public static abstract class FillerByte implements Filler {
 		public void fill(int i, String s) {
 			fillByte(i, (byte)Integer.parseInt(s));
 		}
-		
+
 		abstract void fillByte(int i, byte b);
 	}
-	
+
 	public static abstract class FillerInt implements Filler {
 		public void fill(int i, String s) {
 			fillInt(i, Integer.parseInt(s));
 		}
-		
+
 		abstract void fillInt(int i, int b);
 	}
 }

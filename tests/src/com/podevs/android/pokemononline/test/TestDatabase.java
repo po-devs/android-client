@@ -9,6 +9,7 @@ import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 
 public class TestDatabase extends AndroidTestCase {
@@ -16,9 +17,14 @@ public class TestDatabase extends AndroidTestCase {
 		InfoConfig.context = getContext();
 		
 		assertEquals("Pikachu", PokemonInfo.name(new UniqueID(25, 0)));
-		assertEquals(12, PokemonInfo.type1(new UniqueID(25, 0), 5));
-		assertEquals(17, PokemonInfo.type2(new UniqueID(25, 0), 5));
+		assertEquals(TypeInfo.Type.Electric.ordinal(), PokemonInfo.type1(new UniqueID(25, 0), 5));
+		assertEquals(TypeInfo.Type.Curse.ordinal(), PokemonInfo.type2(new UniqueID(25, 0), 5));
 		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 5));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 4));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 3));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 2));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 1));
+		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 6));
 	}
 
 	public void testMoves() {

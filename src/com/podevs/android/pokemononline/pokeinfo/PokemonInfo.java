@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.podevs.android.pokemononline.poke.Gen;
@@ -148,7 +149,7 @@ public class PokemonInfo {
 		if (pokemons[gen].get(1).stats != null) {
 			return;
 		}
-		InfoFiller.uIDfill("db/pokes/" + gen + "stats.txt", new Filler() {
+		InfoFiller.uIDfill("db/pokes/" + gen + "G/stats.txt", new Filler() {
 			public void fill(int i, String s) {
 				byte [] stats = new byte[6];
 				int curIndex = 0;
@@ -159,6 +160,7 @@ public class PokemonInfo {
 					stats[j] = (byte)Integer.parseInt(s.substring(curIndex, nextIndex == - 1 ? s.length() : nextIndex));
 					curIndex = nextIndex+1;
 				}
+				
 				pokemons[gen].get(i).stats = stats;
 			}
 		});
@@ -243,7 +245,7 @@ public class PokemonInfo {
 			public void fill(int i, String s) {
 				pokemons[gen].put(i, new PokeGenData());
 			}
-		});
+		}, true);
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
