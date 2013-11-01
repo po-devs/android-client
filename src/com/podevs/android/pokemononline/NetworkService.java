@@ -475,8 +475,8 @@ public class NetworkService extends Service {
 			meLoginPlayer = new FullPlayerInfo(new Bais(bundle.getByteArray("loginPlayer")));
 			me.setTo(new PlayerInfo (meLoginPlayer));
 		}
-		if (bundle != null && bundle.containsKey("ip"))
-			connect(bundle.getString("ip"), bundle.getShort("port"));
+		if (bundle != null && bundle.containsKey("ip") && bundle.containsKey("port"))
+			connect(bundle.getString("ip"), bundle.getInt("port"));
 				
 		return START_STICKY;
 	}

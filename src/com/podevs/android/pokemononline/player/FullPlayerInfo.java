@@ -1,8 +1,5 @@
 package com.podevs.android.pokemononline.player;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.content.Context;
 import android.widget.Toast;
 
@@ -12,7 +9,6 @@ import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.QColor;
 import com.podevs.android.utilities.SerializeBytes;
-import com.podevs.android.utilities.StringUtilities;
 
 // Contains all the information about the player.
 // Used for logging into the server.
@@ -48,7 +44,7 @@ public class FullPlayerInfo implements SerializeBytes {
 			e.printStackTrace();
 			Toast.makeText(context, "Invalid team found. Loaded system default.", Toast.LENGTH_LONG).show();
 			
-			String teamS = StringUtilities.getFileContent(context, context.getSharedPreferences("team", 0).getString("file", "team.xml"));
+			//String teamS = StringUtilities.getFileContent(context, context.getSharedPreferences("team", 0).getString("file", "team.xml"));
 			team = new Team();
 		}
 	}

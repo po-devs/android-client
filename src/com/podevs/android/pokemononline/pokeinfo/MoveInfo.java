@@ -111,7 +111,7 @@ public class MoveInfo {
 			return;
 		}
 		effectsloaded = true;
-		InfoFiller.fill("db/moves/5G/effect.txt", new Filler() {
+		InfoFiller.fill("db/moves/6G/effect.txt", new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
 			}
@@ -124,7 +124,7 @@ public class MoveInfo {
 			return;
 		}
 		pploaded = true;
-		InfoFiller.fill("db/moves/5G/pp.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/6G/pp.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).pp = b;
@@ -138,7 +138,7 @@ public class MoveInfo {
 			return;
 		}
 		accuracyloaded = true;
-		InfoFiller.fill("db/moves/5G/accuracy.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/6G/accuracy.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).accuracy = b;
@@ -152,7 +152,7 @@ public class MoveInfo {
 			return;
 		}
 		powerloaded = true;
-		InfoFiller.fill("db/moves/5G/power.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/6G/power.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).power = b;
@@ -166,7 +166,7 @@ public class MoveInfo {
 			return;
 		}
 		typeloaded = true;
-		InfoFiller.fill("db/moves/5G/type.txt", new FillerByte() {
+		InfoFiller.fill("db/moves/6G/type.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).type = b;

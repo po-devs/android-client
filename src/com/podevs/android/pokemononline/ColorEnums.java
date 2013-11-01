@@ -42,6 +42,7 @@ public class ColorEnums {
 		Ice{ public String toString() { return "#98d8d8>"; } },
 		Dragon{ public String toString() { return "#7038f8>"; } },
 		Dark{ public String toString() { return "#705848>"; } },
+		Fairy{ public String toString() { return "#f088f6>"; } },
 		Curse{ public String toString() { return "#68a090>"; } }
 	}
 		

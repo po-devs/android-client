@@ -599,19 +599,19 @@ public class SpectatingBattle {
 					activity.updatePokes(player);
 				}
 				break;
-			case DefiniteForme:
+			case DefiniteForme: {
 				byte poke = msg.readByte();
-				short newForm = msg.readShort();
-				pokes[player][poke].uID.pokeNum = newForm;
+				UniqueID newForm = new UniqueID(msg);
+				pokes[player][poke].uID = newForm;
 				if (isOut(poke)) {
-					currentPoke(slot(player, poke)).uID.pokeNum = newForm;
+					currentPoke(slot(player, poke)).uID = newForm;
 					if (activity !=null) {
 						activity.updatePokes(player);
 					}
 				}
 				break;
-			case AestheticForme:
-				newForm = msg.readShort();
+			} case AestheticForme:
+				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
 					activity.updatePokes(player);
