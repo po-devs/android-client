@@ -1,12 +1,9 @@
 package com.podevs.android.pokemononline.teambuilder;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.zip.InflaterInputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,8 +25,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
@@ -296,51 +291,6 @@ public class TeambuilderActivity extends FragmentActivity {
 				} catch (IOException e) {
 					System.out.println("Team not found");
 					Toast.makeText(this, path + " could not be opened. Does the file exist?", Toast.LENGTH_LONG).show();
-				}
-			}
-		} else if (requestCode == IntentIntegrator.REQUEST_CODE) {
-			IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-			if (scanResult != null && "QR_CODE".equals(scanResult.getFormatName())) {
-				try {
-					/* TODO: Maybe avoid writing into team.xml the first try. Maybe give the FullPlayerInfo
-					 * Constructor something other than a file handle.
-					 */
-					byte[] qrRead = intent.getByteArrayExtra("SCAN_RESULT_BYTES");
-					if (qrRead == null)
-						Toast.makeText(TeambuilderActivity.this, "Team from QR code could not be parsed successfully.", Toast.LENGTH_LONG).show();
-					// Discard the first 4 bits. These set the mode of the qr data (always the same for us)
-					for(int i = 0; i < qrRead.length - 1; i++)
-						// The new byte is your lower 4 bits and the upper 4 bits of the next guy
-						qrRead[i] = (byte) (((qrRead[i] & 0xf) << 4) | ((qrRead[i+1] & 0xf0) >>> 4));
-					// Read in the length (two bytes)
-					int qrLen = ((int)(qrRead[0]) << 8) | ((int)qrRead[1] & 0xff);
-					InflaterInputStream iis = new InflaterInputStream(new ByteArrayInputStream(qrRead, 2, qrLen));
-					FileOutputStream saveTeam = openFileOutput("import.xml", Context.MODE_PRIVATE);
-					byte[] buffer = new byte[1024];
-					int length;
-					while ((length = iis.read(buffer))>0)
-						saveTeam.write(buffer, 0, length);
-					saveTeam.flush();
-					saveTeam.close();
-	
-					try {
-						team = (new PokeParser(this, "import.xml")).getTeam();
-						Toast.makeText(TeambuilderActivity.this, "Team successfully imported from QR code", Toast.LENGTH_SHORT).show();
-						
-						/* Tells the activity that the team was successfully imported */
-						onTeamImported();
-					} catch (NumberFormatException e) {
-						Toast.makeText(TeambuilderActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
-						deleteFile("import.xml");
-					}
-					
-					/* Acts as if we imported a new team, i.e. loads from file */
-					onTeamImported();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					Toast.makeText(TeambuilderActivity.this, "Team from QR code could not be parsed successfully. Is the QR code a valid team?", Toast.LENGTH_LONG).show();
 				}
 			}
 		} else {

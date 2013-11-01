@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.podevs.android.pokemononline.R;
 
 /**
@@ -31,7 +30,7 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
 		builder.setTitle("Import team...")
-		.setSingleChoiceItems(new CharSequence[]{"Tutorial", "From file", "From QR code"}, -1, null)
+		.setSingleChoiceItems(new CharSequence[]{"Tutorial", "From file"}, -1, null)
 		.setPositiveButton("Import", new Dialog.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				int option = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
@@ -44,10 +43,6 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 					intent.setType("file/*.tp");
 					intent = Intent.createChooser(intent, "File explorer");
 					getActivity().startActivityForResult(intent, TeambuilderActivity.PICKFILE_RESULT_CODE);
-				} else if (option == 2) { // From QR Code
-					AlertDialog result = (new IntentIntegrator(getActivity())).initiateScan();
-					if (result != null)
-						result.show();
 				}
 			}
 		})
