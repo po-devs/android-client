@@ -34,6 +34,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -42,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -216,6 +218,12 @@ public class ChatActivity extends Activity {
 		playersLayout = getLayoutInflater().inflate(R.layout.playerlist, null);
 		chatView = (ListView)chatLayout.findViewById(R.id.chatView);
 		chatViewSwitcher.setAdapter(new MyAdapter());
+		ImageButton findBattleButton = (ImageButton)chatLayout.findViewById(R.id.findbattle);
+		findBattleButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				dealWithFindBattle();
+			}
+		});
         setContentView(chatViewSwitcher);
         prefs = getPreferences(MODE_PRIVATE);
     	chatViewSwitcher.setCurrentItem(1);
@@ -787,17 +795,7 @@ public class ChatActivity extends Activity {
 			showDialog(ChatDialog.ConfirmDisconnect.ordinal());
     		break;
 		case R.id.findbattle:
-			if (netServ.socket.isConnected()) {
-				if (netServ.findingBattle) {
-					netServ.findingBattle = false;
-					netServ.socket.sendMessage(
-							constructChallenge(ChallengeDesc.Cancelled.ordinal(), 0, 0, "", "", Clauses.SleepClause.mask(), Mode.Singles.ordinal()),
-							Command.ChallengeStuff);
-				}
-				else {
-					showDialog(ChatDialog.FindBattle.ordinal());
-				}
-			}
+			dealWithFindBattle();
 			break;
 		case R.id.preferences:
 			//TODO: Make actual preferences menu
@@ -822,7 +820,22 @@ public class ChatActivity extends Activity {
     	return true;
     }
 
-    public void makeToast(final String s, final String length) {
+    private void dealWithFindBattle() {
+    	if (netServ.socket.isConnected()) {
+			if (netServ.findingBattle) {
+				netServ.findingBattle = false;
+				netServ.socket.sendMessage(
+						constructChallenge(ChallengeDesc.Cancelled.ordinal(), 0, 0, "", "", Clauses.SleepClause.mask(), Mode.Singles.ordinal()),
+						Command.ChallengeStuff);
+				Toast.makeText(this, "Find battle request cancelled", Toast.LENGTH_SHORT).show();
+			}
+			else {
+				showDialog(ChatDialog.FindBattle.ordinal());
+			}
+		}
+	}
+
+	public void makeToast(final String s, final String length) {
     	if (length == "long") {
     	runOnUiThread(new Runnable() {
     		public void run() {

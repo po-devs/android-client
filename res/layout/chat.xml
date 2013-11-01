@@ -6,26 +6,39 @@
     android:clickable="true"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/chatInput"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:hint="@string/send_message"
-        android:inputType="text" >
-    </EditText>
-
     <ListView
         android:id="@+id/chatView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/chatInput"
-        android:layout_marginBottom="2dp"
+        android:layout_above="@+id/linearLayout1"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:divider="#0000" >
     </ListView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/chatView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" >
+
+        <ImageButton
+            android:id="@+id/findbattle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/find_a_battle"
+            android:src="@drawable/findbattle" />
+
+        <EditText
+            android:id="@+id/chatInput"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="4dp"
+            android:layout_weight="0.98"
+            android:hint="@string/send_message"
+            android:inputType="text" />
+    </LinearLayout>
 
 </RelativeLayout>
