@@ -23,3 +23,5 @@ tests/.settings/
 #IntelliJ files
 .idea
 *gradle*
+tests/build.xml
+tests/ant.properties
