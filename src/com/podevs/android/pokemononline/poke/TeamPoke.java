@@ -1,8 +1,5 @@
 package com.podevs.android.pokemononline.poke;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
@@ -10,6 +7,8 @@ import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 // This class is how a poke is represented in the teambuilder.
 public class TeamPoke implements SerializeBytes, Poke {
@@ -27,24 +26,24 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public TeamMove[] moves = new TeamMove[4];
 	public byte[] DVs = new byte[6];
 	public byte[] EVs = new byte[6];
-	
+
 	public TeamPoke(Bais msg) {
 		loadFromBais(msg);
 	}
-	
+
 	public TeamPoke(Bais msg, Gen gen) {
 		this.gen = gen;
 		loadFromBais(msg);
 	}
-	
+
 	public void loadFromBais(Bais msg) {
 		Bais b = new Bais(msg.readVersionControlData());
 		int version = b.read();
-		
+
 		if (version != 0) {
-		
+
 		}
-		
+
 		Bais network = b.readFlags();
 
 //		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
@@ -56,10 +55,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 		}
 		uID = new UniqueID(b);
 		level = b.readByte();
-		
+
 		Bais data = b.readFlags();
 		shiny = data.readBool();
-		
+
 		if (network.readBool()) { //nickname flag
 			nick = b.readString();
 		} else {
@@ -71,7 +70,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		} else {
 			pokeball = 0;
 		}
-		
+
 		if (gen.num > 1) {
 			item = b.readShort();
 			if (gen.num > 2) {
@@ -84,7 +83,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 				happiness = b.readByte();
 			}
 		}
-		
+
 		boolean ppups = network.readBool(); //ppup flags
 		for (int i = 0; i < 4; i++) {
 			if (ppups) {
@@ -92,10 +91,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 			}
 			moves[i] = new TeamMove(b.readShort());
 		}
-		
+
 		for(int i = 0; i < 6; i++)
 			EVs[i] = b.readByte();
-		
+
 		if (network.readBool()) { //Ivs flags
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
@@ -103,7 +102,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
 		}
 	}
-	
+
 	public TeamPoke() {
 		uID = new UniqueID();
 		nick = PokemonInfo.name(uID);
@@ -126,39 +125,37 @@ public class TeamPoke implements SerializeBytes, Poke {
 		DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
 		EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 80;
 	}
-	
+
 	public void setNum(UniqueID id) {
 		if (uID.equals(id)) {
 			return;
 		}
-		
+
 		boolean fullReset = uID.pokeNum != id.pokeNum;
-		
+
 		uID = id;
 		if (fullReset) {
 			nick = PokemonInfo.name(id);
 			shiny = false;
 			item = 15; //leftovers
 		}
-		if (id.subNum != 0) {
-			if (id.pokeNum == 487) {
-				/* Giratina-O */
-				item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
-			} else if (id.pokeNum == 493 && id.subNum != 0) {
-				/* Arceus */
-				item = ItemInfo.plateForType(id.subNum);
-			}
+
+		/* Giratina-O */
+		if (id.pokeNum == 487) {
+			item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
+		} else if (id.pokeNum == 493) { /* Arceus */
+			item =  id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
 		}
-		
+
 		if (fullReset) {
 			gender = 1;
 			nature = 0;
 		}
-		
+
 		if (gen.num > 2) {
 			ability = PokemonInfo.abilities(id, gen.num)[0];
-		}		
-		
+		}
+
 		if (fullReset) {
 			happiness = 0;
 			level = 100;
@@ -174,43 +171,43 @@ public class TeamPoke implements SerializeBytes, Poke {
 			EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
 		}
 	}
-	
+
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
 //		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
 //      isShiny=0
 		b.putFlags(new boolean[]{false, nick.length() > 0, false, happiness != 0, false, true});
-		
+
 		b.putBaos(uID);
 		b.write(level);
 		b.write(shiny ? 1 : 0);
-		
+
 		if (nick.length() > 0) {
 			b.putString(nick);
 		}
-		
+
 		if (gen.num > 1) {
 			b.putShort(item);
-			
+
 			if (gen.num > 2) {
 				b.putShort(ability);
 				b.write(nature);
 			}
-		
+
 			b.write(gender);
-		
+
 			if (gen.num > 2 && happiness != 0) {
 				b.write(happiness);
 			}
 		}
-		
+
 		for (int i = 0; i < 4; i++) {
 			b.putShort(moves[i].num);
 		}
-		
+
 		for (int i = 0; i < 6; i++) b.write(EVs[i]);
 		for (int i = 0; i < 6; i++) b.write(DVs[i]);
-		
+
 		bytes.putVersionControl(0, b);
 	}
 
@@ -225,7 +222,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public int totalHP() {
 		return PokemonInfo.calcStat(this, Stats.Hp.ordinal(), gen.num);
 	}
-	
+
 	public int stat(int i) {
 		return PokemonInfo.calcStat(this, i, gen.num);
 	}
@@ -276,19 +273,19 @@ public class TeamPoke implements SerializeBytes, Poke {
 		poke.setAttribute("Shiny", String.valueOf(shiny ? 1 : 0));
 		poke.setAttribute("Nature", String.valueOf(nature));
 		poke.setAttribute("Happiness", String.valueOf(happiness));
-		
+
 		for (int i = 0; i < 4; i++) {
 			Element move = doc.createElement("Move");
 			this.move(i).save(move);
 			poke.appendChild(move);
 		}
-		
+
 		for (int i = 0; i < 6; i++) {
 			Element ev = doc.createElement("EV");
 			ev.setTextContent(String.valueOf(this.ev(i)));
 			poke.appendChild(ev);
 		}
-		
+
 		for (int i = 0; i < 6; i++) {
 			Element iv = doc.createElement("DV");
 			iv.setTextContent(String.valueOf(this.dv(i)));
@@ -302,7 +299,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public void setItem(short s) {
 		item = s;
-		
+
 		if (uID.pokeNum == 487) {
 			/* Giratina */
 			setNum(new UniqueID(uID.pokeNum, item == 213 ? 1 : 0));
@@ -315,19 +312,19 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public boolean hasMove(int move) {
 		return move(0).num == move || move(1).num == move || move(2).num == move || move(3).num == move;
 	}
-	
+
 	public boolean addMove(int move) {
 		if (!hasMove(0)) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < 4; i++) {
 			if (move(i).num == 0) {
 				moves[i] = new TeamMove(move);
 				return true;
 			}
 		}
-		
+
 		//never reached
 		return false;
 	}
@@ -336,14 +333,14 @@ public class TeamPoke implements SerializeBytes, Poke {
 		if (!hasMove(move)) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < 4; i++) {
 			if (move(i).num == move) {
 				moves[i] = new TeamMove(0);
 				return true;
 			}
 		}
-		
+
 		//never reached
 		return false;
 	}

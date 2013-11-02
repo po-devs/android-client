@@ -5,19 +5,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.TeamPoke;
-import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
-import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
-import com.podevs.android.pokemononline.pokeinfo.NatureInfo;
-import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
-import com.podevs.android.pokemononline.pokeinfo.StatsInfo;
+import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.*;
 import com.podevs.android.pokemononline.teambuilder.EVSlider.EVListener;
 
 
@@ -29,10 +22,12 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	private TeamPoke poke = null;
 	private EVSlider sliders[] = null;
 	private TextView labels[] = null;
+	private Spinner formesChooser = null;
 	private Spinner itemChooser = null;
 	private Spinner abilityChooser = null;
 	private Spinner natureChooser = null, genderChooser = null;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter;
+	private LinearLayout formesLayout;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter, formesChooserAdapter;
 	public PokemonDetailsListener listener = null;
 
 	@Override
@@ -57,19 +52,21 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			(TextView)v.findViewById(R.id.speedlabel)
 		};
 		
-		for (int i = 0; i < sliders.length; i++) {
-			sliders[i].listener = this;
+		for (EVSlider slider: sliders) {
+			slider.listener = this;
 		}
 
 		abilityChooser = (Spinner)v.findViewById(R.id.abilitychoice);
 		itemChooser = (Spinner)v.findViewById(R.id.itemchoice);
 		natureChooser = (Spinner)v.findViewById(R.id.nature);
 		genderChooser = (Spinner)v.findViewById(R.id.gender);
+		formesChooser = (Spinner)v.findViewById(R.id.formes);
+		formesLayout = (LinearLayout)v.findViewById(R.id.formesLayout);
 		
 		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		int usefulItems[] = ItemInfo.usefulItems();
-		for (int i = 0; i < usefulItems.length; i++) {
-			itemChooserAdapter.add(ItemInfo.name(usefulItems[i]));
+		for (int usefulItem : usefulItems) {
+			itemChooserAdapter.add(ItemInfo.name(usefulItem));
 		}
 		itemChooser.setAdapter(itemChooserAdapter);
 
@@ -80,6 +77,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		
 		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		genderChooser.setAdapter(genderChooserAdapter);
+
+		formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		formesChooser.setAdapter(formesChooserAdapter);
 		
 		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		for (int i = 0; i < NatureInfo.count(); i++) {
@@ -96,6 +96,17 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				activity().teamChanged = true;
 				
 				updateStats();
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
+		formesChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+			                           int arg2, long arg3) {
+				poke.setNum(PokemonInfo.number(arg0.getSelectedItem().toString()));
+				notifyUpdated(true);
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -119,9 +130,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				short abilities [] = PokemonInfo.abilities(poke.uID(), poke.gen.num);
-				for (int i = 0; i < abilities.length; i++) {
-					if (AbilityInfo.name(abilities[i]) == abilityChooserAdapter.getItem(arg2)) {
-						poke.ability = abilities[i];
+				for (short ability : abilities) {
+					if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
+						poke.ability = ability;
 						notifyUpdated();
 						break;
 					}
@@ -178,6 +189,20 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public void updatePoke() {
 		if (poke == null) {
 			return;
+		}
+
+		if (PokemonInfo.hasVisibleFormes(poke.uID())) {
+			formesLayout.setVisibility(View.VISIBLE);
+			formesChooserAdapter.clear();
+
+			for (UniqueID uID : PokemonInfo.formes(poke.uID())) {
+				formesChooserAdapter.add(PokemonInfo.name(uID));
+				if (uID.equals(poke.uID())) {
+					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
+				}
+			}
+		} else {
+			formesLayout.setVisibility(View.GONE);
 		}
 
 		for (int i = 0; i < 6; i++) {

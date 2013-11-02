@@ -86,6 +86,7 @@
     <string name="delete_team">Delete team</string>
     <string name="full_happiness">100% Happiness</string>
     <string name="megavolve">Megaevolve</string>
+    <string name="formes">Formes: </string>
 
     <string-array name="hp_array">
         <item>Fighting</item>
