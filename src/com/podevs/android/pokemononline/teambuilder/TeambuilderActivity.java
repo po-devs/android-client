@@ -319,4 +319,8 @@ public class TeambuilderActivity extends FragmentActivity {
     	
     	viewPager.setCurrentItem(2, true);
     }
+
+	public void onGenChanged() {
+		updateTeam();
+	}
 }

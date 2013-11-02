@@ -1,5 +1,6 @@
 package com.podevs.android.pokemononline.poke;
 
+import com.podevs.android.pokemononline.pokeinfo.GenInfo;
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
@@ -104,6 +105,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public TeamPoke() {
+		reset();
+	}
+
+	public void reset() {
 		uID = new UniqueID();
 		nick = PokemonInfo.name(uID);
 		item = 0;
@@ -131,45 +136,79 @@ public class TeamPoke implements SerializeBytes, Poke {
 			return;
 		}
 
-		boolean fullReset = uID.pokeNum != id.pokeNum;
+		try {
+			boolean fullReset = uID.pokeNum != id.pokeNum;
 
-		uID = id;
-		if (fullReset) {
-			nick = PokemonInfo.name(id);
-			shiny = false;
-			item = 15; //leftovers
-		}
-
-		/* Giratina-O */
-		if (id.pokeNum == 487) {
-			item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
-		} else if (id.pokeNum == 493) { /* Arceus */
-			item =  id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
-		}
-
-		if (fullReset) {
-			gender = 1;
-			nature = 0;
-		}
-
-		if (gen.num > 2) {
-			ability = PokemonInfo.abilities(id, gen.num)[0];
-		}
-
-		if (fullReset) {
-			happiness = 0;
-			level = 100;
-			moves[0] = new TeamMove(0);
-			moves[1] = new TeamMove(0);
-			moves[2] = new TeamMove(0);
-			moves[3] = new TeamMove(0);
-			if (gen.num > 2) {
-				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
-			} else {
-				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+			uID = id;
+			if (fullReset) {
+				nick = PokemonInfo.name(id);
+				shiny = false;
+				item = 15; //leftovers
 			}
-			EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
+
+			/* Giratina-O */
+			if (id.pokeNum == 487) {
+				item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
+			} else if (id.pokeNum == 493) { /* Arceus */
+				item =  id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
+			}
+
+			if (fullReset) {
+				gender = 1;
+				nature = 0;
+			}
+
+			if (gen.num > 2) {
+				ability = PokemonInfo.abilities(id, gen.num)[0];
+			}
+
+			if (fullReset) {
+				happiness = 0;
+				level = 100;
+				moves[0] = new TeamMove(0);
+				moves[1] = new TeamMove(0);
+				moves[2] = new TeamMove(0);
+				moves[3] = new TeamMove(0);
+				if (gen.num > 2) {
+					DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+				} else {
+					DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+				}
+				EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
+			}
+		}   catch (Exception e) {
+			reset();
 		}
+	}
+
+	public void runCheck() {
+		if (!PokemonInfo.exists(uID(), gen())) {
+			uID = new UniqueID();
+			reset();
+
+			if (gen.num <= 2) {
+				for (int i = 0; i < 6; i++) {
+					if (DVs[i] > 15) {
+						DVs[i] = 15;
+					}
+				}
+			} else {
+				for (int i = 0; i < 6; i++) {
+					if (DVs[i] == 15) {
+						DVs[i] = 31;
+					}
+				}
+			}
+		}
+	}
+
+	public void setGen(Gen gen) {
+		if (this.gen.equals(gen)) {
+			return;
+		}
+		this.gen = gen;
+
+		runCheck();
 	}
 
 	public void serializeBytes(Baos bytes) {

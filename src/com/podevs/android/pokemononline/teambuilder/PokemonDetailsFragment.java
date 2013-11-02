@@ -1,5 +1,6 @@
 package com.podevs.android.pokemononline.teambuilder;
 
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -91,10 +92,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		
 		natureChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				poke.nature = (byte)arg2;
+			                           int arg2, long arg3) {
+				poke.nature = (byte) arg2;
 				activity().teamChanged = true;
-				
+
 				updateStats();
 			}
 
@@ -105,7 +106,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		formesChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 			                           int arg2, long arg3) {
-				poke.setNum(PokemonInfo.number(arg0.getSelectedItem().toString()));
+				poke.setNum(PokemonInfo.number(arg0.getItemAtPosition(arg2).toString()));
 				notifyUpdated(true);
 			}
 
@@ -195,7 +196,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			formesLayout.setVisibility(View.VISIBLE);
 			formesChooserAdapter.clear();
 
-			for (UniqueID uID : PokemonInfo.formes(poke.uID())) {
+			for (UniqueID uID : PokemonInfo.formes(poke.uID(), poke.gen)) {
 				formesChooserAdapter.add(PokemonInfo.name(uID));
 				if (uID.equals(poke.uID())) {
 					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
@@ -211,50 +212,66 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		
 		updateStats();
 
-		short[] abilities = PokemonInfo.abilities(poke.uID(), poke.gen.num);
-
-		abilityChooserAdapter.clear();
-		abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
-		if (abilities[0] == poke.ability) {
-			abilityChooser.setSelection(0);
-		}
-		if (abilities[1]!=0) {
-			abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
-			if (abilities[1] == poke.ability) {
-				abilityChooser.setSelection(1);
-			}
-		}
-		if (abilities[2]!=0) {
-			abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
-			if (abilities[2] == poke.ability) {
-				abilityChooser.setSelection(abilityChooserAdapter.getCount()-1);
-			}
-		}
-		
-		genderChooserAdapter.clear();
-		int genderChoice = PokemonInfo.gender(poke.uID());
-		if (genderChoice == 0) {
-			genderChooserAdapter.add("Neutral");
-		} else if (genderChoice == 1) {
-			genderChooserAdapter.add("Male");
-		} else if (genderChoice == 2) {
-			genderChooserAdapter.add("Female");
-		} else {
-			genderChooserAdapter.add("Male");
-			genderChooserAdapter.add("Female");
-			
-			genderChooser.setSelection(poke.gender == 1 ? 0 : 1);
-		}
+		if (poke.gen.num >= 3) {
+			short[] abilities = PokemonInfo.abilities(poke.uID(), poke.gen.num);
 	
-		natureChooser.setSelection(poke.nature);
-		
-		int usefulItems[] = ItemInfo.usefulItems();
-		int pokeitem = poke.item();
-		for (int i = 0; i < usefulItems.length; i++) {
-			if (usefulItems[i] == pokeitem) {
-				itemChooser.setSelection(i);
-				break;
+			abilityChooserAdapter.clear();
+			abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
+			if (abilities[0] == poke.ability) {
+				abilityChooser.setSelection(0);
 			}
+			if (abilities[1]!=0) {
+				abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
+				if (abilities[1] == poke.ability) {
+					abilityChooser.setSelection(1);
+				}
+			}
+			if (abilities[2]!=0) {
+				abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
+				if (abilities[2] == poke.ability) {
+					abilityChooser.setSelection(abilityChooserAdapter.getCount()-1);
+				}
+			}
+
+			natureChooser.setSelection(poke.nature);
+
+			natureChooser.setVisibility(View.VISIBLE);
+			abilityChooser.setVisibility(View.VISIBLE);
+		} else {
+			natureChooser.setVisibility(View.GONE);
+			abilityChooser.setVisibility(View.GONE);
+		}
+
+		if (poke.gen.num >= 2) {
+			genderChooserAdapter.clear();
+			int genderChoice = PokemonInfo.gender(poke.uID());
+			if (genderChoice == 0) {
+				genderChooserAdapter.add("Neutral");
+			} else if (genderChoice == 1) {
+				genderChooserAdapter.add("Male");
+			} else if (genderChoice == 2) {
+				genderChooserAdapter.add("Female");
+			} else {
+				genderChooserAdapter.add("Male");
+				genderChooserAdapter.add("Female");
+
+				genderChooser.setSelection(poke.gender == 1 ? 0 : 1);
+			}
+
+			int usefulItems[] = ItemInfo.usefulItems();
+			int pokeitem = poke.item();
+			for (int i = 0; i < usefulItems.length; i++) {
+				if (usefulItems[i] == pokeitem) {
+					itemChooser.setSelection(i);
+					break;
+				}
+			}
+
+			genderChooser.setVisibility(View.VISIBLE);
+			itemChooser.setVisibility(View.VISIBLE);
+		} else {
+			genderChooser.setVisibility(View.GONE);
+			itemChooser.setVisibility(View.GONE);
 		}
 	}
 	

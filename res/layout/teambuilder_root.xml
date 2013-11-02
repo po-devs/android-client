@@ -54,13 +54,25 @@
             android:text="@string/team"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <AutoCompleteTextView
-            android:id="@+id/teamTier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:hint="@string/team_tier" >
-        </AutoCompleteTextView>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <AutoCompleteTextView
+                android:id="@+id/teamTier"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:completionThreshold="1"
+                android:hint="@string/team_tier"
+                android:layout_weight="1">
+            </AutoCompleteTextView>
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/gens"/>
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

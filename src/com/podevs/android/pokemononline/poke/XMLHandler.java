@@ -1,5 +1,6 @@
 package com.podevs.android.pokemononline.poke;
 
+import com.podevs.android.pokemononline.pokeinfo.GenInfo;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -24,19 +25,20 @@ public class XMLHandler extends DefaultHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		this.myParsedTeam = new Team();
+		myParsedTeam = new Team();
 	}
 
 	@Override
 	public void endDocument() throws SAXException {
+		myParsedTeam.runCheck();
 	}
 
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
 		if (localName.equals("Team")) {
-			myParsedTeam.gen.num = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("gen"), "5"));
-			myParsedTeam.gen.subNum = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), "1"));
+			myParsedTeam.gen.num = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("gen"), String.valueOf(GenInfo.genMax())));
+			myParsedTeam.gen.subNum = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), String.valueOf((int)GenInfo.lastGen().subNum)));
 			myParsedTeam.defaultTier = StringUtilities.def(atts.getValue("defaultTier"), "");
 			
 			for (int i = 0; i < 6; i++) {

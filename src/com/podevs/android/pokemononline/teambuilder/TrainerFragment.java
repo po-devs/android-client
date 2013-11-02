@@ -24,24 +24,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.*;
 
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.player.PlayerProfile;
+import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.Team;
+import com.podevs.android.pokemononline.pokeinfo.GenInfo;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.QColor;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TrainerFragment extends Fragment {
 	protected static final String TAG = "Trainer menu";
-	PlayerProfile p = null;
-	boolean profileChanged = false;
-	AutoCompleteTextView teamTier = null;
+	private PlayerProfile p = null;
+	private boolean profileChanged = false;
+	private AutoCompleteTextView teamTier = null;
+	private Spinner genChooser = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,30 @@ public class TrainerFragment extends Fragment {
 		((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
 		
 		teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
-		teamTier.setText(((TeambuilderActivity)getActivity()).team.defaultTier);
+		genChooser = (Spinner)v.findViewById(R.id.gens);
+		ArrayAdapter<CharSequence> genAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		for (int i = GenInfo.genMin(); i <= GenInfo.genMax(); i++) {
+			for (int j = 0; j <= GenInfo.maxSubgen(i); j++) {
+				genAdapter.add(GenInfo.name(new Gen(i, j)));
+			}
+		}
+		genChooser.setAdapter(genAdapter);
+		genChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				String genName = parent.getItemAtPosition(position).toString();
+				getTeam().setGen(GenInfo.version(genName));
+				getTeambuilder().teamChanged = true;
+				getTeambuilder().onGenChanged();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
+
+		updateTeam();
 		
 		teamTier.addTextChangedListener(new TextWatcher() {
 			
@@ -89,8 +111,8 @@ public class TrainerFragment extends Fragment {
 			}
 			
 			public void afterTextChanged(Editable s) {
-				((TeambuilderActivity)getActivity()).team.defaultTier = s.toString();
-				((TeambuilderActivity)getActivity()).teamChanged = true;
+				getTeam().defaultTier = s.toString();
+				getTeambuilder().teamChanged = true;
 			}
 		});
 		
@@ -177,7 +199,7 @@ public class TrainerFragment extends Fragment {
 
 		@Override
 		public boolean isViewFromObject(View arg0, Object arg1) {
-			return (Object)arg0 == arg1;
+			return arg0 == arg1;
 		}
 
 		@Override
@@ -242,12 +264,22 @@ public class TrainerFragment extends Fragment {
 		super.onPause();
 	}
 
-	private Team getTeam() {
-		return ((TeambuilderActivity)getActivity()).team;
-	}
-
 	public void updateTeam() {
 		String tier = getTeam().defaultTier;
 		teamTier.setText(tier);
+
+		String genName = GenInfo.name(getTeam().gen);
+
+		if (!genChooser.getSelectedItem().toString().equals(genName)) {
+			for (int i = 0; i < genChooser.getCount(); i++) {
+				if (genChooser.getItemAtPosition(i).toString().equals(genName)) {
+					genChooser.setSelection(i);
+					break;
+				}
+			}
+		}
 	}
+
+	public TeambuilderActivity getTeambuilder() {return ((TeambuilderActivity)getActivity());}
+	private Team getTeam() {return getTeambuilder().team;}
 }

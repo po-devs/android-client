@@ -41,6 +41,24 @@ public class Team implements SerializeBytes {
 			}
 		}
 	}
+
+	public void setGen(Gen g) {
+		if (gen.equals(g)) {
+			return;
+		}
+
+		gen = g;
+
+		for (int i = 0; i < 6; i++) {
+			pokes[i].setGen(g);
+		}
+	}
+
+	public void runCheck() {
+		for (TeamPoke poke : pokes) {
+			poke.runCheck();
+		}
+	}
 	
 	public Team() {
 		for (int i = 0; i < 6; i++)

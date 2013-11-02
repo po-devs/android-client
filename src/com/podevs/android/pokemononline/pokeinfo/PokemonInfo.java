@@ -19,6 +19,7 @@ public class PokemonInfo {
 	private static SparseArray<PokeGenData> pokemons[] = null;
 	private static SparseArray<PokeData> pokemonsg = null;
 	private static int pokeCount = 0;
+	private static int pokeCountg[] = null;
 
 	/* Data depending on a gen:
 	 * ability, type, evolutions, ...
@@ -59,15 +60,16 @@ public class PokemonInfo {
 		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
 	}
 
-	public static List<UniqueID> formes(UniqueID uniqueID) {
+	public static List<UniqueID> formes(UniqueID uniqueID, Gen gen) {
 		loadPokeNames();
+		testLoad(gen.num);
 
 		ArrayList<UniqueID> ret = new ArrayList<UniqueID>();
 		PokeData data = pokemonsg.get(uniqueID.originalHashCode());
 
 		for (int i = 0; i <= data.maxForme; i++) {
 			UniqueID generated = new UniqueID(uniqueID.pokeNum, i);
-			if (exists(generated)) {
+			if (exists(generated, gen)) {
 				ret.add(generated);
 			}
 		}
@@ -79,6 +81,17 @@ public class PokemonInfo {
 		loadPokeNames();
 
 		return pokeNames.get(uID.hashCode()) != null;
+	}
+
+	public static int numberOfPokemons(Gen gen) {
+		testLoad(gen.num);
+		return pokeCountg[gen.num];
+	}
+
+	public static boolean exists (UniqueID uID, Gen gen) {
+		testLoad(gen.num);
+
+		return exists(uID) && pokemons[gen.num].get(uID.hashCode()) != null;
 	}
 
 	public static int type1(UniqueID uID, int gen) {
@@ -157,7 +170,10 @@ public class PokemonInfo {
 
 		InfoFiller.uIDfill("db/pokes/" + gen + "G/all_moves.txt", new Filler() {
 			public void fill(int i, String s) {
-				pokemons[gen].get(i).moveString = s;
+				PokeGenData poke = pokemons[gen].get(i);
+				if (poke != null) {
+					pokemons[gen].get(i).moveString = s;
+				}
 			}
 		});
 	}
@@ -208,7 +224,7 @@ public class PokemonInfo {
 		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
 				(uid.subNum == 0 ? "" : "_" + uid.subNum), "drawable", InfoConfig.pkgName);
 		if (resID == 0)
-			resID = resources.getIdentifier("pi" + uid.pokeNum,	"drawable", InfoConfig.pkgName);
+			resID = resources.getIdentifier("pi" + uid.pokeNum, "drawable", InfoConfig.pkgName);
 		return resID;
 	}
 
@@ -240,10 +256,13 @@ public class PokemonInfo {
 	@SuppressWarnings("unchecked")
 	private static void testLoad(int gen) {
 		if (pokemons == null) {
-			pokemons = new SparseArray[Gen.maxGen+1];
+			pokemons = new SparseArray[GenInfo.genMax()+1];
 		}
 		if (pokemons[gen] == null) {
 			pokemons[gen] = new SparseArray<PokemonInfo.PokeGenData>();
+		}
+		if (pokeCountg == null) {
+			pokeCountg = new int[GenInfo.genMax()+1];
 		}
 		if (pokemons[gen].indexOfKey(1) == (byte)-1) {
 			loadTypes(gen);
@@ -274,10 +293,14 @@ public class PokemonInfo {
 	}
 
 	private static void loadTypes(final int gen) {
+		pokeCountg[gen] = 0;
 		/* First load all the released pokemon and prepare the "data containers" */
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/released.txt", new Filler() {
 			public void fill(int i, String s) {
 				pokemons[gen].put(i, new PokeGenData());
+				if (i < 16000 && i > pokeCountg[gen]) {
+					pokeCountg[gen] = i;
+				}
 			}
 		}, true);
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
@@ -306,8 +329,8 @@ public class PokemonInfo {
 		return pokeNames.size();
 	}
 
-	public static String[] nameArray() {
-		String ret[] = new String[numberOfPokemons() + 1]; //+1 for missingno
+	public static String[] nameArray(Gen gen) {
+		String ret[] = new String[numberOfPokemons(gen) + 1]; //+1 for missingno
 
 		for (HashMap.Entry<String, UniqueID> entry : namesToIds.entrySet()) {
 			if (entry.getValue().subNum == 0 && entry.getValue().pokeNum < ret.length) {
@@ -328,10 +351,12 @@ public class PokemonInfo {
 		return abilities;
 	}
 
-	private static boolean abilitiesLoaded = false;
 	private static void testLoadAbilities(UniqueID id, final int gen) {
-		if (!abilitiesLoaded) {
+		if (gen >= 3) {
 			testLoad(gen);
+			if (pokemons[gen].get(id.originalHashCode()).ability != null) {
+				return;
+			}
 
 			InfoFiller.uIDfill("db/pokes/" + gen  + "G/ability1.txt", new Filler() {
 				public void fill(int i, String s) {
@@ -349,8 +374,6 @@ public class PokemonInfo {
 					pokemons[gen].get(i).ability[2] = Short.parseShort(s);
 				}
 			});
-
-			abilitiesLoaded = true;
 		}
 	}
 

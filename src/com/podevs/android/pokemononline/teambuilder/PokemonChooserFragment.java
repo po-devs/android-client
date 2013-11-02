@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.poke.Gen;
+import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 
@@ -23,6 +25,9 @@ public class PokemonChooserFragment extends Fragment {
 	String nick = null;
 	PokemonChooserListener listener = null;
 	AutoCompleteTextView pokeChoice = null;
+	Gen gen = null;
+	ArrayAdapter<String> pokeChoiceAdapter = null;
+	PokeListAdapter pokeListAdapter = null;
 	
 	public interface PokemonChooserListener {
 		public void onPokemonChosen(UniqueID id, String nickname);
@@ -37,17 +42,18 @@ public class PokemonChooserFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.pokemonchooser, container, false);
+		gen = getTeam().gen;
 		pokeList = (ListView)v.findViewById(R.id.pokeList);
-		pokeList.setAdapter(new PokeListAdapter());
+		pokeList.setAdapter(pokeListAdapter = new PokeListAdapter(gen));
 		
 		pokeChoice = (AutoCompleteTextView)v.findViewById(R.id.pokemonChoice);
-		final ArrayAdapter<String> pokeChoiceAdapater = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, PokemonInfo.nameArray());
-		pokeChoice.setAdapter(pokeChoiceAdapater);
+		pokeChoiceAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, PokemonInfo.nameArray(gen));
+		pokeChoice.setAdapter(pokeChoiceAdapter);
 		
 		pokeChoice.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				String name = pokeChoiceAdapater.getItem(arg2);
+				String name = pokeChoiceAdapter.getItem(arg2);
 				chosenId = PokemonInfo.number(name);
 				
 				updateList();
@@ -86,6 +92,16 @@ public class PokemonChooserFragment extends Fragment {
 		
 		return v;
 	}
+
+	public void setGen(Gen gen) {
+		if (gen.equals(this.gen)) {
+			return;
+		}
+		this.gen = gen;
+		pokeListAdapter.setGen(gen);
+		pokeChoiceAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, PokemonInfo.nameArray(gen));
+		pokeChoice.setAdapter(pokeChoiceAdapter);
+	}
 	
 	protected void setDetails(UniqueID number, String nick) {
 		chosenId = number;
@@ -110,4 +126,6 @@ public class PokemonChooserFragment extends Fragment {
 	public void setOnPokemonChosenListener(PokemonChooserListener listener) {
 		this.listener = listener;
 	}
+	public TeambuilderActivity getTeambuilder() {return ((TeambuilderActivity)getActivity());}
+	private Team getTeam() {return getTeambuilder().team;}
 }

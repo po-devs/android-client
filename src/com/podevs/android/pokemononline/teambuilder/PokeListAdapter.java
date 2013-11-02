@@ -1,6 +1,7 @@
 package com.podevs.android.pokemononline.teambuilder;
 
 import android.database.DataSetObserver;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,11 +15,19 @@ import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 
+import java.util.HashSet;
+
 public class PokeListAdapter implements ListAdapter {
-	private Gen gen = new Gen();
-	
+	private Gen gen = null;
+	private HashSet<DataSetObserver> observers = new HashSet<DataSetObserver>();
+
+	PokeListAdapter(Gen gen) {
+		super();
+		this.gen = gen;
+	}
+
 	public int getCount() {
-		return PokemonInfo.numberOfPokemons();
+		return PokemonInfo.numberOfPokemons(gen)+1;
 	}
 
 	public Object getItem(int pos) {
@@ -31,6 +40,16 @@ public class PokeListAdapter implements ListAdapter {
 
 	public int getItemViewType(int arg0) {
 		return 0;
+	}
+
+	public void setGen(Gen g) {
+		if (g.equals(gen)) {
+			return;
+		}
+		gen = g;
+		for (DataSetObserver obs : observers) {
+			obs.onInvalidated();
+		}
 	}
 
 	public View getView(int pos, View convertView, ViewGroup arg2) {
@@ -66,9 +85,11 @@ public class PokeListAdapter implements ListAdapter {
 	}
 
 	public void registerDataSetObserver(DataSetObserver arg0) {
+		observers.add(arg0);
 	}
 
 	public void unregisterDataSetObserver(DataSetObserver arg0) {
+		observers.remove(arg0);
 	}
 
 	public boolean areAllItemsEnabled() {
