@@ -925,9 +925,15 @@ public class NetworkService extends Service {
 			if (flags.readBool()) {
 				if (spectatedBattles.contains(battleId)) {
 					Log.e(TAG, "Already watching battle " + battleId);
+					socket.sendMessage(new Baos().putInt(battleId).putBool(false), Command.SpectateBattle);
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
+				if (conf.mode != 0) {
+					Log.e(TAG, "Can't watch doubles/triples/rotation: " + battleId);
+
+					return;
+				}
 	            PlayerInfo p1 = getNonNullPlayer(conf.id(0));
 	            PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);
