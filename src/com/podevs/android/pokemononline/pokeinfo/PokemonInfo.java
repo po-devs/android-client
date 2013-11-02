@@ -219,7 +219,7 @@ public class PokemonInfo {
 		}
 	}
 
-	public static int iconRes(UniqueID uid) {
+	private static int iconRes(UniqueID uid) {
 		Resources resources = InfoConfig.context.getResources();
 		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
 				(uid.subNum == 0 ? "" : "_" + uid.subNum), "drawable", InfoConfig.pkgName);
