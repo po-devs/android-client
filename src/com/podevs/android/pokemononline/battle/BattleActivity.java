@@ -882,7 +882,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     			showDialog(BattleDialog.ConfirmForfeit.ordinal());
     		break;
     	case R.id.close:
-    		netServ.stopWatching(battle.bID);
+    		if (isSpectating()) {
+    			netServ.stopWatching(battle.bID);
+    		} else {
+    			endBattle();
+    		}
     		break;
     	case R.id.draw:
     		netServ.socket.sendMessage(activeBattle.constructDraw(), Command.BattleMessage);
@@ -906,7 +910,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
     
 	void endBattle() {
-		if (netServ != null && netServ.socket != null && netServ.socket.isConnected() && netServ.isBattling()) {
+		if (netServ != null && netServ.socket != null && netServ.socket.isConnected()) {
     		Baos bID = new Baos();
     		bID.putInt(battle.bID);
     		netServ.socket.sendMessage(bID, Command.BattleFinished);
