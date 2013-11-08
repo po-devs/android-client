@@ -11,15 +11,11 @@ import android.support.v4.app.DialogFragment;
 import com.podevs.android.pokemononline.R;
 
 /**
- * <p>Creates a dialog that proposes the use to import team from file or QR code.</p>
+ * <p>Creates a dialog that proposes the use to import team from file.</p>
  * 
  * <p>If importing from file, will open a new ImportTeamFromFileDialogFragment,
  * which will call yourActivity.OnTeamImportedFromFileListener's interface function
  * onTeamImportedFromFile(FullPlayerInfo info).</p>
- * 
- * <p>Importing from QR code will call your activity's onActivityResult with the QR code
- * data, letting you do the importing. In the future an easier skyteams service will
- * be used.</p>
  * 
  * @author coyotte508
  *
