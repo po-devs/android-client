@@ -284,7 +284,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public void onEVChanged(int stat, int ev) {
 		int totalEVs = poke.totalEVs() - poke.ev(stat) + ev;
 		
-		if (totalEVs > 510) {
+		if (totalEVs > 510 && poke.gen().num > 2) {
 			ev = (510 - (poke.totalEVs() - poke.ev(stat)));
 			ev = ev/4*4;
 			sliders[stat].setNum(ev);
