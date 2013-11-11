@@ -80,6 +80,11 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 			moveChooser.setPoke(poke);
 		}
 		updatePoke();
+
+		/* Landing on an empty list of moves when picking missingno is lame */
+		if (poke.uID.pokeNum == 0) {
+			pager.setCurrentItem(0);
+		}
 	}
 	
 	public void updatePoke() {
