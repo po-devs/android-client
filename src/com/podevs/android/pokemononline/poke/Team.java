@@ -68,6 +68,11 @@ public class Team implements SerializeBytes {
 	public TeamPoke poke(int i) {
 		return pokes[i];
 	}
+
+	public void setPoke(int slot, TeamPoke poke) {
+		pokes[slot] = poke;
+		poke.setGen(gen);
+	}
 	
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();

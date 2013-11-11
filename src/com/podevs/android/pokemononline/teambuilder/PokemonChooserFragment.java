@@ -7,16 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ListView;
-
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.Gen;
-import com.podevs.android.pokemononline.poke.Team;
+import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 
@@ -33,19 +28,12 @@ public class PokemonChooserFragment extends Fragment {
 	public interface PokemonChooserListener {
 		public void onPokemonChosen(UniqueID id, String nickname);
 	}
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		Log.w("Pokemon Chooser", "onCreate");
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.pokemonchooser, container, false);
-		gen = getTeam().gen;
+		gen = poke().gen;
 		pokeList = (ListView)v.findViewById(R.id.pokeList);
 		pokeList.setAdapter(pokeListAdapter = new PokeListAdapter(gen));
 		
@@ -92,8 +80,6 @@ public class PokemonChooserFragment extends Fragment {
 			setDetails(chosenId, nick);
 			nick = null;
 		}
-
-		Log.w("Pokemon Chooser", "onCreateView");
 		
 		return v;
 	}
@@ -138,6 +124,5 @@ public class PokemonChooserFragment extends Fragment {
 	public void setOnPokemonChosenListener(PokemonChooserListener listener) {
 		this.listener = listener;
 	}
-	public TeambuilderActivity getTeambuilder() {return ((TeambuilderActivity)getActivity());}
-	private Team getTeam() {return getTeambuilder().team;}
+	public TeamPoke poke() {return ((EditPokemonActivity)getActivity()).getPoke();}
 }

@@ -12,9 +12,8 @@ import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
-import com.podevs.android.pokemononline.teambuilder.EditPokemonFragment.EditPokemonListener;
 
-public class TeamFragment extends Fragment implements EditPokemonListener {
+public class TeamFragment extends Fragment {
 	ListedPokemon pokeList[] = new ListedPokemon[6];
 
 	@Override
@@ -31,14 +30,14 @@ public class TeamFragment extends Fragment implements EditPokemonListener {
 			RelativeLayout whole = (RelativeLayout)v.findViewById(
 					InfoConfig.resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
 			pokeList[i] = new ListedPokemon(whole);
-			whole.setTag(R.id.poke, Integer.valueOf(i));
+			whole.setTag(R.id.poke, i);
 			
 			whole.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					Object tag = v.getTag(R.id.poke);
 					
 					if (tag != null) {
-						int pos = ((Integer) tag).intValue();
+						int pos = ((Integer) tag);
 						activity().editPoke(pos);
 					}
 				}
@@ -64,10 +63,6 @@ public class TeamFragment extends Fragment implements EditPokemonListener {
 	
 	private TeambuilderActivity activity() {
 		return (TeambuilderActivity) getActivity();
-	}
-
-	public void onPokemonEdited() {
-		pokeList[activity().currentPoke].update(activity().team.poke(activity().currentPoke));
 	}
 
 }

@@ -52,6 +52,7 @@
             android:launchMode="singleTask"
             android:theme="@style/DarkAppTheme" >
         </activity>
+        <activity android:name=".teambuilder.EditPokemonActivity"/>
 
         <service android:name="com.podevs.android.pokemononline.NetworkService" />
         <service android:name="com.podevs.android.pokemononline.registry.RegistryConnectionService" />

@@ -1,10 +1,5 @@
 package com.podevs.android.pokemononline.teambuilder;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,19 +19,22 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
+import com.podevs.android.pokemononline.poke.TeamPoke;
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class TeambuilderActivity extends FragmentActivity {
+
 	@Override
 	public void onBackPressed() {
-		if (viewPager.getCurrentItem() == 2) {
-			viewPager.setCurrentItem(1, true);
-			return;
-		}
-
 		if (!teamChanged) {
 			super.onBackPressed();
 			return;
@@ -65,13 +63,12 @@ public class TeambuilderActivity extends FragmentActivity {
 	Team team;
 	TeamFragment teamFragment = null;
 	TrainerFragment trainerFragment = null;
-	EditPokemonFragment pokeFragment = null;
-	int currentPoke = -1;
 
 	public boolean teamChanged = false;
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
 	public static final int PICKCOLOR_RESULT_CODE = 2;
+	public static final int POKEEDIT_RESULT_CODE = 605;
 	
 	private class MyAdapter extends FragmentPagerAdapter
 	{
@@ -81,7 +78,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			return 2 + (currentPoke == -1 ? 0 : 1);
+			return 2;
 		}
 
 		@Override
@@ -91,9 +88,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			} else if (arg0 == 1) {
 				return (teamFragment = new TeamFragment());
 			} else {
-				pokeFragment = new EditPokemonFragment();
-				pokeFragment.listener = teamFragment;
-				return pokeFragment;
+				return null;
 			}
 		}
 	}
@@ -124,9 +119,6 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
 		if (trainerFragment != null) {
 			trainerFragment.updateTeam();
-		}
-		if (pokeFragment != null) {
-			pokeFragment.updateTeam();
 		}
 	}
     
@@ -250,8 +242,8 @@ public class TeambuilderActivity extends FragmentActivity {
 		
 		CharSequence teams[] = getTeamFiles();
 		
-		for (int i = 0; i < teams.length; i++) {
-			if (teams[i].equals(string)) {
+		for (CharSequence team : teams) {
+			if (team.equals(string)) {
 				return;
 			}
 		}
@@ -293,6 +285,16 @@ public class TeambuilderActivity extends FragmentActivity {
 					Toast.makeText(this, path + " could not be opened. Does the file exist?", Toast.LENGTH_LONG).show();
 				}
 			}
+		} else if (requestCode == POKEEDIT_RESULT_CODE) {
+			if (resultCode == RESULT_OK) {
+				int slot = intent.getIntExtra("slot", 0);
+				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")));
+
+				team.setPoke(slot, poke);
+				teamChanged = true;
+
+				updateTeam();
+			}
 		} else {
 			super.onActivityResult(requestCode, resultCode, intent);
 		}
@@ -306,18 +308,13 @@ public class TeambuilderActivity extends FragmentActivity {
     
     void onImportClicked() {
 		new SelectImportMethodDialogFragment().show(getSupportFragmentManager(), "select-import-method");
-    };
+    }
     
     public void editPoke(int pos) {
-    	currentPoke = pos;
-    	
-    	if (pokeFragment != null) {
-    		pokeFragment.setPoke(team.poke(pos));
-    	} else {
-    		viewPager.getAdapter().notifyDataSetChanged();
-    	}
-    	
-    	viewPager.setCurrentItem(2, true);
+    	Intent intent = new Intent(this, EditPokemonActivity.class);
+	    intent.putExtra("pokemon", new Baos().putBaos(team.poke(pos)).toByteArray());
+	    intent.putExtra("slot", pos);
+	    startActivityForResult(intent, POKEEDIT_RESULT_CODE);
     }
 
 	public void onGenChanged() {

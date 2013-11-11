@@ -24,14 +24,7 @@ public class MoveChooserFragment extends Fragment {
 
 	ListView moveList = null;
 	MoveListAdapter moveAdapter = null;
-	int storedHash = 0;
-	TeamPoke poke = null;
 	public MoveChooserListener listener = null;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,8 +33,7 @@ public class MoveChooserFragment extends Fragment {
 
 		moveList = (ListView)v.findViewById(R.id.moves);
 		moveAdapter = new MoveListAdapter();
-		setPoke(activity().team.poke(activity().currentPoke));
-
+		moveAdapter.setPoke(poke());
 
 		moveList.setAdapter(moveAdapter);
 
@@ -49,29 +41,29 @@ public class MoveChooserFragment extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				int move = (Short) moveAdapter.getItem(arg2);
-				if (!poke.hasMove(move) && poke.addMove(move)) {
+				if (!poke().hasMove(move) && poke().addMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(true);
 
 					/* Hidden Power */
 					if (move == 237) {
 						buildHiddenPowerDialog();
 					} else if (move == 216) { /* return */
-						poke.happiness = (byte)255;
+						poke().happiness = (byte)255;
 					}
 					
 					if (listener != null) {
 						listener.onMovesetChanged(false);
 					}
-				} else if (poke.removeMove(move)) {
+				} else if (poke().removeMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
 
 					/* Hidden Power */
 					if (move == 237) {
 						for (int i = 0; i < 6; i++) {
-							poke.DVs[i] = 31;
+							poke().DVs[i] = 31;
 						}
 					} else if (move == 216) { /* return */
-						poke.happiness = 0;
+						poke().happiness = 0;
 					}
 					
 					if (listener != null) {
@@ -87,17 +79,17 @@ public class MoveChooserFragment extends Fragment {
 	protected void buildHiddenPowerDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.hiddenpower_choice)
-			.setSingleChoiceItems(R.array.hp_array, poke.hiddenPowerType()-1, null)
+			.setSingleChoiceItems(R.array.hp_array, poke().hiddenPowerType()-1, null)
 			.setPositiveButton(R.string.ok, new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
 					
-					byte[] config = HiddenPowerInfo.configurationForType(type, poke.gen);
+					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 					
 					if (config != null) {
 						for (int i = 0; i < 6; i++) {
-							poke.DVs[i] = config[i];
+							poke().DVs[i] = config[i];
 						}
 						
 						if (listener != null) {
@@ -109,11 +101,6 @@ public class MoveChooserFragment extends Fragment {
 		builder.create().show();
 	}
 
-	public void setPoke(TeamPoke poke) {
-		this.poke = poke;
-		moveAdapter.setPoke(poke);
-	}
-
 	public void updatePoke() {
 		moveAdapter.notifyDataSetChanged();
 	}
@@ -123,7 +110,7 @@ public class MoveChooserFragment extends Fragment {
 		super.onPause();
 	}
 
-	private TeambuilderActivity activity() {
-		return (TeambuilderActivity) getActivity();
+	private TeamPoke poke() {
+		return ((EditPokemonActivity) getActivity()).getPoke();
 	}
 }
