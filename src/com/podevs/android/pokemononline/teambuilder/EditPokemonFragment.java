@@ -138,10 +138,12 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 				pokemonDetails = new PokemonDetailsFragment();
 				pokemonDetails.listener = EditPokemonFragment.this;
 				return pokemonDetails;
-			} else {
+			} else if (arg0 == 2) {
 				moveChooser = new MoveChooserFragment();
 				moveChooser.listener = EditPokemonFragment.this;
 				return moveChooser;
+			} else {
+				return null;
 			}
 		}
 

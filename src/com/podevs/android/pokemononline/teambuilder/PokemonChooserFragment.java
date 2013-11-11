@@ -2,6 +2,7 @@ package com.podevs.android.pokemononline.teambuilder;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,8 @@ public class PokemonChooserFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Log.w("Pokemon Chooser", "onCreate");
 	}
 
 	@Override
@@ -89,6 +92,8 @@ public class PokemonChooserFragment extends Fragment {
 			setDetails(chosenId, nick);
 			nick = null;
 		}
+
+		Log.w("Pokemon Chooser", "onCreateView");
 		
 		return v;
 	}
@@ -112,6 +117,13 @@ public class PokemonChooserFragment extends Fragment {
 		} else {
 			this.nick = nick;
 		}
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+
+		Log.w("Pokemon Chooser", "onDestroyView");
 	}
 
 	protected void updateList() {
