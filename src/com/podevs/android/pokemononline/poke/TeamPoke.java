@@ -1,10 +1,10 @@
 package com.podevs.android.pokemononline.poke;
 
-import com.podevs.android.pokemononline.pokeinfo.GenInfo;
 import com.podevs.android.pokemononline.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.utilities.ArrayUtilities;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -174,7 +174,11 @@ public class TeamPoke implements SerializeBytes, Poke {
 				} else {
 					DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
 				}
-				EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
+				if (gen.num > 2) {
+					EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = 0;
+				} else {
+					EVs[0] = EVs[1] = EVs[2] = EVs[3] = EVs[4] = EVs[5] = (byte) 252;
+				}
 			}
 		}   catch (Exception e) {
 			reset();
@@ -199,6 +203,14 @@ public class TeamPoke implements SerializeBytes, Poke {
 					}
 				}
 			}
+
+			short[] moves = PokemonInfo.moves(uID, gen.num);
+
+			for (int i = 0; i < 4; i++) {
+				if (ArrayUtilities.indexOf(move(i).num, moves) == -1) {
+				    this.moves[i] = new TeamMove(0);
+				}
+			}
 		}
 	}
 
@@ -215,8 +227,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 		Baos b = new Baos();
 //		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
 //      isShiny=0
-		b.putFlags(new boolean[]{false, nick.length() > 0, false, happiness != 0, false, true});
+		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0, false, true});
 
+		b.putBaos(gen);
 		b.putBaos(uID);
 		b.write(level);
 		b.write(shiny ? 1 : 0);
