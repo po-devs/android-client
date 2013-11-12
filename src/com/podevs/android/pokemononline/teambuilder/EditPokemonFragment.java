@@ -54,6 +54,8 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 				pager.setCurrentItem(2);
 			}
 		});
+
+		updatePoke();
 		
 		return v;
 	}
