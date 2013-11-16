@@ -39,7 +39,7 @@
     <string name="find_a_battle">Suche Kampf</string>
     <string name="enable_sounds">Pokémon-Schreie</string>
     <string name="stop_watching">Stoppe Zuschauen</string>
-    <string name="crash_toast_text">Pokémon Online ist abgestürzt! Please help by e-mailing the resulting crash report.</string>
+    <string name="crash_toast_text">Pokémon Online ist abgestürzt! Bitte hilf uns, indem du uns den Crash-Report e-mailst.</string>
     <string name="serv_name">Server-Name</string>
     <string name="players">Spieler</string>
     <string name="serv_addr">Server-Adresse</string>
@@ -73,8 +73,8 @@
     <string name="edit_team">Bearbeite Team</string>
     <string name="optional">Optional</string>
     <string name="trainerinfo">Trainer-Informationen</string>
-    <string name="winningmessage">Gewinner-Nachicht</string>
-    <string name="losingmessage">Verlierer-Nachicht</string>
+    <string name="winningmessage">Nachicht bei Sieg</string>
+    <string name="losingmessage">Nachicht bei Niederlage</string>
     <string name="pokemon">Pokémon</string>
     <string name="done">OK</string>
     <string name="save_team_q">Möchtest du die Änderungen am Team speichern?</string>
