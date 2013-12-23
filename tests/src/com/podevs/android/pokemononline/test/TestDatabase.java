@@ -25,7 +25,14 @@ public class TestDatabase extends AndroidTestCase {
 		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 2));
 		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 1));
 		assertEquals(35, PokemonInfo.stat(new UniqueID(25, 0), Stats.Hp.ordinal(), 6));
+        /* DW ability of bulbasaur equals chlorophyll */
 		assertEquals(34, PokemonInfo.abilities(new UniqueID(1), 6)[2]);
+
+        /* Bulbasaur */
+        assertEquals(3, PokemonInfo.gender(new UniqueID(1,0)));
+        assertEquals(2, PokemonInfo.gender(new UniqueID(413,2)));
+        /* Arceus forme */
+        assertEquals(0, PokemonInfo.gender(new UniqueID(493,15)));
 	}
 
 	public void testMoves() {

@@ -14,7 +14,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="android-support-v4" level="project" />
-    <orderEntry type="module" module-name="library" />
+    <orderEntry type="module" module-name="viewpagerindicator" />
   </component>
 </module>
 

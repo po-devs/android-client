@@ -38,7 +38,7 @@ public class PokemonInfo {
 	 */
 	private static class PokeData {
 		byte maxForme = 0;
-		byte gender = 0;
+		byte gender = -1;
 		String options = null;
 	}
 
@@ -383,7 +383,13 @@ public class PokemonInfo {
 
 	public static int gender(UniqueID uID) {
 		testLoadGenders();
-		return pokemonsg.get(uID.hashCode()).gender;
+
+        byte gender = pokemonsg.get(uID.hashCode()).gender;
+        if (gender == -1) {
+            gender = pokemonsg.get(uID.originalHashCode()).gender;
+        }
+
+		return gender == -1 ? 0 : gender;
 	}
 
 	private static boolean gendersLoaded = false;
