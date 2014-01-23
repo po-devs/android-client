@@ -60,6 +60,7 @@ public class ItemInfo {
         191,
         185,
         186,
+        330,
         0
 	};
 	
