@@ -36,7 +36,7 @@
 55 %s swapped its boosts with %f!
 57 A hailstorm brewed!|It started to rain!|A sandstorm brewed!|The sunlight turned harsh!
 58 %s is in love with %f!|%f fell in love!|%s is immobilized by love!
-59 %f was prevented from healing!|%s can't use %m because of Heal Block!|%s's heal block wore off!
+59 %f was prevented from healing due to Heal Block!|%s's heal block wore off!|%s was prevented from healing due to Heal Block!|%s can't heal with %m due to Heal Block!|%s couldn't heal using it's %i due to Heal Block!|%s's %a had no effect due to Heal Block!
 60 %s regained health!
 61 %s regained health!|The healing wish came true!|It became cloaked in mystical moonlight!
 62 %s swapped its defense and attack!
@@ -79,7 +79,7 @@
 118 %s snatched %f's move!|%s waits for a target to make a move!
 121 Spikes were scattered all around the feet of %tf's team!|%s is hurt by spikes!
 122 %s released!
-123 It reduced the PP of %f's %m by %q!
+123 It reduced the PP of %f's %m by %q!|But there was no PP left for the move!
 124 Pointed stones float in the air around %tf's team!|Pointed stones dug into %s!
 125 %s stockpiled %d!
 127 %s is hit with recoil!
@@ -118,7 +118,7 @@
 180 %s prepares its %m!|It is completely synchronised with %f!|%ts's team is under an amplifying rainbow!
 190 %f took the kind offer!
 199 %ts's team is protected by Crafty Shield!|%ts's team Crafty Shield was broken!
-201 The terrain became electrified!|Electricity on the terrain faded away.
+201 The terrain became electrified!|Electricity on the terrain faded away.|Electric Terrain prevents %s from falling asleep!
 202 %f became electrified!
 203 Pokemon can no longer flee!|Fairy Lock's effect disappeared.
 205 The terrain became grassy!|Grass on the terrain faded away.|The Grassy Terrain heals the Pokemon on the field
@@ -129,3 +129,4 @@
 211 %f had its stat boosts reversed!
 215 %f was covered in powder!|%s exploded!
 217 Ions are storming the terrain!
+218 Congratulations, %ts!
