@@ -49,9 +49,7 @@ import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
 import com.podevs.android.pokemononline.pms.PrivateMessageList;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
-import com.podevs.android.utilities.StringUtilities;
+import com.podevs.android.utilities.*;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
@@ -332,6 +330,8 @@ public class NetworkService extends Service {
 	public void connect(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
+
+        final String cookie = FileContent.getFileContent(this, "cookie-" + Security.md5(ip));
 		// XXX This should probably have a timeout
 		new Thread(new Runnable() {
 			@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -365,7 +365,7 @@ public class NetworkService extends Service {
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, 
 				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
 				loginCmd.putFlags(new boolean []{true, true, true, defaultChannel != null, autoJoinChannels != null,
-						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid()}); //Network flags
+						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid(), false, false, cookie.length() > 0}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
@@ -402,6 +402,10 @@ public class NetworkService extends Service {
 					loginCmd.write(1); // number of teams
 					loginCmd.putBaos(meLoginPlayer.team);
 				}
+
+                if (cookie.length() > 0) {
+                    loginCmd.putString(cookie);
+                }
 				
 				socket.sendMessage(loginCmd, Command.Login);
 				
@@ -542,7 +546,19 @@ public class NetworkService extends Service {
 				chatActivity.updateTitle();
 			}
 			break;
-		} case KeepAlive: {
+		} case Cookie: {
+            Bais network = msg.readFlags();
+            if (msg.readBool()) {
+                String content = msg.readString();
+                if (content.length() > 4000) {
+                    Log.w(TAG, "Cookie too long, not saving");
+                } else {
+                    FileContent.setFileContent(this, "cookie-" + Security.md5(ip), content);
+                }
+            } else {
+                FileContent.removeFile(this, "cookie-" + Security.md5(ip));
+            }
+        } case KeepAlive: {
 			socket.sendMessage(null, Command.KeepAlive);
 			break;
 		} case Register: {

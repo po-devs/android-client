@@ -33,7 +33,7 @@ public enum Command {
     SpectateBattleChat,
     Unused_30, // = 30,
     Unused_31,
-    Unused_32,
+    Cookie,
     VersionControl,
     TierSelection,
     Unused_35,
