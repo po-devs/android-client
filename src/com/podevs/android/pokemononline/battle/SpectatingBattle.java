@@ -161,6 +161,13 @@ public class SpectatingBattle {
 	
 	public void receiveCommand(Bais msg)  {
 		synchronized (this) {
+            byte command = msg.readByte();
+
+            if (command < 0 || command >= BattleCommand.values().length) {
+                Log.w("Spectating battle", "Battle command unknown " + String.valueOf((int) command));
+                return;
+            }
+
 			BattleCommand bc = BattleCommand.values()[msg.readByte()];
 			byte player = msg.readByte();
 			

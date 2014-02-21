@@ -48,4 +48,4 @@ public enum BattleCommand {
 	Avoid,
 	RearrangeTeam,
 	SpotShifts
-};
+}
