@@ -168,7 +168,7 @@ public class SpectatingBattle {
                 return;
             }
 
-			BattleCommand bc = BattleCommand.values()[msg.readByte()];
+			BattleCommand bc = BattleCommand.values()[command];
 			byte player = msg.readByte();
 			
 			/* Because we don't deal with double battles */
