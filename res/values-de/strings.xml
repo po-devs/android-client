@@ -76,7 +76,6 @@
     <string name="winningmessage">Nachicht bei Sieg</string>
     <string name="losingmessage">Nachicht bei Niederlage</string>
     <string name="pokemon">Pokémon</string>
-    <string name="done">OK</string>
     <string name="save_team_q">Möchtest du die Änderungen am Team speichern?</string>
     <string name="save">Speichern</string>
     <string name="no_save">Nicht speichern</string>
