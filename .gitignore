@@ -25,3 +25,4 @@ tests/.settings/
 *gradle*
 tests/build.xml
 tests/ant.properties
+*.iml
