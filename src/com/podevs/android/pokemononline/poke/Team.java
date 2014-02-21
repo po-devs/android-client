@@ -134,7 +134,7 @@ public class Team implements SerializeBytes {
 		DOMSource source = new DOMSource(doc);
 		StreamResult result;
 		try {
-			result = new StreamResult(c.openFileOutput(c.getSharedPreferences("team", 0).getString("file", "team.xml"), 0));
+			result = new StreamResult(c.openFileOutput(c.getSharedPreferences("team", 0).getString("file", "team.xml"), Context.MODE_WORLD_READABLE));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return;
