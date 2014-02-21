@@ -37,78 +37,78 @@ import com.podevs.android.utilities.StringUtilities;
 
 public class SpectatingBattle {
 	static protected final String TAG = "SpectatingBattle";
-	
+
 	public enum BattleResult {
 		Forfeit,
 		Win,
 		Tie,
 		Close
 	}
-	
+
 	// 0 = you, 1 = opponent
 	public PlayerInfo[] players = new PlayerInfo[2];
-	
+
 	public short[] remainingTime = new short[2];
 	public boolean[] ticking = new boolean[2];
 	public long[] startingTime = new long[2];
-	
+
 	public boolean gotEnd = false;
-	
+
 	protected int mode = 0, numberOfSlots = 0;
 	public byte me = 0, opp = 1;
 	public int bID = 0;
 	protected static NetworkService netServ;
-	
+
 	public int background;
-	
+
 	public ShallowBattlePoke[][] pokes = new ShallowBattlePoke[2][6];
 	ArrayList<Boolean> pokeAlive = new ArrayList<Boolean>();
-	
+
 	public SpannableStringBuilder hist; //= new SpannableStringBuilder();
 	public SpannableStringBuilder histDelta; //= new SpannableStringBuilder();
-	
+
 	public BattleDynamicInfo[] dynamicInfo = new BattleDynamicInfo[2];
-	
+
 	public void writeToHist(CharSequence text) {
 		synchronized(histDelta) {
 			histDelta.append(text);
 		}
 	}
-	
+
 	public BattleConf conf;
 	public BattleActivity activity = null; //activity associated with the battle
-	
+
 	public boolean shouldShowPreview = false;
-	
+
 	public SpectatingBattle (BattleConf bc, PlayerInfo p1, PlayerInfo p2, int bID, NetworkService ns) {
 		hist = new SpannableStringBuilder();
 		histDelta = new SpannableStringBuilder();
 		netServ = ns;
 		conf = bc; // singles, doubles, triples
 		this.bID = bID;
-		
+
 		// Only supporting singles for now
 		numberOfSlots = 2;
 		players[0] = p1;
 		players[1] = p2;
-		
+
 		remainingTime[0] = remainingTime[1] = 5*60;
 		ticking[0] = ticking[1] = false;
-		
+
 		background = new Random().nextInt(11) + 1;
-		
+
 		synchronized (histDelta) {
-			writeToHist("Battle between " + players[me].nick() + 
+			writeToHist("Battle between " + players[me].nick() +
 							" and " + players[opp].nick() + " started!");
 		}
-		
+
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 6; j++) {
 				pokes[i][j] = new ShallowBattlePoke();
 			}
 		}
 	}
-	
+
 	/**
 	 * Dealloc for garbage collector
 	 */
@@ -117,36 +117,36 @@ public class SpectatingBattle {
 			activity.end();
 			activity = null;
 		}
-	}	
+	}
 
 	public Boolean isMyTimerTicking() {
 		return ticking[me];
 	}
-	
+
 	public Boolean isOppTimerTicking() {
 		return ticking[opp];
 	}
 	public long myStartingTime() {
 		return startingTime[me];
 	}
-	
+
 	public short myTime() {
 		return remainingTime[me];
-		
+
 	}
-	
+
 	public short oppTime() {
 		return remainingTime[opp];
 	}
-	
+
 	public ShallowBattlePoke currentPoke(int player) {
 		return pokes[player][0];
 	}
-	
+
 	public boolean isOut(Byte poke) {
 		return poke < numberOfSlots / 2;
 	}
-	
+
 	public int slot(int player, int poke) {
 		return player + poke * 2;
 	}
@@ -158,7 +158,7 @@ public class SpectatingBattle {
 			return toUpper;
 		return toUpper.substring(0,1).toUpperCase(Locale.getDefault())+toUpper.substring(1);
 	}
-	
+
 	public void receiveCommand(Bais msg)  {
 		synchronized (this) {
             byte command = msg.readByte();
@@ -173,24 +173,24 @@ public class SpectatingBattle {
 			
 			/* Because we don't deal with double battles */
 			player = (byte) (player % 2);
-	
+
 			dealWithCommand(bc, player, msg);
 		}
 	}
-		
+
 	public void dealWithCommand(BattleCommand bc, byte player, Bais msg) {
 		switch(bc) {
 		case SendOut: {
 			boolean silent = msg.readBool();
 			byte fromSpot = msg.readByte();
-			
+
 			ShallowBattlePoke tempPoke = pokes[player][0];
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
-			
+
 			if(msg.available() > 0) // this is the first time you've seen it
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
-			
+
 			if(activity != null) {
 				activity.updatePokes(player);
 				activity.updatePokeballs();
@@ -205,15 +205,15 @@ public class SpectatingBattle {
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
-			
+
 			if(!silent)
-				writeToHist("\n" + tu((players[player].nick() + " sent out " + 
+				writeToHist("\n" + tu((players[player].nick() + " sent out " +
 						currentPoke(player).rnick + "!")));
 			break;
 		} case SendBack: {
 			boolean silent = msg.readBool();
 			if (!silent) {
-				writeToHist("\n" + tu((players[player].nick() + " called " + 
+				writeToHist("\n" + tu((players[player].nick() + " called " +
 						currentPoke(player).rnick + " back!")));
 			}
 			break;
@@ -234,7 +234,7 @@ public class SpectatingBattle {
 			break;
 		} case BeginTurn: {
 			int turn = msg.readInt();
-			writeToHist(Html.fromHtml("<br><b><font color=" + QtColor.Blue + 
+			writeToHist(Html.fromHtml("<br><b><font color=" + QtColor.Blue +
 					"Start of turn " + turn + "</font></b>"));
 			break;
 		} case Ko: {
@@ -291,7 +291,15 @@ public class SpectatingBattle {
 						(Math.abs(boost) > 1 ? " sharply" : "") + (boost > 0 ? " rose!" : " fell!")));
 			}
 			break;
-		} case StatusChange: {
+		} case CappedStat: {
+            byte stat = msg.readByte();
+            boolean max = msg.readBool();
+
+            writeToHist("\n" + tu(currentPoke(player).nick + "'s " +
+                    netServ.getString(Stat.values()[stat].rstring()) +
+                    (max ? " can't go any higher!" : " can't go any lower!")));
+            break;
+        } case StatusChange: {
 			final String[] statusChangeMessages = {
 					" is paralyzed! It may be unable to move!",
 					" fell asleep!",
@@ -314,17 +322,17 @@ public class SpectatingBattle {
 				 * poisoned and badly poisoned are not separate values in the Status
 				 * enum, so confusion does not correspond to the same value in the above
 				 * string array as its enum value. */
-				writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(status) + tu( 
+				writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(status) + tu(
 						currentPoke(player).nick + " became confused!</font>")));
 			}
 			break;
 		} case AbsStatusChange: {
 			byte poke = msg.readByte();
 			byte status = msg.readByte();
-			
+
 			if (poke < 0 || poke >= 6)
 				break;
-			
+
 			if (status != Status.Confused.poValue()) {
 				pokes[player][poke].changeStatus(status);
 				if (activity != null) {
@@ -390,7 +398,7 @@ public class SpectatingBattle {
 			if (!silent)
 				writeToHist("\nBut it failed!");
 			break;
-		} case BattleChat: 
+		} case BattleChat:
 		case EndMessage: {
 			String message = msg.readString();
 			if (message == null || message.equals(""))
@@ -403,19 +411,19 @@ public class SpectatingBattle {
 			boolean come = msg.readBool();
 			int id = msg.readInt();
 			String name = msg.readString();
-			
+
 			if (come) {
 				addSpectator(id, name);
 			} else {
 				removeSpectator(id);
 			}
-			
+
 			break;
 		} case SpectatorChat: {
 			// TODO if (ignoreSpecs) break;
 			int id = msg.readInt();
 			String message = msg.readString();
-			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + spectators.get(id) + 
+			writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue + spectators.get(id) +
 					":</font> " + StringUtilities.escapeHtml(message)));
 			break;
 		} case MoveMessage: {
@@ -425,7 +433,7 @@ public class SpectatingBattle {
 			byte foe = msg.readByte();
 			short other = msg.readShort();
 			String q = msg.readString();
-			
+
 			String s = MoveInfo.message(move, part);
 			s = s.replaceAll("%s", currentPoke(player).nick);
 			s = s.replaceAll("%ts", players[player].nick());
@@ -438,7 +446,7 @@ public class SpectatingBattle {
 			if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
 			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", AbilityInfo.name(other));
 			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other, 0)));
-			
+
 			writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(StringUtilities.escapeHtml(s)) + "</font>"));
 			break;
 		} case NoOpponent: {
@@ -546,8 +554,8 @@ public class SpectatingBattle {
 			currentPoke(player).sub = msg.readBool();
 
 			if (activity != null)
-				activity.updateOppPoke(player);	
-			
+				activity.updateOppPoke(player);
+
 			break;
 		} case BattleEnd: {
 			byte res = msg.readByte();
@@ -567,7 +575,7 @@ public class SpectatingBattle {
 		} case PointEstimate : {
 			byte first = msg.readByte();
 			byte second = msg.readByte();
-			
+
 			writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Variation:</b></font> " +
 					first + ", " + second));
 			break;
@@ -637,10 +645,10 @@ public class SpectatingBattle {
 			break;
 		} case ChangeHp: {
 			short newHP = msg.readShort();
-			
+
 			currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 			currentPoke(player).lifePercent = (byte)newHP;
-				
+
 			if(activity != null) {
 				// Block until the hp animation has finished
 				// Timeout after 10s
@@ -664,9 +672,9 @@ public class SpectatingBattle {
 		}
 		}
 	}
-	
+
 	private SparseArray<String> spectators = new SparseArray<String>();
-	
+
 	private void addSpectator(int id, String name) {
 		spectators.put(id, name);
 		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ name + " is watching the battle</font>"));
@@ -676,7 +684,7 @@ public class SpectatingBattle {
 		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
 		spectators.remove(id);
 	}
-	
+
 	protected enum TempPokeChange {
 		TempMove,
 		TempAbility,
