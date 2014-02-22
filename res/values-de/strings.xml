@@ -31,7 +31,7 @@
     <string name="stat_speed">Initiative</string>
     <string name="stat_accuracy">Genauigkeit</string>
     <string name="stat_evasion">Fluchtwert</string>
-    <string name="rearrange_team_description">You can rearrange your team by dragging your Pokémon before the battle.</string>
+    <string name="rearrange_team_description">Du kannst dein Team vor dem Kampf sortieren, indem du die Pokemon an die gewünschte Position ziehst.</string>
     <string name="rearrange_team_title">Ordne dein Team</string>
     <string name="foes_team">Gegnerisches Team:</string>
     <string name="your_team">Dein Team:</string>
@@ -39,17 +39,17 @@
     <string name="find_a_battle">Suche Kampf</string>
     <string name="enable_sounds">Pokémon-Schreie</string>
     <string name="stop_watching">Stoppe Zuschauen</string>
-    <string name="crash_toast_text">Pokémon Online ist abgestürzt! Bitte hilf uns, indem du uns den Crash-Report e-mailst.</string>
+    <string name="crash_toast_text">Pokémon Online ist abgestürzt! Bitte hilf uns, indem du uns den Crash-Report per E-mail zusendest.</string>
     <string name="serv_name">Server-Name</string>
     <string name="players">Spieler</string>
     <string name="serv_addr">Server-Adresse</string>
     <string name="connecttoserver">Verbinde mit einem Server</string>
-    <string name="major_compat_break_warning">There will be important problems when communicating with the server due to the android client being outdated</string>
-    <string name="minor_compat_break_warning">There may be minor problems when communicating with the server due to the android client being outdated</string>
+    <string name="major_compat_break_warning">Es wird große Probleme mit der Verbindung zum Server geben, weil der Client nicht aktuell ist</string>
+    <string name="minor_compat_break_warning">Es könnte kleine Probleme mit der Verbindung zum Server geben, weil der Client nicht aktuell ist</string>
     <string name="new_server_features_warning">Der Server hat viele neue Features, die nicht mit Android kompatibel sind!</string>
     <string name="send_message">Sende Nachicht</string>
     <string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
-    <string name="struggle_attack">STRUGGLE</string>
+    <string name="struggle_attack">VERZWEIFLER</string>
     <string name="info_box">Info-Box</string>
     <string name="hp_bar_description">KP-Leiste</string>
     <string name="gender_description">Geschlecht</string>
@@ -85,6 +85,8 @@
     <string name="save_team_as">Team speichern als</string>
     <string name="delete_team">Team löschen</string>
     <string name="full_happiness">100% Zufriedenheit</string>
+    <string name="megavolve">Mega-Entwicklung</string>
+    <string name="formes">Formen: </string>
 
     <string-array name="hp_array">
         <item>Kampf</item>
