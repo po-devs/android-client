@@ -240,7 +240,7 @@ public class PokemonInfo {
 		else {
 			res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
 					(front ? "_front" : "_back");
-			if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0)
+			if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
 				// Special female sprite
 				res = res + "f" + (poke.shiny ? "s" : "");
 		}
