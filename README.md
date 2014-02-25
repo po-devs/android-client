@@ -36,4 +36,4 @@ ant clean build
 Or if you are on eclipse, you need to import the viewpagerindicator/library as android code in your workspace. 
 **Name it viewpagerindicator.** 
 
-[1]: https://github.com/coyotte508/Adroid-ViewPagerIndicator
+[1]: https://github.com/coyotte508/Android-ViewPagerIndicator
