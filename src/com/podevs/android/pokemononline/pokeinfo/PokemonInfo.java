@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.Poke;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
+import com.podevs.android.pokemononline.poke.PokeEnums.Gender;
 import com.podevs.android.pokemononline.poke.UniqueID;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
