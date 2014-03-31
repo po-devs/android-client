@@ -548,7 +548,7 @@ public class NetworkService extends Service {
 			break;
 		} case Cookie: {
             Bais network = msg.readFlags();
-            if (msg.readBool()) {
+            if (network.readBool()) {
                 String content = msg.readString();
                 if (content.length() > 4000) {
                     Log.w(TAG, "Cookie too long, not saving");

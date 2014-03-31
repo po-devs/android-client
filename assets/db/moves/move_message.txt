@@ -70,7 +70,7 @@
 104 %s prepared a gust of wind!|%s became cloaked in a harsh light!|%s tucked in its head!|%s absorbed light!|%s became cloaked in a freezing light!|%s became cloaked in freezing air!|%s is becoming one with the earth!
 105 %s recycled %i!
 106 %s went to sleep and became healthy!
-107 %s held on to the ground using its Suction Cups!|%s is solidly rooted to the ground!|%f was dragged out!
+107 %f held on to the ground using its Suction Cups!|%f is solidly rooted to the ground!|%f was dragged out!
 108 %s copied %f's %a!
 109 %ts's team became cloaked in a mystical veil!|%ts's team is no longer protected by Safeguard!|Safeguard prevents %f from being inflicted by status!
 111 %s sketched %m!
@@ -106,7 +106,7 @@
 160 %f's %i burned!
 162 %s gave %f its %i!
 164 %s's status cleared!
-168 %s swapped the Sp. Def. and the Defense of all the pokemon!|The Sp. Def and Defense of the pokemon went back to normal!
+168 %s created a bizarre area in which Defense and Sp. Def stats are swapped!|Wonder Room wore off, and Defense and Sp. Def stats returned to normal!
 169 %ts's team is protected by Wide Guard!|%ts's team Wide Guard was broken!
 170 %ts's team is protected by Quick Guard!|%ts's team Quick Guard was broken!
 171 %s is being sent back!
@@ -125,6 +125,7 @@
 206 %s shielded itself against damage!
 207 %ts's team is protected by Mat Block!|%ts's team Mat Block was broken!
 208 Mist descended upon the battle field!|Mist vanished from the battle field!|Misty Terrain prevents %f from being inflicted by status!
+209 %s was hurt!
 210 Sticky Web was put around %tf's team!|%s became entangled in Sticky Web!
 211 %f had its stat boosts reversed!
 215 %f was covered in powder!|%s exploded!

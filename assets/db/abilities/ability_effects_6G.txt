@@ -11,6 +11,7 @@
 14 10#CompoundEyes
 15 33-2#Insomnia
 16 9#Color change
+17 33-5#Immunity
 18 19#Flash Fire
 20 44#Own tempo
 22 34#Intimidate
@@ -96,7 +97,7 @@
 124 78#Pickpocket
 125 79#SheerForce
 127 102#Unnerve
-128 80#Defiant
+128 80-1#Defiant
 129 76#Defeatist
 130 96#Cursed Body
 131 99#Healer
@@ -130,7 +131,7 @@
 162 75#Victory Star
 163 40#Turbo Blaze
 164 40#TeraVolt
-165 102-2#Aerilate
+165 121-2#Aerilate
 166 117#Aurabreak
 168 103-Aura_16#Dark Aura
 169 103-Aura_17#Fairy Aura
@@ -138,14 +139,13 @@
 171 105#Fur Coat
 172 106#Mega Launcher
 173 111#Parental Bond
-174 102-17#Pixilite
+174 121-17#Pixilite
 175 107#Protean
-176 102-14#Refrigerate
+176 121-14#Refrigerate
 177 110#Stance Change
 178 108#Strong Jaw
-179 112#Sweet Veil
 180 109#Tough Claws
-181 113#Competitive
+181 80-3#Competitive
 182 114#Gale Wings
 183 115#Gooey
 185 118#BulletProof
