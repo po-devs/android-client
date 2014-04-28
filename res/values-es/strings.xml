@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="empty"></string>
+    <string name="choosename">Nombre de Usuario</string>
+    <string name="app_name">Pokémon Online</string>
+    <string name="connect">Conectar!</string>
+    <string name="inputname">Nombre de Usuario</string>
+    <string name="inputaddr">Dirección IP:Puerto</string>
+    <string name="chooseaddr">Direccion del Servidor</string>
+    <string name="importteam">Importar Equipo</string>
+    <string name="viewpokemon">Ver Pokémon</string>
+    <string name="tobattlescreen">Retornar a ventana de batalla</string>
+    <string name="notinbattle">Actualmente no estás en una batalla!</string>
+    <string name="forfeit">Perder batalla actual</string>
+    <string name="ok">Okay</string>
+    <string name="cancel">Cancelar</string>
+    <string name="no">No</string>
+    <string name="disconnect">Desconectar</string>
+    <string name="suggest_draw">Solicitar empate</string>
+    <string name="return_to_chat">Retornar al chat</string>
+    <string name="player_list">Lista de jugadores</string>
+    <string name="channel_list">Lista de canales</string>
+    <string name="accept">Aceptar</string>
+    <string name="decline">Rechazar</string>
+    <string name="accept_challenge">Aceptar desafío de</string>
+    <string name="stat_attack">Ataque</string>
+    <string name="stat_defense">Defensa</string>
+    <string name="stat_spAttack">Atq. Esp</string>
+    <string name="stat_spDefense">Def. Esp</string>
+    <string name="stat_speed">Velocidad</string>
+    <string name="stat_accuracy">Precision</string>
+    <string name="stat_evasion">Evasion</string>
+    <string name="rearrange_team_description">Puedes reordenar tu equipo arrastrando al pokemon antes de la batalla.</string>
+    <string name="rearrange_team_title">Reordenar tu equipo</string>
+    <string name="foes_team">Equipo del oponente:</string>
+    <string name="your_team">Tu equipo:</string>
+    <string name="done">Hecho</string>
+    <string name="find_a_battle">Buscar Batalla</string>
+    <string name="enable_sounds">Gritos del pokémon</string>
+    <string name="stop_watching">Dejar de ver</string>
+    <string name="crash_toast_text">Pokémon Online ha fallado! Porfavor ayudanos mandandonos un mensaje con el reporte de fallo resultante!.</string>
+    <string name="serv_name">Nombre del servidor</string>
+    <string name="players">Jugadores</string>
+    <string name="serv_addr">Dirección del servidor</string>
+    <string name="connecttoserver">Conectarse a un servidor</string>
+    <string name="major_compat_break_warning">Habrán problemas importantes cuando se intente comunicar con el servidor debido a que el cliente de android está fuera de fecha</string>
+    <string name="minor_compat_break_warning">Podrían haber problemas menores cuando se intente comunicar con el servidor debido a que el cliente de android está fuera de fecha</string>
+    <string name="new_server_features_warning">El servidor dispone de nuevas características que no son accesibles con esta versión de android!</string>
+    <string name="send_message">Enviar mensaje</string>
+    <string name="battle_opponent_team_poke_icon">Poke icono del equipo del oponente</string>
+    <string name="struggle_attack">LUCHA</string>
+    <string name="info_box">Cuadro de inf.</string>
+    <string name="hp_bar_description">Bar. de PS</string>
+    <string name="gender_description">Genero</string>
+    <string name="status_description">Estatus</string>
+    <string name="sprite_description">Imagen</string>
+    <string name="team_poke_icon">Poke icono del equipo</string>
+    <string name="no_netserv">Fallo en conexión al servidor</string>
+    <string name="private_messages">Mensajes Privados</string>
+    <!-- <string name="player">Jugador</string> -->
+    <string name="closePM">Cerrar MP</string>
+    <string name="closeBattle">Abandonar Batalla</string>
+    <string name="tierSelection">Seleccion de Tier</string>
+    <string name="idle">Ocupado</string>
+    <string name="register">Registra tu nombre</string>
+    <string name="teambuilder">Editor de equipo</string>
+    <string name="primary_info">Info Principal</string>
+    <string name="trainer_name">Nombre de Usuario</string>
+    <string name="color">Color</string>
+    <string name="team">Equipo</string>
+    <string name="team_tier">Tier del Equipo</string>
+    <string name="edit_team">Editar Equipo</string>
+    <string name="optional">Opcional</string>
+    <string name="trainerinfo">Información del Entrenador</string>
+    <string name="winningmessage">Mensaje de Victoria</string>
+    <string name="losingmessage">Mensaje de Derrota</string>
+    <string name="pokemon">Pokémon</string>
+    <string name="save_team_q">¿Desea guardar los cambios al equipo?</string>
+    <string name="save">Guardar</string>
+    <string name="no_save">No Guardar</string>
+    <string name="hiddenpower_choice">Tipo del Poder Oculto</string>
+    <string name="new_team">Nuevo Equipo</string>
+    <string name="load_team">Cargar Equipo</string>
+    <string name="save_team_as">Guardar equipo como</string>
+    <string name="delete_team">Eliminar Equipo</string>
+    <string name="full_happiness">Felicidad 100%</string>
+    <string name="megavolve">Megaevolucionar</string>
+    <string name="formes">Formas: </string>
+
+    <string-array name="hp_array">
+        <item>Peleador</item>
+        <item>Volador</item>
+        <item>Veneno</item>
+        <item>Tierra</item>
+        <item>Roca</item>
+        <item>Insecto</item>
+        <item>Fantasma</item>
+        <item>Acero</item>
+        <item>Fuego</item>
+        <item>Agua</item>
+        <item>Hierba</item>
+        <item>Electrico</item>
+        <item>Psiquico</item>
+        <item>Hielo</item>
+        <item>Dragon</item>
+        <item>Siniestro</item>
+    </string-array>
+
+</resources>
