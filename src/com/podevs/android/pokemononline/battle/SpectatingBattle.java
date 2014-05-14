@@ -533,6 +533,7 @@ public class SpectatingBattle {
 			String s = AbilityInfo.message(ab, part);
 	        if(other != -1 && s.contains("%st")) s = s.replaceAll("%st", netServ.getResources().getString((Stat.values()[other].rstring())));
 	        s = s.replaceAll("%s", currentPoke(player).nick);
+	        s = s.replaceAll("%tf", players[(player == 0 ? 1 : 0)].nick());
 	        // Below commented out in PO code
 	        //            mess.replace("%ts", name(spot));
 	        //            mess.replace("%tf", name(!spot));
