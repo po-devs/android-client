@@ -31,7 +31,7 @@ public class SelectImportMethodDialogFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				int option = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
 				if (option == 0) {
-					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pokemon-online.eu/forums/showthread.php?19698-Importing-teams-on-PO-Android&styleid=14"));
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pokemon-online.eu/threads/importing-teams-on-po-android.19698/"));
 					startActivity(browserIntent);
 				} else if (option == 1) { // From File
 					Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
