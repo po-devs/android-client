@@ -81,6 +81,7 @@
 100 59#Stall
 101 63#Technician
 102 37#Leaf Guard
+103 123#Klutz
 104 40#Mold Breaker
 106 2#Aftermath
 107 4#Anticipation
@@ -151,3 +152,4 @@
 185 118#BulletProof
 186 119#Grass Pelt
 187 116#Magician
+188 124#Symbiosis
