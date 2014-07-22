@@ -2,6 +2,7 @@ package com.podevs.android.pokemononline.pokeinfo;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.SparseArray;
 import com.podevs.android.pokemononline.poke.Gen;
 import com.podevs.android.pokemononline.poke.Poke;
@@ -307,8 +308,12 @@ public class PokemonInfo {
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
-				pokemons[gen].get(i).type1 = b;
-			}
+                try {
+                    pokemons[gen].get(i).type1 = b;
+                } catch (Exception e) {
+                    Log.e("PokemonInfo", "Impossible to load type 1 for gen " + gen + ", poke: " + i);
+                }
+            }
 		});
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type2.txt", new FillerByte() {
 			@Override
