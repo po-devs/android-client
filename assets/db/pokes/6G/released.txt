@@ -1,4 +1,4 @@
-0:0 Missingno
+﻿0:0 Missingno
 1:0 Bulbasaur
 2:0 Ivysaur
 3:0 Venusaur
@@ -861,5 +861,3 @@
 717:0 Yveltal
 718:0 Zygarde
 719:0 Diancie
-720:0 Hoopa
-721:0 Volcanion
