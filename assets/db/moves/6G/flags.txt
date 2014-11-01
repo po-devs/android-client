@@ -577,3 +577,7 @@
 614 64#Hyperspace Hole
 616 72#Thousand Arrows
 617 72#Thousand Waves
+618 72
+619 72
+620 72
+621 64
