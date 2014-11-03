@@ -74,6 +74,8 @@ public class ColorEnums {
 			case Rain: color = TypeColor.Water.toString(); break;
 			case SandStorm: color = TypeColor.Rock.toString(); break;
 			case Sunny: color = TypeColor.Fire.toString(); break;
+            case HeavyRain: color = TypeColor.Water.toString(); break;
+            case HeavySun: color = TypeColor.Fire.toString(); break;
 			default: color = TypeColor.Normal.toString(); break;
 			}
 		}

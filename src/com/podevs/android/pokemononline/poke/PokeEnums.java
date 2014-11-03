@@ -120,7 +120,9 @@ public class PokeEnums {
 		Hail,
 		Rain,
 		SandStorm,
-		Sunny
+		Sunny,
+        HeavySun,
+        HeavyRain
 	}
 	
 	public enum WeatherState {
