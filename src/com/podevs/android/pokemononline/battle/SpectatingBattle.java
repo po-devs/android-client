@@ -494,6 +494,8 @@ public class SpectatingBattle {
 				case SandStorm: message = "The sandstorm subsided!"; break;
 				case Sunny: message = "The sunlight faded!"; break;
 				case Rain: message = "The rain stopped!"; break;
+                case HeavySun: message = "The intense sunlight faded!"; break;
+                case HeavyRain: message = "The heavy downpour stopped!"; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
@@ -513,6 +515,8 @@ public class SpectatingBattle {
 				case SandStorm: message = "The sandstorm rages!"; break;
 				case Sunny: message = "The sunlight is strong!"; break;
 				case Rain: message = "Rain continues to fall!"; break;
+                case HeavySun: message = "The intense sunlight continues to shine!"; break;
+                case HeavyRain: message = "The heavy downpour continues!"; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
