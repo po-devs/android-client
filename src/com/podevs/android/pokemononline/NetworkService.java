@@ -682,9 +682,9 @@ public class NetworkService extends Service {
 			if (hasId) {
 				player = players.get(pId = msg.readInt());
 			}
-
+			/*
 				boolean flash = false;
-
+			*/
 			CharSequence message = msg.readString();
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
