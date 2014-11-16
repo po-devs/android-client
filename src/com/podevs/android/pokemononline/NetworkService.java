@@ -682,9 +682,7 @@ public class NetworkService extends Service {
 			if (hasId) {
 				player = players.get(pId = msg.readInt());
 			}
-			/*
-				boolean flash = false;
-			*/
+		
 			CharSequence message = msg.readString();
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
@@ -700,14 +698,6 @@ public class NetworkService extends Service {
 					message = Html.fromHtml(beg + message);
 				} else {
 					if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
-						/*
-						color = this.me.color.toHexString();
-						String stringMessage = ((String) message);
-						int left = stringMessage.indexOf(this.me.nick);
-						int right = left + this.me.nick.length();String[] arrayMessage = {left == 0 ? "" : stringMessage.substring(0,left),"<font><b>" + stringMessage.substring(left, right) + "</b></font>", stringMessage.substring(right)};
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml(arrayMessage[0]) + arrayMessage[1] + StringUtilities.escapeHtml(arrayMessage[2]));
-						flash = true;
-						*/
 						int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
 						int right = left + this.me.nick.length();
 						left = left + name.length() + 2;
