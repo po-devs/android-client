@@ -126,12 +126,12 @@ public class PokemonInfo {
 		return (stats[stat] + 256) % 256;
 	}
 
-	public static short[] moves(UniqueID uId, int gen) {
-		testLoadMoves(gen);
+	public static short[] moves(UniqueID uId, int gen, int sub) {
+		testLoadMoves(gen, sub);
 		convertMoveStringIfNeeded(uId, gen);
 
 		if (pokemons[gen].get(uId.hashCode()).moves == null && uId.subNum != 0) {
-			return moves(uId.original(), gen);
+			return moves(uId.original(), gen, sub);
 		}
 
 		short ret[] = pokemons[gen].get(uId.hashCode()).moves;
@@ -163,14 +163,18 @@ public class PokemonInfo {
 		}
 	}
 
-	private static void testLoadMoves(final int gen) {
+	private static void testLoadMoves(final int gen, final int sub) {
 		testLoad(gen);
-
 		if (pokemons[gen].get(1).moveString != null || pokemons[gen].get(1).moves != null) {
 			return;
 		}
-
-		InfoFiller.uIDfill("db/pokes/" + gen + "G/all_moves.txt", new Filler() {
+		String test;
+		if (gen == 6 && sub == 1) {
+			test = "db/pokes/6G/Subgen 1/all_moves.txt";
+			} else {
+			test = "db/pokes/" + gen + "G/all_moves.txt";
+		}
+		InfoFiller.uIDfill(test, new Filler() {
 			public void fill(int i, String s) {
 				PokeGenData poke = pokemons[gen].get(i);
 				if (poke != null) {
@@ -178,6 +182,10 @@ public class PokemonInfo {
 				}
 			}
 		});
+	}
+
+	public static void resetgen6() {
+		pokemons[6] = null;
 	}
 
 	public static int calcStat(Poke poke, int stat, int gen) {

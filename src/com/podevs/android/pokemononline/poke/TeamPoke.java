@@ -204,7 +204,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 				}
 			}
 
-			short[] moves = PokemonInfo.moves(uID, gen.num);
+			short[] moves = PokemonInfo.moves(uID, gen.num, gen.subNum);
 
 			for (int i = 0; i < 4; i++) {
 				if (ArrayUtilities.indexOf(move(i).num, moves) == -1) {
