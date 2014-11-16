@@ -683,8 +683,6 @@ public class NetworkService extends Service {
 				player = players.get(pId = msg.readInt());
 			}
 
-				boolean flash = false;
-
 			CharSequence message = msg.readString();
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
@@ -699,42 +697,7 @@ public class NetworkService extends Service {
 				if (isHtml) {
 					message = Html.fromHtml(beg + message);
 				} else {
-					if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
-						/*
-						color = this.me.color.toHexString();
-						String stringMessage = ((String) message);
-						int left = stringMessage.indexOf(this.me.nick);
-						int right = left + this.me.nick.length();String[] arrayMessage = {left == 0 ? "" : stringMessage.substring(0,left),"<font><b>" + stringMessage.substring(left, right) + "</b></font>", stringMessage.substring(right)};
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml(arrayMessage[0]) + arrayMessage[1] + StringUtilities.escapeHtml(arrayMessage[2]));
-						*/
-						flash = true;
-						int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
-						int right = left + this.me.nick.length();
-						left = left + name.length() + 2;
-						right = right  + name.length() + 2;
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
-						if (!hasChannel) {
-							// Broadcast message
-							if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
-								chatActivity.makeToast(message.toString(), "long");
-							else {
-								Iterator<Channel> it = joinedChannels.iterator();
-								while (it.hasNext()) {
-									it.next().writeToHist(message, left, right);
-								}
-							}
-						} else {
-							if (chan == null) {
-								Log.e(TAG, "Received message for nonexistent channel");
-							} else {
-								chan.writeToHist(message, left, right);
-							}
-						}
-						break;
-					} else {
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
-					}
-					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String)message));
 				}
 			} else {
 				if (isHtml) {
