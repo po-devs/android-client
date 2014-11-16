@@ -33,7 +33,7 @@ public class MoveListAdapter implements ListAdapter {
 			LayoutInflater inflater = (LayoutInflater)parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.move_item, null);
 		}
-		short move = PokemonInfo.moves(poke.uID(), poke.gen.num)[position];
+		short move = PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[position];
 
 		TextView nick = (TextView)view.findViewById(R.id.movename);
 		nick.setText(MoveInfo.name(move));
@@ -59,11 +59,11 @@ public class MoveListAdapter implements ListAdapter {
 	}
 
 	public int getCount() {
-		return PokemonInfo.moves(poke.uID(), poke.gen.num).length;
+		return PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum).length;
 	}
 
 	public Object getItem(int arg0) {
-		return PokemonInfo.moves(poke.uID(), poke.gen.num)[arg0];
+		return PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[arg0];
 	}
 
 	public long getItemId(int arg0) {
