@@ -724,7 +724,6 @@ public class NetworkService extends Service {
 					} else {
 						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 					}
-					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 				}
 			} else {
 				if (isHtml) {
