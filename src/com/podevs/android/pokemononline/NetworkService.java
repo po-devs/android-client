@@ -682,7 +682,6 @@ public class NetworkService extends Service {
 			if (hasId) {
 				player = players.get(pId = msg.readInt());
 			}
-
 			CharSequence message = msg.readString();
 			if (hasId) {
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
@@ -697,7 +696,38 @@ public class NetworkService extends Service {
 				if (isHtml) {
 					message = Html.fromHtml(beg + message);
 				} else {
-					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String)message));
+					if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
+						int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
+						int right = this.me.nick.length();
+						left = left + name.length();
+						if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
+							left = left + 3;
+						} else {
+							left = left + 2;
+						}
+						right = right + left;
+						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+						if (!hasChannel) {
+							// Broadcast message
+							if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
+								chatActivity.makeToast(message.toString(), "long");
+							else {
+								Iterator<Channel> it = joinedChannels.iterator();
+								while (it.hasNext()) {
+									it.next().writeToHist(message, left, right);
+								}
+							}
+						} else {
+							if (chan == null) {
+								Log.e(TAG, "Received message for nonexistent channel");
+							} else {
+								chan.writeToHist(message, left, right);
+							}
+						}
+						break;
+					} else {
+						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+					}
 				}
 			} else {
 				if (isHtml) {

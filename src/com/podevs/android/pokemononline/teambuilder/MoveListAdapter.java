@@ -15,13 +15,14 @@ import android.widget.TextView;
 
 import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.poke.TeamPoke;
+import com.podevs.android.pokemononline.pokeinfo.DamageClassInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
 
 public class MoveListAdapter implements ListAdapter {
 	TeamPoke poke = null;
-	
+
 	public void setPoke(TeamPoke poke) {
 		this.poke = poke;
 		notifyDataSetChanged();
@@ -33,7 +34,7 @@ public class MoveListAdapter implements ListAdapter {
 			LayoutInflater inflater = (LayoutInflater)parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.move_item, null);
 		}
-		short move = PokemonInfo.moves(poke.uID(), poke.gen.num)[position];
+		short move = PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[position];
 
 		TextView nick = (TextView)view.findViewById(R.id.movename);
 		nick.setText(MoveInfo.name(move));
@@ -45,11 +46,18 @@ public class MoveListAdapter implements ListAdapter {
 		pps.setText("pp: " + MoveInfo.pp(move));
 
 		TextView accuracy = (TextView)view.findViewById(R.id.accuracy);
-		accuracy.setText("acc: " +MoveInfo.accuracyString(move));
+		accuracy.setText("acc: " + MoveInfo.accuracyString(move));
 
 		ImageView type = (ImageView)view.findViewById(R.id.type);
 		type.setImageResource(TypeInfo.typeRes(MoveInfo.type(move)));
-		
+
+		TextView damageClass = (TextView)view.findViewById(R.id.damageClass);
+		damageClass.setText(DamageClassInfo.name(MoveInfo.damageClass(move)));
+/*
+		ImageView type = (ImageView)view.findViewById(R.id.type);
+		type.setImageResource(DamageClassInfo.damageClassRes(MoveInfo.damageClass(move)));
+*/
+
 		if (poke != null) {
 			CheckBox check = (CheckBox)view.findViewById(R.id.check);
 			check.setChecked(poke.hasMove(move));
@@ -59,11 +67,11 @@ public class MoveListAdapter implements ListAdapter {
 	}
 
 	public int getCount() {
-		return PokemonInfo.moves(poke.uID(), poke.gen.num).length;
+		return PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum).length;
 	}
 
 	public Object getItem(int arg0) {
-		return PokemonInfo.moves(poke.uID(), poke.gen.num)[arg0];
+		return PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[arg0];
 	}
 
 	public long getItemId(int arg0) {
@@ -85,7 +93,7 @@ public class MoveListAdapter implements ListAdapter {
 	public boolean isEmpty() {
 		return getCount() == 0;
 	}
-	
+
 	Set<DataSetObserver> observers = new HashSet<DataSetObserver>();
 
 	public void registerDataSetObserver(DataSetObserver arg0) {
