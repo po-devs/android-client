@@ -3,8 +3,11 @@ package com.podevs.android.pokemononline.chat;
 import java.util.Hashtable;
 import java.util.LinkedList;
 
+import android.graphics.Color;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 
 import com.podevs.android.pokemononline.Command;
@@ -43,7 +46,25 @@ public class Channel {
 				messageList.remove();
 		}
 	}
-	
+
+	public void writeToHist(CharSequence text, int left, int right) {
+		SpannableStringBuilder spannable;
+		if (text.getClass() != SpannableStringBuilder.class) {
+			spannable = new SpannableStringBuilder(text);
+		}
+		else {spannable = (SpannableStringBuilder)text;}
+		synchronized(messageList) {
+			try {
+				spannable.setSpan(new BackgroundColorSpan((Color.YELLOW)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			} finally {
+
+			}
+			messageList.add(spannable);
+			lastSeen++;
+			while (messageList.size() > HIST_LIMIT)
+				messageList.remove();
+		}
+	}
 	private NetworkService netServ;
 	
 	public String name(){ return name; }
@@ -89,7 +110,6 @@ public class Channel {
 		if (!netServ.joinedChannels.contains(this)) {
 			netServ.joinedChannels.addFirst(this);
 			netServ.updateJoinedChannels();
-			
 			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
 		}
 	}
