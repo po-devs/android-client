@@ -24,6 +24,7 @@ import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -320,6 +321,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 	public void onGenChanged() {
 		updateTeam();
-		PokemonInfo.resetgen6();
+		PokemonInfo.resetGen6();
+		MoveInfo.newGen();
 	}
 }

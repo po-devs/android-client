@@ -36,6 +36,8 @@ public class MoveListAdapter implements ListAdapter {
 		}
 		short move = PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[position];
 
+		MoveInfo.loadGen(poke.gen.num, poke.gen.subNum);
+
 		TextView nick = (TextView)view.findViewById(R.id.movename);
 		nick.setText(MoveInfo.name(move));
 
