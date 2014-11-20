@@ -12,6 +12,7 @@ import com.podevs.android.pokemononline.R;
 import com.podevs.android.pokemononline.battle.ListedPokemon;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 
 public class TeamFragment extends Fragment {
 	ListedPokemon pokeList[] = new ListedPokemon[6];
@@ -43,7 +44,6 @@ public class TeamFragment extends Fragment {
 				}
 			});
 		}
-		
 		updateTeam();
 		
 		return v;
@@ -56,6 +56,7 @@ public class TeamFragment extends Fragment {
 	
 	public void updateTeam() {
 		Team team = activity().team;
+		MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
 		for (int i = 0; i < 6; i++) {
 			pokeList[i].update(team.poke(i), true);
 		}

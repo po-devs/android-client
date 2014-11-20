@@ -174,6 +174,10 @@ public class PokemonInfo {
 			} else {
 			test = "db/pokes/" + gen + "G/all_moves.txt";
 		}
+		/*
+		String path = "db/pokes/" + gen + "G/Subgen " + sub + "all_moves.txt";
+
+		 */
 		InfoFiller.uIDfill(test, new Filler() {
 			public void fill(int i, String s) {
 				PokeGenData poke = pokemons[gen].get(i);
@@ -184,7 +188,7 @@ public class PokemonInfo {
 		});
 	}
 
-	public static void resetgen6() {
+	public static void resetGen6() {
 		pokemons[6] = null;
 	}
 

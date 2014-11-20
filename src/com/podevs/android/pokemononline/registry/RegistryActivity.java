@@ -107,6 +107,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		//Capture out button from layout
         Button conbutton = (Button)findViewById(R.id.connectbutton);
         Button importbutton = (Button)findViewById(R.id.importteambutton);
+
         //Register onClick listener
         conbutton.setOnClickListener(registryListener);
         importbutton.setOnClickListener(registryListener);
@@ -184,7 +185,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				startActivity(new Intent(RegistryActivity.this, ChatActivity.class));
 				RegistryActivity.this.finish();
     		}
-    		else if (v == findViewById(R.id.importteambutton)) {
+			else if (v == findViewById(R.id.importteambutton)) {
     			startActivityForResult(new Intent(RegistryActivity.this, TeambuilderActivity.class), TEAMBUILDER_CODE);
     		}
     	}
