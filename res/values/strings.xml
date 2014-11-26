@@ -17,6 +17,7 @@
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
     <string name="disconnect">Disconnect</string>
+    <string name="change_name">Change Name</string>
     <string name="suggest_draw">Suggest Draw</string>
     <string name="return_to_chat">Return to Chat</string>
     <string name="player_list">Player List</string>
@@ -65,6 +66,7 @@
     <string name="idle">Idle</string>
     <string name="register">Register your name</string>
     <string name="teambuilder">Teambuilder</string>
+    <string name="settings">Settings</string>
     <string name="primary_info">Primary Info</string>
     <string name="trainer_name">Trainer Name</string>
     <string name="color">Color</string>

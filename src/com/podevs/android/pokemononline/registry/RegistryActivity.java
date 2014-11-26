@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.podevs.android.pokemononline.NetworkService;
 import com.podevs.android.pokemononline.R;
+import com.podevs.android.pokemononline.Settings;
 import com.podevs.android.pokemononline.chat.ChatActivity;
 import com.podevs.android.pokemononline.player.FullPlayerInfo;
 import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
@@ -107,9 +108,12 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		//Capture out button from layout
         Button conbutton = (Button)findViewById(R.id.connectbutton);
         Button importbutton = (Button)findViewById(R.id.importteambutton);
+		Button setbutton = (Button)findViewById(R.id.settings);
+
         //Register onClick listener
         conbutton.setOnClickListener(registryListener);
         importbutton.setOnClickListener(registryListener);
+		setbutton.setOnClickListener(registryListener);
         
         registryRoot = (RelativeLayout) findViewById(R.id.registryroot);
         servers = (ListView)findViewById(R.id.serverlisting);
@@ -184,9 +188,12 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				startActivity(new Intent(RegistryActivity.this, ChatActivity.class));
 				RegistryActivity.this.finish();
     		}
-    		else if (v == findViewById(R.id.importteambutton)) {
+    		if (v == findViewById(R.id.importteambutton)) {
     			startActivityForResult(new Intent(RegistryActivity.this, TeambuilderActivity.class), TEAMBUILDER_CODE);
     		}
+			if (v == findViewById(R.id.settings)) {
+				startActivity(new Intent(RegistryActivity.this, Settings.class));
+			}
     	}
     };
     

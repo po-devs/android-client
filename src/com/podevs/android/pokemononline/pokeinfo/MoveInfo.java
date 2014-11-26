@@ -147,42 +147,9 @@ public class MoveInfo {
 						}
 					}
 					case Gen3: {
-						// Colo to XD
-						// Shadow Rush 90 -> 55
-						subGens s = subGens.values()[sub];
-						switch (s) {
-							case SubGen0: {
-								if (lastSubGen < 4) {
-									loadPokePowers("db/moves/3G/power.txt");
-									return;
-								}
-							}
-							case SubGen1: {
-								if (lastSubGen < 4) {
-									loadPokePowers("db/moves/3G/power.txt");
-									return;
-								}
-							}
-							case SubGen2: {
-								if (lastSubGen < 4) {
-									loadPokePowers("db/moves/3G/power.txt");
-									return;
-								}
-							}
-							case SubGen3: {
-								if (lastSubGen < 4) {
-									loadPokePowers("db/moves/3G/power.txt");
-									return;
-								}
-							}
-							case SubGen4: {
-								// WRONG NEEDS NEW DATABASE FILE
-								if (lastSubGen != 4) {
-									loadPokePowers("db/moves/3G/power.txt");
-									return;
-								}
-								// WRONG NEEDS NEW DATABASE FILE
-							}
+						if (lastGen != 2) {
+							loadPokePowers("db/moves/3G/power.txt");
+							return;
 						}
 					}
 					case Gen4: {
@@ -383,6 +350,12 @@ public class MoveInfo {
 
 	public static void newGen() {
 		loadNewGen = true;
+	}
+
+	public static void setNewGen(int Gen, int subGen) {
+		loadNewGen = true;
+		thisGen = Gen;
+		thisSubGen = subGen;
 	}
 
 	public static String name(int num) {

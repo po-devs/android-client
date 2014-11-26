@@ -22,5 +22,12 @@
         android:id="@+id/preferences"
         android:title="@string/tierSelection">
     </item>
-
+    <item
+        android:id="@+id/load_team"
+        android:title="@string/load_team">
+    </item>
+    <item
+        android:id="@+id/changeName"
+        android:title="@string/change_name">
+    </item>
 </menu>

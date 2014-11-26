@@ -7,7 +7,7 @@ public enum Command {
     Logout,
     SendMessage,
     PlayersList,
-    SendTeam,
+    SendTeam, // Name Change
     ChallengeStuff,
     EngageBattle,
     BattleFinished,
