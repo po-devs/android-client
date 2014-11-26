@@ -194,7 +194,11 @@ public class ChatActivity extends Activity {
 					byte SubGen = test.gen.subNum;
 					String tier = test.defaultTier;
 					Baos team = new Baos();
-					team.write(0); // number of teams
+					team.write(0);
+					team.putBaos(test);
+					team.write(1);
+					team.putString(netServ.me.nick);
+					team.write(2);
 					team.putBaos(test);
 					netServ.socket.sendMessage(team, Command.SendTeam);
 					Baos b = new Baos();
@@ -683,24 +687,24 @@ public class ChatActivity extends Activity {
 			range.append("" + prefs.getInt("range", 200));
 			range.setInputType(InputType.TYPE_CLASS_NUMBER);
 			range.setHint("Range");
-			builder.setTitle(R.string.find_a_battle)
-			.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
-				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-					prefs.edit().putBoolean("findOption" + which, isChecked).commit();
-				}
-			})
+				builder.setTitle(R.string.find_a_battle)
+						.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
+							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
+							}
+						})
 			.setView(range)
-			.setPositiveButton("Find", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					if (netServ != null && netServ.socket.isConnected()) {
-						netServ.findingBattle = true;
-						try {
-							prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
-						} catch (NumberFormatException e) {
-							prefs.edit().remove("range").commit();
-						}
-						netServ.socket.sendMessage(
-								constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
+						.setPositiveButton("Find", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								if (netServ != null && netServ.socket.isConnected()) {
+									netServ.findingBattle = true;
+									try {
+										prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
+									} catch (NumberFormatException e) {
+										prefs.edit().remove("range").commit();
+									}
+									netServ.socket.sendMessage(
+											constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
 					}
 				}
 			});

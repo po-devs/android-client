@@ -114,7 +114,7 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
-		MoveInfo.loadPokeMoves();
+		MoveInfo.forceNewGen();
     }
     
     private void updateTeam() {

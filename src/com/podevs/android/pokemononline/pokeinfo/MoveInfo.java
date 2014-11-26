@@ -337,6 +337,7 @@ public class MoveInfo {
 	static boolean loadNewGen = true;
 	public static void loadGen(int Gen, int subGen) {
 		if (loadNewGen) {
+			testLoad();
 			thisGen = Gen;
 			thisSubGen = subGen;
 			for (int i = 0; i < 5; i = i + 1) {
@@ -352,48 +353,45 @@ public class MoveInfo {
 		loadNewGen = true;
 	}
 
-	public static void setNewGen(int Gen, int subGen) {
+	public static void forceNewGen() {
+		testLoad();
 		loadNewGen = true;
+		lastGen = 0;
+		lastSubGen = 0;
+	}
+
+	public static void forceSetGen(int Gen, int SubGen) {
 		thisGen = Gen;
-		thisSubGen = subGen;
+		thisSubGen = SubGen;
+		loadNewGen = true;
 	}
 
 	public static String name(int num) {
-		testLoad(num);
-
 		return moveNames.get(num).name;
 	}
 
-	private static void testLoad(int num) {
+	private static void testLoad() {
 		if (moveNames == null) {
 			loadPokeMoves();
 		}
 	}
 
-        public static byte damageClass(int num) {
-            testLoad(num);
-
-            return moveNames.get(num).damageClass;
-        }
+    public static byte damageClass(int num) {
+        return moveNames.get(num).damageClass;
+    }
 
 	public static byte type(int num) {
-		testLoad(num);
-
+		if (loadNewGen) {
+			loadGen(thisGen,thisSubGen);
+		}
 		return moveNames.get(num).type;
 	}
 
 	public static byte pp(int num) {
-		testLoad(num);
-
-
 		return moveNames.get(num).pp;
 	}
 
 	public static byte accuracy(int num) {
-		testLoad(num);
-		/*
-		loadPokeAccuracies();
-		*/
 		return moveNames.get(num).accuracy;
 	}
 
@@ -407,8 +405,6 @@ public class MoveInfo {
 	}
 
 	public static byte power(int num) {
-		testLoad(num);
-
 		return moveNames.get(num).power;
 	}
 
@@ -424,7 +420,7 @@ public class MoveInfo {
 	}
 
 	public static String effect(int num) {
-		testLoad(num);
+		testLoad();
 		loadPokeEffects();
 
 		String effect = moveNames.get(num).effect;
