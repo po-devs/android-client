@@ -113,6 +113,8 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+
+		MoveInfo.loadPokeMoves();
     }
     
     private void updateTeam() {
@@ -320,8 +322,8 @@ public class TeambuilderActivity extends FragmentActivity {
     }
 
 	public void onGenChanged() {
+		MoveInfo.newGen();
 		updateTeam();
 		PokemonInfo.resetGen6();
-		MoveInfo.newGen();
 	}
 }

@@ -575,7 +575,7 @@ public class MoveInfo {
             });
         }
 */
-	private static void loadPokeMoves() {
+	public static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();
 		InfoFiller.fill("db/moves/moves.txt", new Filler() {
 			public void fill(int i, String b) {
