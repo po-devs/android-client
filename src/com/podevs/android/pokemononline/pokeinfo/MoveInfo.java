@@ -223,10 +223,10 @@ public class MoveInfo {
 					// Gen IV to V
 					// Gen V to VI
 					case Gen1: {
-						if (lastGen != 1) {
+
 							loadPokeTypes("db/moves/1G/type.txt");
-							return;
-						}
+
+
 					}
 					case Gen2: {
 						if (!(lastGen > 1 && 5 > lastGen)) {
@@ -350,12 +350,12 @@ public class MoveInfo {
 	}
 
 	public static void newGen() {
+		testLoad();
 		loadNewGen = true;
 	}
 
 	public static void forceNewGen() {
 		testLoad();
-		loadNewGen = true;
 		lastGen = 0;
 		lastSubGen = 0;
 	}
@@ -363,7 +363,6 @@ public class MoveInfo {
 	public static void forceSetGen(int Gen, int SubGen) {
 		thisGen = Gen;
 		thisSubGen = SubGen;
-		loadNewGen = true;
 	}
 
 	public static String name(int num) {

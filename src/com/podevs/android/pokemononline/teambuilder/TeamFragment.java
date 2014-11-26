@@ -44,7 +44,6 @@ public class TeamFragment extends Fragment {
 				}
 			});
 		}
-		
 		updateTeam();
 		
 		return v;
@@ -57,7 +56,7 @@ public class TeamFragment extends Fragment {
 	
 	public void updateTeam() {
 		Team team = activity().team;
-		MoveInfo.checkGenChanges(3, team.gen.num, team.gen.subNum); // 3 is type
+		MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
 		for (int i = 0; i < 6; i++) {
 			pokeList[i].update(team.poke(i), true);
 		}

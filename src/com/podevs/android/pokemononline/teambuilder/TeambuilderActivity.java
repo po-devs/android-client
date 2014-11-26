@@ -114,6 +114,7 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
+		MoveInfo.newGen();
 		MoveInfo.forceNewGen();
     }
     
@@ -156,6 +157,8 @@ public class TeambuilderActivity extends FragmentActivity {
     					String file = lw.getItemAtPosition(w).toString();
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
     					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
+						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+						MoveInfo.newGen();
     					updateTeam();
     				}
     			});
