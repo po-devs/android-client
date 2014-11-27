@@ -78,13 +78,6 @@
             android:layout_alignParentTop="true"
             android:text="@string/connect" >
         </Button>
-        <Button
-                android:id="@+id/settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 
     <LinearLayout

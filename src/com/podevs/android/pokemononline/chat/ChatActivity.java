@@ -79,7 +79,6 @@ public class ChatActivity extends Activity {
 		PlayerInfo,
 		ChallengeMode,
 		ChooseTierMode,
-		TeamSelection,
 		AskForName
 	}
 	
@@ -112,6 +111,7 @@ public class ChatActivity extends Activity {
 	private boolean loading = true;
 	private SharedPreferences prefs;
 	private boolean isChangingNames = false;
+	private String newNickname = null;
 	
 	class TierAlertDialog extends AlertDialog {
 		public Tier parentTier = null;
@@ -159,57 +159,6 @@ public class ChatActivity extends Activity {
 					}
 				}
 			});
-			return lv;
-		}
-	}
-
-	class LoadTeamDialog extends AlertDialog {
-		final ArrayList<String> teamList = new ArrayList<String>(Arrays.asList(getSharedPreferences("team", 0).getString("files", "team.xml").split("\\|")));
-		public Tier parentTier = null;
-		public ListView dialogListView = null;
-
-		protected LoadTeamDialog(Context context, Tier t) {
-			super(context);
-			parentTier = t;
-			dialogListView = makeTeamListView();
-			setTitle(R.string.load_team);
-			setView(dialogListView);
-			setIcon(0); // Don't want an icon
-		}
-
-		@Override
-		public void onBackPressed() {dismiss();}
-
-		ListView makeTeamListView() {
-			ListView lv = new ListView(ChatActivity.this);
-			lv.setAdapter(new ArrayAdapter<String>(ChatActivity.this, R.layout.tier_list_item, teamList));
-			lv.setOnItemClickListener(new OnItemClickListener() {
-				public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
-					Team test = new PokeParser(ChatActivity.this, teamList.get(position)).getTeam();
-					netServ.meLoginPlayer.team = test;
-						// make some toast message about it being invalid or some shit.
-					Integer testInt = position;
-					Long testLong = id;
-					byte Gen = test.gen.num;
-					byte SubGen = test.gen.subNum;
-					String tier = test.defaultTier;
-					Baos team = new Baos();
-					team.write(0);
-					team.putBaos(test);
-					team.write(1);
-					team.putString(netServ.me.nick);
-					team.write(2);
-					team.putBaos(test);
-					netServ.socket.sendMessage(team, Command.SendTeam);
-					Baos b = new Baos();
-					b.write(0); //The team for which to change the tier. Since we handle only one team...
-
-					b.putString(test.defaultTier);
-					netServ.socket.sendMessage(b, Command.TierSelection);
-					Toast.makeText(ChatActivity.this, "Team Selected: " + teamList.get(position), Toast.LENGTH_SHORT).show();
-					dismiss();
-					}
-				});
 			return lv;
 		}
 	}
@@ -572,7 +521,7 @@ public class ChatActivity extends Activity {
 										challenge.destTier,
 										challenge.clauses,
 										challenge.mode),
-										Command.ChallengeStuff);
+								Command.ChallengeStuff);
 					// Without removeDialog() the dialog is reused and can only
 					// be modified in onPrepareDialog(). This dialog changes
 					// so much that I doubt it's worth the code to deal with
@@ -601,29 +550,30 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
-			builder.setMessage("Please enter your password " + netServ.me.nick() + ".")
-			.setCancelable(true)
-			.setView(passField)
-			.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					if (netServ != null) {
-						netServ.sendPass(passField.getText().toString());
-						registering = false;
-						netServ.registered = true;
-						if (isChangingNames) {
-							isChangingNames = false;
-							Toast.makeText(ChatActivity.this, "Switched names to " + netServ.me.nick() + ".", Toast.LENGTH_SHORT).show();
+			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
+					.setCancelable(true)
+					.setView(passField)
+					.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (netServ != null) {
+								netServ.sendPass(passField.getText().toString());
+								registering = false;
+								netServ.registered = true;
+								if (isChangingNames) {
+									isChangingNames = false;
+									Toast.makeText(ChatActivity.this, "Switched names to " + newNickname + ".", Toast.LENGTH_SHORT).show();
+									newNickname = null;
+								}
+							}
+							removeDialog(id);
 						}
-					}
-					removeDialog(id);
-				}
-			})
-			.setOnCancelListener(new OnCancelListener() {
-				public void onCancel(DialogInterface dialog) {
-					removeDialog(id);
-					if (!registering) {
-						disconnect();
-					}
+					})
+					.setOnCancelListener(new OnCancelListener() {
+						public void onCancel(DialogInterface dialog) {
+							removeDialog(id);
+							if (!registering) {
+								disconnect();
+							}
 				}
 			});
 			if (netServ != null) {
@@ -652,6 +602,7 @@ public class ChatActivity extends Activity {
 									Toast.makeText(ChatActivity.this, "Please input a valid name", Toast.LENGTH_SHORT).show();
 								} else {
 									isChangingNames = true;
+									newNickname = newName;
 									netServ.changeConnect(newName);
 								}
 								removeDialog(id);
@@ -674,7 +625,7 @@ public class ChatActivity extends Activity {
 				return dialog;
 		} case ConfirmDisconnect: {
 			builder.setMessage("Really disconnect?")
-			.setCancelable(true)
+					.setCancelable(true)
 			.setPositiveButton("Disconnect", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					disconnect();
@@ -714,12 +665,6 @@ public class ChatActivity extends Activity {
 				return null;
 			}
 			return new TierAlertDialog(this, netServ.superTier);
-		} case TeamSelection: {
-			if (netServ == null) {
-				return null;
-			}
-			return new LoadTeamDialog(this, netServ.superTier);
-
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
             ImageView[] pPokeIcons = new ImageView[6];
@@ -910,9 +855,6 @@ public class ChatActivity extends Activity {
 					registering = true;
 					netServ.socket.sendMessage(new Baos(), Command.Register);
 				}
-				break;
-			case R.id.load_team:
-				showDialog(ChatDialog.TeamSelection.ordinal());
 				break;
 			case R.id.changeName:
 				showDialog(ChatDialog.AskForName.ordinal());
