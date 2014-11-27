@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.pokemononline.pokeinfo.InfoFiller.FillerByte;
 
-public class MoveInfo {
+public class MoveInfo extends GenInfo {
 	public static class Move {
 		public String name;
 		byte damageClass = 0;
@@ -26,7 +26,7 @@ public class MoveInfo {
 	private static ArrayList<Move> moveNames = null;
 	private static SparseArray<String> moveMessages = null;
 
-	private static int thisGen = 6;
+	private static int thisGen = genMax();
 	private static int thisSubGen = 6;
 
 	public static void newGen() {
