@@ -351,7 +351,7 @@ public class NetworkService extends Service {
 				
 				String defaultChannel = null;
 				Set<String> autoJoinChannels = null;
-				
+
 				SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);
 				String key = NetworkService.this.ip + ":" + NetworkService.this.port;
 				
@@ -414,6 +414,7 @@ public class NetworkService extends Service {
 					
 					if (halted) {
 						return;
+
 					}
 					
 					writeMessage("(" + StringUtilities.timeStamp() + ") Disconnected from server");
@@ -423,7 +424,13 @@ public class NetworkService extends Service {
 			}
 		}).start();
 	}
-	
+	public void changeConnect(String newNick) {
+		Baos b = new Baos();
+		b.write(1); // Why do this? 'Cause magic - MM
+		b.putString(newNick);
+		socket.sendMessage(b, Command.SendTeam);
+	}
+
 	private void reconnect() {
 		/* Impossible to reconnect with -1 id */
 		if (myid == -1 || reconnectSecret == null) {

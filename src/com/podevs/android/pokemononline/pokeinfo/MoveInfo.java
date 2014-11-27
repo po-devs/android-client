@@ -26,42 +26,53 @@ public class MoveInfo {
 	private static ArrayList<Move> moveNames = null;
 	private static SparseArray<String> moveMessages = null;
 
-	public static String name(int num) {
-		testLoad(num);
+	private static int thisGen = 6;
+	private static int thisSubGen = 6;
 
+	public static void newGen() {
+		moveNames = null; // Because 0 will not overwrite, i.e. type Normal (0) will not overwrite already saved type Fairy (17).
+		testLoad();
+		pploaded = false;
+		damageClassloaded = false;
+		powerloaded = false;
+		typeloaded = false;
+		accuracyloaded = false;
+		effectsloaded = false;
+	}
+
+	public static void forceSetGen(int Gen, int SubGen) {
+		testLoad();
+		thisGen = Gen;
+		thisSubGen = SubGen;
+	}
+
+	public static String name(int num) {
 		return moveNames.get(num).name;
 	}
 
-	private static void testLoad(int num) {
+	private static void testLoad() {
 		if (moveNames == null) {
 			loadPokeMoves();
 		}
 	}
 
-        public static byte damageClass(int num) {
-            testLoad(num);
-            loadDamageClasses();
-            return moveNames.get(num).damageClass;
-        }
+    public static byte damageClass(int num) {
+		loadDamageClasses();
+        return moveNames.get(num).damageClass;
+    }
 
 	public static byte type(int num) {
-		testLoad(num);
 		loadPokeTypes();
-
 		return moveNames.get(num).type;
 	}
 
 	public static byte pp(int num) {
-		testLoad(num);
 		loadPokePPs();
-		loadDamageClasses();
 		return moveNames.get(num).pp;
 	}
 
 	public static byte accuracy(int num) {
-		testLoad(num);
 		loadPokeAccuracies();
-
 		return moveNames.get(num).accuracy;
 	}
 
@@ -75,9 +86,7 @@ public class MoveInfo {
 	}
 
 	public static byte power(int num) {
-		testLoad(num);
 		loadPokePowers();
-
 		return moveNames.get(num).power;
 	}
 
@@ -93,7 +102,7 @@ public class MoveInfo {
 	}
 
 	public static String effect(int num) {
-		testLoad(num);
+		testLoad();
 		loadPokeEffects();
 
 		String effect = moveNames.get(num).effect;
@@ -118,6 +127,7 @@ public class MoveInfo {
 		if (effectsloaded) {
 			return;
 		}
+		testLoad();
 		effectsloaded = true;
 		InfoFiller.fill("db/moves/6G/effect.txt", new Filler() {
 			public void fill(int i, String s) {
@@ -131,8 +141,10 @@ public class MoveInfo {
 		if (pploaded) {
 			return;
 		}
+		testLoad();
 		pploaded = true;
-		InfoFiller.fill("db/moves/6G/pp.txt", new FillerByte() {
+		String path = "db/moves/" + thisGen + "G/pp.txt";
+		InfoFiller.fill(path, new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).pp = b;
@@ -145,11 +157,22 @@ public class MoveInfo {
 		if (accuracyloaded) {
 			return;
 		}
+		testLoad();
 		accuracyloaded = true;
-		InfoFiller.fill("db/moves/6G/accuracy.txt", new FillerByte() {
+		String path = "db/moves/" + thisGen + "G/accuracy.txt";
+		InfoFiller.fill(path, new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).accuracy = b;
+			}
+		});
+	}
+
+	private static void loadPokePowers(String path) {
+		InfoFiller.fill(path, new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).power = b;
 			}
 		});
 	}
@@ -159,8 +182,10 @@ public class MoveInfo {
 		if (powerloaded) {
 			return;
 		}
+		testLoad();
 		powerloaded = true;
-		InfoFiller.fill("db/moves/6G/power.txt", new FillerByte() {
+		String path = "db/moves/" + thisGen + "G/power.txt";
+		InfoFiller.fill(path, new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).power = b;
@@ -173,8 +198,10 @@ public class MoveInfo {
 		if (typeloaded) {
 			return;
 		}
+		testLoad();
 		typeloaded = true;
-		InfoFiller.fill("db/moves/6G/type.txt", new FillerByte() {
+		String path = "db/moves/" + thisGen + "G/type.txt";
+		InfoFiller.fill(path, new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).type = b;
@@ -187,8 +214,10 @@ public class MoveInfo {
             if (damageClassloaded) {
                 return;
             }
+			testLoad();
             damageClassloaded = true;
-            InfoFiller.fill("db/moves/6G/damage_class.txt", new FillerByte() {
+			String path = "db/moves/" + thisGen + "G/damage_class.txt";
+            InfoFiller.fill(path, new FillerByte() {
                 @Override
                 void fillByte(int i, byte b) {
                     moveNames.get(i).damageClass = b;

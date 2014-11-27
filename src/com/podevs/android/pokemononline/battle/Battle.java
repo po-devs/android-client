@@ -10,6 +10,7 @@ import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.poke.PokeEnums.Status;
 import com.podevs.android.pokemononline.poke.ShallowBattlePoke;
 import com.podevs.android.pokemononline.poke.UniqueID;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
@@ -28,6 +29,8 @@ public class Battle extends SpectatingBattle {
 
 	public Battle(BattleConf bc, Bais msg, PlayerInfo p1, PlayerInfo p2, int meID, int bID, NetworkService ns) {
 		super(bc, p1, p2, bID, ns);
+
+		MoveInfo.forceSetGen(conf.gen.num, conf.gen.subNum);
 
 		myTeam = new BattleTeam(msg, conf.gen);
 

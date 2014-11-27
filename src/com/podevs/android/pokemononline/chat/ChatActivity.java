@@ -1,9 +1,6 @@
 package com.podevs.android.pokemononline.chat;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -62,6 +59,8 @@ import com.podevs.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.player.PlayerInfo.TierStanding;
 import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
+import com.podevs.android.pokemononline.poke.PokeParser;
+import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.registry.RegistryActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
@@ -79,7 +78,8 @@ public class ChatActivity extends Activity {
 		TierSelection,
 		PlayerInfo,
 		ChallengeMode,
-		ChooseTierMode
+		ChooseTierMode,
+		AskForName
 	}
 	
 	public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -110,6 +110,8 @@ public class ChatActivity extends Activity {
 	private Channel lastClickedChannel;
 	private boolean loading = true;
 	private SharedPreferences prefs;
+	private boolean isChangingNames = false;
+	private String newNickname = null;
 	
 	class TierAlertDialog extends AlertDialog {
 		public Tier parentTier = null;
@@ -160,7 +162,7 @@ public class ChatActivity extends Activity {
 			return lv;
 		}
 	}
-	
+
 	View playersLayout, chatLayout, channelsLayout;
 	private class MyAdapter extends PagerAdapter
 	{
@@ -465,7 +467,7 @@ public class ChatActivity extends Activity {
 			disconnect();
 		}
 	}
-	
+
 	String challengedTier = "";
 	boolean registering = false;
 	
@@ -519,7 +521,7 @@ public class ChatActivity extends Activity {
 										challenge.destTier,
 										challenge.clauses,
 										challenge.mode),
-										Command.ChallengeStuff);
+								Command.ChallengeStuff);
 					// Without removeDialog() the dialog is reused and can only
 					// be modified in onPrepareDialog(). This dialog changes
 					// so much that I doubt it's worth the code to deal with
@@ -548,26 +550,30 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
-			builder.setMessage("Please enter your password " + netServ.me.nick() + ".")
-			.setCancelable(true)
-			.setView(passField)
-			.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					if (netServ != null) {
-						netServ.sendPass(passField.getText().toString());
-						
-						registering = false;
-						netServ.registered = true;
-					}
-					removeDialog(id);
-				}
-			})
-			.setOnCancelListener(new OnCancelListener() {
-				public void onCancel(DialogInterface dialog) {
-					removeDialog(id);
-					if (!registering) {
-						disconnect();
-					}
+			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
+					.setCancelable(true)
+					.setView(passField)
+					.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							if (netServ != null) {
+								netServ.sendPass(passField.getText().toString());
+								registering = false;
+								netServ.registered = true;
+								if (isChangingNames) {
+									isChangingNames = false;
+									Toast.makeText(ChatActivity.this, "Switched names to " + newNickname + ".", Toast.LENGTH_SHORT).show();
+									newNickname = null;
+								}
+							}
+							removeDialog(id);
+						}
+					})
+					.setOnCancelListener(new OnCancelListener() {
+						public void onCancel(DialogInterface dialog) {
+							removeDialog(id);
+							if (!registering) {
+								disconnect();
+							}
 				}
 			});
 			if (netServ != null) {
@@ -583,9 +589,43 @@ public class ChatActivity extends Activity {
 				}
 			});
 			return dialog;
+		} case AskForName: {
+				final EditText nameField = new EditText(this);
+				nameField.setInputType(InputType.TYPE_CLASS_TEXT);
+				builder.setMessage("Please enter a new name")
+						.setCancelable(true)
+						.setView(nameField)
+						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								String newName = nameField.getText().toString();
+								if (newName.length() == 0) {
+									Toast.makeText(ChatActivity.this, "Please input a valid name", Toast.LENGTH_SHORT).show();
+								} else {
+									isChangingNames = true;
+									newNickname = newName;
+									netServ.changeConnect(newName);
+								}
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						});
+				final AlertDialog dialog = builder.create();
+				nameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+						}
+					}
+				});
+				return dialog;
 		} case ConfirmDisconnect: {
 			builder.setMessage("Really disconnect?")
-			.setCancelable(true)
+					.setCancelable(true)
 			.setPositiveButton("Disconnect", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					disconnect();
@@ -598,24 +638,24 @@ public class ChatActivity extends Activity {
 			range.append("" + prefs.getInt("range", 200));
 			range.setInputType(InputType.TYPE_CLASS_NUMBER);
 			range.setHint("Range");
-			builder.setTitle(R.string.find_a_battle)
-			.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
-				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-					prefs.edit().putBoolean("findOption" + which, isChecked).commit();
-				}
-			})
+				builder.setTitle(R.string.find_a_battle)
+						.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
+							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
+							}
+						})
 			.setView(range)
-			.setPositiveButton("Find", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					if (netServ != null && netServ.socket.isConnected()) {
-						netServ.findingBattle = true;
-						try {
-							prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
-						} catch (NumberFormatException e) {
-							prefs.edit().remove("range").commit();
-						}
-						netServ.socket.sendMessage(
-								constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
+						.setPositiveButton("Find", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								if (netServ != null && netServ.socket.isConnected()) {
+									netServ.findingBattle = true;
+									try {
+										prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
+									} catch (NumberFormatException e) {
+										prefs.edit().remove("range").commit();
+									}
+									netServ.socket.sendMessage(
+											constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
 					}
 				}
 			});
@@ -791,34 +831,40 @@ public class ChatActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
-		case R.id.chat_disconnect:
-			showDialog(ChatDialog.ConfirmDisconnect.ordinal());
-    		break;
-		case R.id.findbattle:
-			dealWithFindBattle();
-			break;
-		case R.id.preferences:
-			//TODO: Make actual preferences menu
-			// Launch Preference activity
-			//Toast.makeText(ChatActivity.this, "Preferences not Implemented Yet",
-            //        Toast.LENGTH_SHORT).show();
-			showDialog(ChatDialog.TierSelection.ordinal());
-			break;
-		case R.id.idle:
-			boolean checked = !item.isChecked();
-			
-			getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).commit();
-			netServ.socket.sendMessage(new Baos().putFlags(new boolean[]{netServ.me.hasLadderEnabled, checked}), Command.OptionsChanged);
-			break;
-		case R.id.register:
-			if (netServ != null) {
-				registering = true;
-				netServ.socket.sendMessage(new Baos(), Command.Register);
+			case R.id.chat_disconnect:
+				showDialog(ChatDialog.ConfirmDisconnect.ordinal());
+				break;
+			case R.id.findbattle:
+				dealWithFindBattle();
+				break;
+			case R.id.preferences:
+				//TODO: Make actual preferences menu
+				// Launch Preference activity
+				//Toast.makeText(ChatActivity.this, "Preferences not Implemented Yet",
+				//        Toast.LENGTH_SHORT).show();
+				showDialog(ChatDialog.TierSelection.ordinal());
+				break;
+			case R.id.idle:
+				boolean checked = !item.isChecked();
+
+				getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).commit();
+				netServ.socket.sendMessage(new Baos().putFlags(new boolean[]{netServ.me.hasLadderEnabled, checked}), Command.OptionsChanged);
+				break;
+			case R.id.register:
+				if (netServ != null) {
+					registering = true;
+					netServ.socket.sendMessage(new Baos(), Command.Register);
+				}
+				break;
+			case R.id.changeName:
+				showDialog(ChatDialog.AskForName.ordinal());
+				break;
 			}
-			break;
-    	}
-    	return true;
-    }
+		return true;
+	}
+
+	private void dealWithNameChange(String nick) {
+	}
 
     private void dealWithFindBattle() {
     	if (netServ.socket.isConnected()) {

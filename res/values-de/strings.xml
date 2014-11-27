@@ -17,6 +17,7 @@
     <string name="cancel">Abbrechen</string>
     <string name="no">Nein</string>
     <string name="disconnect">Trennen</string>
+    <string name="change_name">Name ändern</string>
     <string name="suggest_draw">Unentschieden vorschlagen</string>
     <string name="return_to_chat">Zurück zum Chat</string>
     <string name="player_list">Spieler-Liste</string>

@@ -17,6 +17,7 @@
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
     <string name="disconnect">Disconnect</string>
+    <string name="change_name">Change Name</string>
     <string name="suggest_draw">Suggest Draw</string>
     <string name="return_to_chat">Return to Chat</string>
     <string name="player_list">Player List</string>

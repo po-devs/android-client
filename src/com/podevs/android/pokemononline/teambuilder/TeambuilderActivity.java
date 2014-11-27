@@ -24,6 +24,7 @@ import com.podevs.android.pokemononline.poke.PokeParser;
 import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.poke.TeamPoke;
 import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
+import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -153,6 +154,7 @@ public class TeambuilderActivity extends FragmentActivity {
     					String file = lw.getItemAtPosition(w).toString();
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
     					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
+						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
     					updateTeam();
     				}
     			});
@@ -319,7 +321,9 @@ public class TeambuilderActivity extends FragmentActivity {
     }
 
 	public void onGenChanged() {
+		MoveInfo.newGen();
+		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
 		updateTeam();
-		PokemonInfo.resetgen6();
+		PokemonInfo.resetGen6();
 	}
 }
