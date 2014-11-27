@@ -30,7 +30,7 @@ public class MoveInfo {
 	private static int thisSubGen = 6;
 
 	public static void newGen() {
-		moveNames = null;
+		moveNames = null; // Because 0 will not overwrite, i.e. type Normal (0) will not overwrite already saved type Fairy (17).
 		testLoad();
 		pploaded = false;
 		damageClassloaded = false;
@@ -225,7 +225,7 @@ public class MoveInfo {
             });
         }
 
-	public static void loadPokeMoves() {
+	private static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();
 		InfoFiller.fill("db/moves/moves.txt", new Filler() {
 			public void fill(int i, String b) {
