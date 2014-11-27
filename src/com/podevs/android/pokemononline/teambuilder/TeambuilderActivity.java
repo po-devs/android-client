@@ -113,9 +113,6 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
-
-		MoveInfo.newGen();
-		MoveInfo.forceNewGen();
     }
     
     private void updateTeam() {
@@ -158,7 +155,6 @@ public class TeambuilderActivity extends FragmentActivity {
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
     					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
-						MoveInfo.newGen();
     					updateTeam();
     				}
     			});
@@ -326,6 +322,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 	public void onGenChanged() {
 		MoveInfo.newGen();
+		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
 		updateTeam();
 		PokemonInfo.resetGen6();
 	}
