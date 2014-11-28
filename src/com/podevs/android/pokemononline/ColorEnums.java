@@ -76,6 +76,7 @@ public class ColorEnums {
 			case Sunny: color = TypeColor.Fire.toString(); break;
             case HeavyRain: color = TypeColor.Water.toString(); break;
             case HeavySun: color = TypeColor.Fire.toString(); break;
+				case Delta: color = TypeColor.Flying.toString(); break;
 			default: color = TypeColor.Normal.toString(); break;
 			}
 		}

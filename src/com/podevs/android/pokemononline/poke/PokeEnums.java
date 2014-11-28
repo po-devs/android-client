@@ -122,7 +122,8 @@ public class PokeEnums {
 		SandStorm,
 		Sunny,
         HeavySun,
-        HeavyRain
+        HeavyRain,
+		Delta  // delta stream
 	}
 	
 	public enum WeatherState {
