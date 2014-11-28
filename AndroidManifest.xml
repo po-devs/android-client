@@ -3,7 +3,7 @@
     package="com.podevs.android.pokemononline"
     android:installLocation="auto"
     android:versionCode="39"
-    android:versionName="2.5.0" >
+    android:versionName="2.5.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
