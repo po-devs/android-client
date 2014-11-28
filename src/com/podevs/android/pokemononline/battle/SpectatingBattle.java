@@ -496,6 +496,7 @@ public class SpectatingBattle {
 				case Rain: message = "The rain stopped!"; break;
                 case HeavySun: message = "The intense sunlight faded!"; break;
                 case HeavyRain: message = "The heavy downpour stopped!"; break;
+					case Delta: message = "The mysterious air current has dissipated!"; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
@@ -517,6 +518,7 @@ public class SpectatingBattle {
 				case Rain: message = "Rain continues to fall!"; break;
                 case HeavySun: message = "The intense sunlight continues to shine!"; break;
                 case HeavyRain: message = "The heavy downpour continues!"; break;
+					case Delta: message = "A mysterious air current is protecting Flying-type Pokémon."; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
