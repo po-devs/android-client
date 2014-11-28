@@ -729,6 +729,10 @@ public class NetworkService extends Service {
 								Log.e(TAG, "Received message for nonexistent channel");
 							} else {
 								chan.writeToHist(message, left, right);
+								if (chan != joinedChannels.getFirst()) {
+									chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+									chan.flashed = true;
+								}
 							}
 						}
 						break;
