@@ -111,6 +111,7 @@ public class ChatActivity extends Activity {
 	private SharedPreferences prefs;
 	private boolean isChangingNames = false;
 	private String newNickname = null;
+	private boolean cancelScroll = false;
 	
 	class TierAlertDialog extends AlertDialog {
 		public Tier parentTier = null;
@@ -408,17 +409,26 @@ public class ChatActivity extends Activity {
 					messageAdapter.lastSeen++;
 				}
 				messageAdapter.notifyDataSetChanged();
-				if (chatView.getLastVisiblePosition() + delta == top || !ChatActivity.this.hasWindowFocus()) {
-					chatView.setSelection(messageAdapter.getCount() - 1);
+				Integer test = chatView.getLastVisiblePosition();
+				cancelScroll = false;
+				if(test + 1 < top) {
+					cancelScroll = true;
+				}
+				if(!cancelScroll) {
+					if (chatView.getLastVisiblePosition() + delta == top || !ChatActivity.this.hasWindowFocus()) {
+						chatView.setSelection(messageAdapter.getCount() - 1);
+					}
 				}
 				chatViewSwitcher.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-				    public void onGlobalLayout() {
-				    	chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				        int heightDiff = chatViewSwitcher.getRootView().getHeight() - chatViewSwitcher.getHeight();
-				        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-				        	chatView.setSelection(messageAdapter.getCount() - 1);
-				        }
-				     }
+					public void onGlobalLayout() {
+						chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+						int heightDiff = chatViewSwitcher.getRootView().getHeight() - chatViewSwitcher.getHeight();
+						if(!cancelScroll) {
+							if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+								chatView.setSelection(messageAdapter.getCount() - 1);
+							}
+						}
+					}
 				});
 				
 	            synchronized(this) {
