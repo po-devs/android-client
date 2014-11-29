@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:title="@string/closePM" android:id="@+id/closePM" android:icon="@drawable/content_remove" />
+    <item
+        android:id="@+id/closePM"
+        android:title="@string/closePM"
+        android:icon="@drawable/content_remove">
+    </item>
+    <item
+        android:id="@+id/ignorePlayer"
+        android:checkable="true"
+        android:title="@string/ignorePlayer">
+    </item>
 </menu>

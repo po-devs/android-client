@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.podevs.android.pokemononline.ColorEnums.TypeColor;
 import com.podevs.android.pokemononline.poke.Move;
+import com.podevs.android.pokemononline.pokeinfo.DamageClassInfo;
 import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
 import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
@@ -61,6 +62,7 @@ public class BattleMove implements SerializeBytes, Move {
 		String s = "";
 		s += "Power: " + MoveInfo.powerString(num);
 		s += "\nAccuracy: " + MoveInfo.accuracyString(num);
+		s += "\nClass: " + DamageClassInfo.name(MoveInfo.damageClass(num));
 		s += "\n";
 		s += "\nEffect: " + MoveInfo.effect(num);
 		return s;
