@@ -409,13 +409,13 @@ public class ChatActivity extends Activity {
 					messageAdapter.lastSeen++;
 				}
 				messageAdapter.notifyDataSetChanged();
-				Integer test = chatView.getLastVisiblePosition();
+				Integer position = chatView.getLastVisiblePosition();
 				cancelScroll = false;
-				if(test + 1 < top) {
+				if(position + 1 < top) {
 					cancelScroll = true;
 				}
 				if(!cancelScroll) {
-					if (chatView.getLastVisiblePosition() + delta == top || !ChatActivity.this.hasWindowFocus()) {
+					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
 						chatView.setSelection(messageAdapter.getCount() - 1);
 					}
 				}
@@ -615,6 +615,7 @@ public class ChatActivity extends Activity {
 								} else {
 									isChangingNames = true;
 									newNickname = newName;
+									netServ.registered = false;
 									netServ.changeConnect(newName);
 								}
 								removeDialog(id);
