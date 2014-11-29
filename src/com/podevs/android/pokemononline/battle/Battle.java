@@ -30,7 +30,6 @@ public class Battle extends SpectatingBattle {
 	public Battle(BattleConf bc, Bais msg, PlayerInfo p1, PlayerInfo p2, int meID, int bID, NetworkService ns) {
 		super(bc, p1, p2, bID, ns);
 
-		MoveInfo.newGen();
 		MoveInfo.forceSetGen(conf.gen.num, conf.gen.subNum);
 
 		myTeam = new BattleTeam(msg, conf.gen);

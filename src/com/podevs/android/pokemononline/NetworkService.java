@@ -6,7 +6,13 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -68,8 +74,7 @@ public class NetworkService extends Service {
 	public final ProtocolVersion version = new ProtocolVersion();
 	public ProtocolVersion serverVersion = version;
 	public boolean serverSupportsZipCompression = false;
-	private byte reconnectSecret[] = null;
-	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
+	private byte reconnectSecret[] = null; 
 
 	/**
 	 * Are we engaged in a battle?
@@ -686,9 +691,6 @@ public class NetworkService extends Service {
 			}
 			CharSequence message = msg.readString();
 			if (hasId) {
-				if (ignoreList.contains(pId)) {
-					break;
-				}
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
 				CharSequence name = playerName(pId);
 
@@ -727,10 +729,6 @@ public class NetworkService extends Service {
 								Log.e(TAG, "Received message for nonexistent channel");
 							} else {
 								chan.writeToHist(message, left, right);
-								if (chan != joinedChannels.getFirst()) {
-									chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
-									chan.flashed = true;
-								}
 							}
 						}
 						break;
@@ -821,9 +819,6 @@ public class NetworkService extends Service {
 			switch(ChallengeEnums.ChallengeDesc.values()[challenge.desc]) {
 			case Sent:
 				if (challenge.isValidChallenge(players)) {
-					if (ignoreList.contains(challenge.opponent)) {
-						break;
-					}
 					challenges.addFirst(challenge);
 					if (chatActivity != null && chatActivity.hasWindowFocus()) {
 						chatActivity.notifyChallenge();
@@ -916,9 +911,6 @@ public class NetworkService extends Service {
 			break;
 		} case SendPM: {
 			int playerId = msg.readInt();
-			if (ignoreList.contains(playerId)) {
-				break;
-			}
 			String message = msg.readString();
 			
 			dealWithPM(playerId, message);

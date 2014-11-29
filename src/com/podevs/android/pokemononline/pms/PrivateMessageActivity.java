@@ -115,16 +115,7 @@ public class PrivateMessageActivity extends Activity {
 			}
 			return true;
 		}
-		if (item.getItemId() == R.id.ignorePlayer) {
-			int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
-			if (netServ.ignoreList.contains(id)) {
-				netServ.ignoreList.remove(netServ.ignoreList.indexOf(id));
-				Toast.makeText(PrivateMessageActivity.this, "Unignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
-			} else {
-				netServ.ignoreList.add(id);
-				Toast.makeText(PrivateMessageActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
-			}
-		}
+		
 		return true;
 	}
 
@@ -144,15 +135,6 @@ public class PrivateMessageActivity extends Activity {
 		
 		if (adapter.getCount() <= 0) {
 			menu.removeItem(R.id.closePM);
-		}
-
-		if (netServ.ignoreList != null) {
-			int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
-			if (netServ.ignoreList.contains(id)) {
-				menu.findItem(R.id.ignorePlayer).setChecked(true);
-			} else {
-				menu.findItem(R.id.ignorePlayer).setChecked(false);
-			}
 		}
 		return true;
 	}
