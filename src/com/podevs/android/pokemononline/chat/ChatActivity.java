@@ -59,8 +59,6 @@ import com.podevs.android.pokemononline.battle.ChallengeEnums.Mode;
 import com.podevs.android.pokemononline.player.PlayerInfo;
 import com.podevs.android.pokemononline.player.PlayerInfo.TierStanding;
 import com.podevs.android.pokemononline.pms.PrivateMessageActivity;
-import com.podevs.android.pokemononline.poke.PokeParser;
-import com.podevs.android.pokemononline.poke.Team;
 import com.podevs.android.pokemononline.registry.RegistryActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
@@ -90,7 +88,8 @@ public class ChatActivity extends Activity {
 		JoinChannel,
 		LeaveChannel,
 		WatchBattle,
-		PrivateMessage;
+		PrivateMessage,
+		IgnorePlayer;
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -920,6 +919,13 @@ public class ChatActivity extends Activity {
 							.setIntent(new Intent().putExtra("battle", battleid));
 	    		}
     		}
+			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, "Ignore Player");
+			menu.findItem(ChatContext.IgnorePlayer.ordinal()).setCheckable(true);
+			if (netServ.ignoreList.contains(lastClickedPlayer.id)) {
+				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(true);
+			} else {
+				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(false);
+			}
     		break;
     	case R.id.channellisting:
     		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
@@ -936,6 +942,16 @@ public class ChatActivity extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
     	switch(ChatContext.values()[item.getItemId()]){
+		case IgnorePlayer:
+			Integer id = lastClickedPlayer.id;
+			if (netServ.ignoreList.contains(id)) {
+				netServ.ignoreList.remove(netServ.ignoreList.indexOf(id));
+				Toast.makeText(ChatActivity.this, "Unignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
+			} else {
+				netServ.ignoreList.add(id);
+				Toast.makeText(ChatActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
+			}
+			break;
     	case ChallengePlayer:
     		showDialog(ChatDialog.ChooseTierMode.ordinal());
     		break;

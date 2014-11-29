@@ -102,7 +102,6 @@ public class MoveInfo extends GenInfo {
 	}
 
 	public static String effect(int num) {
-		testLoad();
 		loadPokeEffects();
 
 		String effect = moveNames.get(num).effect;
@@ -129,7 +128,8 @@ public class MoveInfo extends GenInfo {
 		}
 		testLoad();
 		effectsloaded = true;
-		InfoFiller.fill("db/moves/6G/effect.txt", new Filler() {
+		String path = "db/moves/" + thisGen + "G/effect.txt";
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
 			}
