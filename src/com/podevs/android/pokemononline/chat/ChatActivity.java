@@ -409,13 +409,10 @@ public class ChatActivity extends Activity {
 					messageAdapter.lastSeen++;
 				}
 				messageAdapter.notifyDataSetChanged();
-				Integer test = chatView.getLastVisiblePosition();
-				cancelScroll = false;
-				if(test + 1 < top) {
-					cancelScroll = true;
-				}
+				Integer position = chatView.getLastVisiblePosition();
+				cancelScroll = (position + 1 < top)
 				if(!cancelScroll) {
-					if (chatView.getLastVisiblePosition() + delta == top || !ChatActivity.this.hasWindowFocus()) {
+					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
 						chatView.setSelection(messageAdapter.getCount() - 1);
 					}
 				}
@@ -833,8 +830,12 @@ public class ChatActivity extends Activity {
     		menu.findItem(R.id.idle).setChecked(getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false));
     	}
     	
-    	if (netServ != null && netServ.registered) {
-    		menu.findItem(R.id.register).setVisible(false);
+    	if (netServ != null) {
+			if (netServ.registered) {
+				menu.findItem(R.id.register).setVisible(false);
+			} else {
+				menu.findItem(R.id.register).setVisible(true);
+			}
     	}
     	
     	return true;
