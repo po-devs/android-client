@@ -61,6 +61,7 @@
     <string name="private_messages">Mensajes Privados</string>
     <!-- <string name="player">Jugador</string> -->
     <string name="closePM">Cerrar MP</string>
+    <string name="ignorePlayer">Ignorar Jugador</string>
     <string name="closeBattle">Abandonar Batalla</string>
     <string name="tierSelection">Seleccion de Tier</string>
     <string name="idle">Ocupado</string>

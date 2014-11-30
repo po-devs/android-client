@@ -61,6 +61,7 @@
     <string name="private_messages">Persönliche Nachicht</string>
     <!-- <string name="player">Player</string> -->
     <string name="closePM">Schließe PN</string>
+    <string name="ignorePlayer">Ignorieren Spieler</string>
     <string name="closeBattle">Verlasse Kampf</string>
     <string name="tierSelection">Tier-Auswahl</string>
     <string name="idle">Inaktiv</string>
