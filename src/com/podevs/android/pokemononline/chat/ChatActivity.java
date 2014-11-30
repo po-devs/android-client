@@ -410,7 +410,7 @@ public class ChatActivity extends Activity {
 				}
 				messageAdapter.notifyDataSetChanged();
 				Integer position = chatView.getLastVisiblePosition();
-				cancelScroll = (position + 1 < top)
+				cancelScroll = (position + 1 < top);
 				if(!cancelScroll) {
 					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
 						chatView.setSelection(messageAdapter.getCount() - 1);
