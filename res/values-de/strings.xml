@@ -24,7 +24,7 @@
     <string name="channel_list">Kanal-Liste</string>
     <string name="accept">Annehmen</string>
     <string name="decline">Ablehnen</string>
-    <string name="accept_challenge">Akzeptiere Herausforderung von</string>
+    <string name="accept_challenge">Herausforderung akzeptieren von</string>
     <string name="stat_attack">Angriff</string>
     <string name="stat_defense">Verteidigung</string>
     <string name="stat_spAttack">Sp. Ang</string>
@@ -48,7 +48,7 @@
     <string name="major_compat_break_warning">Es wird große Probleme mit der Verbindung zum Server geben, weil der Client nicht aktuell ist</string>
     <string name="minor_compat_break_warning">Es könnte kleine Probleme mit der Verbindung zum Server geben, weil der Client nicht aktuell ist</string>
     <string name="new_server_features_warning">Der Server hat viele neue Features, die nicht mit Android kompatibel sind!</string>
-    <string name="send_message">Sende Nachicht</string>
+    <string name="send_message">Nachicht senden</string>
     <string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
     <string name="struggle_attack">VERZWEIFLER</string>
     <string name="info_box">Info-Box</string>
@@ -61,6 +61,7 @@
     <string name="private_messages">Persönliche Nachicht</string>
     <!-- <string name="player">Player</string> -->
     <string name="closePM">Schließe PN</string>
+    <string name="ignorePlayer">Ignoriere Spieler</string>
     <string name="closeBattle">Verlasse Kampf</string>
     <string name="tierSelection">Tier-Auswahl</string>
     <string name="idle">Inaktiv</string>
@@ -71,7 +72,7 @@
     <string name="color">Farbe</string>
     <string name="team">Team</string>
     <string name="team_tier">Team-Tier</string>
-    <string name="edit_team">Bearbeite Team</string>
+    <string name="edit_team">Team bearbeiten</string>
     <string name="optional">Optional</string>
     <string name="trainerinfo">Trainer-Informationen</string>
     <string name="winningmessage">Nachicht bei Sieg</string>

@@ -420,6 +420,7 @@ public class NetworkService extends Service {
 		}).start();
 	}
 	public void changeConnect(String newNick) {
+		registered = false;
 		Baos b = new Baos();
 		b.write(1); // Why do this? 'Cause magic - MM
 		b.putString(newNick);
