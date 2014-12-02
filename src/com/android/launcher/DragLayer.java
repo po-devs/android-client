@@ -18,7 +18,7 @@ package com.android.launcher;
 
 import java.util.ArrayList;
 
-import com.podevs.android.pokemononline.R;
+import com.podevs.android.poAndroid.R;
 
 import android.app.ActivityManager;
 import android.content.Context;
