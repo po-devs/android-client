@@ -126,7 +126,7 @@
             android:layout_toLeftOf="@id/pokeSpriteA"
             android:background="@drawable/battle_border" >
 
-            <com.podevs.android.pokemononline.TextProgressBar
+            <com.podevs.android.poAndroid.TextProgressBar
                 android:id="@+id/hpBarA"
                 android:layout_width="fill_parent"
                 android:layout_height="10dp"
@@ -189,7 +189,7 @@
             android:layout_toRightOf="@id/pokeSpriteB"
             android:background="@drawable/battle_border" >
 
-            <com.podevs.android.pokemononline.TextProgressBar
+            <com.podevs.android.poAndroid.TextProgressBar
                 android:id="@+id/hpBarB"
                 android:layout_width="fill_parent"
                 android:layout_height="10dp"

@@ -1,9 +1,9 @@
-package com.podevs.android.pokemononline.test;
+package com.podevs.android.poAndroid.test;
 
 import android.test.AndroidTestCase;
 
-import com.podevs.android.pokemononline.player.PlayerProfile;
-import com.podevs.android.pokemononline.player.PlayerProfile.TrainerInfo;
+import com.podevs.android.poAndroid.player.PlayerProfile;
+import com.podevs.android.poAndroid.player.PlayerProfile.TrainerInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
