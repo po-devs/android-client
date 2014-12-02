@@ -1,16 +1,16 @@
-package com.podevs.android.pokemononline.test;
+package com.podevs.android.poAndroid.test;
 
 import android.test.AndroidTestCase;
 
-import com.podevs.android.pokemononline.poke.UniqueID;
-import com.podevs.android.pokemononline.pokeinfo.AbilityInfo;
-import com.podevs.android.pokemononline.pokeinfo.InfoConfig;
-import com.podevs.android.pokemononline.pokeinfo.ItemInfo;
-import com.podevs.android.pokemononline.pokeinfo.MoveInfo;
-import com.podevs.android.pokemononline.pokeinfo.PokemonInfo;
-import com.podevs.android.pokemononline.pokeinfo.StatsInfo.Stats;
-import com.podevs.android.pokemononline.pokeinfo.TypeInfo;
-import com.podevs.android.pokemononline.pokeinfo.TypeInfo.Type;
+import com.podevs.android.poAndroid.poke.UniqueID;
+import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
+import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
+import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
+import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
+import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 
 public class TestDatabase extends AndroidTestCase {
 	public void testPokemons() {

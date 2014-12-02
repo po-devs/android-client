@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.podevs.android.pokemononline"
+    package="com.podevs.android.poAndroid"
     android:installLocation="auto"
     android:versionCode="40"
     android:versionName="2.5.1" >
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.podevs.android.pokemononline.registry.RegistryActivity"
+            android:name="com.podevs.android.poAndroid.registry.RegistryActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -30,32 +30,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.podevs.android.pokemononline.battle.BattleActivity"
+            android:name="com.podevs.android.poAndroid.battle.BattleActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.podevs.android.pokemononline.teambuilder.TeambuilderActivity"
+            android:name="com.podevs.android.poAndroid.teambuilder.TeambuilderActivity"
             android:label="@string/teambuilder"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.podevs.android.pokemononline.chat.ChatActivity"
-            android:parentActivityName="com.podevs.android.pokemononline.registry.RegistryActivity"
+            android:name="com.podevs.android.poAndroid.chat.ChatActivity"
+            android:parentActivityName="com.podevs.android.poAndroid.registry.RegistryActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name="com.podevs.android.pokemononline.pms.PrivateMessageActivity"
+            android:name="com.podevs.android.poAndroid.pms.PrivateMessageActivity"
             android:label="@string/private_messages"
             android:launchMode="singleTask"
             android:theme="@style/DarkAppTheme" >
         </activity>
-        <activity android:name=".teambuilder.EditPokemonActivity"/>
+        <activity android:name="com.podevs.android.poAndroid.teambuilder.EditPokemonActivity"/>
 
-        <service android:name="com.podevs.android.pokemononline.NetworkService" />
-        <service android:name="com.podevs.android.pokemononline.registry.RegistryConnectionService" />
+        <service android:name="com.podevs.android.poAndroid.NetworkService" />
+        <service android:name="com.podevs.android.poAndroid.registry.RegistryConnectionService" />
     </application>
 
 </manifest>
