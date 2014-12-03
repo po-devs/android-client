@@ -44,6 +44,7 @@ import android.widget.TextView;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
@@ -291,6 +292,18 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		}
     	});
     }
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
 	
 	private Handler handler = new Handler();
     

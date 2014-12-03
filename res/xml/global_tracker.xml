@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="ga_sessionTimeout">300</integer>
-
-    <!-- Enable automatic Activity measurement -->
+    <string name="ga_appName">poAndroid</string>
+    <string name="ga_appVersion">Version 2.5.3.1</string>
+    <string name="ga_logLevel">verbose</string>
+    <string name="ga_sampleFrequency">50.0</string>
+    <integer name="ga_dispatchPeriod">1000</integer>
+    <bool name="ga_dryRun">false</bool>
     <bool name="ga_autoActivityTracking">true</bool>
 
-    <!-- The screen names that will appear in reports -->
-    <screenName name="com.google.android.gms.analytics.samples.mobileplayground.ScreenviewFragment">
-        AnalyticsSampleApp ScreenViewSampleScreen
-    </screenName>
-    <screenName name="com.google.android.gms.analytics.samples.mobileplayground.EcommerceFragment">
-        AnalyticsSampleApp EcommerceSampleScreen
-    </screenName>
-    <!--  The following value should be replaced with correct property id. -->
-    <string name="ga_trackingId"></string>
+    <screenName name="com.podevs.android.poAndroid.registry.RegistryActivity">Registry Screen</screenName>
+    <screenName name="com.podevs.android.poAndroid.chat.ChatActivity">Chat Screen</screenName>
+    <screenName name="com.podevs.android.poAndroid.battle.BattleActivity">Battle Screen</screenName>
+    <screenName name="com.podevs.android.poAndroid.teambuilder.TeambuilderActivity">Teambuilder Screen</screenName>
+    <string name="ga_trackingId">UA-57223660-1</string>
 </resources>

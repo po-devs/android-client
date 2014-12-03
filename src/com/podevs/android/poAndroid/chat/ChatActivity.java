@@ -47,6 +47,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.IncomingChallenge;
 import com.podevs.android.poAndroid.MessageListAdapter;
@@ -59,6 +60,7 @@ import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
+import com.podevs.android.poAndroid.registry.MyApplication;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
@@ -229,7 +231,7 @@ public class ChatActivity extends Activity {
         setContentView(chatViewSwitcher);
         prefs = getPreferences(MODE_PRIVATE);
     	chatViewSwitcher.setCurrentItem(1);
- 
+
     	//Player List Stuff**
     	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
     	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
@@ -300,7 +302,20 @@ public class ChatActivity extends Activity {
             }
         });
 	}
-	
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+
+
 	@Override
 	public void onResume() {
 		super.onResume();

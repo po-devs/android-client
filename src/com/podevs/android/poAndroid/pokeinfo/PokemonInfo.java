@@ -262,7 +262,11 @@ public class PokemonInfo {
 		int ident = InfoConfig.resources.getIdentifier(res, "drawable", InfoConfig.pkgName);
 		if (ident == 0)
 			// No sprite found. Default to missingNo.
-			return "missingno.png";
+			if (front) {
+				return "missingno.png";
+			} else {
+				return sprite(poke, true);
+			}
 		else
 			return res + ".png";
 	}
