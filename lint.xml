@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <issue id="DefaultLocale" severity="ignore">
-        <ignore path="src\com\pokebros\android\pokemononline\BattleActivity.java" />
+        <ignore path="src\com\podevs.android\poAndroid\BattleActivity.java" />
     </issue>
 </lint>

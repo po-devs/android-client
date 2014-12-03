@@ -28,6 +28,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.chat.ChatActivity;
@@ -52,6 +56,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private boolean bound = false;
 	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
+	protected MyApplication app;
 
 	enum RegistryDialog {
 		SelectImportMethod,
@@ -67,7 +72,15 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
         super.onCreate(savedInstanceState);
 
-        // If we are already connected to a server show ChatActivity instead of RegistryActivity
+		Tracker t = ((MyApplication) this.getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
+		GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+		// Set screen name.
+		// Where path is a String representing the screen name.
+		t.setScreenName(getString(R.string.app_name));
+
+		// Send a screen view.
+		t.send(new HitBuilders.AppViewBuilder().build());
+
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 	        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -78,6 +91,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	            }
 	        }
         }
+
         if (getIntent().hasExtra("failedConnect")) {
         	Toast.makeText(this, "Server connection failed", Toast.LENGTH_LONG).show();
         }
