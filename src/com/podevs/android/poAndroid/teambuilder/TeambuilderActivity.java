@@ -199,7 +199,7 @@ public class TeambuilderActivity extends FragmentActivity {
     		
     		new AlertDialog.Builder(this)
 	    	    .setTitle(R.string.save_team_as)
-	    	    .setMessage("Name of your neam team: ")
+	    	    .setMessage("Name of your new team: ")
 	    	    .setView(input)
 	    	    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 	    	        public void onClick(DialogInterface dialog, int whichButton) {
