@@ -72,15 +72,19 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
         super.onCreate(savedInstanceState);
 
+		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
+		tracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+		/*
+		// GoogleAnalytics.getInstance(this).enableAutoActivityReports(this.getApplication());
+		// GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
+		GoogleAnalytics.getInstance(this).setLocalDispatchPeriod(100);
 		Tracker t = ((MyApplication) this.getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
-		GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
 		// Set screen name.
 		// Where path is a String representing the screen name.
-		t.setScreenName(getString(R.string.app_name));
-
 		// Send a screen view.
-		t.send(new HitBuilders.AppViewBuilder().build());
-
+		t.send(new HitBuilders.ScreenViewBuilder().setNewSession().build());
+		*/
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 	        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -158,7 +162,19 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
     }
-    
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+	}
+
     private OnClickListener registryListener = new OnClickListener() {
 		public void onClick(View v) {
     		if (v == findViewById(R.id.connectbutton)){
