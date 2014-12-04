@@ -172,7 +172,7 @@ public class SpectatingBattle {
 			byte player = msg.readByte();
 			
 			/* Because we don't deal with double battles */
-			player = (byte) (player % 2);
+			player = (bc == BattleCommand.Clause ? player : (byte) (player % 2));
 
 			dealWithCommand(bc, player, msg);
 		}
