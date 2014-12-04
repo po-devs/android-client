@@ -71,4 +71,12 @@ public class BattleMove implements SerializeBytes, Move {
 	public int num() {
 		return num;
 	}
+
+	public String stringPP() {
+		if (totalPP == 0) {
+			return "??/??";
+		} else {
+			return currentPP + "/" + totalPP;
+		}
+	}
 }

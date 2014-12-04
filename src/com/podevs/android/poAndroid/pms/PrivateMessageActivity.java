@@ -27,9 +27,16 @@ import android.widget.Toast;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
+import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class PrivateMessageActivity extends Activity {
+	private static class PMPrefs{
+		boolean timeStampPM = true;
+		boolean notificationsPM = true;
+	}
+
+	private static PMPrefs PMSettings = new PMPrefs();
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
 	protected NetworkService netServ;
@@ -50,6 +57,8 @@ public class PrivateMessageActivity extends Activity {
         TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
         titleIndicator.setViewPager(vp);
         
+		updateSettings();
+
         final EditText send = (EditText) findViewById(R.id.pmInput);
         send.setOnKeyListener(new OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -67,7 +76,7 @@ public class PrivateMessageActivity extends Activity {
                 	
                 	// Perform action on key press
                 	netServ.sendPM(id, send.getText().toString());
-                	pm.addMessage(pm.me, send.getText().toString());
+                	pm.addMessage(pm.me, send.getText().toString(), PMSettings.timeStampPM);
                 	send.getText().clear();
                   return true;
                 }
@@ -76,10 +85,19 @@ public class PrivateMessageActivity extends Activity {
 		});
     }
     
+	public static void updateSettings() {
+		PMSettings.timeStampPM = NetworkService.getPMSettings();
+	}
+	public static boolean getTimeStampPM() {
+		return PMSettings.timeStampPM;
+	}
+
     @Override
 	protected void onResume() {
     	super.onResume();
     	
+		updateSettings();
+
     	/* Removes the PM notification */
     	((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel("pm", 0);
     	
@@ -125,6 +143,9 @@ public class PrivateMessageActivity extends Activity {
 				Toast.makeText(PrivateMessageActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
 			}
 		}
+		if (item.getItemId() == R.id.settings) {
+			startActivity(new Intent(PrivateMessageActivity.this, SetPreferenceActivity.class));
+		}
 		return true;
 	}
 
@@ -146,7 +167,7 @@ public class PrivateMessageActivity extends Activity {
 			menu.removeItem(R.id.closePM);
 		}
 
-		if (netServ.ignoreList != null) {
+		if (netServ != null) {
 			int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
 			if (netServ.ignoreList.contains(id)) {
 				menu.findItem(R.id.ignorePlayer).setChecked(true);

@@ -27,7 +27,8 @@ public class BattleDynamicInfo implements SerializeBytes {
 	}
 	
 	public String statsAndHazards() {
-		String s = "Attack:";
+		String s = "HP:";
+		s += "\nAttack:";
 		s += "\nDefense:";
 		s += "\nSp. Att:";
 		s += "\nSp. Def:";
@@ -45,10 +46,10 @@ public class BattleDynamicInfo implements SerializeBytes {
 		return s;
 	}
 	
-	public String boosts(boolean me) {
+	public String boosts() {
 		String s = "";
 		for (int i = 0; i < 5; i++)
-			s += (i == 0 ? "" : "\n") + (me ? (boosts[i] == 0 ? "" : (boosts[i] < 0 ? "(" : "(+") + boosts[i] + ")") : (boosts[i] < 0 ? "" : "+") + boosts[i]);
+			s += "\n" + (boosts[i] == 0 ? "" : "(" + (boosts[i] > 0 ? "+" + boosts[i] : boosts[i]) + ")");
 		for (int i = 5; i < 7; i++)
 			if (boosts[i] != 0) s += "\n" + (boosts[i] < 0 ? "" : "+") + boosts[i]; 
 		return s;

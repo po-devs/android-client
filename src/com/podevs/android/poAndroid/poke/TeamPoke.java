@@ -404,4 +404,8 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public Gen gen() {
 		return gen;
 	}
+
+	public int gender() {
+		return gender;
+	}
 }

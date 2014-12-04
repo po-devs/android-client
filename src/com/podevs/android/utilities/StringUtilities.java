@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import android.content.Context;
 
@@ -30,7 +31,7 @@ public class StringUtilities {
 	}
 
 	public static String timeStamp() {
-		return SimpleDateFormat.getTimeInstance().format(Long.valueOf(System.currentTimeMillis()));
+		return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());
 	}
 	
 	public static String def(String s, String def) {

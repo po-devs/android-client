@@ -48,7 +48,7 @@ public class Channel {
 		}
 	}
 
-	public void writeToHist(CharSequence text, int left, int right) {
+	public void writeToHist(CharSequence text, int left, int right, String color) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class) {
 			spannable = new SpannableStringBuilder(text);
@@ -56,7 +56,13 @@ public class Channel {
 		else {spannable = (SpannableStringBuilder)text;}
 		synchronized(messageList) {
 			try {
-				spannable.setSpan(new BackgroundColorSpan((Color.YELLOW)), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				Integer i = 0;
+				try {
+					i = Color.parseColor(color);
+				} catch (Exception e) {
+					i = Color.YELLOW;
+				} finally {}
+				spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			} finally {
 
 			}
@@ -198,6 +204,7 @@ public class Channel {
 					
 					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
 				}
+				// TODO Let pm know
 				/* If a pmed players logs out, we receive the log out message before the leave channel one
 				 * so there's this work around...
 				 */

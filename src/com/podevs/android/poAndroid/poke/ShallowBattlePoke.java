@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 
+import com.podevs.android.poAndroid.battle.BattleMove;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
@@ -25,7 +26,9 @@ public class ShallowBattlePoke implements SerializeBytes {
 	public byte lastKnownPercent = 0;
 	public boolean sub = false;
 	public LinkedList<UniqueID> specialSprites = new LinkedList<UniqueID>();
-	
+	public BattleMove[] moves = new BattleMove[4];
+	public Integer[][] stats = new Integer[2][6];
+
 	public ShallowBattlePoke() {}; // For pokes who have not been sent out;
 	
 	public ShallowBattlePoke(Bais msg, boolean isMe, Gen gen) {
@@ -44,8 +47,15 @@ public class ShallowBattlePoke implements SerializeBytes {
 		gender = msg.readByte();
 		shiny = msg.readBool();
 		level = msg.readByte();
+		if (!isMe) {
+			for (int j = 0; j < 2; j++) {
+				for (int i = 0; i < 6; i++) {
+					stats[j][i] = PokemonInfo.calcMinMaxStat(uID, i, gen.num, level, j);
+				}
+			}
+		}
 	}
-	
+
 	public void serializeBytes(Baos b) {
 		b.putBaos(uID);
 		b.putString(nick);
@@ -80,5 +90,56 @@ public class ShallowBattlePoke implements SerializeBytes {
 			x/=2;
 		}
 		return i;
+	}
+
+	public void addMove(Short attack) {
+		if (this.moves[3] == null) {
+			for (int i = 0; i < 5; i++) {
+				if (this.moves[i] == null) {
+					BattleMove newMove = new BattleMove(attack);
+					newMove.currentPP = (byte) (newMove.totalPP - 1);
+					this.moves[i] = newMove;
+					break;
+				} else if (this.moves[i].num == attack) {
+					this.moves[i].currentPP = (byte) (this.moves[i].currentPP - 1);
+					break;
+				}
+			}
+		}
+	}
+
+	public String movesString() {
+		String s = "";
+		for (int i = 0; i < 4; i++) {
+			s += (i == 0 ? "" : "\n");
+			if (this.moves[i] == null) {
+				s += "????" + "    " +"??/??";
+			} else {
+				s += moves[i].toString() + "    " + moves[i].stringPP();
+			}
+		}
+		return s;
+	}
+
+	public String statString(byte[] boostList) {
+		String s = "";
+		s += (int)(stats[0][0]*lifePercent)/100 + "/" + stats[0][0] + "-" + (int)(stats[1][0]*lifePercent)/100 + "/" + stats[1][0];
+		for (int i = 1; i < 6; i++) {
+			double Percent = boostPercent(boostList[i-1]);
+			s += (i == 0 ? "" : "\n") + (int)(stats[0][i]*Percent) + "-" + (int)(stats[1][i]*Percent);
+		}
+		return s;
+	}
+
+	private double boostPercent(double b) {
+		if (b > 0) {
+			b = b + 2;
+			return b/(2.000);
+		} else if (b < 0) {
+			b = (-1*b) + 2;
+			return (2.000)/b;
+		} else {
+			return 1;
+		}
 	}
 }

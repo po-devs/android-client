@@ -445,49 +445,49 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		
 			public void run() {
 				ShallowBattlePoke poke = battle.currentPoke(me);
+				poke.shiny = activeBattle.myTeam.pokes[0].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
 				// Load correct moveset and name
-				if(poke != null) {
+				if (poke != null) {
 					currentPokeNames[me].setText(poke.rnick);
 					currentPokeLevels[me].setText("Lv. " + poke.level);
 					currentPokeGenders[me].setImageResource(resources.getIdentifier("battle_gender" + poke.gender, "drawable", InfoConfig.pkgName));
 					currentPokeStatuses[me].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
 					setHpBarTo(me, poke.lifePercent);
-					BattlePoke battlePoke = activeBattle.myTeam.pokes[0];
-			        for(int i = 0; i < 4; i++) {
-			        	BattleMove move = activeBattle.displayedMoves[i];
-			        	updateMovePP(i);
-			        	attackNames[i].setText(move.toString());
-			        	String type;
-			        	if (move.num == 237)
-			        		type = TypeInfo.name(battlePoke.hiddenPowerType());
-			        	else
-			        		type = TypeInfo.name(MoveInfo.type(move.num()));
-			        	type = type.toLowerCase(Locale.UK);
-			        	attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
-					      		"drawable", InfoConfig.pkgName));
-			        }
+					for (int i = 0; i < 4; i++) {
+						BattleMove move = activeBattle.displayedMoves[i];
+						updateMovePP(i);
+						attackNames[i].setText(move.toString());
+						String type;
+						if (move.num == 237)
+							type = TypeInfo.name(activeBattle.myTeam.pokes[0].hiddenPowerType());
+						else
+							type = TypeInfo.name(MoveInfo.type(move.num()));
+						type = type.toLowerCase(Locale.UK);
+						attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
+								"drawable", InfoConfig.pkgName));
+					}
 
-			        String sprite = null;
-			        if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
-			        	sprite = "empty_sprite.png";
-			        } else if (poke.sub) {
-			        	sprite = "sub_back.png";
-			        } else {
-			        	if (useAnimSprites) {
-					        Intent data = new Intent();
-					        data.setComponent(servName);
-					        data.putExtra("me", true);
-					        data.putExtra("sprite", getAnimSprite(poke, false));
-					        data.putExtra("cb", mRecvr);
-					        startService(data);
-			        	} else {
-			        		sprite = PokemonInfo.sprite(poke, false);
-			        	}
-			        }
-			        
-			        if (sprite != null) {
-						pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);			        	
-			        }
+					String sprite = null;
+					if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
+						sprite = "empty_sprite.png";
+					} else if (poke.sub) {
+						sprite = "sub_back.png";
+					} else {
+						if (useAnimSprites) {
+							Intent data = new Intent();
+							data.setComponent(servName);
+							data.putExtra("me", true);
+							data.putExtra("sprite", getAnimSprite(poke, false));
+							data.putExtra("cb", mRecvr);
+							startService(data);
+						} else {
+							sprite = PokemonInfo.sprite(poke, false);
+						}
+					}
+
+					if (sprite != null) {
+						pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+					}
 				}
 			}
 		});
@@ -585,6 +585,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				}
 			}
 		});
+	}
+
+	public void updateMoves(short attack) {
+		if (!isSpectating()) {
+			activeBattle.pokes[opp][0].addMove(attack);
+		}
 	}
 
 	public void switchToPokeViewer() {
@@ -937,7 +943,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         switch(BattleDialog.values()[id]) {
         case RearrangeTeam: {
-        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (LinearLayout)findViewById(R.id.rearrange_team_dialog));
+        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout)findViewById(R.id.rearrange_team_dialog));
         	builder.setView(layout)
         	.setPositiveButton("Done", new DialogInterface.OnClickListener(){
         		public void onClick(DialogInterface dialog, int which) {
@@ -986,17 +992,22 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				t = (TextView)simpleDialog.findViewById(R.id.statNamesView);
         		t.setText(battle.dynamicInfo[player].statsAndHazards());
         		t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
-        		if (player == me && !isSpectating())
-	        		t.setText(activeBattle.myTeam.pokes[0].printStats());
-        		else
-        			t.setVisibility(View.GONE);
+        		if (player == me && !isSpectating()) {
+					t.setText(activeBattle.myTeam.pokes[0].printStats());
+				}
+        		else if (player != me && !isSpectating()) {
+					t.setText(activeBattle.currentPoke(player).statString(battle.dynamicInfo[player].boosts));
+					t = (TextView)simpleDialog.findViewById(R.id.moveString);
+					t.setText(activeBattle.currentPoke(opp).movesString());
+				}
+        		//	t.setVisibility(View.GONE);
         		t = (TextView)simpleDialog.findViewById(R.id.statBoostView);
-        		String s = battle.dynamicInfo[player].boosts(player == me);
-        		if (!"\n\n\n\n".equals(s))
+        		String s = battle.dynamicInfo[player].boosts();
+        		if (!"\n\n\n\n".equals(s)) {
         			t.setText(s);
-        		else
-        			t.setVisibility(View.GONE);
-        		
+				} else {
+					t.setVisibility(View.GONE);
+				}
         		simpleDialog.setCanceledOnTouchOutside(true);
         		simpleDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 					public void onCancel(DialogInterface dialog) {

@@ -145,13 +145,16 @@ public class RegistryConnectionService extends Service {
 			}
 			break;
 		}
-		case ServerListEnd:
+		case ServerListEnd: {
 			if (listener != null) {
 				listener.ServerListEnd();
 			}
 			socket.close(); // server stops sending any meaningless data 
 			break;
-		default:
+		} case Announcement: {
+			// TODO deal with announcement
+			break;
+		} default:
 			Log.w(TAG, "Unknown message");
 		}
 	}

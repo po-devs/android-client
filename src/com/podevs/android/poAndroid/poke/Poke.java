@@ -26,5 +26,7 @@ public interface Poke {
 
 	int level();
 
-	int  nature();
+	int nature();
+
+	int gender();
 }

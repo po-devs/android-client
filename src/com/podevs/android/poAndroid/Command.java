@@ -58,5 +58,7 @@ public enum Command {
     Unused_54,
     Unused_55,
     SpecialPass,
-    ServerListEnd               // Indicates end of transmission for registry.
+    ServerListEnd,               // Indicates end of transmission for registry.
+    Unused_58,
+    ServerPassword // 59
 }

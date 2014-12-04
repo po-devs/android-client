@@ -60,6 +60,14 @@
             android:textColor="@color/poke_text_color"
             android:textIsSelectable="true"
             android:textSize="10sp" />
+
+        <ImageView
+                android:id="@+id/listedGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@id/pokename"
+                android:adjustViewBounds="true"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -74,7 +82,6 @@
             android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/hp"
             android:layout_marginRight="10dp"
             android:background="@drawable/battle_border"
             android:gravity="center"

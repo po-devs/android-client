@@ -1,13 +1,5 @@
 package com.podevs.android.poAndroid;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.util.*;
-
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,22 +11,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Binder;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Vibrator;
+import android.os.*;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
 import android.util.Log;
-
-import com.podevs.android.poAndroid.battle.Battle;
-import com.podevs.android.poAndroid.battle.BattleActivity;
-import com.podevs.android.poAndroid.battle.BattleConf;
-import com.podevs.android.poAndroid.battle.BattleDesc;
-import com.podevs.android.poAndroid.battle.ChallengeEnums;
-import com.podevs.android.poAndroid.battle.SpectatingBattle;
+import com.podevs.android.poAndroid.battle.*;
 import com.podevs.android.poAndroid.chat.Channel;
 import com.podevs.android.poAndroid.chat.ChatActivity;
 import com.podevs.android.poAndroid.player.FullPlayerInfo;
@@ -45,6 +28,14 @@ import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.*;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.util.*;
+
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
 	final static String pkgName = "com.podevs.android.poAndroid";
@@ -53,7 +44,7 @@ public class NetworkService extends Service {
 	private final IBinder binder = new LocalBinder();
 	//public Channel currentChannel = null;
 	public LinkedList<Channel> joinedChannels = new LinkedList<Channel>();
-	Thread sThread, rThread;
+	// Thread sThread, rThread;
 	volatile public PokeClientSocket socket = null;
 	public boolean findingBattle = false;
 	public boolean registered = false;
@@ -70,6 +61,19 @@ public class NetworkService extends Service {
 	public boolean serverSupportsZipCompression = false;
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
+
+	private static class chatPrefs {
+		// Chat
+		boolean flashing = true;
+		boolean timeStamp = false;
+		String color = "#FFFF00";
+		boolean notificationsFlash = false;
+		// PM
+		boolean timeStampPM = true;
+		public boolean notificationsPM = true;
+	}
+
+	private static chatPrefs chatSettings = new chatPrefs();
 
 	/**
 	 * Are we engaged in a battle?
@@ -304,6 +308,28 @@ public class NetworkService extends Service {
         mBuilder.setContentIntent(PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         
 		startForeground(R.id.networkService, mBuilder.build());
+
+		loadPOPreferences(getBaseContext());
+		loadSettings();
+	}
+
+	public static SharedPreferences POPreferences = null;
+
+	public static void loadSettings() {
+		chatSettings.color = POPreferences.getString("flashColor", "#FFFF00");
+		chatSettings.flashing = POPreferences.getBoolean("flashing", true);
+		chatSettings.timeStamp = POPreferences.getBoolean("timeStamp", false);
+		chatSettings.timeStampPM = POPreferences.getBoolean("timeStampPM", true);
+		chatSettings.notificationsPM = POPreferences.getBoolean("notificationsPM", true);
+		chatSettings.notificationsFlash = POPreferences.getBoolean("notificationsFlash", false);
+	}
+
+	private static void loadPOPreferences(Context context) {
+		POPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+	}
+
+	public static boolean getPMSettings() {
+		return chatSettings.timeStampPM;
 	}
 
 	@Override
@@ -692,8 +718,13 @@ public class NetworkService extends Service {
 				}
 				CharSequence color = (player == null ? "orange" : player.color.toHexString());
 				CharSequence name = playerName(pId);
-
-				String beg = "<font color='" + color + "'><b>";
+				String test = "";
+				if (chatSettings.timeStamp) {
+					test = "(" + StringUtilities.timeStamp() + ") ";
+				} else {
+					test = "";
+				}
+				String beg = "<font color='" + color + "'><b>" + test;
 				if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
 					beg += "+<i>" + name + ": </i></b></font>";
 				} else {
@@ -702,42 +733,42 @@ public class NetworkService extends Service {
 				if (isHtml) {
 					message = Html.fromHtml(beg + message);
 				} else {
-					if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
-						int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
-						int right = this.me.nick.length();
-						left = left + name.length();
-						if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
-							left = left + 3;
-						} else {
-							left = left + 2;
-						}
-						right = right + left;
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
-						if (!hasChannel) {
-							// Broadcast message
-							if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
-								chatActivity.makeToast(message.toString(), "long");
-							else {
-								Iterator<Channel> it = joinedChannels.iterator();
-								while (it.hasNext()) {
-									it.next().writeToHist(message, left, right);
-								}
+					if (chatSettings.flashing) {
+						if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
+							int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
+							left = left + name.length() + (chatSettings.timeStamp ? 13 : 2);
+							if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
+								left = left + 1;
 							}
-						} else {
-							if (chan == null) {
-								Log.e(TAG, "Received message for nonexistent channel");
+							int right = this.me.nick.length() + left;
+							message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+							if (!hasChannel) {
+								// Broadcast message
+								if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
+									chatActivity.makeToast(message.toString(), "long");
+								else {
+									Iterator<Channel> it = joinedChannels.iterator();
+									while (it.hasNext()) {
+										it.next().writeToHist(message, left, right, chatSettings.color);
+									}
+								}
 							} else {
-								chan.writeToHist(message, left, right);
-								if (chan != joinedChannels.getFirst()) {
-									chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
-									chan.flashed = true;
+								if (chan == null) {
+									Log.e(TAG, "Received message for nonexistent channel");
+								} else {
+									chan.writeToHist(message, left, right, chatSettings.color);
+									if (chan != joinedChannels.getFirst()) {
+										chan.flashed = true;
+										if (chatSettings.notificationsFlash) {
+											chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+										}
+									}
 								}
 							}
+							break;
 						}
-						break;
-					} else {
-						message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 					}
+					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 				}
 			} else {
 				if (isHtml) {
@@ -888,7 +919,7 @@ public class NetworkService extends Service {
 			msg.readByte(); // battle mode
 			int id1 = msg.readInt();
 			int id2 = msg.readInt();
-			//Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
+			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (isBattling(battleID) || spectatedBattles.containsKey(battleID)) {
 				if (isBattling(battleID)) {
@@ -1049,6 +1080,10 @@ public class NetworkService extends Service {
 			channels.remove(chanId);
 			channels.put(chanId, new Channel(chanId, msg.readString(), this));
 			break;
+		} case ServerPassword: {
+			disconnect();
+				// Stop connection. Prevent crashing/loop from servers with passwords.
+			break;
 		} default: {
 			System.out.println("Unimplented message");
 		}
@@ -1097,10 +1132,12 @@ public class NetworkService extends Service {
 		pmedPlayers.add(playerId);
 		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
-		
-		showPMNotification(playerId);
+
+		if (chatSettings.notificationsPM) {
+			showPMNotification(playerId);
+		}
 	}
-	
+
 	private void showPMNotification(int playerId) {
 		PlayerInfo p = players.get(playerId);
 		if (p == null) {
@@ -1328,6 +1365,20 @@ public class NetworkService extends Service {
 		socket.sendMessage(bb, Command.SendPM);
 		
 		pmedPlayers.add(id);
+	}
+
+	public Object getPreference(String pref) {
+		SharedPreferences POPreferences = PreferenceManager.getDefaultSharedPreferences(NetworkService.this);
+		if (pref.equals("flashColor")) {
+			return POPreferences.getString("flashColor", "#FFFF00");
+		}
+		if (pref.equals("flashing")) {
+			return POPreferences.getBoolean("flashing", true);
+		}
+		if (pref.equals("timeStamp")) {
+			return POPreferences.getBoolean("timeStamp", false);
+		}
+		return null;
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

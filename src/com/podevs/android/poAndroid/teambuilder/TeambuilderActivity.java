@@ -129,6 +129,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	public void onStart() {
 		super.onStart();
 		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+
 	}
 
 	@Override

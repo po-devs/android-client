@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 import com.podevs.android.poAndroid.player.PlayerInfo;
+import com.podevs.android.utilities.StringUtilities;
 
 /**
  * Data containing the information of a private message
@@ -18,14 +19,12 @@ public class PrivateMessage {
 		this.me = me;
 	}
 
-	public void addMessage(PlayerInfo info, String message) {
+	public void addMessage(PlayerInfo info, String message, Boolean timeStamp) {
 		if (info.id == this.id() && info.nick() != "???") {
 			this.other = info;
 		}
 
-		Date d = new Date(System.currentTimeMillis());
-		SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-		message = "(" + time.format(d) + "): " + message;
+		if (timeStamp) {message = "(" + StringUtilities.timeStamp() + ") " + message;}
 		messages.add(new Message(info, message));
 
 		if (listener != null) {
