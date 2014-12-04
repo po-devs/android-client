@@ -24,7 +24,7 @@ public class ProtocolVersion implements SerializeBytes {
 	 */
 	public ProtocolVersion() {
 		version = 1;
-		minorVersion = 2;
+		minorVersion = 3;
 	}
 	
 	/**
