@@ -62,7 +62,7 @@ public class SpectatingBattle {
 	public int background;
 
 	public ShallowBattlePoke[][] pokes = new ShallowBattlePoke[2][6];
-	ArrayList<Boolean> pokeAlive = new ArrayList<Boolean>();
+	// ArrayList<Boolean> pokeAlive = new ArrayList<Boolean>();
 
 	public SpannableStringBuilder hist; //= new SpannableStringBuilder();
 	public SpannableStringBuilder histDelta; //= new SpannableStringBuilder();
@@ -119,6 +119,7 @@ public class SpectatingBattle {
 		}
 	}
 
+	/*
 	public Boolean isMyTimerTicking() {
 		return ticking[me];
 	}
@@ -138,7 +139,7 @@ public class SpectatingBattle {
 	public short oppTime() {
 		return remainingTime[opp];
 	}
-
+	*/
 	public ShallowBattlePoke currentPoke(int player) {
 		return pokes[player][0];
 	}
@@ -188,10 +189,16 @@ public class SpectatingBattle {
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
 
-			if(msg.available() > 0) // this is the first time you've seen it
+			/*
+			if(msg.available() > 0) { // this is the first time you've seen it
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+			}*/ //No Clue how this works, but it doesn't to the intended effect - MM
+				//So I replaced it with the function below
+			if (pokes[player][0].uID.pokeNum == 0) {
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+			}
 
-			if(activity != null) {
+			if (activity != null) {
 				activity.updatePokes(player);
 				activity.updatePokeballs();
 			}
@@ -219,7 +226,9 @@ public class SpectatingBattle {
 			break;
 		} case UseAttack: {
 			short attack = msg.readShort();
-
+			if (player == opp) {
+				activity.updateMoves(attack);
+			}
 			int color;
 			try {
 				color = MoveInfo.type(attack);
@@ -446,7 +455,7 @@ public class SpectatingBattle {
 			if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
 			if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", AbilityInfo.name(other));
 			if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other, 0)));
-
+			if(s.contains("%st") || s.contains("%f") || s.contains("%i") || s.contains("%m") || s.contains("%p")) Log.e(TAG, "Parsing Issue {move:" + move + " part:" + part + " type:" + type + " foe:" + foe + " other:" + other + " string:" + s + "}");
 			writeToHist(Html.fromHtml("<br><font color =" + TypeColor.values()[type] + tu(StringUtilities.escapeHtml(s)) + "</font>"));
 			break;
 		} case NoOpponent: {
@@ -465,6 +474,7 @@ public class SpectatingBattle {
             if(berry != -1) s = s.replaceAll("%i", ItemInfo.name(berry));
             if(other != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
             if(other != -1 && s.contains("%p")) s = s.replaceAll("%p", PokemonInfo.name(new UniqueID(other)));
+			if(s.contains("%st") || s.contains("%f") || s.contains("%i") || s.contains("%m") || s.contains("%p")) Log.e(TAG, "Parsing Issue {" + "item:" + item + " part:" + part + " foe:" + foe + " berry:" + berry + " other:" + other + " string:" + s + "}" );
             /* Balloon gets a really special treatment */
             if (item == 35)
                 writeToHist(Html.fromHtml("<br><b>" + tu(StringUtilities.escapeHtml(s)) + "</b>"));
@@ -588,8 +598,11 @@ public class SpectatingBattle {
 			break;
 		}
 		case Clause: {
-			if (player >= 0 && player < Clauses.values().length)
+			if (player >= 0 && player < Clauses.values().length) {
 				writeToHist("\n" + Clauses.values()[player].battleText());
+			} else {
+				Log.e(TAG, "Invalid Clause:" + player);
+			}
 			break;
 		} case Rated: {
 			boolean rated = msg.readBool();
@@ -693,13 +706,13 @@ public class SpectatingBattle {
 	}
 
 	protected enum TempPokeChange {
-		TempMove,
-		TempAbility,
-		TempItem,
-		TempSprite,
-		DefiniteForme,
-		AestheticForme,
-		DefMove,
-		TempPP
+		TempMove,  //1
+		TempAbility,  //2
+		TempItem, //3
+		TempSprite, //4
+		DefiniteForme, //5
+		AestheticForme, //6
+		DefMove, //7
+		TempPP //8
 	}
 }

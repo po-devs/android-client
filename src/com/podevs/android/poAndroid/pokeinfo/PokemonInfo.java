@@ -99,9 +99,15 @@ public class PokemonInfo {
 	public static int type1(UniqueID uID, int gen) {
 		testLoad(gen);
 
-		int type = pokemons[gen].get(uID.hashCode()).type1;
-		if (type == -1) {
-			type = pokemons[gen].get(uID.originalHashCode()).type1;
+		int type = -1;
+		try {
+			type = pokemons[gen].get(uID.hashCode()).type1;
+			if (type == -1) {
+				type = pokemons[gen].get(uID.originalHashCode()).type1;
+			}
+		} catch (NullPointerException e) {
+			type = pokemons[gen].get((new UniqueID()).hashCode()).type1;
+			Log.e("PokemonInfo", "NULL original uID:" + uID);
 		}
 		return type;
 	}
@@ -109,9 +115,15 @@ public class PokemonInfo {
 	public static int type2(UniqueID uID, int gen) {
 		testLoad(gen);
 
-		int type = pokemons[gen].get(uID.hashCode()).type2;
-		if (type == -1) {
-			type = pokemons[gen].get(uID.originalHashCode()).type2;
+		int type = -1;
+		try {
+			type = pokemons[gen].get(uID.hashCode()).type2;
+			if (type == -1) {
+				type = pokemons[gen].get(uID.originalHashCode()).type2;
+			}
+		} catch (NullPointerException e) {
+			type = pokemons[gen].get((new UniqueID()).hashCode()).type2;
+			Log.e("PokemonInfo", "NULL original uID:" + uID);
 		}
 		return type;
 	}
@@ -194,14 +206,24 @@ public class PokemonInfo {
 
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
-			return ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5
-					+ 5 + poke.level();
+			return ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5 + 5 + poke.level();
 		} else {
 			int base = ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
 
 			return NatureInfo.boostStat(base, poke.nature(), stat);
 		}
 	}
+
+	public static int calcMinMaxStat(UniqueID ID, int stat, int gen, int level, int minmax) {
+		if (stat == 0) {
+			return ((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5 + 5 + level;
+		} else {
+			int base = ((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5;
+			return base + (minmax == 1 ? 1 : -1)*(base/10);
+		}
+	}
+
+
 
 	private static void loadStats(final int gen) {
 		testLoad(gen);
@@ -230,7 +252,16 @@ public class PokemonInfo {
 			return InfoConfig.context.getResources().getDrawable(iconRes(uid));
 		} catch (Resources.NotFoundException e) {
 			return InfoConfig.context.getResources().getDrawable(iconRes(uid.original()));
+		} catch (NullPointerException e) {
+			Log.e("PokemonInfo", "NULL ICON" + uid);
+			return InfoConfig.context.getResources().getDrawable(iconRes(new UniqueID()));
 		}
+	}
+
+	public static Drawable gender(Integer gender) {
+		Resources resource = InfoConfig.context.getResources();
+		Integer identifier = resource.getIdentifier("battle_gender" + gender.toString(), "drawable", InfoConfig.pkgName);
+		return resource.getDrawable(identifier);
 	}
 
 	private static int iconRes(UniqueID uid) {
@@ -245,30 +276,38 @@ public class PokemonInfo {
 	public static String sprite(ShallowBattlePoke poke, boolean front) {
 		String res;
 		UniqueID uID;
-		if (poke.specialSprites.isEmpty())
+		if (poke.specialSprites.isEmpty()) {
 			uID = poke.uID;
-		else
+		} else {
 			uID = poke.specialSprites.peek();
-		if (uID.pokeNum < 0)
+		}
+		if (uID.pokeNum < 0) {
 			res = "empty_sprite";
-		else {
+		} else {
 			res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
 					(front ? "_front" : "_back");
-			if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
-				// Special female sprite
-				res = res + "f" + (poke.shiny ? "s" : "");
+			if (poke.gender == Gender.Female.ordinal()) {
+				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
+					// Special female sprite
+					res = res + "f";
+			}
+			if (poke.shiny) {
+				if (InfoConfig.resources.getIdentifier(res + "s", "drawable", InfoConfig.pkgName) != 0) {
+					res += (poke.shiny ? "s" : "");
+				}
+			}
 		}
-
 		int ident = InfoConfig.resources.getIdentifier(res, "drawable", InfoConfig.pkgName);
-		if (ident == 0)
+		if (ident == 0) {
 			// No sprite found. Default to missingNo.
 			if (front) {
 				return "missingno.png";
 			} else {
 				return sprite(poke, true);
 			}
-		else
+		} else {
 			return res + ".png";
+		}
 	}
 
 	@SuppressWarnings("unchecked")

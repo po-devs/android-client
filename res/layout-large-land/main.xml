@@ -79,13 +79,23 @@
         android:layout_marginRight="180dp" >
 
         <Button
+                android:id="@+id/settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/settings"
+                android:textSize="19sp" >
+        </Button>
+
+        <Button
             android:id="@+id/importteambutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:text="@string/teambuilder"
-            android:textSize="19sp" >
+            android:textSize="19sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
         </Button>
 
         <Button

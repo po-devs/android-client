@@ -29,10 +29,10 @@ public class MyApplication extends Application {
         if (!mTrackers.containsKey(trackerId)) {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             analytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(R.xml.global_tracker)
+            Tracker t = (trackerId == TrackerName.APP_TRACKER) ? analytics.newTracker(PROPERTY_ID)
                     : (trackerId == TrackerName.GLOBAL_TRACKER) ? analytics.newTracker(R.xml.global_tracker)
                     : analytics.newTracker(R.xml.ecommerce_tracker);
-            //t.enableAdvertisingIdCollection(true);
+            t.enableAdvertisingIdCollection(true);
             mTrackers.put(trackerId, t);
         }
         return mTrackers.get(trackerId);

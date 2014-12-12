@@ -62,13 +62,19 @@ import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.registry.MyApplication;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
+import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 public class ChatActivity extends Activity {
 	
-	static final String TAG = "ChatActivity";
+	// static final String TAG = "ChatActivity";
 
 	private enum ChatDialog {
 		Challenge,
@@ -82,7 +88,7 @@ public class ChatActivity extends Activity {
 		AskForName
 	}
 	
-	public final static int SWIPE_TIME_THRESHOLD = 100;
+	// public final static int SWIPE_TIME_THRESHOLD = 100;
 	
 	private enum ChatContext {
 		ChallengePlayer,
@@ -91,7 +97,7 @@ public class ChatActivity extends Activity {
 		LeaveChannel,
 		WatchBattle,
 		PrivateMessage,
-		IgnorePlayer;
+		IgnorePlayer
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -216,6 +222,7 @@ public class ChatActivity extends Activity {
 		}
 		
 		super.onCreate(savedInstanceState);
+
 		chatViewSwitcher = new ViewPager(this);
 		chatLayout = getLayoutInflater().inflate(R.layout.chat, null);
 		channelsLayout = getLayoutInflater().inflate(R.layout.channellist, null);
@@ -425,7 +432,7 @@ public class ChatActivity extends Activity {
 				}
 				messageAdapter.notifyDataSetChanged();
 				Integer position = chatView.getLastVisiblePosition();
-				cancelScroll = (position + 1 < top);
+				cancelScroll = (position + 3 < top);
 				if(!cancelScroll) {
 					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
 						chatView.setSelection(messageAdapter.getCount() - 1);
@@ -886,6 +893,10 @@ public class ChatActivity extends Activity {
 				break;
 			case R.id.changeName:
 				showDialog(ChatDialog.AskForName.ordinal());
+				break;
+			case R.id.settings:
+				startActivity(new Intent(ChatActivity.this, SetPreferenceActivity.class));
+
 				break;
 			}
 		return true;

@@ -65,6 +65,13 @@
 
         </LinearLayout>
 
+
+        <CheckBox
+                android:text="@string/shiny"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/shiny"/>
+
         <include
             android:id="@+id/hpev"
             android:layout_width="fill_parent"

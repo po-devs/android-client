@@ -15,12 +15,13 @@ import com.podevs.android.utilities.Baos;
 public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public short currentHP = 0;
 	public short totalHP = 0;
+	public short gender = 0;
 	short item = 0;
-	public String itemString;
+	// public String itemString;
 	short ability = 0;
 	public String abilityString;
-	byte statusCount = 0;
-	byte originalStatusCount = 0;
+	// byte statusCount = 0;
+	// byte originalStatusCount = 0;
 	byte nature = 0;
 	byte happiness = 0;
 	public byte teamNum;
@@ -91,8 +92,9 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	
 	public String printStats() {
 		String s = "";
+		s += currentHP();
 		for (int i = 0; i < 5; i++)
-			s += (i == 0 ? "" : "\n") + stats[i];
+			s += "\n" + (stats[i] == - 1 ? "???" : stats[i]);
 		return s;
 	}
 
@@ -142,5 +144,9 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 
 	public int nature() {
 		return nature;
+	}
+
+	public int gender() {
+		return gender;
 	}
 }

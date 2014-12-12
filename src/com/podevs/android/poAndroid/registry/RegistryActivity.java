@@ -12,14 +12,10 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
@@ -30,7 +26,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
@@ -39,6 +34,7 @@ import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.poAndroid.registry.RegistryConnectionService.RegistryCommandListener;
 import com.podevs.android.poAndroid.registry.ServerListAdapter.Server;
+import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.poAndroid.teambuilder.TeambuilderActivity;
 import com.podevs.android.utilities.Baos;
 
@@ -58,11 +54,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private SharedPreferences prefs;
 	protected MyApplication app;
 
+	/*
 	enum RegistryDialog {
 		SelectImportMethod,
 		ImportTeamFromFile
 	}
-	
+	*/
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,19 +70,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
         super.onCreate(savedInstanceState);
 
-		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
-		tracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-		/*
-		// GoogleAnalytics.getInstance(this).enableAutoActivityReports(this.getApplication());
-		// GoogleAnalytics.getInstance(this).getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
-		GoogleAnalytics.getInstance(this).setLocalDispatchPeriod(100);
-		Tracker t = ((MyApplication) this.getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
-		// Set screen name.
-		// Where path is a String representing the screen name.
-		// Send a screen view.
-		t.send(new HitBuilders.ScreenViewBuilder().setNewSession().build());
-		*/
+		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
+		tracker.setScreenName("Registry Screen");
+		tracker.setAppVersion("2.5.3.3");
+		// tracker.enableAdvertisingIdCollection(true);
+		tracker.send(new HitBuilders.AppViewBuilder().build());
+
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 	        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -125,11 +117,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		//Capture out button from layout
         Button conbutton = (Button)findViewById(R.id.connectbutton);
         Button importbutton = (Button)findViewById(R.id.importteambutton);
+		Button setbutton = (Button)findViewById(R.id.settings);
 
         //Register onClick listener
         conbutton.setOnClickListener(registryListener);
         importbutton.setOnClickListener(registryListener);
-        
+		setbutton.setOnClickListener(registryListener);
+
         registryRoot = (RelativeLayout) findViewById(R.id.registryroot);
         servers = (ListView)findViewById(R.id.serverlisting);
         adapter = new ServerListAdapter(this, R.id.serverlisting);
@@ -166,13 +160,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	@Override
 	protected void onStart() {
 		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 
     private OnClickListener registryListener = new OnClickListener() {
@@ -217,6 +211,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		}
 			else if (v == findViewById(R.id.importteambutton)) {
     			startActivityForResult(new Intent(RegistryActivity.this, TeambuilderActivity.class), TEAMBUILDER_CODE);
+    		} else if (v == findViewById(R.id.settings)) {
+				startActivity(new Intent(RegistryActivity.this, SetPreferenceActivity.class));
     		}
     	}
     };

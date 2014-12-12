@@ -21,10 +21,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 	private EVSlider sliders[] = null;
 	private TextView labels[] = null;
-	private Spinner formesChooser = null;
-	private Spinner itemChooser = null;
-	private Spinner abilityChooser = null;
-	private Spinner natureChooser = null, genderChooser = null;
+	private Spinner formesChooser = null, itemChooser = null, abilityChooser = null, natureChooser = null, genderChooser = null;
+	private CheckBox shinyChooser = null;
 	private LinearLayout formesLayout;
 	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter, formesChooserAdapter;
 	public PokemonDetailsListener listener = null;
@@ -61,6 +59,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		genderChooser = (Spinner)v.findViewById(R.id.gender);
 		formesChooser = (Spinner)v.findViewById(R.id.formes);
 		formesLayout = (LinearLayout)v.findViewById(R.id.formesLayout);
+		shinyChooser = (CheckBox)v.findViewById(R.id.shiny);
 		
 		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		int usefulItems[] = ItemInfo.usefulItems();
@@ -153,7 +152,17 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
-		
+
+		shinyChooser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					poke().shiny = true;
+				} else {
+					poke().shiny = false;
+				}
+			}
+		});
+
 		return v;
 	}
 	
@@ -252,13 +261,16 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 					break;
 				}
 			}
-
+			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
 		} else {
+			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);
 		}
+
+		shinyChooser.setChecked(poke().shiny);
 	}
 	
 	public void updateStats() {

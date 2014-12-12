@@ -26,4 +26,8 @@
         android:id="@+id/changeName"
         android:title="@string/change_name">
     </item>
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings">
+     </item>
 </menu>

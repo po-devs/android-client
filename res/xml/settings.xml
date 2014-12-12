@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:summary="Chat Settings"
+            android:title="Chat Settings" >
+        <CheckBoxPreference
+                android:key="flashing"
+                android:summary="Toggle flashing"
+                android:title="Flashing"
+                android:defaultValue="true"/>
+        <EditTextPreference
+                android:key="flashColor"
+                android:summary="Enter a valid hex color"
+                android:title="Flash Color"
+                android:defaultValue="#FFFF00"/>
+        <CheckBoxPreference
+                android:key="timeStamp"
+                android:summary="Toggle time stamps"
+                android:title="Time Stamp"
+                android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="notificationsFlash"
+            android:summary="Toggle Flash Notifications"
+            android:title="Flash Pop up"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary="PM Options"
+        android:title="Private Message Options" >
+        <CheckBoxPreference
+                android:key="timeStampPM"
+                android:summary="Toggle time stamps"
+                android:title="Time Stamp"
+                android:defaultValue="true"/>
+        <CheckBoxPreference
+                android:key="notificationsPM"
+                android:summary="Toggle notifications"
+                android:title="Notifications"
+                android:defaultValue="true"/>
+        </PreferenceCategory>
+</PreferenceScreen>
