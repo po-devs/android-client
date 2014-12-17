@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by coyotte508 on 2/21/14.
+ * MD5 Support
  */
 public class Security {
     public static final String md5(final String s) {

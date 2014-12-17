@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ListView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
@@ -48,11 +47,11 @@ public class MoveChooserFragment extends Fragment {
 					if (move == 237) {
 						buildHiddenPowerDialog();
 					} else if (move == 216) { /* return */
-						poke().happiness = (byte)255;
+						poke().happiness = (byte) 255;
 					}
 					
 					if (listener != null) {
-						listener.onMovesetChanged(false);
+						listener.onMovesetChanged(move == 216);
 					}
 				} else if (poke().removeMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
@@ -67,9 +66,20 @@ public class MoveChooserFragment extends Fragment {
 					}
 					
 					if (listener != null) {
-						listener.onMovesetChanged(move == 237);
+						listener.onMovesetChanged(move == 237 || move == 216);
 					}
 				}
+			}
+		});
+
+		moveList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				int move = (Short) moveAdapter.getItem(position);
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setMessage(moveAdapter.moveInfo(move));
+				builder.create().show();
+				return false;
 			}
 		});
 
@@ -88,10 +98,7 @@ public class MoveChooserFragment extends Fragment {
 					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 					
 					if (config != null) {
-						for (int i = 0; i < 6; i++) {
-							poke().DVs[i] = config[i];
-						}
-						
+							poke().DVs = config;
 						if (listener != null) {
 							listener.onMovesetChanged(true);
 						}

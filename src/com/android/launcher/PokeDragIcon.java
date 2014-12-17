@@ -1,13 +1,12 @@
 package com.android.launcher;
 
-import com.podevs.android.poAndroid.battle.BattleActivity;
-import com.podevs.android.poAndroid.battle.BattlePoke;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import com.podevs.android.poAndroid.battle.BattleActivity;
+import com.podevs.android.poAndroid.battle.BattlePoke;
 
 public class PokeDragIcon extends ImageView implements DragSource, DropTarget {
 	boolean isTarget = false;

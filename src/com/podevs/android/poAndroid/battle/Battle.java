@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.Html;
 import android.util.Log;
-
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
@@ -112,10 +111,11 @@ public class Battle extends SpectatingBattle {
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
 
-			if(msg.available() > 0) // this is the first time you've seen it
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+			if (msg.available() > 0) // this is the first time you've seen it
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 
 			if(activity != null) {
+				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
 			}
@@ -183,24 +183,31 @@ public class Battle extends SpectatingBattle {
 				else if (currentPoke(player).specialSprites.size() > 0)
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 				break;
 			case DefiniteForme:
 				byte poke = msg.readByte();
-				short newForm = msg.readShort();
-				pokes[player][poke].uID.pokeNum = newForm;
+				UniqueID uID = new UniqueID(msg);
+				pokes[player][poke].uID = uID;
 				if (isOut(poke)) {
-					currentPoke(slot(player, poke)).uID.pokeNum = newForm;
+					currentPoke(slot(player, poke)).uID = uID;
+					if (player == opp) {
+						currentPoke(slot(player, poke)).setStats(conf.gen.num);
+						currentPoke(slot(player, poke)).setTypes(conf.gen.num);
+					}
 					if (activity !=null) {
+						activity.samePokes[player] = false;
 						activity.updatePokes(player);
 					}
 				}
 				break;
 			case AestheticForme:
-				newForm = msg.readShort();
+				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 			default: break;
@@ -297,6 +304,13 @@ public class Battle extends SpectatingBattle {
 			for (int i = 0; i < 5; i++)
 				myTeam.pokes[player / 2].stats[i] = msg.readShort();
 			break;
+		} case UseItem: {
+			byte item = msg.readByte();
+			Log.w("SpectatingBattle", bc.name() + item);
+		} case ItemCountChange: {
+			byte item = msg.readByte();
+			byte count = msg.readByte();
+			Log.w("SpectatingBattle", bc.name() + item + ":" + count);
 		} default: {
 			super.dealWithCommand(bc, player, msg);
 			break;

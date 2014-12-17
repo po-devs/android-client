@@ -1,17 +1,17 @@
 package com.podevs.android.poAndroid;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import com.podevs.android.poAndroid.chat.Channel;
-
 import android.content.Context;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.podevs.android.poAndroid.chat.Channel;
+
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class MessageListAdapter extends BaseAdapter {
 	LinkedList<TextView> messageViews = new LinkedList<TextView>();
@@ -34,8 +34,13 @@ public class MessageListAdapter extends BaseAdapter {
 	public void add(SpannableStringBuilder span) {
 		TextView toAdd = new TextView(context);
 		toAdd.setText(span);
-		Linkify.addLinks(toAdd, Linkify.ALL);
-		
+
+        toAdd.setTextIsSelectable(true);
+
+        if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
+		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
+
 		messageViews.add(toAdd);
 		if (getCount() > Channel.HIST_LIMIT)
 			messageViews.remove();

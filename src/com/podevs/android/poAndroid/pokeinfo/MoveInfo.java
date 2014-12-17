@@ -1,11 +1,11 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import java.util.ArrayList;
-
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class MoveInfo extends GenInfo {
 	public static class Move {
@@ -25,9 +25,10 @@ public class MoveInfo extends GenInfo {
 
 	private static ArrayList<Move> moveNames = null;
 	private static SparseArray<String> moveMessages = null;
+    private static Short[] allMoves = null;
 
 	private static int thisGen = genMax();
-	private static int thisSubGen = 6;
+	// private static int thisSubGen = 6;
 
 	public static void newGen() {
 		moveNames = null; // Because 0 will not overwrite, i.e. type Normal (0) will not overwrite already saved type Fairy (17).
@@ -43,11 +44,21 @@ public class MoveInfo extends GenInfo {
 	public static void forceSetGen(int Gen, int SubGen) {
 		testLoad();
 		thisGen = Gen;
-		thisSubGen = SubGen;
+		//thisSubGen = SubGen;
 	}
 
 	public static String name(int num) {
 		return moveNames.get(num).name;
+	}
+
+	public static int indexOf(String s) {
+		testLoad();
+		for (int i = 0; i < moveNames.size(); i ++) {
+			if (moveNames.get(i).name.equals(s)) {
+				return i;
+			}
+		}
+		return 0;
 	}
 
 	private static void testLoad() {
@@ -97,7 +108,7 @@ public class MoveInfo extends GenInfo {
 		} else if (pow == 1) {
 			return "???";
 		} else {
-			return String.valueOf(pow >= 0 ? pow : (pow + 255));
+			return String.valueOf(pow >= 0 ? pow : (pow + 256));
 		}
 	}
 
@@ -232,7 +243,21 @@ public class MoveInfo extends GenInfo {
 				moveNames.add(new Move(b));
 			}
 		});
+        fillAllMoves();
 	}
+
+    private static void fillAllMoves() {
+        allMoves = new Short[moveNames.size() - 1];
+        for (int i = 0; i <= allMoves.length - 1; i++) {
+            allMoves[i] = (short) (i + 1);
+        }
+        java.util.Arrays.sort(allMoves, new Comparator<Short>() {
+            @Override
+            public int compare(Short lhs, Short rhs) {
+                return name(lhs).compareToIgnoreCase(name(rhs));
+            }
+        });
+    }
 
 	private static void loadMoveMessages() {
 		moveMessages = new SparseArray<String>();
@@ -242,4 +267,8 @@ public class MoveInfo extends GenInfo {
 			}
 		});
 	}
+
+    public static Short[] getAllMoves() {
+        return allMoves;
+    }
 }

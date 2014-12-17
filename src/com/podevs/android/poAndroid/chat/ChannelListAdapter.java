@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.Comparator;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -9,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.utilities.StringUtilities;
+
+import java.util.Comparator;
 
 public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.poAndroid.chat.Channel>{
 	
@@ -35,13 +34,19 @@ public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.poAndroi
 					return -1;
 				else if (!ch1.joined && ch2.joined)
 					return 1;
+				else if (Character.isLetter(ch1.name().charAt(0)) && !Character.isLetter(ch2.name().charAt(0)))
+					return -1;
+				else if (!Character.isLetter(ch1.name().charAt(0)) && Character.isLetter(ch2.name().charAt(0)))
+					return 1;
 				else
 					return ch1.name().compareToIgnoreCase(ch2.name());
 			}
 		});
 		setNotifyOnChange(true);
 	}
-	
+
+
+
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
 		if (view == null) {

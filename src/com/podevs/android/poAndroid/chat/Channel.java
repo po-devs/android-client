@@ -1,19 +1,22 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.Hashtable;
-import java.util.LinkedList;
-
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-
+import android.view.View;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.Bais;
+
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Contains all info regarding a channel: name, id, joined,
@@ -24,22 +27,56 @@ public class Channel {
 	public String name;
 	public int id;
 	public int lastSeen = 0;
-	protected boolean isReadyToQuit = false;
+	// protected boolean isReadyToQuit = false;
 	public boolean joined = false;
 	public boolean flashed = false;
 	public final static int HIST_LIMIT = 700;
 	public static final String TAG = "Pokemon Online Channel";
+	public boolean channelEvents = false;
 	
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	
 	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
-	
-	public void writeToHist(CharSequence text) {
+
+	public void writeToHist(CharSequence text, boolean clickable, final String command) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class)
 			spannable = new SpannableStringBuilder(text);
 		else
 			spannable = (SpannableStringBuilder)text;
+		if (clickable) {
+			// With more customization could do something like clickable text that spectates battles and such
+			spannable.setSpan(new ClickableSpan() {
+				@Override
+				public void onClick(View widget) {
+					netServ.joinChannel(command.replace("#", ""));
+				}
+			}, text.toString().indexOf(command), text.toString().indexOf(command) + command.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
+		write(spannable);
+	}
+
+	/**
+	 *
+	 * @param text Text to write in small font.
+	 */
+
+	public void writeToHistSmall(CharSequence text) {
+		SpannableStringBuilder spannable;
+		if (text.getClass() != SpannableStringBuilder.class)
+			spannable = new SpannableStringBuilder(text);
+		else
+			spannable = (SpannableStringBuilder)text;
+		spannable.setSpan(new RelativeSizeSpan(0.75f), 0, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		write(spannable);
+	}
+
+	/**
+	 *
+	 * @param spannable Spannable to write to history.
+	 */
+
+	protected void write(SpannableStringBuilder spannable) {
 		synchronized(messageList) {
 			messageList.add(spannable);
 			lastSeen++;
@@ -48,29 +85,31 @@ public class Channel {
 		}
 	}
 
+	/**
+	 *
+	 * @param text Text to write.
+	 * @param left Left index to color.
+	 * @param right Right index to color.
+	 * @param color Hex color to apply to left-right range.
+	 */
 	public void writeToHist(CharSequence text, int left, int right, String color) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class) {
 			spannable = new SpannableStringBuilder(text);
 		}
 		else {spannable = (SpannableStringBuilder)text;}
-		synchronized(messageList) {
+		try {
+			Integer i = 0;
 			try {
-				Integer i = 0;
-				try {
-					i = Color.parseColor(color);
-				} catch (Exception e) {
-					i = Color.YELLOW;
-				} finally {}
-				spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			} finally {
+				i = Color.parseColor(color);
+			} catch (Exception e) {
+				i = Color.YELLOW;
+			} finally {}
+			spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		} finally {
 
-			}
-			messageList.add(spannable);
-			lastSeen++;
-			while (messageList.size() > HIST_LIMIT)
-				messageList.remove();
 		}
+		write(spannable);
 	}
 	private NetworkService netServ;
 	
@@ -89,7 +128,7 @@ public class Channel {
 	public void addPlayer(PlayerInfo p) {
 		if(p != null) {
 			players.put(p.id, p);
-			
+			if (joined && channelEvents) writeToHistSmall(Html.fromHtml("<i><font color=\"#A0A0A0\">" + p.nick() + " joined the channel.</font></i>"));
 			if(netServ != null && netServ.chatActivity != null && this.equals(netServ.chatActivity.currentChannel()))
 				netServ.chatActivity.addPlayer(p);
 		}
@@ -117,7 +156,7 @@ public class Channel {
 		if (!netServ.joinedChannels.contains(this)) {
 			netServ.joinedChannels.addFirst(this);
 			netServ.updateJoinedChannels();
-			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
+			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"), false, null);
 		}
 	}
 	
@@ -202,7 +241,7 @@ public class Channel {
 					netServ.joinedChannels.remove(this);
 					netServ.updateJoinedChannels();
 					
-					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
+					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"), false , null);
 				}
 				// TODO Let pm know
 				/* If a pmed players logs out, we receive the log out message before the leave channel one
@@ -213,6 +252,10 @@ public class Channel {
 					p = new PlayerInfo();
 					p.id = pid;
 				}
+				if (pid != netServ.myid && channelEvents) {
+					writeToHistSmall(Html.fromHtml("<i><font color=\"#A0A0A0\">" + p.nick() + " left the channel.</font></i>"));
+				}
+				// player event
 				removePlayer(p);
 				break;
 			default:

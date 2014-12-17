@@ -49,8 +49,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/timerA"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball2A"
@@ -58,8 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pokeball1A"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball3A"
@@ -67,8 +71,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pokeball2A"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball4A"
@@ -76,8 +82,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pokeball3A"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball5A"
@@ -85,8 +93,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pokeball4A"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball6A"
@@ -94,8 +104,10 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/pokeball5A"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
     </RelativeLayout>
     <!-- END Player A Title -->
 
@@ -104,7 +116,7 @@
 
     <RelativeLayout
         android:id="@+id/battleScreen"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_below="@id/titleA"
         android:layout_marginLeft="4dp"
@@ -274,8 +286,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/timerB"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball5B"
@@ -283,8 +297,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/pokeball6B"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball4B"
@@ -292,8 +308,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/pokeball5B"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball3B"
@@ -301,8 +319,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/pokeball4B"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball2B"
@@ -310,8 +330,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/pokeball3B"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
 
         <ImageView
             android:id="@+id/pokeball1B"
@@ -319,8 +341,10 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/pokeball2B"
             android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp" />
+            android:paddingLeft="-5dp"
+            android:paddingRight="-5dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
     </RelativeLayout>
     <!-- END Player B Title -->
 

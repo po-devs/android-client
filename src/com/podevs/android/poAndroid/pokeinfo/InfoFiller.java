@@ -1,14 +1,9 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
 import android.content.Context;
-
 import com.podevs.android.poAndroid.poke.UniqueID;
+
+import java.io.*;
 
 public class InfoFiller {
 	static void fill(String file, Filler filler) {
@@ -33,6 +28,9 @@ public class InfoFiller {
 				/*
 				 * Test for BOM
 				 */
+				if (str == null) {
+					break;
+				}
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
@@ -55,6 +53,49 @@ public class InfoFiller {
 			e.printStackTrace();
 		}
 	}
+
+    static void plainFill(String file, Filler filler) {
+        InputStream assetsDB = null;
+        try {
+            assetsDB = getContext().getAssets().open(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        BufferedReader buf = null;
+        try {
+            buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
+        } catch (UnsupportedEncodingException e2) {
+            e2.printStackTrace();
+        }
+
+        try {
+            while (buf.ready()) {
+                String str = buf.readLine();
+				/*
+				 * Test for BOM
+				 */
+                if (str == null) {
+                    break;
+                }
+                if (str.length() > 0 && (int)str.charAt(0) == 65279) {
+                    str = str.substring(1);
+                }
+
+                filler.fill(Integer.parseInt(str), null);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            assetsDB.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 	static void uIDfill(String file, Filler filler, boolean readAll) {
 
@@ -79,6 +120,9 @@ public class InfoFiller {
 				/*
 				 * Test for BOM
 				 */
+				if (str == null) {
+					break;
+				}
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
@@ -187,6 +231,7 @@ public class InfoFiller {
 		abstract void fillByte(int i, byte b);
 	}
 
+	/*
 	public static abstract class FillerInt implements Filler {
 		public void fill(int i, String s) {
 			fillInt(i, Integer.parseInt(s));
@@ -194,4 +239,5 @@ public class InfoFiller {
 
 		abstract void fillInt(int i, int b);
 	}
+	*/
 }

@@ -1,14 +1,13 @@
 package com.podevs.android.poAndroid.player;
 
-import java.util.Random;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.QColor;
 import com.podevs.android.utilities.SerializeBytes;
+
+import java.util.Random;
 
 public class PlayerProfile implements SerializeBytes {
 	public String nick;

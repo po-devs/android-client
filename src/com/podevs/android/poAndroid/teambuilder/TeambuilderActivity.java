@@ -2,6 +2,7 @@ package com.podevs.android.poAndroid.teambuilder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -19,22 +20,24 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.R;
-import com.podevs.android.poAndroid.poke.PokeParser;
-import com.podevs.android.poAndroid.poke.Team;
-import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
+import com.podevs.android.poAndroid.poke.*;
+import com.podevs.android.poAndroid.pokeinfo.*;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TeambuilderActivity extends FragmentActivity {
+
+	ProgressDialog progressDialog;
 
 	@Override
 	public void onBackPressed() {
@@ -114,8 +117,257 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+
+       // Runtime.getRuntime().gc();
     }
-    
+
+	// This function will allow you do download txt from web.
+	private void downloadTiers(final URL Link) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					HttpURLConnection c = (HttpURLConnection) Link.openConnection();
+					c.setRequestMethod("GET");
+					c.connect();
+					InputStream in = c.getInputStream();
+					final ByteArrayOutputStream bo = new ByteArrayOutputStream();
+					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for information!!
+					in.read(buffer); // Read from Buffer
+					bo.write(buffer); // Write Into Buffer
+					in.close();
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								bo.flush();
+								String textToParse = new String(trim(bo.toByteArray()));
+								bo.close();
+								if (textToParse.contains("?xml version=\"1.0\"")) {
+									team = new PokeParser(TeambuilderActivity.this, textToParse, false).getTeam();
+								} else {
+									// New parsing type
+									team = importableParse(textToParse);
+								}
+								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                                ItemInfo.setGeneration(team.gen.num);
+								updateTeam();
+								if (progressDialog.isShowing()) {
+									progressDialog.dismiss();
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+
+					});
+
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (ProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				/*
+				try {
+					DefaultHttpClient httpClient = new DefaultHttpClient();
+					HttpGet httpGet = new HttpGet(URL);
+					HttpResponse response = httpClient.execute(httpGet);
+					HttpEntity entity = response.getEntity();
+
+					BufferedHttpEntity buf = new BufferedHttpEntity(entity);
+
+					InputStream is = buf.getContent();
+
+					BufferedReader r = new BufferedReader(new InputStreamReader(is));
+
+					StringBuilder total = new StringBuilder();
+					String line;
+					while ((line = r.readLine()) != null) {
+						total.append(line + "\n");
+					}
+					String result = total.toString();
+					team = new PokeParser(result, TeambuilderActivity.this).getTeam();
+					MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+					updateTeam();
+				} catch (Exception e) {
+
+				}
+				*/
+               // Runtime.getRuntime().gc();
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+			}
+		}.start();
+	}
+
+	private Team importableParse(String textToParse) {
+
+		/*
+		Tyranitar (M) @ Choice Scarf		0 	Bruh (Raikou) @ Choice Specs
+		Lvl: 100							1
+		Trait: Sand Stream					2
+		IVs: 0 Spd							3
+		EVs: 4 HP / 252 Atk / 252 Spd		4
+		Jolly Nature (+Spd, -SAtk)			5
+		- Stone Edge						6
+		- Crunch							7
+		- Superpower						8
+		- Pursuit							9
+		*/
+		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd", " HP", " Atk", " Def", " SpA", " SpD", " Spe"};
+		Team newTeam = new Team();
+		textToParse = textToParse.replace("\r\n", "\n").replace("\r", "\n").replaceAll("(\n.\n)", "\n\n");
+		String[] newPokesToParse = textToParse.split("\n\n");
+		Pattern p;
+		Matcher m;
+		for (int i = 0; i < newPokesToParse.length; i ++) {
+			TeamPoke newPoke = new TeamPoke();
+			String[] parseList = newPokesToParse[i].split("\n");
+			newPoke.ability = PokemonInfo.abilities(newPoke.uID(), newPoke.gen.num)[0];
+			boolean movesNext = false;
+			boolean IVsGiven = false;
+			int I = 0;
+			for (String s: parseList) {
+                s = s.trim();
+				if (movesNext && s.contains("- ")) {
+					if (s.contains("(No Move")) {
+						newPoke.moves[I] = new TeamMove(0);
+					}
+					else {
+						s = s.replace("- ", "");
+						if (s.contains("Hidden Power")) {
+							p = Pattern.compile(".*(\\[.*\\])");
+							m = p.matcher(s);
+							if (m.find()) {
+								String hiddenPowerType = m.group(1);
+								s = s.replace(hiddenPowerType, "").trim();
+								if (!IVsGiven) {
+									hiddenPowerType = hiddenPowerType.substring(1, hiddenPowerType.length() - 1);
+									String[] hiddenPowers = {"Fighting","Flying","Poison","Ground","Rock","Bug","Ghost","Steel","Fire","Water","Grass","Electric","Psychic","Ice","Dragon","Dark"};
+									int Type = 16; // Dark
+									for (int K = 0; K < hiddenPowers.length; K++) {
+										if (hiddenPowers[K].equals(hiddenPowerType)) {
+											Type = K + 1;
+											break;
+										}
+									}
+									byte[] IVs = HiddenPowerInfo.configurationForType(Type, newPoke.gen);
+									if (IVs != null) {
+										newPoke.DVs = IVs;
+									}
+								}
+							}
+						}
+						newPoke.moves[I] = new TeamMove(MoveInfo.indexOf(s));
+						// If move has return make it 255 happiness
+						if (newPoke.moves[I].num() == 216) {
+							newPoke.happiness = (byte) 255;
+						}
+					}
+					I++;
+				} else if (s.contains("@")) {
+					p = Pattern.compile("(.*) @");
+					m = p.matcher(s);
+					if (m.find()) {
+						String pokemonLine = m.group(1);
+						if (pokemonLine.contains("(") || pokemonLine.contains(")")) {
+							String genderOrRealName = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
+							if (genderOrRealName.length() > 1) {
+								newPoke.uID = new UniqueID(PokemonInfo.indexOf(genderOrRealName));
+								newPoke.gender = 0;
+								pokemonLine = pokemonLine.replace(" (" + genderOrRealName + ")", "");
+								if (pokemonLine.contains("(") || pokemonLine.contains(")")) {
+									genderOrRealName = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
+									if (genderOrRealName.equals("M")) {
+										newPoke.gender = 1;
+									} else if (genderOrRealName.equals("F")) {
+										newPoke.gender = 2;
+									}
+								}
+							} else {
+								if (genderOrRealName.equals("M")) {
+									newPoke.gender = 1;
+								} else if (genderOrRealName.equals("F")) {
+									newPoke.gender = 2;
+								}
+							}
+						} else {
+							newPoke.gender = 0;
+						}
+						pokemonLine = pokemonLine.replaceAll("( \\(.*\\))", "");
+						if (newPoke.uID().pokeNum == (short) 0) {
+							newPoke.uID = new UniqueID(PokemonInfo.indexOf(pokemonLine));
+						}
+						newPoke.nick = pokemonLine;
+					}
+					p = Pattern.compile("@ (.*)");
+					m = p.matcher(s);
+					if (m.find()) {
+						String itemLine = m.group(1);
+						if (!itemLine.contains("(No Item)")){
+							newPoke.item = (short) ItemInfo.indexOf(itemLine);
+						} else {
+							newPoke.item = 0; // newPoke.item = 15; // leftovers
+						}
+					}
+				} else if (s.contains("Lvl:") || s.contains("Level:")) {
+					newPoke.level = Byte.parseByte(s.split(" ")[1]);
+				} else if (s.contains("IVs:")) {
+					s = s.replace("IVs: ", "");
+					String[] DVs = s.split(" / ");
+					for (String ss: DVs) {
+						String statName = " " + ss.split(" ")[1];
+						int value = Integer.parseInt(ss.split(" ")[0]);
+						int statIndex = Arrays.asList(stats).indexOf(statName) % 6;
+						if (statIndex != -1) {
+							newPoke.EVs[statIndex] = (byte) value;
+						}
+					}
+					IVsGiven = true;
+				} else if (s.contains("EVs:")) {
+					s = s.replace("EVs: ", "");
+					String[] EVs = s.split(" / ");
+					for (String ss: EVs) {
+						String statName = " " + ss.split(" ")[1];
+						int value = Integer.parseInt(ss.split(" ")[0]);
+						int statIndex = Arrays.asList(stats).indexOf(statName) % 6;
+						if (statIndex != -1) {
+							newPoke.EVs[statIndex] = (byte) value;
+						}
+					}
+				} else if (s.contains(" Nature")) {
+					s = s.replace(" Nature", "");
+					newPoke.nature = (byte) NatureInfo.indexOf(s);
+					movesNext = true;
+				} else if (s.contains("Trait:") || s.contains("Ability:")) {
+					s = s.replace("Trait: ", "").replace("Ability: ", "");
+					if (s.contains("(No Ability")) {
+						newPoke.ability = 0; //newPoke.ability = PokemonInfo.abilities(newPoke.uID(), newPoke.gen.num)[0];
+					} else {
+						newPoke.ability = (short) AbilityInfo.indexOf(s);
+					}
+					movesNext = true;
+				} else if (s.contains("Shiny: Yes")) {
+					newPoke.shiny = true;
+				}
+			}
+			newTeam.setPoke(i, newPoke);
+		}
+		return newTeam;
+	}
+
+
+	private static byte[] trim(byte[] bytes) {
+		int i = bytes.length - 1;
+		while (i >= 0 && bytes[i] == 0) {
+			--i;
+		}
+		return Arrays.copyOf(bytes, i + 1);
+	}
+
     private void updateTeam() {
 		if (teamFragment != null) {
 			teamFragment.updateTeam();
@@ -123,19 +375,6 @@ public class TeambuilderActivity extends FragmentActivity {
 		if (trainerFragment != null) {
 			trainerFragment.updateTeam();
 		}
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 
     @Override
@@ -166,8 +405,9 @@ public class TeambuilderActivity extends FragmentActivity {
     					
     					String file = lw.getItemAtPosition(w).toString();
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
-    					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
+    					team = new PokeParser(TeambuilderActivity.this, file, true).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                        ItemInfo.setGeneration(team.gen.num);
     					updateTeam();
     				}
     			});
@@ -209,7 +449,7 @@ public class TeambuilderActivity extends FragmentActivity {
     	case R.id.save_team: {
     		// Set an EditText view to get user input 
     		final EditText input = new EditText(this);
-    		
+
     		new AlertDialog.Builder(this)
 	    	    .setTitle(R.string.save_team_as)
 	    	    .setMessage("Name of your new team: ")
@@ -241,10 +481,32 @@ public class TeambuilderActivity extends FragmentActivity {
 	    	    }).show();
     		break;
     	}
+			case R.id.download_team: {
+				final EditText input = new EditText(this);
+
+				new AlertDialog.Builder(this)
+						.setTitle(R.string.download_team)
+						.setMessage("Enter link of raw team: ")
+						.setView(input)
+						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String link = input.getText().toString();
+
+								try {
+									URL Link = new URL(link);
+									progressDialog = ProgressDialog.show(TeambuilderActivity.this, "", "Downloading. Please wait...", true);
+									downloadTiers(Link);
+								} catch (MalformedURLException e) {
+									Toast.makeText(TeambuilderActivity.this, "Entire Valid Link.", Toast.LENGTH_SHORT).show();
+								}
+							}
+						}).show();
+
+			}
         }
         return true;
     }
-	
+
 	private String defaultFile() {
 		return getSharedPreferences("team", 0).getString("file", "team.xml");
 	}
@@ -288,7 +550,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					}
 					
 					try {
-						team = (new PokeParser(this, "import.xml")).getTeam();
+						team = (new PokeParser(this, "import.xml", true)).getTeam();
 						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
 						
 						/* Tells the activity that the team was successfully imported */
@@ -304,7 +566,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		} else if (requestCode == POKEEDIT_RESULT_CODE) {
 			if (resultCode == RESULT_OK) {
 				int slot = intent.getIntExtra("slot", 0);
-				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")));
+				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")), team.gen);
 
 				team.setPoke(slot, poke);
 				teamChanged = true;
@@ -336,7 +598,9 @@ public class TeambuilderActivity extends FragmentActivity {
 	public void onGenChanged() {
 		MoveInfo.newGen();
 		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
+        ItemInfo.setGeneration(team.gen.num);
 		updateTeam();
 		PokemonInfo.resetGen6();
+       // Runtime.getRuntime().gc();
 	}
 }

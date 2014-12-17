@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
@@ -35,6 +36,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
@@ -51,7 +54,9 @@ public class NetworkService extends Service {
 	public ChatActivity chatActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
+	public boolean askedForServerPass = false;
 	private String salt = null;
+	private byte[] salty = null;
 	public boolean failedConnect = false;
 	private boolean reconnectDenied = false;
 	public String serverName = "Not Connected";
@@ -61,6 +66,9 @@ public class NetworkService extends Service {
 	public boolean serverSupportsZipCompression = false;
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
+	private ImageParser imageParser;
+	private Pattern hashTagPattern;
+	private Matcher hashTagMatcher;
 
 	private static class chatPrefs {
 		// Chat
@@ -71,6 +79,10 @@ public class NetworkService extends Service {
 		// PM
 		boolean timeStampPM = true;
 		public boolean notificationsPM = true;
+		boolean cry = false;
+		int pokeNumber = 648;
+		long lastCall = 0;
+		int soundVolume = 10;
 	}
 
 	private static chatPrefs chatSettings = new chatPrefs();
@@ -141,15 +153,33 @@ public class NetworkService extends Service {
 		}
 	}
 
-	public void addBattle(int battleid, BattleDesc desc) {
+	public void addBattle(int battleid, BattleDesc desc, boolean show) {
 		battles.put(battleid, desc);
-
+// battle event
+		// String n1 = "";
 		if (players.containsKey(desc.p1)) {
 			players.get(desc.p1).addBattle(battleid);
+		//	n1 = players.get(desc.p1).nick();
 		}
+		// String n2 = "";
 		if (players.containsKey(desc.p2)) {
 			players.get(desc.p2).addBattle(battleid);
+			// n2 = players.get(desc.p2).nick();
 		}
+		/*
+		if (show) {
+			for (Channel chan : channels.values()) {
+				if (chan.joined && chan.channelEvents) {
+					if (chan.players.contains(players.get(desc.p1)) || chan.players.contains(players.get(desc.p2))) {
+						// needs better method.
+						// Maybe create an array of channels to check?
+						CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
+						chan.writeToHistSmall(message);
+					}
+				}
+			}
+		}
+		*/
 	}
 
 	/**
@@ -311,6 +341,8 @@ public class NetworkService extends Service {
 
 		loadPOPreferences(getBaseContext());
 		loadSettings();
+		hashTagPattern = Pattern.compile("(#\\S*\\s??)");
+		imageParser = new ImageParser(this);
 	}
 
 	public static SharedPreferences POPreferences = null;
@@ -322,6 +354,9 @@ public class NetworkService extends Service {
 		chatSettings.timeStampPM = POPreferences.getBoolean("timeStampPM", true);
 		chatSettings.notificationsPM = POPreferences.getBoolean("notificationsPM", true);
 		chatSettings.notificationsFlash = POPreferences.getBoolean("notificationsFlash", false);
+		chatSettings.cry = POPreferences.getBoolean("crySound", false);
+		chatSettings.pokeNumber = Integer.parseInt(POPreferences.getString("pokemonNumber", "648"));
+		chatSettings.soundVolume = Integer.parseInt(POPreferences.getString("soundVolume", "10"));
 	}
 
 	private static void loadPOPreferences(Context context) {
@@ -384,15 +419,15 @@ public class NetworkService extends Service {
 				defaultChannel = prefs.getString(defaultKey+key, null);
 				
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, 
-				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
+				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */                //hasCookie hasID
 				loginCmd.putFlags(new boolean []{true, true, true, defaultChannel != null, autoJoinChannels != null,
-						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid(), false, false, cookie.length() > 0}); //Network flags
+						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid(), false, false, cookie.length() > 0, true}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
 					versionCode = (short)getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
 				} catch (NameNotFoundException e1) {
-					versionCode = 0;
+					versionCode = 404;
 				}
 				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
@@ -408,8 +443,8 @@ public class NetworkService extends Service {
 				if (autoJoinChannels != null) {
 					Object channels [] = autoJoinChannels.toArray();
 					loginCmd.putInt(channels.length);
-					for (int i = 0; i < channels.length; i++) {
-						loginCmd.putString(channels[i].toString());
+					for (Object chan : channels) {
+						loginCmd.putString(chan.toString());
 					}
 				}
 				
@@ -427,7 +462,11 @@ public class NetworkService extends Service {
                 if (cookie.length() > 0) {
                     loginCmd.putString(cookie);
                 }
-				
+
+				loginCmd.putBool(getUniqueIDFlag());
+
+				loginCmd.putString(getUniqueID());
+
 				socket.sendMessage(loginCmd, Command.Login);
 				
 				do {
@@ -435,7 +474,6 @@ public class NetworkService extends Service {
 					
 					if (halted) {
 						return;
-
 					}
 					
 					writeMessage("(" + StringUtilities.timeStamp() + ") Disconnected from server");
@@ -665,16 +703,26 @@ public class NetworkService extends Service {
 				PlayerInfo p = new PlayerInfo(msg);
 				PlayerInfo oldPlayer = players.get(p.id);
 				players.put(p.id, p);
-				
-				if (oldPlayer != null) {
-					p.battles = oldPlayer.battles;
 
+				if (oldPlayer != null) {
+					if (!p.nick().equals(oldPlayer.nick())) {
+						for (Channel chan : channels.values()) {
+							if (chan.joined && chan.channelEvents) {
+								if (chan.players.contains(p) || chan.players.contains(oldPlayer)) {
+									CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
+									chan.writeToHistSmall(message);
+								}
+							}
+						}
+					}
+					p.battles = oldPlayer.battles;
+					// name change event
 					if (chatActivity != null) {
+
 						/* Updates the player in the adapter memory */
 						chatActivity.updatePlayer(p, oldPlayer);
 					}
 				}
-				
 				/* Updates self player */
 				if (p.id == myid) {
 					me.setTo(p);
@@ -687,12 +735,14 @@ public class NetworkService extends Service {
 			
 			PlayerInfo p = players.get(id);
 			if (p != null) {
-				p.hasLadderEnabled = dataFlags.readBool();
-				p.isAway = dataFlags.readBool();
-				
-				if (p.id == myid) {
-					me.setTo(p);
+                PlayerInfo p2 = p;
+				p2.hasLadderEnabled = dataFlags.readBool();
+				p2.isAway = dataFlags.readBool();
+
+				if (p2.id == myid) {
+					me.setTo(p2);
 				}
+                chatActivity.updatePlayer(p, p2);
 			}
 			break;
 		}	case SendMessage: {
@@ -772,7 +822,7 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
-					message = Html.fromHtml((String)message);
+					message = Html.fromHtml((String)message, imageParser, null);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');
@@ -801,6 +851,7 @@ public class NetworkService extends Service {
 					}
 				}
 			}
+
 			if (!hasChannel) {
 				// Broadcast message
 				if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
@@ -808,14 +859,25 @@ public class NetworkService extends Service {
 				else {
 					Iterator<Channel> it = joinedChannels.iterator();
 					while (it.hasNext()) {
-						it.next().writeToHist(message);
+						it.next().writeToHist(message, false, null);
 					}
 				}
 			} else {
 				if (chan == null) {
 					Log.e(TAG, "Received message for nonexistent channel");
 				} else {
-					chan.writeToHist(message);
+					boolean click = false;
+					String command = null;
+					hashTagMatcher = hashTagPattern.matcher(message);
+					if (hashTagMatcher.find()) {
+						command = hashTagMatcher.group(0);
+						if (channelNameTagger(command.toLowerCase().replace("#", ""))) {
+							click = true;
+						} else {
+							command = null;
+						}
+					}
+					chan.writeToHist(message, click, command);
 				}
 			}
 			break;
@@ -829,7 +891,7 @@ public class NetworkService extends Service {
 				int player1 = msg.readInt();
 				int player2 = msg.readInt();
 
-				addBattle(battleId, new BattleDesc(player1, player2));
+				addBattle(battleId, new BattleDesc(player1, player2), false);
 			}
 			break;
 		}
@@ -840,7 +902,7 @@ public class NetworkService extends Service {
 			int player1 = msg.readInt();
 			int player2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(player1, player2));
+			addBattle(battleId, new BattleDesc(player1, player2), false);
 			break;
 		} case ChallengeStuff: {
 			IncomingChallenge challenge = new IncomingChallenge(msg);
@@ -911,6 +973,7 @@ public class NetworkService extends Service {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
 			removePlayer(playerID);
+				// logout event
 			//System.out.println("Player " + playerID + " logged out.");
 			break;
 		} case BattleFinished: {
@@ -936,7 +999,7 @@ public class NetworkService extends Service {
 				if (battleDesc < 2) {
 					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
 							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
-							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"));
+							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"), false, null);
 				}
 
 				if (battleDesc == 0 || battleDesc == 3) {
@@ -984,7 +1047,7 @@ public class NetworkService extends Service {
 			int p1 = msg.readInt();
 			int p2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode));
+			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
 
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
@@ -994,7 +1057,7 @@ public class NetworkService extends Service {
 				activeBattles.put(battleId, battle);
 
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
-						" and " + playerName(p2) + " started!");
+						" and " + playerName(p2) + " started!", false, null);
 				Intent intent;
 				intent = new Intent(this, BattleActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1081,10 +1144,26 @@ public class NetworkService extends Service {
 			channels.put(chanId, new Channel(chanId, msg.readString(), this));
 			break;
 		} case ServerPassword: {
-			disconnect();
-				// Stop connection. Prevent crashing/loop from servers with passwords.
+				salty = msg.readQByteArray();
+				askedForServerPass = true;
+				if (chatActivity != null && (chatActivity.hasWindowFocus() || chatActivity.progressDialog.isShowing())) {
+					chatActivity.notifyAskForServerPass();
+				}
 			break;
-		} default: {
+		}/*  case AndroidID: {
++			new Thread(new Runnable() {
++				@TargetApi(Build.VERSION_CODES.HONEYCOMB)
++				public void run() {
++					try {
++						socket = new PokeClientSocket(NetworkService.this.ip, NetworkService.this.port);
++					} catch (IOException e) {
++						return;
++					}
++					socket.sendMessage(getUniqueID(), Command.AndroidID);
++				}
++			}).start();
+				break;
+		}*/ default: {
 			System.out.println("Unimplented message");
 		}
 		}
@@ -1096,14 +1175,14 @@ public class NetworkService extends Service {
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}
-	
+
 	private void writeMessage(String s) {
 		if (chatActivity != null && chatActivity.currentChannel() != null) {
-			chatActivity.currentChannel().writeToHist("\n"+s);
+			chatActivity.currentChannel().writeToHist("\n"+s, false, null);
 			chatActivity.updateChat();
 		} else if (joinedChannels.size() > 0) {
 			for (Channel c: joinedChannels) {
-				c.writeToHist("\n"+s);
+				c.writeToHist("\n"+s, false, null);
 			}
 		}
 	}
@@ -1120,6 +1199,22 @@ public class NetworkService extends Service {
 		return p;
 	}
 
+	public void joinChannel(String channelName) {
+		Baos join = new Baos();
+		join.putString(channelName);
+		if (socket.isConnected())
+			socket.sendMessage(join, Command.JoinChannel);
+	}
+
+	public boolean channelNameTagger(String channelName) {
+		for (Channel c : channels.values()) {
+			if (c.name().toLowerCase().equals(channelName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Creates a PM window with the other guy
 	 * @param playerId the other guy's id
@@ -1133,8 +1228,15 @@ public class NetworkService extends Service {
 		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
 
-		if (chatSettings.notificationsPM) {
+		if (chatSettings.notificationsPM && !PrivateMessageActivity.onTop()) {
 			showPMNotification(playerId);
+			if (chatSettings.cry) {
+				long time = System.currentTimeMillis();
+				if (time - 10000 > chatSettings.lastCall) {
+					playPMCry(chatSettings.pokeNumber);
+					chatSettings.lastCall = time;
+				}
+			}
 		}
 	}
 
@@ -1219,17 +1321,30 @@ public class NetworkService extends Service {
 		return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
-	public void sendPass(String s) {
-		getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
-		askedForPass = false;
+	public void sendPass(String s, boolean isUserPass) {
 		MessageDigest md5;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-			Baos hashPass = new Baos();
-			hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
-			socket.sendMessage(hashPass, Command.AskForPass);
-		} catch (NoSuchAlgorithmException nsae) {
-		} catch (UnsupportedEncodingException uee) {
+		if (isUserPass) {
+			getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
+			askedForPass = false;
+			try {
+				md5 = MessageDigest.getInstance("MD5");
+				Baos hashPass = new Baos();
+				hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
+				socket.sendMessage(hashPass, Command.AskForPass);
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (UnsupportedEncodingException uee) {
+			}
+		} else {
+			try {
+				askedForServerPass = false;
+				md5 = MessageDigest.getInstance("MD5");
+				Baos hashPass = new Baos();
+				hashPass.putBytes(md5.digest(mashBytes(md5.digest(s.getBytes("ISO-8859-1")), salty)));
+				socket.sendMessage(hashPass, Command.ServerPassword);
+				salty = null;
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (UnsupportedEncodingException uee) {
+			}
 		}
 	}
 
@@ -1284,6 +1399,19 @@ public class NetworkService extends Service {
 		}
 	}
 
+	public void playPMCry(Integer pokemon) {
+		final int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+
+		/* Don't ring if in silent mode */
+		if (ringMode == AudioManager.RINGER_MODE_NORMAL) {
+			new Thread(new CryPlayer(pokemon)).start();
+		} else if (ringMode == AudioManager.RINGER_MODE_VIBRATE) {
+			Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			// Vibrate for 700 milliseconds
+			v.vibrate(700);
+		}
+	}
+
 	class CryPlayer implements Runnable {
 		ShallowBattlePoke poke;
 		SpectatingBattle battle;
@@ -1293,11 +1421,19 @@ public class NetworkService extends Service {
 			this.battle = battle;
 		}
 
+		public CryPlayer (int num) {
+			poke = new ShallowBattlePoke();
+			poke.uID.pokeNum = (short) num;
+			battle = null;
+		}
+
 		public void run() {
 			int resID = getResources().getIdentifier("p" + poke.uID.pokeNum,
 					"raw", pkgName);
 			if (resID != 0) {
 				MediaPlayer cryPlayer = MediaPlayer.create(NetworkService.this, resID);
+				float logarithmicVolume = (float) (Math.log(100-chatSettings.soundVolume)/10);
+				cryPlayer.setVolume(logarithmicVolume, logarithmicVolume);
 				cryPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					public void onCompletion(MediaPlayer mp) {
 						synchronized (mp) {
@@ -1312,8 +1448,10 @@ public class NetworkService extends Service {
 					} catch (InterruptedException e) {}
 				}
 				cryPlayer.release();
-				synchronized (battle) {
-					battle.notify();
+				if (battle != null) {
+					synchronized (battle) {
+						battle.notify();
+					}
 				}
 				cryPlayer = null;
 			}
@@ -1329,6 +1467,7 @@ public class NetworkService extends Service {
 		this.stopSelf();
 	}
 
+    /*
 	public PlayerInfo getPlayerByName(String playerName) {
 		Enumeration<Integer> e = players.keys();
 		while(e.hasMoreElements()) {
@@ -1338,6 +1477,7 @@ public class NetworkService extends Service {
 		}
 		return null;
 	}
+	*/
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);
@@ -1367,25 +1507,13 @@ public class NetworkService extends Service {
 		pmedPlayers.add(id);
 	}
 
-	public Object getPreference(String pref) {
-		SharedPreferences POPreferences = PreferenceManager.getDefaultSharedPreferences(NetworkService.this);
-		if (pref.equals("flashColor")) {
-			return POPreferences.getString("flashColor", "#FFFF00");
-		}
-		if (pref.equals("flashing")) {
-			return POPreferences.getBoolean("flashing", true);
-		}
-		if (pref.equals("timeStamp")) {
-			return POPreferences.getBoolean("timeStamp", false);
-		}
-		return null;
-	}
-
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
 		if (chatActivity != null) {
 			chatActivity.populateUI(true);
-			chatActivity.progressDialog.dismiss();
+            if (chatActivity.progressDialog != null) {
+                chatActivity.networkDismissDialog();
+            }
 		}
 		
 		SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);
@@ -1422,6 +1550,84 @@ public class NetworkService extends Service {
 			}
 		}
 		edit.commit();
+	}
+
+	public String getUniqueID() {
+		String msg = "";
+		try {
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+				String ANDROID_ID = "";
+				ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+				if (ANDROID_ID != null) {
+					if (ANDROID_ID.length() > 2) {
+						String serial;
+						try {
+							serial = Build.class.getField("SERIAL").get(null).toString();
+						} catch (NoSuchFieldException e) {
+							serial = "PokemonOnline";
+						} catch (IllegalAccessException e) {
+							serial = "PokemonOnline";
+						}
+						ANDROID_ID += this.ip;
+						serial += this.ip;
+						UUID ANDROID = new UUID(ANDROID_ID.hashCode(), serial.hashCode());
+						msg = ANDROID.toString();
+					} else {
+						msg = getPseudoUniqueID();
+					}
+				} else {
+					msg = getPseudoUniqueID();
+				}
+			} else {
+				msg = getPseudoUniqueID();
+			}
+			if (msg == null || msg.length() < 2) {
+				return "SomethingBadHappened";
+			}
+		} catch (Exception e) {
+			return "SomethingBadHappened";
+		}
+		return msg;
+	}
+
+	public Boolean getUniqueIDFlag() {
+		Boolean flag;
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+			if (ANDROID_ID != null) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
+
+
+	private String getPseudoUniqueID() {
+		try {
+			String serial = "";
+			try {
+				serial = Build.class.getField("SERIAL").get(null).toString();
+			} catch (NoSuchFieldException e) {
+				serial = "PokemonOnline";
+			} catch (IllegalAccessException e) {
+				serial = "PokemonOnline";
+			}
+			String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+			PSEUDO_ID += this.ip;
+			serial += this.ip;
+			UUID PSEUDO = new UUID(PSEUDO_ID.hashCode(), serial.hashCode());
+			String PSEUDO_String = PSEUDO.toString();
+			if (PSEUDO_String == null || PSEUDO_String.length() < 2) {
+				return "SomethingBadHappened";
+			}
+			return PSEUDO_String;
+		} catch (Exception e) {
+			return "SomethingBadHappened";
+		}
 	}
 
 	public String getDefaultPass() {

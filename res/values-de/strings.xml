@@ -79,6 +79,7 @@
     <string name="losingmessage">Nachicht bei Niederlage</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">Möchtest du die Änderungen am Team speichern?</string>
+    <string name="download_team">Team downloaden</string>
     <string name="save">Speichern</string>
     <string name="no_save">Nicht speichern</string>
     <string name="hiddenpower_choice">Kraftreserven-Typ</string>
@@ -89,6 +90,38 @@
     <string name="full_happiness">100% Zufriedenheit</string>
     <string name="megavolve">Mega-Entwicklung</string>
     <string name="formes">Formen: </string>
+    <string name="settings">Einstellungen</string>
+    <string name="shiny">Shiny</string>
+    <string name="force_rated">Wertungskämpfe erzwingen</string>
+    <string name="force_same_tier">Gleichen Tier erzwingen</string>
+    <string name="only_within_range">Nur im Bereich</string>
+    <string name="view_player_info">Spieler-Info ansehen</string>
+    <string name="challenge">Herausfordere</string>
+    <string name="pm">Private Nachicht</string>
+    <string name="watch_battle">Kampf ansehen gegen</string>
+
+    <string name="chat_title">Chat-Einstellungen</string>
+    <string name="chat_summary">Chat-Einstellungen</string>
+    <string name="flash_title">Aufleuchten</string>
+    <string name="flash_summary">Aufleuchten aktivieren</string>
+    <string name="flash_color_title">Farbe hervorheben</string>
+    <string name="flash_color_summary">Benutze eine gültige Hex-Farbe</string>
+    <string name="timestamp_chat_title">Zeitstempel</string>
+    <string name="timestamp_chat_summary">Zeitstempel im Chat aktivieren</string>
+    <string name="notifications_chat_title">Flash Pop up</string>
+    <string name="notifications_chat_summary">Aufleuchtende Nachichten aktivieren</string>
+    <string name="pm_title">PN-Einstellungen</string>
+    <string name="pm_summary">Einstellungen für private Nachichten</string>
+    <string name="timestamp_pm_title">Zeitstempel</string>
+    <string name="timestamp_pm_summary">Zeitstempel aktivieren</string>
+    <string name="notifications_pm_title">Benachichtigungen</string>
+    <string name="notifications_pm_summary">Benachichtigungen aktivieren</string>
+    <string name="volume_title">Lautstärke</string>
+    <string name="volume_summary">Wert zwischen 0 und 100</string>
+    <string name="poke_number_title">Ruf des Pokemons</string>
+    <string name="poke_number_summary">Nummer von dem Pokemon</string>
+    <string name="sound_notification_title">Ton-Benachichtigung</string>
+    <string name="sound_notification_summary">Ton-Benachichtigung aktivieren</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>

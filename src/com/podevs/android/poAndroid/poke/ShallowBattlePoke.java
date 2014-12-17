@@ -1,10 +1,8 @@
 package com.podevs.android.poAndroid.poke;
 
-import java.util.LinkedList;
-
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-
+import com.podevs.android.poAndroid.ColorEnums;
 import com.podevs.android.poAndroid.battle.BattleMove;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
@@ -12,6 +10,8 @@ import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
+
+import java.util.LinkedList;
 
 // This class represents the Opponent's poke during a battle.
 public class ShallowBattlePoke implements SerializeBytes {
@@ -35,25 +35,20 @@ public class ShallowBattlePoke implements SerializeBytes {
 		uID = new UniqueID(msg);
 		rnick = nick = msg.readString();
 		if (!isMe) {
-			nick = "the foe's " + nick;
-			
 			// A little optimization; these only matter if it's not your poke
 			pokeName = PokemonInfo.name(uID);
-			types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
-			types[1] = Type.values()[PokemonInfo.type2(uID, gen.num)];
+			if (!rnick.equals(pokeName)) {
+				rnick = rnick + " (" + pokeName + ")";
+			}
+			nick = "the foe's " + pokeName;
 		}
 		lifePercent = msg.readByte();
 		fullStatus = msg.readInt();
 		gender = msg.readByte();
 		shiny = msg.readBool();
 		level = msg.readByte();
-		if (!isMe) {
-			for (int j = 0; j < 2; j++) {
-				for (int i = 0; i < 6; i++) {
-					stats[j][i] = PokemonInfo.calcMinMaxStat(uID, i, gen.num, level, j);
-				}
-			}
-		}
+		setStats(gen.num);
+		setTypes(gen.num);
 	}
 
 	public void serializeBytes(Baos b) {
@@ -68,8 +63,8 @@ public class ShallowBattlePoke implements SerializeBytes {
 	
 	public SpannableStringBuilder nameAndType() {
 		SpannableStringBuilder s = new SpannableStringBuilder(Html.fromHtml("<b>" + pokeName + "</b>"));
-		s.append("\n" + types[0]);
-		if(types[1] != Type.Curse) s.append("/" + types[1]);
+		s.append(Html.fromHtml("<br>" + "<font color=\"" + ColorEnums.TypeColor.values()[(byte) types[0].ordinal()].toString().replaceAll(">", "") + "\">" + types[0].toString() + "</font>"));
+		if(types[1] != Type.Curse) s.append(Html.fromHtml("/" + "<font color=\"" + ColorEnums.TypeColor.values()[(byte) types[1].ordinal()].toString().replaceAll(">", "") + "\">" + types[1].toString() + "</font>"));
 		return s;
 	}
 
@@ -108,14 +103,14 @@ public class ShallowBattlePoke implements SerializeBytes {
 		}
 	}
 
-	public String movesString() {
-		String s = "";
+	public SpannableStringBuilder movesString() {
+		SpannableStringBuilder s = new SpannableStringBuilder();
 		for (int i = 0; i < 4; i++) {
-			s += (i == 0 ? "" : "\n");
+			s.append(i == 0 ? "" : "\n");
 			if (this.moves[i] == null) {
-				s += "????" + "    " +"??/??";
+				s.append("????" + "    " +"??/??");
 			} else {
-				s += moves[i].toString() + "    " + moves[i].stringPP();
+				s.append(Html.fromHtml("<font color=\"" + moves[i].getHexColor() + "\">" + moves[i].toString() + "    " + moves[i].stringPP() + "</font>"));
 			}
 		}
 		return s;
@@ -141,5 +136,23 @@ public class ShallowBattlePoke implements SerializeBytes {
 		} else {
 			return 1;
 		}
+	}
+
+	public void setStats(Byte gen) {
+		for (int j = 0; j < 2; j++) {
+			for (int i = 0; i < 6; i++) {
+				stats[j][i] = PokemonInfo.calcMinMaxStat(uID, i, gen, level, j);
+			}
+		}
+	}
+
+	public void setTypes(Byte gen) {
+		types[0] = Type.values()[PokemonInfo.type1(uID, gen)];
+		types[1] = Type.values()[PokemonInfo.type2(uID, gen)];
+	}
+
+	@Override
+	public String toString() {
+		return "" + this.uID.toString() + (this.shiny ? "s" : "") + (this.gender == 2 ? "f" : "");
 	}
 }

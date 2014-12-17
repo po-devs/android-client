@@ -16,29 +16,19 @@
 
 package com.android.launcher;
 
-import java.util.ArrayList;
-
-import com.podevs.android.poAndroid.R;
-
 import android.app.ActivityManager;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.os.Debug;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.view.HapticFeedbackConstants;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.KeyEvent;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import com.podevs.android.poAndroid.R;
+
+import java.util.ArrayList;
 
 /**
  * A ViewGroup that coordinated dragging across its dscendants

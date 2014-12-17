@@ -1,19 +1,9 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.*;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.NotificationManager;
-import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.*;
+import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,45 +12,20 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.podevs.android.poAndroid.Command;
-import com.podevs.android.poAndroid.IncomingChallenge;
-import com.podevs.android.poAndroid.MessageListAdapter;
-import com.podevs.android.poAndroid.NetworkService;
-import com.podevs.android.poAndroid.R;
-import com.podevs.android.poAndroid.Tier;
+import com.podevs.android.poAndroid.*;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
-import com.podevs.android.poAndroid.registry.MyApplication;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
 import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.utilities.Baos;
@@ -85,7 +50,8 @@ public class ChatActivity extends Activity {
 		PlayerInfo,
 		ChallengeMode,
 		ChooseTierMode,
-		AskForName
+		AskForName,
+		AskForServerPass
 	}
 	
 	// public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -97,7 +63,8 @@ public class ChatActivity extends Activity {
 		LeaveChannel,
 		WatchBattle,
 		PrivateMessage,
-		IgnorePlayer
+		IgnorePlayer,
+		ChannelEvent
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -219,6 +186,13 @@ public class ChatActivity extends Activity {
 					disconnect();
 				}
 			});
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 		}
 		
 		super.onCreate(savedInstanceState);
@@ -228,6 +202,33 @@ public class ChatActivity extends Activity {
 		channelsLayout = getLayoutInflater().inflate(R.layout.channellist, null);
 		playersLayout = getLayoutInflater().inflate(R.layout.playerlist, null);
 		chatView = (ListView)chatLayout.findViewById(R.id.chatView);
+		/*
+		chatView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				final String test = ((TextView) chatView.getItemAtPosition(position)).getText().toString();
+				AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+				builder.setMessage(test)
+				.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("simple text", test);
+						clipboard.setPrimaryClip(clip);
+					}
+				}).setNeutralButton("Name", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("simple text", test.substring(test.indexOf(") ") + 1, test.indexOf(":"))); // .*\) (.*?):
+						clipboard.setPrimaryClip(clip);
+					}
+				});
+				builder.create().show();
+				return false;
+			}
+		});
+		*/
 		chatViewSwitcher.setAdapter(new MyAdapter());
 		ImageButton findBattleButton = (ImageButton)chatLayout.findViewById(R.id.findbattle);
 		findBattleButton.setOnClickListener(new OnClickListener() {
@@ -241,6 +242,7 @@ public class ChatActivity extends Activity {
 
     	//Player List Stuff**
     	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
+
     	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
     	registerForContextMenu(players);
     	players.setOnItemClickListener(new OnItemClickListener() {
@@ -311,25 +313,13 @@ public class ChatActivity extends Activity {
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
-
-
-	@Override
 	public void onResume() {
 		super.onResume();
 		chatViewSwitcher.setCurrentItem(1);
 		if (netServ != null) {
 			netServ.checkBattlesToEnd();
 		}
+		checkAskForServerPass();
 		checkChallenges();
 		checkAskForPass();
 		checkFailedConnection();
@@ -343,10 +333,13 @@ public class ChatActivity extends Activity {
 			netServ.chatActivity = ChatActivity.this;
 			if (netServ.joinedChannels.peek() != null && !netServ.joinedChannels.isEmpty()) {
 				populateUI(false);
-				if (progressDialog.isShowing())
-					progressDialog.dismiss();
+				if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+                }
 				loading = false;
 			}
+			checkAskForServerPass();
 	        checkChallenges();
 	        checkAskForPass();
 	        checkFailedConnection();
@@ -365,6 +358,11 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
+
+    public void networkDismissDialog() {
+        progressDialog.dismiss();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+    }
 	
 	/**
 	 * Gives the current channel
@@ -432,6 +430,7 @@ public class ChatActivity extends Activity {
 				}
 				messageAdapter.notifyDataSetChanged();
 				Integer position = chatView.getLastVisiblePosition();
+				// Floor
 				cancelScroll = (position + 3 < top);
 				if(!cancelScroll) {
 					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
@@ -483,7 +482,16 @@ public class ChatActivity extends Activity {
 	public void notifyAskForPass() {
 		runOnUiThread(new Runnable() { public void run() { checkAskForPass(); } } );
 	}
-	
+
+	public void notifyAskForServerPass() {
+		runOnUiThread(new Runnable() { public void run() { checkAskForServerPass(); } } );
+	}
+
+	private void checkAskForServerPass() {
+		if (netServ != null && netServ.askedForServerPass)
+			showDialog(ChatDialog.AskForServerPass.ordinal());
+	}
+
 	private void checkAskForPass() {
 		if (netServ != null && netServ.askedForPass)
 			showDialog(ChatDialog.AskForPass.ordinal());
@@ -581,13 +589,20 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
 					.setCancelable(true)
 					.setView(passField)
 					.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							if (netServ != null) {
-								netServ.sendPass(passField.getText().toString());
+								netServ.sendPass(passField.getText().toString(), true);
 								registering = false;
 								netServ.registered = true;
 								if (isChangingNames) {
@@ -597,6 +612,8 @@ public class ChatActivity extends Activity {
 								}
 							}
 							removeDialog(id);
+                            if (!loading)
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 						}
 					})
 					.setOnCancelListener(new OnCancelListener() {
@@ -605,6 +622,8 @@ public class ChatActivity extends Activity {
 							if (!registering) {
 								disconnect();
 							}
+                            if (!loading)
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 				}
 			});
 			if (netServ != null) {
@@ -620,7 +639,40 @@ public class ChatActivity extends Activity {
 				}
 			});
 			return dialog;
-		} case AskForName: {
+		} case AskForServerPass: {
+				//View layout = inflater.inflate(R.layout.ask_for_pass, null);
+				final EditText passField = new EditText(this);
+				passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+				builder.setMessage("Please enter the password for " + netServ.serverName + ".")
+						.setCancelable(true)
+						.setView(passField)
+						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								if (netServ != null) {
+									netServ.sendPass(passField.getText().toString(), false);
+								}
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+								if (!registering) {
+									disconnect();
+								}
+							}
+						});
+				final AlertDialog dialog = builder.create();
+				passField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+						}
+					}
+				});
+				return dialog;
+			} case AskForName: {
 				final EditText nameField = new EditText(this);
 				nameField.setInputType(InputType.TYPE_CLASS_TEXT);
 				builder.setMessage("Please enter a new name")
@@ -670,7 +722,7 @@ public class ChatActivity extends Activity {
 			range.setInputType(InputType.TYPE_CLASS_NUMBER);
 			range.setHint("Range");
 				builder.setTitle(R.string.find_a_battle)
-						.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
+						.setMultiChoiceItems(new CharSequence[]{getString(R.string.force_rated), getString(R.string.force_same_tier), getString(R.string.only_within_range)}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
 							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
 							}
@@ -698,7 +750,7 @@ public class ChatActivity extends Activity {
 			return new TierAlertDialog(this, netServ.superTier);
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
-            ImageView[] pPokeIcons = new ImageView[6];
+            // ImageView[] pPokeIcons = new ImageView[6];
             TextView pInfo, pName;
             ListView ratings;
 			builder.setView(layout)
@@ -720,11 +772,10 @@ public class ChatActivity extends Activity {
             final AlertDialog pInfoDialog = builder.create();
             
 
-            for(int i = 0; i < 6; i++){
-        	pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + 
-        			(i+1), "id", packName));
+            // for(int i = 0; i < 6; i++){
+        	// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
-            }
+            // }
         	pInfo = (TextView)layout.findViewById(R.id.player_info);
         	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
         	pName = (TextView)layout.findViewById(R.id.player_info_name);
@@ -892,6 +943,39 @@ public class ChatActivity extends Activity {
 				}
 				break;
 			case R.id.changeName:
+				/*
+				String all = chatInput.getText().toString();
+				if (all.length() > 3) {
+					String s = all;
+					if (s.contains(" ")) {
+						s = chatInput.getText().toString().split(" (?!.* )")[1];
+						if (s.length() < 4) {
+							break;
+						}
+					}
+					Collection<PlayerInfo> players = currentChannel().players.values();
+					ArrayList<String> nicks = new ArrayList<String>();
+					String regex = "(?i)^" + s + ".*";
+					for (PlayerInfo p : players) {
+						if (p.nick.matches(regex)) {
+							nicks.add(p.nick());
+						}
+					}
+					players = null;
+					if (nicks.size() == 1) {
+						all = all.replaceFirst(regex, nicks.get(0));
+						chatInput.setText(all);
+						chatInput.setSelection(all.length()-1);
+					} else {
+						// Add pop-out listview to choose from end results larger than 1
+						all = all.replaceFirst(regex, nicks.get(0));
+						chatInput.setText(all);
+						chatInput.setSelection(all.length()-1);
+					}
+				} else {
+					break;
+				}
+				*/
 				showDialog(ChatDialog.AskForName.ordinal());
 				break;
 			case R.id.settings:
@@ -900,9 +984,6 @@ public class ChatActivity extends Activity {
 				break;
 			}
 		return true;
-	}
-
-	private void dealWithNameChange(String nick) {
 	}
 
     private void dealWithFindBattle() {
@@ -944,19 +1025,19 @@ public class ChatActivity extends Activity {
     		lastClickedPlayer = playerAdapter.getItem(aMenuInfo.position);
     		String pName = lastClickedPlayer.nick();
     		menu.setHeaderTitle(pName);
-    		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, "Challenge " + pName);
-    		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, "View Player Info");
+    		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, getString(R.string.challenge) + " " + pName);
+    		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, getString(R.string.view_player_info));
     		if (netServ != null) {
     			if (netServ.myid != lastClickedPlayer.id) {
-	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, "Private Message");
+	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, getString(R.string.pm));
 	    		}
     			for (Integer battleid : lastClickedPlayer.battles) {
-	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, "Watch battle against " + 
+	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, getString(R.string.watch_battle) + " " +
 							netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
 							.setIntent(new Intent().putExtra("battle", battleid));
 	    		}
     		}
-			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, "Ignore Player");
+			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, getString(R.string.ignorePlayer));
 			menu.findItem(ChatContext.IgnorePlayer.ordinal()).setCheckable(true);
 			if (netServ.ignoreList.contains(lastClickedPlayer.id)) {
 				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(true);
@@ -968,8 +1049,15 @@ public class ChatActivity extends Activity {
     		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
     		String cName = lastClickedChannel.name;
     		menu.setHeaderTitle(cName);
-    		if (netServ.joinedChannels.contains(lastClickedChannel))
-    			menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
+    		if (netServ.joinedChannels.contains(lastClickedChannel)) {
+				menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
+				menu.add(Menu.NONE, ChatContext.ChannelEvent.ordinal(), 0, "Channel Event").setCheckable(true);
+				if (lastClickedChannel.channelEvents) {
+					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(true);
+				} else {
+					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(false);
+				}
+			}
     		else
         		menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
     		break;
@@ -1027,6 +1115,12 @@ public class ChatActivity extends Activity {
     			startActivity(intent);
     		}
     		break;
+		case ChannelEvent:
+			if (lastClickedChannel.channelEvents) {
+				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = false;
+			} else {
+				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = true;
+			}
     	}
     	return true;
     }
@@ -1037,6 +1131,7 @@ public class ChatActivity extends Activity {
 		}
 		if (progressDialog != null) {
 			progressDialog.dismiss();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 		}
 		
 		Intent intent = new Intent(this, RegistryActivity.class);
@@ -1114,6 +1209,7 @@ public class ChatActivity extends Activity {
 					if (playerAdapter.getPosition(oldPlayer) != -1) {
 						playerAdapter.remove(oldPlayer);
 						playerAdapter.add(newPlayer);
+						playerAdapter.notifyDataSetChanged();
 					}
 				}
 			}

@@ -1,14 +1,9 @@
 package com.podevs.android.poAndroid.player;
 
-import java.util.ArrayList;
-
 import android.util.Log;
+import com.podevs.android.utilities.*;
 
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
-import com.podevs.android.utilities.Getter;
-import com.podevs.android.utilities.QColor;
-import com.podevs.android.utilities.SerializeBytes;
+import java.util.ArrayList;
 
 // Represents a player in the player list
 public class PlayerInfo implements SerializeBytes {

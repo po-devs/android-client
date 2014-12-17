@@ -18,15 +18,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.chat.ChatActivity;
@@ -52,7 +43,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private boolean bound = false;
 	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
-	protected MyApplication app;
 
 	/*
 	enum RegistryDialog {
@@ -68,14 +58,10 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		InfoConfig.context = this;
     	}
 
+        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler))
+            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
-
-
-		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
-		tracker.setScreenName("Registry Screen");
-		tracker.setAppVersion("2.5.3.3");
-		// tracker.enableAdvertisingIdCollection(true);
-		tracker.send(new HitBuilders.AppViewBuilder().build());
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -190,7 +176,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         			return;
 				}
 				
-				String nick = editName.getText().toString();
+				String nick = editName.getText().toString().trim();
 				if (nick.length() == 0) {
 					Toast.makeText(RegistryActivity.this, "Please enter a trainer name.", Toast.LENGTH_LONG).show();
 					return;

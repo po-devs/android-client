@@ -1,50 +1,26 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.ResultReceiver;
-import android.os.SystemClock;
+import android.os.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
@@ -97,7 +73,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		MoveInfo
 	}
 
-	public final static int SWIPE_TIME_THRESHOLD = 100;
+	// public final static int SWIPE_TIME_THRESHOLD = 100;
 	private static final String TAG = "Battle";
     
 	DragLayer mDragLayer;
@@ -292,18 +268,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     		}
     	});
     }
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
 	
 	private Handler handler = new Handler();
     
@@ -342,46 +306,76 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	
 	public void updateBattleInfo(boolean scroll) {
 		runOnUiThread(new Runnable() {
-			public void run() {
-				if (battle == null)
-					return;
-				synchronized (battle.histDelta) {
-					infoView.append(battle.histDelta);
-					if (battle.histDelta.length() != 0 || true) {
-						infoScroll.post(new Runnable() {
-							public void run() {
-								infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
-							}
-						});
-					}
-					infoScroll.invalidate();
-					battle.hist.append(battle.histDelta);
-					battle.histDelta.clear();
-				}
-			}
-		});
+            public void run() {
+                if (battle == null)
+                    return;
+                synchronized (battle.histDelta) {
+                    infoView.append(battle.histDelta);
+                    if (battle.histDelta.length() != 0 || true) {
+                        infoScroll.post(new Runnable() {
+                            public void run() {
+                                infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
+                            }
+                        });
+                    }
+                    infoScroll.invalidate();
+                    battle.hist.append(battle.histDelta);
+                    battle.histDelta.clear();
+                }
+            }
+        });
 	}
 	
 	public void updatePokes(byte player) {
+		Log.e(TAG, PokemonInfo.cacheStatus());
 		if (player == me)
 			updateMyPoke();
 		else
 			updateOppPoke(player);
 	}
+
+	public int statusTint(int status) {
+		switch (status) {
+			case 0:
+				return 1;
+			case 31:
+				return 0x7D000000;
+			case 1:
+				return 0x7DF8D030;
+			case 2:
+				return 0x7D888888;
+			case 3:
+				return 0x7D98D8D8;
+			case 4:
+				return 0x7DF08030;
+			case 5:
+				return 0x7DA040A0;
+			case 6:
+				return 0x7DC8C8C8;
+			default:
+				return 0;
+		}
+	}
 	
 	public void updatePokeballs() {
 		runOnUiThread(new Runnable() {
-			public void run() {
-				for (int i = 0; i < 2; i++) {
-					for (int j = 0; j < 6; j++) {
-						pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", 
-								InfoConfig.pkgName));
-					}
-				}
-			}
-		});
+            public void run() {
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 6; j++) {
+                        pokeballs[i][j].setImageDrawable((
+                                battle.pokes[i][j].uID.pokeNum != 0
+                                    ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID)
+                                    : PokemonInfo.iconDrawablePokeballStatus()
+                        ));
+                        pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
+                    }
+                }
+                /// PorterDuff.Mode.MULTIPLY;
+            }
+        });
 	}
-	
+
+
 	private String getAnimSprite(ShallowBattlePoke poke, boolean front) {
 		String res;
         UniqueID uID;
@@ -435,24 +429,28 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public boolean isSpectating() {
 		return activeBattle == null;
 	}
-	
+
 	public void updateMyPoke() {
 		if (isSpectating()) {
 			updateOppPoke(me);
 			return;
 		}
-        runOnUiThread(new Runnable() {
-		
+		runOnUiThread(new Runnable() {
+
 			public void run() {
 				ShallowBattlePoke poke = battle.currentPoke(me);
 				poke.shiny = activeBattle.myTeam.pokes[0].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
 				// Load correct moveset and name
 				if (poke != null) {
-					currentPokeNames[me].setText(poke.rnick);
-					currentPokeLevels[me].setText("Lv. " + poke.level);
-					currentPokeGenders[me].setImageResource(resources.getIdentifier("battle_gender" + poke.gender, "drawable", InfoConfig.pkgName));
+					if (!samePokes[me]) {
+						currentPokeNames[me].setText(poke.rnick);
+						currentPokeLevels[me].setText("Lv. " + poke.level);
+						currentPokeGenders[me].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+					}
+
 					currentPokeStatuses[me].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
 					setHpBarTo(me, poke.lifePercent);
+
 					for (int i = 0; i < 4; i++) {
 						BattleMove move = activeBattle.displayedMoves[i];
 						updateMovePP(i);
@@ -462,71 +460,80 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 							type = TypeInfo.name(activeBattle.myTeam.pokes[0].hiddenPowerType());
 						else
 							type = TypeInfo.name(MoveInfo.type(move.num()));
-						type = type.toLowerCase(Locale.UK);
+						type = type.toLowerCase();
 						attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
 								"drawable", InfoConfig.pkgName));
 					}
 
-					String sprite = null;
-					if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
-						sprite = "empty_sprite.png";
-					} else if (poke.sub) {
-						sprite = "sub_back.png";
-					} else {
-						if (useAnimSprites) {
-							Intent data = new Intent();
-							data.setComponent(servName);
-							data.putExtra("me", true);
-							data.putExtra("sprite", getAnimSprite(poke, false));
-							data.putExtra("cb", mRecvr);
-							startService(data);
+					if (!samePokes[me]) {
+						String sprite = null;
+						if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
+							sprite = "empty_sprite.png";
+						} else if (poke.sub) {
+							sprite = "sub_back.png";
 						} else {
-							sprite = PokemonInfo.sprite(poke, false);
+							if (useAnimSprites) {
+								Intent data = new Intent();
+								data.setComponent(servName);
+								data.putExtra("me", true);
+								data.putExtra("sprite", getAnimSprite(poke, false));
+								data.putExtra("cb", mRecvr);
+								startService(data);
+							} else {
+								sprite = PokemonInfo.sprite(poke, false);
+							}
 						}
-					}
 
-					if (sprite != null) {
-						pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
-					}
+						if (sprite != null) {
+							pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+						}
+					} else samePokes[me] = true;
 				}
 			}
 		});
 		updateTeam();
 	}
-	
+
+	public boolean samePokes[] = new boolean[2];
+
 	public void updateOppPoke(final int opp) {
 		runOnUiThread(new Runnable() {
 			public void run() {
 					ShallowBattlePoke poke = battle.currentPoke(opp);
 					// Load correct moveset and name
 					if(poke != null) {
-						currentPokeNames[opp].setText(poke.rnick);
-						currentPokeLevels[opp].setText("Lv. " + poke.level);
-						currentPokeGenders[opp].setImageResource(resources.getIdentifier("battle_gender" + poke.gender, "drawable", InfoConfig.pkgName));
+						if (!samePokes[opp]) {
+							currentPokeNames[opp].setText(poke.rnick);
+							currentPokeLevels[opp].setText("Lv. " + poke.level);
+							currentPokeGenders[opp].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+						}
+
 						currentPokeStatuses[opp].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
 						setHpBarTo(opp, poke.lifePercent);
 
-				        String sprite = null;
-				        if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
-				        	sprite = "empty_sprite.png";
-				        } else if (poke.sub) {
-				        	sprite = opp == me ? "sub_back.png" : "sub_front.png";
-				        } else {
-				        	if (useAnimSprites) {
-						        Intent data = new Intent();
-						        data.setComponent(servName);
-						        data.putExtra("me", false);
-						        data.putExtra("sprite", getAnimSprite(poke, opp != me));
-						        data.putExtra("cb", mRecvr);
-						        startService(data);
-				        	} else {
-				        		sprite = PokemonInfo.sprite(poke, opp != me);
-				        	}
-				        }
-				        
-				        if (sprite != null) {
-							pokeSprites[opp].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);			        	
-				        }
+						if (!samePokes[opp]) {
+							String sprite = null;
+							if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
+								sprite = "empty_sprite.png";
+							} else if (poke.sub) {
+								sprite = opp == me ? "sub_back.png" : "sub_front.png";
+							} else {
+								if (useAnimSprites) {
+									Intent data = new Intent();
+									data.setComponent(servName);
+									data.putExtra("me", false);
+									data.putExtra("sprite", getAnimSprite(poke, opp != me));
+									data.putExtra("cb", mRecvr);
+									startService(data);
+								} else {
+									sprite = PokemonInfo.sprite(poke, opp != me);
+								}
+							}
+
+							if (sprite != null) {
+								pokeSprites[opp].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+							}
+						} else samePokes[opp] = true;
 					}
 				}
 		});		
@@ -657,10 +664,17 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        }
 		        for(int i = 0; i < 6; i++) {
 		        	RelativeLayout whole = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
-		        	pokeList[i] = new ListedPokemon(whole);		        	
+		        	pokeList[i] = new ListedPokemon(whole);
 		        	whole.setOnClickListener(battleListener);
 		        }
-		        
+
+                /* Well it helps you keep track what your opponent has seen!
+				// Pre-load PokeBall and sprite info
+				for (int i = 0; i < 6; i++) {
+					battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
+				}
+				*/
+
 		        /* Changed to two pages */
 				realViewSwitcher.getAdapter().notifyDataSetChanged();
 			}
@@ -683,27 +697,28 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        pokeballs[opp][i] = (ImageView)mainLayout.findViewById(resources.getIdentifier("pokeball" + (i + 1) + "A", "id", InfoConfig.pkgName));
 	        }
 	        updatePokeballs();
-	        
+
 	        names[me].setText(battle.players[me].nick());
 	        names[opp].setText(battle.players[opp].nick());
 
-	        hpBars[me] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarB);
-	        hpBars[opp] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarA);
+	        hpBars[me] = (TextProgressBar) battleView.findViewById(R.id.hpBarB);
+	        hpBars[opp] = (TextProgressBar) battleView.findViewById(R.id.hpBarA);
 	        
-	        currentPokeNames[me] = (TextView)mainLayout.findViewById(R.id.currentPokeNameB);
-	        currentPokeNames[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeNameA);
+	        currentPokeNames[me] = (TextView) battleView.findViewById(R.id.currentPokeNameB);
+	        currentPokeNames[opp] = (TextView) battleView.findViewById(R.id.currentPokeNameA);
 
-	        currentPokeLevels[me] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelB);
-	        currentPokeLevels[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelA);
+	        currentPokeLevels[me] = (TextView) battleView.findViewById(R.id.currentPokeLevelB);
+	        currentPokeLevels[opp] = (TextView) battleView.findViewById(R.id.currentPokeLevelA);
 	        
-	        currentPokeGenders[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderB);
-	        currentPokeGenders[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderA);
+	        currentPokeGenders[me] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB);
+	        currentPokeGenders[opp] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA);
 	        
-	        currentPokeStatuses[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusB);
-	        currentPokeStatuses[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusA);
-	        
-	        pokeSprites[me] = (WebView)mainLayout.findViewById(R.id.pokeSpriteB);
-	        pokeSprites[opp] = (WebView)mainLayout.findViewById(R.id.pokeSpriteA);
+	        currentPokeStatuses[me] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB);
+	        currentPokeStatuses[opp] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA);
+
+	        pokeSprites[me] = (WebView) battleView.findViewById(R.id.pokeSpriteB);
+	        pokeSprites[opp] = (WebView) battleView.findViewById(R.id.pokeSpriteA);
+
 	        for(int i = 0; i < 2; i++) {
 	        	pokeSprites[i].setOnLongClickListener(spriteListener);
 	        	pokeSprites[i].setBackgroundColor(0);
@@ -761,6 +776,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	        handler.postDelayed(updateTimeTask, 100);
 	        
 			checkRearrangeTeamDialog();
+
+        //    Runtime.getRuntime().gc();
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {
@@ -770,7 +787,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	};
 	
 	public void end() {
-		runOnUiThread(new Runnable() { public void run() { BattleActivity.this.finish(); } } );
+		runOnUiThread(new Runnable() {
+            public void run() {
+                BattleActivity.this.finish();
+            }
+        });
 	}
   
     @Override
@@ -844,7 +865,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		attackPPs[num].setEnabled(enabled);
 		attackPPs[num].setShadowLayer((float)1.5, 1, 1, resources.getColor(enabled ? R.color.pp_text_shadow_enabled : R.color.pp_text_shadow_disabled));
     }
-    
+
+	/*
     void setLayoutEnabled(ViewGroup v, boolean enabled) {
     	v.setEnabled(enabled);
     	v.getBackground().setAlpha(enabled ? 255 : 128);
@@ -854,7 +876,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	v.setEnabled(enabled);
     	v.setTextColor(v.getTextColors().withAlpha(enabled ? 255 : 128).getDefaultColor());
     }
-    
+    */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -919,7 +942,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     }
 
 	public void notifyRearrangeTeamDialog() {
-		runOnUiThread(new Runnable() { public void run() { checkRearrangeTeamDialog(); } } );
+		runOnUiThread(new Runnable() {
+            public void run() {
+                checkRearrangeTeamDialog();
+            }
+        });
 	}
 	
 	private void checkRearrangeTeamDialog() {
@@ -943,14 +970,21 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         switch(BattleDialog.values()[id]) {
         case RearrangeTeam: {
-        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout)findViewById(R.id.rearrange_team_dialog));
+        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout) findViewById(R.id.rearrange_team_dialog));
         	builder.setView(layout)
-        	.setPositiveButton("Done", new DialogInterface.OnClickListener(){
-        		public void onClick(DialogInterface dialog, int which) {
-        			netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
-        			battle.shouldShowPreview = false;
-        			removeDialog(id);
-        		}})
+        	.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
+                    /*
+                    // re-pre-load PokeBall and sprite info
+                    for (int i = 0; i < 6; i++) {
+                        battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
+                    }
+                    */
+                    battle.shouldShowPreview = false;
+                    removeDialog(id);
+                }
+            })
         		.setCancelable(false);
         	dialog = builder.create();
 
@@ -959,13 +993,13 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		BattlePoke poke = activeBattle.myTeam.pokes[i];
         		myArrangePokeIcons[i] = (PokeDragIcon)layout.findViewById(resources.getIdentifier("my_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
         		myArrangePokeIcons[i].setOnTouchListener(dialogListener);
-        		myArrangePokeIcons[i].setImageDrawable(PokemonInfo.icon(poke.uID));
+        		myArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID));
         		myArrangePokeIcons[i].num = i;
         		myArrangePokeIcons[i].battleActivity = this;
 
         		ShallowShownPoke oppPoke = activeBattle.oppTeam.pokes[i];
         		oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
-        		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.icon(oppPoke.uID));
+        		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
         	}
             return dialog;
         }
@@ -973,10 +1007,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			builder.setMessage("Really Forfeit?")
 			.setCancelable(true)
 			.setPositiveButton("Forfeit", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					endBattle();
-				}
-			})
+                public void onClick(DialogInterface dialog, int which) {
+                    endBattle();
+                }
+            })
 			.setNegativeButton("Cancel", null);
 			return builder.create();
         case OppDynamicInfo:
@@ -1026,10 +1060,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	dialog = builder.setTitle(lastClickedMove.toString())
         	.setMessage(lastClickedMove.descAndEffects())
         	.setOnCancelListener(new DialogInterface.OnCancelListener() {
-        		public void onCancel(DialogInterface dialog) {
-        			removeDialog(id);
-        		}
-        	})
+                public void onCancel(DialogInterface dialog) {
+                    removeDialog(id);
+                }
+            })
         	.create();
         	dialog.setCanceledOnTouchOutside(true);
         	return dialog;
