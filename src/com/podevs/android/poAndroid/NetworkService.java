@@ -1084,7 +1084,20 @@ public class NetworkService extends Service {
 			disconnect();
 				// Stop connection. Prevent crashing/loop from servers with passwords.
 			break;
-		} default: {
+		}/*  case AndroidID: {
++			new Thread(new Runnable() {
++				@TargetApi(Build.VERSION_CODES.HONEYCOMB)
++				public void run() {
++					try {
++						socket = new PokeClientSocket(NetworkService.this.ip, NetworkService.this.port);
++					} catch (IOException e) {
++						return;
++					}
++					socket.sendMessage(getUniqueID(), Command.AndroidID);
++				}
++			}).start();
+				break;
+		}*/ default: {
 			System.out.println("Unimplented message");
 		}
 		}
@@ -1423,6 +1436,50 @@ public class NetworkService extends Service {
 		}
 		edit.commit();
 	}
+
+	/*
+	public Baos getUniqueID() {
+		Baos msg = new Baos();
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+			if (ANDROID_ID != null) {
+				String serial;
+				try {
+					serial = Build.class.getField("SERIAL").get(null).toString();
+				} catch (NoSuchFieldException e) {
+					serial = "PokemonOnline";
+				} catch (IllegalAccessException e) {
+					serial = "PokemonOnline";
+				}
+				UUID ANDROID = new UUID(ANDROID_ID.hashCode(), serial.hashCode());
+				msg = new Baos();
+				msg.putBool(true);
+				msg.putString(ANDROID.toString());
+			} else {
+				msg.putBool(false);
+				msg.putString(getPseudoUniqueID());
+			}
+		} else {
+			msg.putBool(false);
+			msg.putString(getPseudoUniqueID());
+		}
+		return.msg;
+	}
+
+	private String getPseudoUniqueID() {
+		String serial;
+		try {
+			serial = Build.class.getField("SERIAL").get(null).toString();
+		} catch (NoSuchFieldException e) {
+			serial = "PokemonOnline";
+		} catch (IllegalAccessException e) {
+			serial = "PokemonOnline";
+		}
+		String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+		UUID PSEUDO = new UUID(PSEUDO_ID.hashCode(), serial.hashCode());
+		return PSEUDO.toString();
+	}
+	*/
 
 	public String getDefaultPass() {
 		return getSharedPreferences("passwords", MODE_PRIVATE).getString(salt, "");
