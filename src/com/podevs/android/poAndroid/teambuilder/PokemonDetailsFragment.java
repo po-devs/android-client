@@ -241,6 +241,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			genderChooserAdapter.clear();
 			int genderChoice = PokemonInfo.gender(poke().uID());
 			if (genderChoice == 0) {
+				poke().gender = 0;
 				genderChooserAdapter.add("Neutral");
 			} else if (genderChoice == 1) {
 				genderChooserAdapter.add("Male");
