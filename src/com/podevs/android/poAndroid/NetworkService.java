@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.Html;
@@ -384,9 +385,9 @@ public class NetworkService extends Service {
 				defaultChannel = prefs.getString(defaultKey+key, null);
 				
 				/* Network Flags: hasClientType, hasVersionNumber, hasReconnect, hasDefaultChannel, hasAdditionalChannels, 
-				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */
+				 * hasColor, hasTrainerInfo, hasNewTeam, hasEventSpecification, hasPluginList. */                //hasCookie hasID
 				loginCmd.putFlags(new boolean []{true, true, true, defaultChannel != null, autoJoinChannels != null,
-						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid(), false, false, cookie.length() > 0}); //Network flags
+						meLoginPlayer.color().isValid(), true,	meLoginPlayer.team.isValid(), false, false, cookie.length() > 0, true}); //Network flags
 				loginCmd.putString("android");
 				short versionCode;
 				try {
@@ -427,7 +428,11 @@ public class NetworkService extends Service {
                 if (cookie.length() > 0) {
                     loginCmd.putString(cookie);
                 }
-				
+
+				loginCmd.putBool(getUniqueIDFlag());
+
+				loginCmd.putString(getUniqueID());
+
 				socket.sendMessage(loginCmd, Command.Login);
 				
 				do {
@@ -1437,9 +1442,8 @@ public class NetworkService extends Service {
 		edit.commit();
 	}
 
-	/*
-	public Baos getUniqueID() {
-		Baos msg = new Baos();
+	public String getUniqueID() {
+		String msg = "";
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
 			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 			if (ANDROID_ID != null) {
@@ -1451,20 +1455,34 @@ public class NetworkService extends Service {
 				} catch (IllegalAccessException e) {
 					serial = "PokemonOnline";
 				}
+				ANDROID_ID += this.ip;
+				serial += this.ip;
 				UUID ANDROID = new UUID(ANDROID_ID.hashCode(), serial.hashCode());
-				msg = new Baos();
-				msg.putBool(true);
-				msg.putString(ANDROID.toString());
+				msg = ANDROID.toString();
 			} else {
-				msg.putBool(false);
-				msg.putString(getPseudoUniqueID());
+				msg = getPseudoUniqueID();
 			}
 		} else {
-			msg.putBool(false);
-			msg.putString(getPseudoUniqueID());
+			msg = getPseudoUniqueID();
 		}
-		return.msg;
+		return msg;
 	}
+
+	public Boolean getUniqueIDFlag() {
+		Boolean flag;
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+			if (ANDROID_ID != null) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+		} else {
+			flag = false;
+		}
+		return flag;
+	}
+
 
 	private String getPseudoUniqueID() {
 		String serial;
@@ -1476,10 +1494,11 @@ public class NetworkService extends Service {
 			serial = "PokemonOnline";
 		}
 		String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+		PSEUDO_ID += this.ip;
+		serial += this.ip;
 		UUID PSEUDO = new UUID(PSEUDO_ID.hashCode(), serial.hashCode());
 		return PSEUDO.toString();
 	}
-	*/
 
 	public String getDefaultPass() {
 		return getSharedPreferences("passwords", MODE_PRIVATE).getString(salt, "");

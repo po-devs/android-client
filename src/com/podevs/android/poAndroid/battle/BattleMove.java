@@ -26,6 +26,12 @@ public class BattleMove implements SerializeBytes, Move {
 		s = s.replaceAll(">", "");
 		return Color.parseColor(s);
 	}
+
+	public String getHexColor() {
+		String s = TypeColor.values()[getType()].toString();
+		s = s.replaceAll(">", "");
+		return s;
+	};
 	
 	public byte getType() {
 		return type;

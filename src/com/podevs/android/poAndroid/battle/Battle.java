@@ -188,17 +188,21 @@ public class Battle extends SpectatingBattle {
 				break;
 			case DefiniteForme:
 				byte poke = msg.readByte();
-				short newForm = msg.readShort();
-				pokes[player][poke].uID.pokeNum = newForm;
+				UniqueID uID = new UniqueID(msg);
+				pokes[player][poke].uID = uID;
 				if (isOut(poke)) {
-					currentPoke(slot(player, poke)).uID.pokeNum = newForm;
+					currentPoke(slot(player, poke)).uID = uID;
+					if (player == opp) {
+						currentPoke(slot(player, poke)).setStats(conf.gen.num);
+						currentPoke(slot(player, poke)).setTypes(conf.gen.num);
+					}
 					if (activity !=null) {
 						activity.updatePokes(player);
 					}
 				}
 				break;
 			case AestheticForme:
-				newForm = msg.readShort();
+				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
 					activity.updatePokes(player);
