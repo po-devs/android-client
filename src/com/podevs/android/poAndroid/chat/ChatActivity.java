@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.*;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -60,7 +58,6 @@ import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
-import com.podevs.android.poAndroid.registry.MyApplication;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
 import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.utilities.Baos;

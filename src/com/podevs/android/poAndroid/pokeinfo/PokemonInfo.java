@@ -216,10 +216,10 @@ public class PokemonInfo {
 
 	public static int calcMinMaxStat(UniqueID ID, int stat, int gen, int level, int minmax) {
 		if (stat == 0) {
-			return ((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5 + 5 + level;
+			return (int) Math.floor(((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5 + 5 + level);
 		} else {
-			int base = ((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5;
-			return base + (minmax == 1 ? 1 : -1)*(base/10);
+			double base = Math.floor(((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5);
+			return (int) Math.floor(base + (minmax == 1 ? 1 : -1)*(base/10));
 		}
 	}
 
@@ -378,6 +378,7 @@ public class PokemonInfo {
 		});
 	}
 
+	/*
 	public static int numberOfPokemons() {
 		loadPokeNames();
 
@@ -389,6 +390,7 @@ public class PokemonInfo {
 
 		return pokeNames.size();
 	}
+	*/
 
 	public static String[] nameArray(Gen gen) {
 		String ret[] = new String[numberOfPokemons(gen) + 1]; //+1 for missingno
