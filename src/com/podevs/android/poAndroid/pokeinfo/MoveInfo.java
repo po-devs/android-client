@@ -27,7 +27,7 @@ public class MoveInfo extends GenInfo {
 	private static SparseArray<String> moveMessages = null;
 
 	private static int thisGen = genMax();
-	private static int thisSubGen = 6;
+	// private static int thisSubGen = 6;
 
 	public static void newGen() {
 		moveNames = null; // Because 0 will not overwrite, i.e. type Normal (0) will not overwrite already saved type Fairy (17).
@@ -43,7 +43,7 @@ public class MoveInfo extends GenInfo {
 	public static void forceSetGen(int Gen, int SubGen) {
 		testLoad();
 		thisGen = Gen;
-		thisSubGen = SubGen;
+		//thisSubGen = SubGen;
 	}
 
 	public static String name(int num) {

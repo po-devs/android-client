@@ -844,7 +844,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		attackPPs[num].setEnabled(enabled);
 		attackPPs[num].setShadowLayer((float)1.5, 1, 1, resources.getColor(enabled ? R.color.pp_text_shadow_enabled : R.color.pp_text_shadow_disabled));
     }
-    
+
+	/*
     void setLayoutEnabled(ViewGroup v, boolean enabled) {
     	v.setEnabled(enabled);
     	v.getBackground().setAlpha(enabled ? 255 : 128);
@@ -854,7 +855,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     	v.setEnabled(enabled);
     	v.setTextColor(v.getTextColors().withAlpha(enabled ? 255 : 128).getDefaultColor());
     }
-    
+    */
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);

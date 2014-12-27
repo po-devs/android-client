@@ -2,6 +2,7 @@ package com.podevs.android.poAndroid.teambuilder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -29,12 +30,16 @@ import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.Arrays;
 
 public class TeambuilderActivity extends FragmentActivity {
+
+	ProgressDialog progressDialog;
 
 	@Override
 	public void onBackPressed() {
@@ -114,8 +119,82 @@ public class TeambuilderActivity extends FragmentActivity {
 		}
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
+
     }
-    
+
+	// This function will allow you do download txt from web.
+	private void downloadTiers(final URL Link) {
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					HttpURLConnection c = (HttpURLConnection) Link.openConnection();
+					c.setRequestMethod("GET");
+					c.connect();
+					InputStream in = c.getInputStream();
+					final ByteArrayOutputStream bo = new ByteArrayOutputStream();
+					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for informatio!!
+					in.read(buffer); // Read from Buffer.
+					bo.write(buffer); // Write Into Buffer.
+
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							String TextToParse = (bo.toString());
+							try {
+								bo.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							team = new PokeParser(TeambuilderActivity.this, TextToParse, false).getTeam();
+							MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+							updateTeam();
+							if (progressDialog.isShowing()) {
+								progressDialog.dismiss();
+							}
+						}
+					});
+
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (ProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				/*
+				try {
+					DefaultHttpClient httpClient = new DefaultHttpClient();
+					HttpGet httpGet = new HttpGet(URL);
+					HttpResponse response = httpClient.execute(httpGet);
+					HttpEntity entity = response.getEntity();
+
+					BufferedHttpEntity buf = new BufferedHttpEntity(entity);
+
+					InputStream is = buf.getContent();
+
+					BufferedReader r = new BufferedReader(new InputStreamReader(is));
+
+					StringBuilder total = new StringBuilder();
+					String line;
+					while ((line = r.readLine()) != null) {
+						total.append(line + "\n");
+					}
+					String result = total.toString();
+					team = new PokeParser(result, TeambuilderActivity.this).getTeam();
+					MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+					updateTeam();
+				} catch (Exception e) {
+
+				}
+				*/
+				if (progressDialog.isShowing()) {
+					progressDialog.dismiss();
+				}
+			}
+		}.start();
+	}
+
     private void updateTeam() {
 		if (teamFragment != null) {
 			teamFragment.updateTeam();
@@ -166,7 +245,7 @@ public class TeambuilderActivity extends FragmentActivity {
     					
     					String file = lw.getItemAtPosition(w).toString();
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
-    					team = new PokeParser(TeambuilderActivity.this, file).getTeam();
+    					team = new PokeParser(TeambuilderActivity.this, file, true).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
     					updateTeam();
     				}
@@ -209,7 +288,7 @@ public class TeambuilderActivity extends FragmentActivity {
     	case R.id.save_team: {
     		// Set an EditText view to get user input 
     		final EditText input = new EditText(this);
-    		
+
     		new AlertDialog.Builder(this)
 	    	    .setTitle(R.string.save_team_as)
 	    	    .setMessage("Name of your new team: ")
@@ -241,10 +320,31 @@ public class TeambuilderActivity extends FragmentActivity {
 	    	    }).show();
     		break;
     	}
+			case R.id.download_team: {
+				final EditText input = new EditText(this);
+
+				new AlertDialog.Builder(this)
+						.setTitle(R.string.download_team)
+						.setMessage("Enter link of raw team: ")
+						.setView(input)
+						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String link = input.getText().toString();
+
+								try {
+									URL Link = new URL(link);
+									progressDialog = ProgressDialog.show(TeambuilderActivity.this, "", "Downloading. Please wait...", true);
+									downloadTiers(Link);
+								} catch (MalformedURLException e) {
+									Toast.makeText(TeambuilderActivity.this, "Entire Valid Link.", Toast.LENGTH_SHORT).show();
+								}
+							}
+						}).show();
+			}
         }
         return true;
     }
-	
+
 	private String defaultFile() {
 		return getSharedPreferences("team", 0).getString("file", "team.xml");
 	}
@@ -288,7 +388,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					}
 					
 					try {
-						team = (new PokeParser(this, "import.xml")).getTeam();
+						team = (new PokeParser(this, "import.xml", true)).getTeam();
 						Toast.makeText(this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
 						
 						/* Tells the activity that the team was successfully imported */

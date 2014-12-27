@@ -79,6 +79,7 @@
     <string name="losingmessage">Losing Message</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">Do you want to save changes to the team?</string>
+    <string name="download_team">Download Team</string>
     <string name="save">Save</string>
     <string name="no_save">Do not save</string>
     <string name="hiddenpower_choice">Hidden power type</string>

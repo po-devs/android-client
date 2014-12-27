@@ -11,8 +11,12 @@ public class HiddenPowerInfo {
 	}
 	
 	static public int Type(Gen gen, int hpDv, int attDv, int defDv, int spAttDv, int spDefDv, int speedDv) {
-		return ( ( ( (hpDv & 1) + 2 * (attDv & 1) + 4 * (defDv & 1) + 8 * (speedDv & 1) + 
-				16 * (spAttDv & 1) + 32 * (spDefDv & 1) ) * 15) / 63 ) + 1;
+		if (gen.num > 2) {
+			return ((((hpDv & 1) + 2 * (attDv & 1) + 4 * (defDv & 1) + 8 * (speedDv & 1) +
+					16 * (spAttDv & 1) + 32 * (spDefDv & 1)) * 15) / 63) + 1;
+		} else {
+			return (4 * (attDv % 4) + (defDv % 4)) + 1;
+		}
 	}
 	
 	static byte hiddenPowerConfigurations[][] = null; 
@@ -27,17 +31,31 @@ public class HiddenPowerInfo {
 		}
 		
 		if (hiddenPowerConfigurations[type] == null) {
-		    for (int i = 63; i >= 0; i--) {
-		        int gt = Type(gen, i & 1, (i & 2)>>1, (i & 4)>>2, (i & 8)>>3, (i & 16)>>4, (i & 32)>>5);
-		        if (gt == type) {
-		        	hiddenPowerConfigurations[type] = new byte[]{(byte)((i&1)!=0?31:30), (byte)((i&2)!=0?31:30),
-		        			(byte)((i&4)!=0?31:30),(byte)((i&8)!=0?31:30),
-		        			(byte)((i&16)!=0?31:30),(byte)((i&32)!=0?31:30)};
-		        	break;
-		        }
-		    }
+			if (gen.num > 2) {
+				for (int i = 63; i >= 0; i--) {
+					int gt = Type(gen, i & 1, (i & 2) >> 1, (i & 4) >> 2, (i & 8) >> 3, (i & 16) >> 4, (i & 32) >> 5);
+					if (gt == type) {
+						hiddenPowerConfigurations[type] = new byte[]{(byte) ((i & 1) != 0 ? 31 : 30), (byte) ((i & 2) != 0 ? 31 : 30),
+								(byte) ((i & 4) != 0 ? 31 : 30), (byte) ((i & 8) != 0 ? 31 : 30),
+								(byte) ((i & 16) != 0 ? 31 : 30), (byte) ((i & 32) != 0 ? 31 : 30)};
+						break;
+					}
+				}
+			} else {
+				hiddenPowerConfigurations[type] = new byte[]{15, 15, 15, 15, 15, 15};
+			}
 		}
 				
 		return hiddenPowerConfigurations[type];
+	}
+
+	static public int power(Poke p) {
+		if (p.gen().num > 2) {
+			return ((((p.dv(0) % 4) >> 1) + 2 *((p.dv(1) % 4) >> 1) + 4 * ((p.dv(2) % 4) >> 1) +
+					8 * ((p.dv(5) % 4) >> 1) + 16 * ((p.dv(3) % 4) >> 1) + 32 * ((p.dv(4) % 4) >> 1)) * 40) / 63 + 30;
+		} else {
+			return ((5 * (((p.dv(3) & 8) >> 3) + 2 * ((p.dv(5) & 8) >> 3) + 4 * ((p.dv(2) & 8) >> 3) +
+					8 * ((p.dv(1) & 8) >> 3)) + (p.dv(3) % 4)) / 2 + 31);
+		}
 	}
 }
