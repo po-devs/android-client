@@ -79,6 +79,7 @@
     <string name="losingmessage">Nachicht bei Niederlage</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">Möchtest du die Änderungen am Team speichern?</string>
+    <string name="download_team">Team downloaden</string>
     <string name="save">Speichern</string>
     <string name="no_save">Nicht speichern</string>
     <string name="hiddenpower_choice">Kraftreserven-Typ</string>
@@ -89,6 +90,8 @@
     <string name="full_happiness">100% Zufriedenheit</string>
     <string name="megavolve">Mega-Entwicklung</string>
     <string name="formes">Formen: </string>
+    <string name="settings">Einstellungen</string>
+    <string name="shiny">Shiny</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>
