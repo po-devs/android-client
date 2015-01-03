@@ -24,7 +24,7 @@ public class Channel {
 	public String name;
 	public int id;
 	public int lastSeen = 0;
-	protected boolean isReadyToQuit = false;
+	// protected boolean isReadyToQuit = false;
 	public boolean joined = false;
 	public boolean flashed = false;
 	public final static int HIST_LIMIT = 700;
@@ -33,7 +33,7 @@ public class Channel {
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	
 	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
-	
+
 	public void writeToHist(CharSequence text) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class)

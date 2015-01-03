@@ -73,6 +73,17 @@ public class MoveChooserFragment extends Fragment {
 			}
 		});
 
+		moveList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				int move = (Short) moveAdapter.getItem(position);
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setMessage(moveAdapter.moveInfo(move));
+				builder.create().show();
+				return false;
+			}
+		});
+
 		return v;
 	}
 

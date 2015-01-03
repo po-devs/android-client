@@ -3,6 +3,8 @@ package com.podevs.android.poAndroid.pms;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -42,7 +44,8 @@ public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> 
 		TextView textView = (TextView) convertView;
 
 		Message message = getItem(position);
-		textView.setText(message.message);
+		textView.setText(new SpannableStringBuilder(message.message));
+		Linkify.addLinks(textView, Linkify.ALL);
 		
 		int left = 0, right = 0;
 		Resources resources = getContext().getResources();
