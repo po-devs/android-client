@@ -84,6 +84,15 @@ public class PrivateMessageActivity extends Activity {
             }
 		});
     }
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		if (connection != null) {
+			unbindService(connection);
+		}
+	}
     
 	public static void updateSettings() {
 		PMSettings.timeStampPM = NetworkService.getPMSettings();
