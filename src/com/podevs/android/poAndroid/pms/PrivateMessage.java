@@ -29,10 +29,10 @@ public class PrivateMessage {
 				message = "(" + StringUtilities.timeStamp() + ") " + message;
 			}
 			messages.add(new Message(info, message));
-		}
 
-		if (listener != null) {
-			listener.onNewMessage(messages.getLast());
+			if (listener != null) {
+				listener.onNewMessage(messages.getLast());
+			}
 		}
 	}
 
