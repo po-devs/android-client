@@ -79,6 +79,7 @@
     <string name="losingmessage">Mensaje de Derrota</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">¿Desea guardar los cambios al equipo?</string>
+    <string name="download_team">Descargar equipo</string>
     <string name="save">Guardar</string>
     <string name="no_save">No Guardar</string>
     <string name="hiddenpower_choice">Tipo del Poder Oculto</string>
@@ -89,6 +90,25 @@
     <string name="full_happiness">Felicidad 100%</string>
     <string name="megavolve">Megaevolucionar</string>
     <string name="formes">Formas: </string>
+    <string name="settings">Opciones</string>
+    <string name="shiny">Shiny</string>
+
+    <string name="chat_title">Opciones de Chat</string>
+    <string name="chat_summary">Opciones de Chat</string>
+    <string name="flash_title">Efecto Flash</string>
+    <string name="flash_summary">Activar efecto flash</string>
+    <string name="flash_color_title">Color de Flash</string>
+    <string name="flash_color_summary">Ingresa un color en código hexadecimal valido</string>
+    <string name="timestamp_chat_title">Marcas de tiempo</string>
+    <string name="timestamp_chat_summary">Activar marcas de tiempo en chat</string>
+    <string name="notifications_chat_title">Flash Pop up</string>
+    <string name="notifications_chat_summary">Activar notificación de flash</string>
+    <string name="pm_title">Opciones de MP</string>
+    <string name="pm_summary">Opciones de Mensaje Privados</string>
+    <string name="timestamp_pm_title">Marcas de tiempo</string>
+    <string name="timestamp_pm_summary">Activar marcas de tiempo</string>
+    <string name="notifications_pm_title">Notificaciones</string>
+    <string name="notifications_pm_summary">Activar notificaciones</string>
 
     <string-array name="hp_array">
         <item>Peleador</item>

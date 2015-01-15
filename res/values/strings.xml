@@ -93,6 +93,23 @@
     <string name="settings">Settings</string>
     <string name="shiny">Shiny</string>
 
+    <string name="chat_title">Chat Settings</string>
+    <string name="chat_summary">Chat Settings</string>
+    <string name="flash_title">Flashing</string>
+    <string name="flash_summary">Toggle flashing</string>
+    <string name="flash_color_title">Flash Color</string>
+    <string name="flash_color_summary">Enter a valid hex color</string>
+    <string name="timestamp_chat_title">Time Stamp</string>
+    <string name="timestamp_chat_summary">Toggle time stamps in chat</string>
+    <string name="notifications_chat_title">Flash Pop up</string>
+    <string name="notifications_chat_summary">Toggle Flash Notifications</string>
+    <string name="pm_title">PM Options</string>
+    <string name="pm_summary">Private Message Options</string>
+    <string name="timestamp_pm_title">Time Stamp</string>
+    <string name="timestamp_pm_summary">Toggle time stamps</string>
+    <string name="notifications_pm_title">Notifications</string>
+    <string name="notifications_pm_summary">Toggle notifications</string>
+
     <string-array name="hp_array">
         <item>Fighting</item>
         <item>Flying</item>

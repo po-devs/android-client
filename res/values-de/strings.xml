@@ -79,6 +79,7 @@
     <string name="losingmessage">Nachicht bei Niederlage</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">Möchtest du die Änderungen am Team speichern?</string>
+    <string name="download_team">Team downloaden</string>
     <string name="save">Speichern</string>
     <string name="no_save">Nicht speichern</string>
     <string name="hiddenpower_choice">Kraftreserven-Typ</string>
@@ -89,6 +90,25 @@
     <string name="full_happiness">100% Zufriedenheit</string>
     <string name="megavolve">Mega-Entwicklung</string>
     <string name="formes">Formen: </string>
+    <string name="settings">Einstellungen</string>
+    <string name="shiny">Shiny</string>
+
+    <string name="chat_title">Chat-Einstellungen</string>
+    <string name="chat_summary">Chat-Einstellungen</string>
+    <string name="flash_title">Aufleuchten</string>
+    <string name="flash_summary">Aufleuchten aktivieren</string>
+    <string name="flash_color_title">Farbe hervorheben</string>
+    <string name="flash_color_summary">Benutze eine gültige Hex-Farbe</string>
+    <string name="timestamp_chat_title">Zeitstempel</string>
+    <string name="timestamp_chat_summary">Zeitstempel im Chat aktivieren</string>
+    <string name="notifications_chat_title">Flash Pop up</string>
+    <string name="notifications_chat_summary">Aufleuchtende Nachichten aktivieren</string>
+    <string name="pm_title">PN-Einstellungen</string>
+    <string name="pm_summary">Einstellungen für private Nachichten</string>
+    <string name="timestamp_pm_title">Zeitstempel</string>
+    <string name="timestamp_pm_summary">Zeitstempel aktivieren</string>
+    <string name="notifications_pm_title">Benachichtigungen</string>
+    <string name="notifications_pm_summary">Benachichtigungen aktivieren</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>

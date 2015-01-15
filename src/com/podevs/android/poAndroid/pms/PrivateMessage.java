@@ -24,8 +24,12 @@ public class PrivateMessage {
 			this.other = info;
 		}
 
-		if (timeStamp) {message = "(" + StringUtilities.timeStamp() + ") " + message;}
-		messages.add(new Message(info, message));
+		if (!message.trim().isEmpty()) {
+			if (timeStamp) {
+				message = "(" + StringUtilities.timeStamp() + ") " + message;
+			}
+			messages.add(new Message(info, message));
+		}
 
 		if (listener != null) {
 			listener.onNewMessage(messages.getLast());

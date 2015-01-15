@@ -40,16 +40,14 @@ public class ShallowBattlePoke implements SerializeBytes {
 			
 			// A little optimization; these only matter if it's not your poke
 			pokeName = PokemonInfo.name(uID);
-			setTypes(gen.num);
 		}
 		lifePercent = msg.readByte();
 		fullStatus = msg.readInt();
 		gender = msg.readByte();
 		shiny = msg.readBool();
 		level = msg.readByte();
-		if (!isMe) {
-			setStats(gen.num);
-		}
+		setStats(gen.num);
+		setTypes(gen.num);
 	}
 
 	public void serializeBytes(Baos b) {

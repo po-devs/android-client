@@ -3,41 +3,41 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
-            android:summary="Chat Settings"
-            android:title="Chat Settings" >
+            android:summary="@string/chat_summary"
+            android:title="@string/chat_title" >
         <CheckBoxPreference
                 android:key="flashing"
-                android:summary="Toggle flashing"
-                android:title="Flashing"
+                android:summary="@string/flash_summary"
+                android:title="@string/flash_title"
                 android:defaultValue="true"/>
         <EditTextPreference
                 android:key="flashColor"
-                android:summary="Enter a valid hex color"
-                android:title="Flash Color"
+                android:summary="@string/flash_color_summary"
+                android:title="@string/flash_color_title"
                 android:defaultValue="#FFFF00"/>
         <CheckBoxPreference
                 android:key="timeStamp"
-                android:summary="Toggle time stamps"
-                android:title="Time Stamp"
+                android:summary="@string/timestamp_chat_summary"
+                android:title="@string/timestamp_chat_title"
                 android:defaultValue="false"/>
         <CheckBoxPreference
             android:key="notificationsFlash"
-            android:summary="Toggle Flash Notifications"
-            android:title="Flash Pop up"
+            android:summary="@string/notifications_chat_summary"
+            android:title="@string/notifications_chat_title"
             android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:summary="PM Options"
-        android:title="Private Message Options" >
+        android:summary="@string/pm_summary"
+        android:title="@string/pm_title" >
         <CheckBoxPreference
                 android:key="timeStampPM"
-                android:summary="Toggle time stamps"
-                android:title="Time Stamp"
+                android:summary="@string/timestamp_pm_summary"
+                android:title="@string/timestamp_pm_title"
                 android:defaultValue="true"/>
         <CheckBoxPreference
                 android:key="notificationsPM"
-                android:summary="Toggle notifications"
-                android:title="Notifications"
+                android:summary="@string/notifications_pm_summary"
+                android:title="@string/notifications_pm_title"
                 android:defaultValue="true"/>
         </PreferenceCategory>
 </PreferenceScreen>

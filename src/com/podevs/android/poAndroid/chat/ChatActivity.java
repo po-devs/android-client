@@ -5,13 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -64,10 +59,7 @@ import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 public class ChatActivity extends Activity {
 	
@@ -82,7 +74,8 @@ public class ChatActivity extends Activity {
 		PlayerInfo,
 		ChallengeMode,
 		ChooseTierMode,
-		AskForName
+		AskForName,
+		AskForServerPass
 	}
 	
 	// public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -225,6 +218,33 @@ public class ChatActivity extends Activity {
 		channelsLayout = getLayoutInflater().inflate(R.layout.channellist, null);
 		playersLayout = getLayoutInflater().inflate(R.layout.playerlist, null);
 		chatView = (ListView)chatLayout.findViewById(R.id.chatView);
+		/*
+		chatView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				final String test = ((TextView) chatView.getItemAtPosition(position)).getText().toString();
+				AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+				builder.setMessage(test)
+				.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("simple text", test);
+						clipboard.setPrimaryClip(clip);
+					}
+				}).setNeutralButton("Name", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("simple text", test.substring(test.indexOf(") ") + 1, test.indexOf(":"))); // .*\) (.*?):
+						clipboard.setPrimaryClip(clip);
+					}
+				});
+				builder.create().show();
+				return false;
+			}
+		});
+		*/
 		chatViewSwitcher.setAdapter(new MyAdapter());
 		ImageButton findBattleButton = (ImageButton)chatLayout.findViewById(R.id.findbattle);
 		findBattleButton.setOnClickListener(new OnClickListener() {
@@ -327,6 +347,7 @@ public class ChatActivity extends Activity {
 		if (netServ != null) {
 			netServ.checkBattlesToEnd();
 		}
+		checkAskForServerPass();
 		checkChallenges();
 		checkAskForPass();
 		checkFailedConnection();
@@ -344,6 +365,7 @@ public class ChatActivity extends Activity {
 					progressDialog.dismiss();
 				loading = false;
 			}
+			checkAskForServerPass();
 	        checkChallenges();
 	        checkAskForPass();
 	        checkFailedConnection();
@@ -480,7 +502,16 @@ public class ChatActivity extends Activity {
 	public void notifyAskForPass() {
 		runOnUiThread(new Runnable() { public void run() { checkAskForPass(); } } );
 	}
-	
+
+	public void notifyAskForServerPass() {
+		runOnUiThread(new Runnable() { public void run() { checkAskForServerPass(); } } );
+	}
+
+	private void checkAskForServerPass() {
+		if (netServ != null && netServ.askedForServerPass)
+			showDialog(ChatDialog.AskForServerPass.ordinal());
+	}
+
 	private void checkAskForPass() {
 		if (netServ != null && netServ.askedForPass)
 			showDialog(ChatDialog.AskForPass.ordinal());
@@ -584,7 +615,7 @@ public class ChatActivity extends Activity {
 					.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							if (netServ != null) {
-								netServ.sendPass(passField.getText().toString());
+								netServ.sendPass(passField.getText().toString(), true);
 								registering = false;
 								netServ.registered = true;
 								if (isChangingNames) {
@@ -617,7 +648,40 @@ public class ChatActivity extends Activity {
 				}
 			});
 			return dialog;
-		} case AskForName: {
+		} case AskForServerPass: {
+				//View layout = inflater.inflate(R.layout.ask_for_pass, null);
+				final EditText passField = new EditText(this);
+				passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+				builder.setMessage("Please enter the password for " + netServ.serverName + ".")
+						.setCancelable(true)
+						.setView(passField)
+						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								if (netServ != null) {
+									netServ.sendPass(passField.getText().toString(), false);
+								}
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+								if (!registering) {
+									disconnect();
+								}
+							}
+						});
+				final AlertDialog dialog = builder.create();
+				passField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+						}
+					}
+				});
+				return dialog;
+			} case AskForName: {
 				final EditText nameField = new EditText(this);
 				nameField.setInputType(InputType.TYPE_CLASS_TEXT);
 				builder.setMessage("Please enter a new name")
@@ -889,6 +953,39 @@ public class ChatActivity extends Activity {
 				}
 				break;
 			case R.id.changeName:
+				/*
+				String all = chatInput.getText().toString();
+				if (all.length() > 3) {
+					String s = all;
+					if (s.contains(" ")) {
+						s = chatInput.getText().toString().split(" (?!.* )")[1];
+						if (s.length() < 4) {
+							break;
+						}
+					}
+					Collection<PlayerInfo> players = currentChannel().players.values();
+					ArrayList<String> nicks = new ArrayList<String>();
+					String regex = "(?i)^" + s + ".*";
+					for (PlayerInfo p : players) {
+						if (p.nick.matches(regex)) {
+							nicks.add(p.nick());
+						}
+					}
+					players = null;
+					if (nicks.size() == 1) {
+						all = all.replaceFirst(regex, nicks.get(0));
+						chatInput.setText(all);
+						chatInput.setSelection(all.length()-1);
+					} else {
+						// Add pop-out listview to choose from end results larger than 1
+						all = all.replaceFirst(regex, nicks.get(0));
+						chatInput.setText(all);
+						chatInput.setSelection(all.length()-1);
+					}
+				} else {
+					break;
+				}
+				*/
 				showDialog(ChatDialog.AskForName.ordinal());
 				break;
 			case R.id.settings:
@@ -897,9 +994,6 @@ public class ChatActivity extends Activity {
 				break;
 			}
 		return true;
-	}
-
-	private void dealWithNameChange(String nick) {
 	}
 
     private void dealWithFindBattle() {

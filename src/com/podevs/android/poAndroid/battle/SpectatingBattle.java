@@ -196,6 +196,9 @@ public class SpectatingBattle {
 				//So I replaced it with the function below
 			if (pokes[player][0].uID.pokeNum == 0) {
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+				if (activity == null) {
+					pokes[player][0].pokeName = PokemonInfo.name(pokes[player][0].uID);
+				}
 			}
 
 			if (activity != null) {

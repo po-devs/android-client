@@ -33,6 +33,7 @@ public class MessageListAdapter extends BaseAdapter {
 	
 	public void add(SpannableStringBuilder span) {
 		TextView toAdd = new TextView(context);
+		// toAdd.setLongClickable(true);
 		toAdd.setText(span);
 		Linkify.addLinks(toAdd, Linkify.ALL);
 		

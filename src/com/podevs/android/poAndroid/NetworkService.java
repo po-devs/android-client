@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
@@ -52,7 +53,9 @@ public class NetworkService extends Service {
 	public ChatActivity chatActivity = null;
 	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
 	public boolean askedForPass = false;
+	public boolean askedForServerPass = false;
 	private String salt = null;
+	private byte[] salty = null;
 	public boolean failedConnect = false;
 	private boolean reconnectDenied = false;
 	public String serverName = "Not Connected";
@@ -777,6 +780,32 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
+					/*
+					Html.ImageGetter imageGetter = new Html.ImageGetter() {
+						@Override
+						public Drawable getDrawable(String source) {
+							String t = "p";
+							int i = 0;
+							int foo = Integer.parseInt(source.substring(source.indexOf("num=") + "num=".length(), source.indexOf("&")));
+							while (foo > 65536) {
+								foo = foo - 65536;
+								i++;
+							}
+							t = t + foo;
+							if (i > 0) {
+								t = t + "_" + i;
+							}
+							t = t + "_front";
+							if (source.contains("shiny=true")) {
+								t = t + "s";
+							}
+							Drawable d = getResources().getDrawable(getResources().getIdentifier(t, "drawable", pkgName));
+							d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+							return d;
+						}
+					};
+					message = Html.fromHtml((String)message, imageGetter, null);
+					*/
 					message = Html.fromHtml((String)message);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
@@ -1086,8 +1115,11 @@ public class NetworkService extends Service {
 			channels.put(chanId, new Channel(chanId, msg.readString(), this));
 			break;
 		} case ServerPassword: {
-			disconnect();
-				// Stop connection. Prevent crashing/loop from servers with passwords.
+				salty = msg.readQByteArray();
+				askedForServerPass = true;
+				if (chatActivity != null && (chatActivity.hasWindowFocus() || chatActivity.progressDialog.isShowing())) {
+					chatActivity.notifyAskForServerPass();
+				}
 			break;
 		}/*  case AndroidID: {
 +			new Thread(new Runnable() {
@@ -1114,7 +1146,7 @@ public class NetworkService extends Service {
 		if (chatActivity != null && chatActivity.currentChannel() != null)
 			chatActivity.updateChat();
 	}
-	
+
 	private void writeMessage(String s) {
 		if (chatActivity != null && chatActivity.currentChannel() != null) {
 			chatActivity.currentChannel().writeToHist("\n"+s);
@@ -1237,17 +1269,30 @@ public class NetworkService extends Service {
 		return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
-	public void sendPass(String s) {
-		getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
-		askedForPass = false;
+	public void sendPass(String s, boolean isUserPass) {
 		MessageDigest md5;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-			Baos hashPass = new Baos();
-			hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
-			socket.sendMessage(hashPass, Command.AskForPass);
-		} catch (NoSuchAlgorithmException nsae) {
-		} catch (UnsupportedEncodingException uee) {
+		if (isUserPass) {
+			getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
+			askedForPass = false;
+			try {
+				md5 = MessageDigest.getInstance("MD5");
+				Baos hashPass = new Baos();
+				hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
+				socket.sendMessage(hashPass, Command.AskForPass);
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (UnsupportedEncodingException uee) {
+			}
+		} else {
+			try {
+				askedForServerPass = false;
+				md5 = MessageDigest.getInstance("MD5");
+				Baos hashPass = new Baos();
+				hashPass.putBytes(md5.digest(mashBytes(md5.digest(s.getBytes("ISO-8859-1")), salty)));
+				socket.sendMessage(hashPass, Command.ServerPassword);
+				salty = null;
+			} catch (NoSuchAlgorithmException nsae) {
+			} catch (UnsupportedEncodingException uee) {
+			}
 		}
 	}
 

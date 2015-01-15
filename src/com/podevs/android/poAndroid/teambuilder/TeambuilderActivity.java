@@ -133,24 +133,29 @@ public class TeambuilderActivity extends FragmentActivity {
 					c.connect();
 					InputStream in = c.getInputStream();
 					final ByteArrayOutputStream bo = new ByteArrayOutputStream();
-					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for informatio!!
-					in.read(buffer); // Read from Buffer.
-					bo.write(buffer); // Write Into Buffer.
-
+					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for information!!
+					in.read(buffer); // Read from Buffer
+					bo.write(buffer); // Write Into Buffer
+					in.close();
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							String TextToParse = (bo.toString());
 							try {
+								bo.flush();
+								String TextToParse = new String(trim(bo.toByteArray()));
 								bo.close();
+								if (TextToParse.contains("?xml version=\"1.0\"")) {
+									team = new PokeParser(TeambuilderActivity.this, TextToParse, false).getTeam();
+								} else {
+									// New parsing type
+								}
+								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+								updateTeam();
+								if (progressDialog.isShowing()) {
+									progressDialog.dismiss();
+								}
 							} catch (IOException e) {
 								e.printStackTrace();
-							}
-							team = new PokeParser(TeambuilderActivity.this, TextToParse, false).getTeam();
-							MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
-							updateTeam();
-							if (progressDialog.isShowing()) {
-								progressDialog.dismiss();
 							}
 						}
 					});
@@ -193,6 +198,14 @@ public class TeambuilderActivity extends FragmentActivity {
 				}
 			}
 		}.start();
+	}
+
+	private static byte[] trim(byte[] bytes) {
+		int i = bytes.length - 1;
+		while (i >= 0 && bytes[i] == 0) {
+			--i;
+		}
+		return Arrays.copyOf(bytes, i + 1);
 	}
 
     private void updateTeam() {
