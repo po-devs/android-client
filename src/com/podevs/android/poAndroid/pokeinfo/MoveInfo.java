@@ -97,7 +97,7 @@ public class MoveInfo extends GenInfo {
 		} else if (pow == 1) {
 			return "???";
 		} else {
-			return String.valueOf(pow >= 0 ? pow : (pow + 255));
+			return String.valueOf(pow >= 0 ? pow : (pow + 256));
 		}
 	}
 
