@@ -35,6 +35,9 @@ public class Settings extends PreferenceFragment {
             if (key.equals("flashColor")) {
                 return dealWithFlashColor(newValue.toString());
             }
+            if (key.equals("pokemonNumber")) {
+                return dealWithPokemonNumber(newValue.toString());
+            }
             return true;
         }
     };
@@ -50,6 +53,16 @@ public class Settings extends PreferenceFragment {
             }
         }
         makeToast("Enter a valid color Hex String" + "\n" + "Example: #00AF09");
+        return false;
+    }
+
+    private Boolean dealWithPokemonNumber(String number) {
+        Integer i = Integer.parseInt(number);
+        if (719 > i && i > 0) {
+            makeToast(number);
+            return true;
+        }
+        makeToast("Enter a valid pokemon number");
         return false;
     }
 

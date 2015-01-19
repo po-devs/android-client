@@ -33,10 +33,10 @@ import com.viewpagerindicator.TitlePageIndicator;
 public class PrivateMessageActivity extends Activity {
 	private static class PMPrefs{
 		boolean timeStampPM = true;
-		boolean notificationsPM = true;
 	}
 
 	private static PMPrefs PMSettings = new PMPrefs();
+	private static boolean isViewed = false;
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
 	protected NetworkService netServ;
@@ -47,6 +47,11 @@ public class PrivateMessageActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+		if (savedInstanceState != null) {
+			if (connection != null) {
+				unbindService(connection);
+			}
+		}
         bindService(new Intent(this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
@@ -58,6 +63,8 @@ public class PrivateMessageActivity extends Activity {
         titleIndicator.setViewPager(vp);
         
 		updateSettings();
+
+		isViewed = true;
 
         final EditText send = (EditText) findViewById(R.id.pmInput);
         send.setOnKeyListener(new OnKeyListener() {
@@ -73,8 +80,8 @@ public class PrivateMessageActivity extends Activity {
                 		Toast.makeText(PrivateMessageActivity.this, "This player is offline", Toast.LENGTH_SHORT).show();
                 		return true;
                 	}
-                	
-                	// Perform action on key press
+
+					// Perform action on key press
                 	netServ.sendPM(id, send.getText().toString());
                 	pm.addMessage(pm.me, send.getText().toString(), PMSettings.timeStampPM);
                 	send.getText().clear();
@@ -107,6 +114,8 @@ public class PrivateMessageActivity extends Activity {
     	if (position != PagerAdapter.POSITION_NONE) {
     		vp.setCurrentItem(position, true);
     	}
+
+		isViewed = true;
 	}
     
     @Override
@@ -147,6 +156,19 @@ public class PrivateMessageActivity extends Activity {
 			startActivity(new Intent(PrivateMessageActivity.this, SetPreferenceActivity.class));
 		}
 		return true;
+	}
+
+	@Override
+	public void onPause() {
+		isViewed = false;
+		super.onPause();
+
+	}
+
+	@Override
+	public void onStop() {
+		isViewed = false;
+		super.onStop();
 	}
 
 	@Override
@@ -197,6 +219,10 @@ public class PrivateMessageActivity extends Activity {
 			netServ = null;
 		}
 	};
+
+	public static boolean onTop() {
+		return isViewed;
+	}
 	
 	private class MyAdapter extends PagerAdapter implements PrivateMessageListListener
 	{

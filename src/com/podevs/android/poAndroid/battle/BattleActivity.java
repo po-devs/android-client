@@ -945,7 +945,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         switch(BattleDialog.values()[id]) {
         case RearrangeTeam: {
-        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (LinearLayout)findViewById(R.id.rearrange_team_dialog));
+        	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout) findViewById(R.id.rearrange_team_dialog));
         	builder.setView(layout)
         	.setPositiveButton("Done", new DialogInterface.OnClickListener(){
         		public void onClick(DialogInterface dialog, int which) {

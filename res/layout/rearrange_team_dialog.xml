@@ -10,7 +10,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:paddingLeft="5dp"
-        android:weightSum="1" >
+        android:weightSum="1" android:paddingRight="1dp">
 
         <TextView
             android:id="@+id/arrange_team_info"
@@ -44,7 +44,8 @@
             android:layout_marginTop="2dp"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
@@ -58,7 +59,8 @@
             android:layout_toRightOf="@+id/my_arrange_poke1"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
@@ -72,7 +74,8 @@
             android:layout_toRightOf="@+id/my_arrange_poke2"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
@@ -86,7 +89,8 @@
             android:layout_toRightOf="@+id/my_arrange_poke3"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
@@ -100,7 +104,8 @@
             android:layout_toRightOf="@+id/my_arrange_poke4"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </com.android.launcher.PokeDragIcon>
 
@@ -114,8 +119,9 @@
             android:layout_toRightOf="@+id/my_arrange_poke5"
             android:background="@drawable/battle_border_button_dark"
             android:clickable="true"
-            android:padding="5dp"
-            android:src="@drawable/pi_0" >
+            android:padding="4dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/pi_0" android:paddingRight="0dp">
         </com.android.launcher.PokeDragIcon>
 
         <TextView
@@ -138,7 +144,8 @@
             android:layout_margin="1dp"
             android:layout_marginTop="2dp"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </ImageView>
 
@@ -151,7 +158,8 @@
             android:layout_margin="1dp"
             android:layout_toRightOf="@+id/foe_arrange_poke1"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </ImageView>
 
@@ -164,7 +172,8 @@
             android:layout_margin="1dp"
             android:layout_toRightOf="@+id/foe_arrange_poke2"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </ImageView>
 
@@ -177,7 +186,8 @@
             android:layout_margin="1dp"
             android:layout_toRightOf="@+id/foe_arrange_poke3"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </ImageView>
 
@@ -190,7 +200,8 @@
             android:layout_margin="1dp"
             android:layout_toRightOf="@+id/foe_arrange_poke4"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
+            android:padding="4dp"
+            android:adjustViewBounds="true"
             android:src="@drawable/pi_0" >
         </ImageView>
 
@@ -203,8 +214,9 @@
             android:layout_margin="1dp"
             android:layout_toRightOf="@+id/foe_arrange_poke5"
             android:background="@drawable/battle_border_button_dark"
-            android:padding="5dp"
-            android:src="@drawable/pi_0" >
+            android:padding="4dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/pi_0" android:paddingRight="1dp">
         </ImageView>
     </RelativeLayout>
 

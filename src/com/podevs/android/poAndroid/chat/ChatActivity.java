@@ -451,6 +451,7 @@ public class ChatActivity extends Activity {
 				}
 				messageAdapter.notifyDataSetChanged();
 				Integer position = chatView.getLastVisiblePosition();
+				// Floor
 				cancelScroll = (position + 3 < top);
 				if(!cancelScroll) {
 					if (position + delta == top || !ChatActivity.this.hasWindowFocus()) {
@@ -731,7 +732,7 @@ public class ChatActivity extends Activity {
 			range.setInputType(InputType.TYPE_CLASS_NUMBER);
 			range.setHint("Range");
 				builder.setTitle(R.string.find_a_battle)
-						.setMultiChoiceItems(new CharSequence[]{"Force Rated", "Force Same Tier", "Only within range"}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
+						.setMultiChoiceItems(new CharSequence[]{getString(R.string.force_rated), getString(R.string.force_same_tier), getString(R.string.only_within_range)}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
 							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
 							}
@@ -1035,19 +1036,19 @@ public class ChatActivity extends Activity {
     		lastClickedPlayer = playerAdapter.getItem(aMenuInfo.position);
     		String pName = lastClickedPlayer.nick();
     		menu.setHeaderTitle(pName);
-    		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, "Challenge " + pName);
-    		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, "View Player Info");
+    		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, getString(R.string.challenge) + " " + pName);
+    		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, getString(R.string.view_player_info));
     		if (netServ != null) {
     			if (netServ.myid != lastClickedPlayer.id) {
-	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, "Private Message");
+	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, getString(R.string.pm));
 	    		}
     			for (Integer battleid : lastClickedPlayer.battles) {
-	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, "Watch battle against " + 
+	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, getString(R.string.watch_battle) + " " +
 							netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
 							.setIntent(new Intent().putExtra("battle", battleid));
 	    		}
     		}
-			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, "Ignore Player");
+			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, getString(R.string.ignorePlayer));
 			menu.findItem(ChatContext.IgnorePlayer.ordinal()).setCheckable(true);
 			if (netServ.ignoreList.contains(lastClickedPlayer.id)) {
 				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(true);

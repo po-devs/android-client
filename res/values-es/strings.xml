@@ -92,6 +92,13 @@
     <string name="formes">Formas: </string>
     <string name="settings">Opciones</string>
     <string name="shiny">Shiny</string>
+    <string name="force_rated">Forzar batallas valoradas</string>
+    <string name="force_same_tier">Sólo en la misma tier</string>
+    <string name="only_within_range">Sólo dentro del rango</string>
+    <string name="view_player_info">Ver información de entrenador</string>
+    <string name="challenge">Retar</string>
+    <string name="pm">Mensaje privado</string>
+    <string name="watch_battle">Ver pelea entre</string>
 
     <string name="chat_title">Opciones de Chat</string>
     <string name="chat_summary">Opciones de Chat</string>

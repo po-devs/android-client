@@ -92,6 +92,13 @@
     <string name="formes">Formen: </string>
     <string name="settings">Einstellungen</string>
     <string name="shiny">Shiny</string>
+    <string name="force_rated">Wertungskämpfe erzwingen</string>
+    <string name="force_same_tier">Gleichen Tier erzwingen</string>
+    <string name="only_within_range">Nur im Bereich</string>
+    <string name="view_player_info">Spieler-Info ansehen</string>
+    <string name="challenge">Herausfordere</string>
+    <string name="pm">Private Nachicht</string>
+    <string name="watch_battle">Kampf ansehen gegen</string>
 
     <string name="chat_title">Chat-Einstellungen</string>
     <string name="chat_summary">Chat-Einstellungen</string>

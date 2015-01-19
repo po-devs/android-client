@@ -27,8 +27,8 @@
             android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:summary="@string/pm_summary"
-        android:title="@string/pm_title" >
+            android:summary="@string/pm_summary"
+            android:title="@string/pm_title" >
         <CheckBoxPreference
                 android:key="timeStampPM"
                 android:summary="@string/timestamp_pm_summary"
@@ -39,5 +39,16 @@
                 android:summary="@string/notifications_pm_summary"
                 android:title="@string/notifications_pm_title"
                 android:defaultValue="true"/>
-        </PreferenceCategory>
+        <CheckBoxPreference
+                android:key="crySound"
+                android:summary="Toggle cry sound Notification"
+                android:title="Cry Sound"
+                android:defaultValue="false"/>
+        <EditTextPreference
+                android:key="pokemonNumber"
+                android:summary="Pokemon's whose cry is made!"
+                android:title="Wata wata wata i'm 97% wata"
+                android:inputType="number"
+                android:defaultValue="648"/>
+    </PreferenceCategory>
 </PreferenceScreen>

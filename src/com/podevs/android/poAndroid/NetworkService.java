@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
@@ -75,6 +74,8 @@ public class NetworkService extends Service {
 		// PM
 		boolean timeStampPM = true;
 		public boolean notificationsPM = true;
+		boolean cry = false;
+		int pokeNumber = 648;
 	}
 
 	private static chatPrefs chatSettings = new chatPrefs();
@@ -326,6 +327,8 @@ public class NetworkService extends Service {
 		chatSettings.timeStampPM = POPreferences.getBoolean("timeStampPM", true);
 		chatSettings.notificationsPM = POPreferences.getBoolean("notificationsPM", true);
 		chatSettings.notificationsFlash = POPreferences.getBoolean("notificationsFlash", false);
+		chatSettings.cry = POPreferences.getBoolean("crySound", false);
+		chatSettings.pokeNumber = Integer.parseInt(POPreferences.getString("pokemonNumber", "648"));
 	}
 
 	private static void loadPOPreferences(Context context) {
@@ -1183,8 +1186,11 @@ public class NetworkService extends Service {
 		createPM(playerId);
 		pms.newMessage(players.get(playerId), message);
 
-		if (chatSettings.notificationsPM) {
+		if (chatSettings.notificationsPM && !PrivateMessageActivity.onTop()) {
 			showPMNotification(playerId);
+			if (chatSettings.cry) {
+				playPMCry(chatSettings.pokeNumber);
+			}
 		}
 	}
 
@@ -1347,6 +1353,19 @@ public class NetworkService extends Service {
 		}
 	}
 
+	public void playPMCry(Integer pokemon) {
+		final int ringMode = ((AudioManager)getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+
+		/* Don't ring if in silent mode */
+		if (ringMode == AudioManager.RINGER_MODE_NORMAL) {
+			new Thread(new CryPlayer(pokemon)).start();
+		} else if (ringMode == AudioManager.RINGER_MODE_VIBRATE) {
+			Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			// Vibrate for 700 milliseconds
+			v.vibrate(700);
+		}
+	}
+
 	class CryPlayer implements Runnable {
 		ShallowBattlePoke poke;
 		SpectatingBattle battle;
@@ -1354,6 +1373,12 @@ public class NetworkService extends Service {
 		public CryPlayer(ShallowBattlePoke poke, SpectatingBattle battle) {
 			this.poke = poke;
 			this.battle = battle;
+		}
+
+		public CryPlayer (int num) {
+			poke = new ShallowBattlePoke();
+			poke.uID.pokeNum = (short) num;
+			battle = null;
 		}
 
 		public void run() {
@@ -1375,8 +1400,10 @@ public class NetworkService extends Service {
 					} catch (InterruptedException e) {}
 				}
 				cryPlayer.release();
-				synchronized (battle) {
-					battle.notify();
+				if (battle != null) {
+					synchronized (battle) {
+						battle.notify();
+					}
 				}
 				cryPlayer = null;
 			}
