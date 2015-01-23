@@ -116,6 +116,12 @@
     <string name="timestamp_pm_summary">Zeitstempel aktivieren</string>
     <string name="notifications_pm_title">Benachichtigungen</string>
     <string name="notifications_pm_summary">Benachichtigungen aktivieren</string>
+    <string name="volume_title">Lautstärke</string>
+    <string name="volume_summary">Wert zwischen 0 und 100</string>
+    <string name="poke_number_title">Ruf des Pokemons</string>
+    <string name="poke_number_summary">Nummer von dem Pokemon</string>
+    <string name="sound_notification_title">Ton-Benachichtigung</string>
+    <string name="sound_notification_summary">Ton-Benachichtigung aktivieren</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>

@@ -33,6 +33,9 @@ public class InfoFiller {
 				/*
 				 * Test for BOM
 				 */
+				if (str == null) {
+					break;
+				}
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
@@ -79,6 +82,9 @@ public class InfoFiller {
 				/*
 				 * Test for BOM
 				 */
+				if (str == null) {
+					break;
+				}
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}

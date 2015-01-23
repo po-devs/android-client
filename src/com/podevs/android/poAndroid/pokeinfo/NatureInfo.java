@@ -34,6 +34,10 @@ public class NatureInfo {
 		Quirky
 	}
 
+	public static int indexOf(String s) {
+		return Nature.valueOf(s).ordinal();
+	}
+
 	public static String name(int num) {
 		return Nature.values()[num].toString();
 	}

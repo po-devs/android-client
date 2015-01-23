@@ -116,6 +116,12 @@
     <string name="timestamp_pm_summary">Activar marcas de tiempo</string>
     <string name="notifications_pm_title">Notificaciones</string>
     <string name="notifications_pm_summary">Activar notificaciones</string>
+    <string name="volume_title">Vólumen</string>
+    <string name="volume_summary">Integrar un número entre 0 y 100</string>
+    <string name="poke_number_title">Gritos de Pokémon</string>
+    <string name="poke_number_summary">Elegir grito de Pokémon con su número</string>
+    <string name="sound_notification_title">Notifiación con sonido</string>
+    <string name="sound_notification_summary">Activar notificación con gritos de Pokémon</string>
 
     <string-array name="hp_array">
         <item>Peleador</item>

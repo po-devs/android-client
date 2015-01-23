@@ -17,6 +17,14 @@ public class AbilityInfo {
 		
 		return abilityNames.get(item);
 	}
+
+	public static int indexOf(String s) {
+		if (abilityNames == null) {
+			loadAbilityNames();
+		}
+
+		return abilityNames.indexOf(s);
+	}
 	
 	public static String message(int num, int part) {
 		if (abilityMessages == null) {

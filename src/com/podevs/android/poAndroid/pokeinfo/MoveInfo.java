@@ -50,6 +50,16 @@ public class MoveInfo extends GenInfo {
 		return moveNames.get(num).name;
 	}
 
+	public static int indexOf(String s) {
+		testLoad();
+		for (int i = 0; i < moveNames.size(); i ++) {
+			if (moveNames.get(i).name.equals(s)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
 	private static void testLoad() {
 		if (moveNames == null) {
 			loadPokeMoves();

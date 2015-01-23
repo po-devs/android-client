@@ -99,10 +99,7 @@ public class MoveChooserFragment extends Fragment {
 					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 					
 					if (config != null) {
-						for (int i = 0; i < 6; i++) {
-							poke().DVs[i] = config[i];
-						}
-						
+							poke().DVs = config;
 						if (listener != null) {
 							listener.onMovesetChanged(true);
 						}

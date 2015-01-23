@@ -20,7 +20,20 @@ public class ItemInfo {
 		
 		return itemNames.get(item);
 	}
-	
+
+	public static int indexOf(String s) {
+		if (itemNames.indexOfKey(1) < 0) {
+			loadItemNames();
+		}
+
+		for (int i = 0; i < itemNames.size(); i ++) {
+			if (itemNames.get(itemNames.keyAt(i)).equals(s)) {
+				return itemNames.keyAt(i);
+			}
+		}
+		return 15;
+	}
+
 	public static String message(int num, int part) {
 		if (itemMessages == null) {
 			 loadItemMessages();

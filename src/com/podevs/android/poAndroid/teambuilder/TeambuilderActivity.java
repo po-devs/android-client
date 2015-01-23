@@ -22,11 +22,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.R;
-import com.podevs.android.poAndroid.poke.PokeParser;
-import com.podevs.android.poAndroid.poke.Team;
-import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
+import com.podevs.android.poAndroid.poke.*;
+import com.podevs.android.poAndroid.pokeinfo.*;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -36,6 +33,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TeambuilderActivity extends FragmentActivity {
 
@@ -142,12 +141,13 @@ public class TeambuilderActivity extends FragmentActivity {
 						public void run() {
 							try {
 								bo.flush();
-								String TextToParse = new String(trim(bo.toByteArray()));
+								String textToParse = new String(trim(bo.toByteArray()));
 								bo.close();
-								if (TextToParse.contains("?xml version=\"1.0\"")) {
-									team = new PokeParser(TeambuilderActivity.this, TextToParse, false).getTeam();
+								if (textToParse.contains("?xml version=\"1.0\"")) {
+									team = new PokeParser(TeambuilderActivity.this, textToParse, false).getTeam();
 								} else {
 									// New parsing type
+									team = importableParse(textToParse);
 								}
 								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
 								updateTeam();
@@ -199,6 +199,136 @@ public class TeambuilderActivity extends FragmentActivity {
 			}
 		}.start();
 	}
+
+	private Team importableParse(String textToParse) {
+
+		/*
+		Tyranitar (M) @ Choice Scarf		0
+		Lvl: 100							1
+		Trait: Sand Stream					2
+		IVs: 0 Spd							3
+		EVs: 4 HP / 252 Atk / 252 Spd		4
+		Jolly Nature (+Spd, -SAtk)			5
+		- Stone Edge						6
+		- Crunch							7
+		- Superpower						8
+		- Pursuit							9
+		*/
+		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd"};
+		Team newTeam = new Team();
+		textToParse = textToParse.replace("\r\n", "\n").replace("\r", "\n");
+		String[] newPokesToParse = textToParse.split("\n\n");
+		Pattern p;
+		Matcher m;
+		for (int i = 0; i < newPokesToParse.length; i ++) {
+			TeamPoke newPoke = new TeamPoke();
+			String[] parseList = newPokesToParse[i].split("\n");
+			boolean movesNext = false;
+			boolean IVsGiven = false;
+			int I = 0;
+			for (String s: parseList) {
+				if (movesNext && s.contains("-")) {
+					if (s.contains("(No Move")) {
+						newPoke.moves[I] = new TeamMove(0);
+					}
+					else {
+						s = s.replace("- ", "");
+						if (s.contains("Hidden Power")) {
+							p = Pattern.compile(".*(\\[.*\\])");
+							m = p.matcher(s);
+							if (m.find()) {
+								String hiddenPowerType = m.group(1);
+								s = s.replace(hiddenPowerType, "").trim();
+								if (!IVsGiven) {
+									hiddenPowerType = hiddenPowerType.substring(1, hiddenPowerType.length() - 1);
+									String[] hiddenPowers = {"Fighting","Flying","Poison","Ground","Rock","Bug","Ghost","Steel","Fire","Water","Grass","Electric","Psychic","Ice","Dragon","Dark"};
+									int Type = 16; // Dark
+									for (int K = 0; K < hiddenPowers.length; K++) {
+										if (hiddenPowers[K].equals(hiddenPowerType)) {
+											Type = K + 1;
+											break;
+										}
+									}
+									byte[] IVs = HiddenPowerInfo.configurationForType(Type, newPoke.gen);
+									if (IVs != null) {
+										newPoke.DVs = IVs;
+									}
+								}
+							}
+						}
+						newPoke.moves[I] = new TeamMove(MoveInfo.indexOf(s));
+					}
+					// If move has return make it 100 happiness / frustration 0 happiness
+					I++;
+					String testBlock = "";
+				} else if (s.contains("@")) {
+					p = Pattern.compile("(.*) @");
+					m = p.matcher(s);
+					if (m.find()) {
+						String pokemonLine = m.group(1);
+						if (pokemonLine.contains("(") || pokemonLine.contains(")")) {
+							String gender = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
+							if (gender.equals("M")) {
+								newPoke.gender = 1;
+							} else if (gender.equals("F")) {
+								newPoke.gender = 2;
+							}
+						} else {
+							newPoke.gender = 0;
+						}
+						pokemonLine = pokemonLine.replaceAll("( \\(.*\\))", "");
+						newPoke.uID = new UniqueID(PokemonInfo.indexOf(pokemonLine));
+						newPoke.nick = PokemonInfo.name(newPoke.uID());
+					}
+					p = Pattern.compile("@ (.*)");
+					m = p.matcher(s);
+					if (m.find()) {
+						String itemLine = m.group(1);
+						if (!itemLine.contains("(No Item)")){
+							newPoke.item = (short) ItemInfo.indexOf(itemLine);
+						}
+					}
+				} else if (s.contains("Lvl:") || s.contains("Level:")) {
+					newPoke.level = Byte.parseByte(s.split(" ")[1]);
+				} else if (s.contains("IVs:")) {
+					s = s.replace("IVs: ", "");
+					String[] DVs = s.split(" / ");
+					for (String ss: DVs) {
+						for (int k = 0; k < 6; k ++) {
+							if (ss.contains(stats[k])) {
+								newPoke.DVs[k] = (byte) Integer.parseInt(ss.replace(stats[k], ""));
+								break;
+							}
+						}
+					}
+					IVsGiven = true;
+				} else if (s.contains("EVs:")) {
+					s = s.replace("EVs: ", "");
+					String[] EVs = s.split(" / ");
+					for (String ss: EVs) {
+						for (int k = 0; k < 6; k ++) {
+							if (ss.contains(stats[k])) {
+								newPoke.EVs[k] = (byte) Integer.parseInt(ss.replace(stats[k], ""));
+								break;
+							}
+						}
+					}
+				} else if (s.contains(" Nature")) {
+					s = s.replace(" Nature", "");
+					newPoke.nature = (byte) NatureInfo.indexOf(s);
+				} else if (s.contains("Trait:") || s.contains("Ability:")) {
+					s = s.replace("Trait: ", "").replace("Ability: ", "");
+					newPoke.ability = (short) AbilityInfo.indexOf(s);
+					movesNext = true;
+				} else if (s.contains("Shiny: Yes")) {
+					newPoke.shiny = true;
+				}
+			}
+			newTeam.setPoke(i, newPoke);
+		}
+		return newTeam;
+	}
+
 
 	private static byte[] trim(byte[] bytes) {
 		int i = bytes.length - 1;
@@ -353,6 +483,7 @@ public class TeambuilderActivity extends FragmentActivity {
 								}
 							}
 						}).show();
+
 			}
         }
         return true;

@@ -38,6 +38,9 @@ public class Settings extends PreferenceFragment {
             if (key.equals("pokemonNumber")) {
                 return dealWithPokemonNumber(newValue.toString());
             }
+            if (key.equals("soundVolume")) {
+                return dealWithVolume(newValue.toString());
+            }
             return true;
         }
     };
@@ -58,11 +61,20 @@ public class Settings extends PreferenceFragment {
 
     private Boolean dealWithPokemonNumber(String number) {
         Integer i = Integer.parseInt(number);
-        if (719 > i && i > 0) {
-            makeToast(number);
+        if (718 >= i && i > 0) {
+            makeToast("Pokemon: " + number);
             return true;
         }
         makeToast("Enter a valid pokemon number");
+        return false;
+    }
+
+    private Boolean dealWithVolume(String number) {
+        Integer i = Integer.parseInt(number);
+        if (100 >= i && i >= 0) {
+            makeToast("Volume: " + number);
+            return true;
+        }
         return false;
     }
 

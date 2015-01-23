@@ -116,6 +116,12 @@
     <string name="timestamp_pm_summary">Toggle time stamps</string>
     <string name="notifications_pm_title">Notifications</string>
     <string name="notifications_pm_summary">Toggle notifications</string>
+    <string name="volume_title">Volume</string>
+    <string name="volume_summary">Integer between 0 and 100</string>
+    <string name="poke_number_title">Pokemon\'s cry</string>
+    <string name="poke_number_summary">Number of the pokemon</string>
+    <string name="sound_notification_title">Cry Sound notification</string>
+    <string name="sound_notification_summary">Toggle cry sound notification</string>
 
     <string-array name="hp_array">
         <item>Fighting</item>

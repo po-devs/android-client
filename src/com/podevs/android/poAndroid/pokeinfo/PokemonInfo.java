@@ -44,6 +44,16 @@ public class PokemonInfo {
 		String options = null;
 	}
 
+	public static int indexOf(String pokemonName) {
+		loadPokeNames();
+		for (int i = 0; i < pokeNames.size(); i ++) {
+			if (pokeNames.get(pokeNames.keyAt(i)).equals(pokemonName)) {
+				return pokeNames.keyAt(i);
+			} // pokeNames has random offsets, does it even need these?
+		}
+		return 0;
+	}
+
 	public static String name(UniqueID uID) {
 		int num = uID.hashCode();
 
@@ -269,7 +279,7 @@ public class PokemonInfo {
 		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
 				(uid.subNum == 0 ? "" : "_" + uid.subNum), "drawable", InfoConfig.pkgName);
 		if (resID == 0)
-			resID = resources.getIdentifier("pi" + uid.pokeNum, "drawable", InfoConfig.pkgName);
+			resID = resources.getIdentifier("pi_" + uid.pokeNum, "drawable", InfoConfig.pkgName);
 		return resID;
 	}
 

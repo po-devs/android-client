@@ -41,14 +41,20 @@
                 android:defaultValue="true"/>
         <CheckBoxPreference
                 android:key="crySound"
-                android:summary="Toggle cry sound Notification"
-                android:title="Cry Sound"
+                android:summary="@string/sound_notification_summary"
+                android:title="@string/sound_notification_title"
                 android:defaultValue="false"/>
         <EditTextPreference
                 android:key="pokemonNumber"
-                android:summary="Pokemon's whose cry is made!"
-                android:title="Wata wata wata i'm 97% wata"
+                android:summary="@string/poke_number_summary"
+                android:title="@string/poke_number_title"
                 android:inputType="number"
                 android:defaultValue="648"/>
+        <EditTextPreference
+                android:key="soundVolume"
+                android:summary="@string/volume_summary"
+                android:title="@string/volume_title"
+                android:inputType="number"
+                android:defaultValue="10"/>
     </PreferenceCategory>
 </PreferenceScreen>

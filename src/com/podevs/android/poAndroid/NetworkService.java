@@ -76,6 +76,8 @@ public class NetworkService extends Service {
 		public boolean notificationsPM = true;
 		boolean cry = false;
 		int pokeNumber = 648;
+		long lastCall = 0;
+		int soundVolume = 10;
 	}
 
 	private static chatPrefs chatSettings = new chatPrefs();
@@ -329,6 +331,7 @@ public class NetworkService extends Service {
 		chatSettings.notificationsFlash = POPreferences.getBoolean("notificationsFlash", false);
 		chatSettings.cry = POPreferences.getBoolean("crySound", false);
 		chatSettings.pokeNumber = Integer.parseInt(POPreferences.getString("pokemonNumber", "648"));
+		chatSettings.soundVolume = Integer.parseInt(POPreferences.getString("soundVolume", "10"));
 	}
 
 	private static void loadPOPreferences(Context context) {
@@ -1189,7 +1192,11 @@ public class NetworkService extends Service {
 		if (chatSettings.notificationsPM && !PrivateMessageActivity.onTop()) {
 			showPMNotification(playerId);
 			if (chatSettings.cry) {
-				playPMCry(chatSettings.pokeNumber);
+				long time = System.currentTimeMillis();
+				if (time - 10000 > chatSettings.lastCall) {
+					playPMCry(chatSettings.pokeNumber);
+					chatSettings.lastCall = time;
+				}
 			}
 		}
 	}
@@ -1386,6 +1393,8 @@ public class NetworkService extends Service {
 					"raw", pkgName);
 			if (resID != 0) {
 				MediaPlayer cryPlayer = MediaPlayer.create(NetworkService.this, resID);
+				float logarithmicVolume = (float) (Math.log(100-chatSettings.soundVolume)/10);
+				cryPlayer.setVolume(logarithmicVolume, logarithmicVolume);
 				cryPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					public void onCompletion(MediaPlayer mp) {
 						synchronized (mp) {
