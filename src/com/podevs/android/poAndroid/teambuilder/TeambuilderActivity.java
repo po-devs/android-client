@@ -214,20 +214,21 @@ public class TeambuilderActivity extends FragmentActivity {
 		- Superpower						8
 		- Pursuit							9
 		*/
-		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd"};
+		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd", " HP", " Atk", " Def", " Spa", " SpD", " Spe"};
 		Team newTeam = new Team();
-		textToParse = textToParse.replace("\r\n", "\n").replace("\r", "\n");
+		textToParse = textToParse.replace("\r\n", "\n").replace("\r", "\n").replaceAll("(\n.\n)", "\n\n");
 		String[] newPokesToParse = textToParse.split("\n\n");
 		Pattern p;
 		Matcher m;
 		for (int i = 0; i < newPokesToParse.length; i ++) {
 			TeamPoke newPoke = new TeamPoke();
 			String[] parseList = newPokesToParse[i].split("\n");
+			newPoke.ability = PokemonInfo.abilities(newPoke.uID(), newPoke.gen.num)[0];
 			boolean movesNext = false;
 			boolean IVsGiven = false;
 			int I = 0;
 			for (String s: parseList) {
-				if (movesNext && s.contains("-")) {
+				if (movesNext && s.contains("- ")) {
 					if (s.contains("(No Move")) {
 						newPoke.moves[I] = new TeamMove(0);
 					}
@@ -296,11 +297,11 @@ public class TeambuilderActivity extends FragmentActivity {
 					s = s.replace("IVs: ", "");
 					String[] DVs = s.split(" / ");
 					for (String ss: DVs) {
-						for (int k = 0; k < 6; k ++) {
-							if (ss.contains(stats[k])) {
-								newPoke.DVs[k] = (byte) Integer.parseInt(ss.replace(stats[k], ""));
-								break;
-							}
+						String statName = " " + ss.split(" ")[1];
+						int value = Integer.parseInt(ss.split(" ")[0]);
+						int statIndex = Arrays.asList(stats).indexOf(statName) % 6;
+						if (statIndex != -1) {
+							newPoke.EVs[statIndex] = (byte) value;
 						}
 					}
 					IVsGiven = true;
@@ -308,16 +309,17 @@ public class TeambuilderActivity extends FragmentActivity {
 					s = s.replace("EVs: ", "");
 					String[] EVs = s.split(" / ");
 					for (String ss: EVs) {
-						for (int k = 0; k < 6; k ++) {
-							if (ss.contains(stats[k])) {
-								newPoke.EVs[k] = (byte) Integer.parseInt(ss.replace(stats[k], ""));
-								break;
-							}
+						String statName = " " + ss.split(" ")[1];
+						int value = Integer.parseInt(ss.split(" ")[0]);
+						int statIndex = Arrays.asList(stats).indexOf(statName) % 6;
+						if (statIndex != -1) {
+							newPoke.EVs[statIndex] = (byte) value;
 						}
 					}
 				} else if (s.contains(" Nature")) {
 					s = s.replace(" Nature", "");
 					newPoke.nature = (byte) NatureInfo.indexOf(s);
+					movesNext = true;
 				} else if (s.contains("Trait:") || s.contains("Ability:")) {
 					s = s.replace("Trait: ", "").replace("Ability: ", "");
 					if (s.contains("(No Ability")) {
@@ -478,7 +480,7 @@ public class TeambuilderActivity extends FragmentActivity {
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								String link = input.getText().toString();
+								String link = "http://pastebin.com/raw.php?i=trC07dka"; //input.getText().toString();
 
 								try {
 									URL Link = new URL(link);

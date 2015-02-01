@@ -62,7 +62,9 @@ public class ListedPokemon {
         	String type;
         	if (poke.move(j).num() == 237)
         		type = TypeInfo.name(poke.hiddenPowerType());
-        	else
+        	else if (poke.move(j).num() == 449) // Judgment
+				type = TypeInfo.name(PokemonInfo.type1(poke.uID(), poke.gen().num));
+			else
         		type = TypeInfo.name(MoveInfo.type(poke.move(j).num()));
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
