@@ -87,7 +87,8 @@ public class ChatActivity extends Activity {
 		LeaveChannel,
 		WatchBattle,
 		PrivateMessage,
-		IgnorePlayer
+		IgnorePlayer,
+		ChannelEvent
 	}
 	
 	private PlayerListAdapter playerAdapter = null;
@@ -1060,8 +1061,15 @@ public class ChatActivity extends Activity {
     		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
     		String cName = lastClickedChannel.name;
     		menu.setHeaderTitle(cName);
-    		if (netServ.joinedChannels.contains(lastClickedChannel))
-    			menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
+    		if (netServ.joinedChannels.contains(lastClickedChannel)) {
+				menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
+				menu.add(Menu.NONE, ChatContext.ChannelEvent.ordinal(), 0, "Channel Event").setCheckable(true);
+				if (lastClickedChannel.channelEvents) {
+					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(true);
+				} else {
+					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(false);
+				}
+			}
     		else
         		menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
     		break;
@@ -1119,6 +1127,12 @@ public class ChatActivity extends Activity {
     			startActivity(intent);
     		}
     		break;
+		case ChannelEvent:
+			if (lastClickedChannel.channelEvents) {
+				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = false;
+			} else {
+				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = true;
+			}
     	}
     	return true;
     }

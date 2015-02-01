@@ -286,6 +286,8 @@ public class TeambuilderActivity extends FragmentActivity {
 						String itemLine = m.group(1);
 						if (!itemLine.contains("(No Item)")){
 							newPoke.item = (short) ItemInfo.indexOf(itemLine);
+						} else {
+							newPoke.item = 0; // newPoke.item = 15; // leftovers
 						}
 					}
 				} else if (s.contains("Lvl:") || s.contains("Level:")) {
@@ -318,7 +320,11 @@ public class TeambuilderActivity extends FragmentActivity {
 					newPoke.nature = (byte) NatureInfo.indexOf(s);
 				} else if (s.contains("Trait:") || s.contains("Ability:")) {
 					s = s.replace("Trait: ", "").replace("Ability: ", "");
-					newPoke.ability = (short) AbilityInfo.indexOf(s);
+					if (s.contains("(No Ability")) {
+						newPoke.ability = 0; //newPoke.ability = PokemonInfo.abilities(newPoke.uID(), newPoke.gen.num)[0];
+					} else {
+						newPoke.ability = (short) AbilityInfo.indexOf(s);
+					}
 					movesNext = true;
 				} else if (s.contains("Shiny: Yes")) {
 					newPoke.shiny = true;

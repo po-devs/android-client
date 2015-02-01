@@ -229,9 +229,6 @@ public class SpectatingBattle {
 			break;
 		} case UseAttack: {
 			short attack = msg.readShort();
-			if (player == opp) {
-				activity.updateMoves(attack);
-			}
 			int color;
 			try {
 				color = MoveInfo.type(attack);
@@ -243,6 +240,15 @@ public class SpectatingBattle {
 			writeToHist(Html.fromHtml("<br>" + tu(currentPoke(player).nick +
 					" used <font color =" + TypeColor.values()[color] + MoveInfo.name(attack) + "</font>!")));
 			}
+				if (player == opp) {
+					activity.updateMoves(attack);
+				}
+				/*
+			boolean special = msg.readBool();
+			if (player == opp && ! special) {
+				activity.updateMoves(attack);
+			}
+			*/
 			break;
 		} case BeginTurn: {
 			int turn = msg.readInt();
@@ -704,7 +710,7 @@ public class SpectatingBattle {
 	}
 
 	private void removeSpectator(int id) {
-		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
+		writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
 		spectators.remove(id);
 	}
 

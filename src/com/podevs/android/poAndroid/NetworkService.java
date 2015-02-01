@@ -148,14 +148,26 @@ public class NetworkService extends Service {
 		}
 	}
 
-	public void addBattle(int battleid, BattleDesc desc) {
+	public void addBattle(int battleid, BattleDesc desc, boolean show) {
 		battles.put(battleid, desc);
-
+// battle event
+		String n1 = "";
 		if (players.containsKey(desc.p1)) {
 			players.get(desc.p1).addBattle(battleid);
+			n1 = players.get(desc.p1).nick();
 		}
+		String n2 = "";
 		if (players.containsKey(desc.p2)) {
 			players.get(desc.p2).addBattle(battleid);
+			n2 = players.get(desc.p2).nick();
+		}
+		if (show) {
+			for (Channel chan : channels.values()) {
+				if (chan.joined && chan.channelEvents) {
+					CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
+					chan.writeToHistSmall(message);
+				}
+			}
 		}
 	}
 
@@ -679,16 +691,24 @@ public class NetworkService extends Service {
 				PlayerInfo p = new PlayerInfo(msg);
 				PlayerInfo oldPlayer = players.get(p.id);
 				players.put(p.id, p);
-				
-				if (oldPlayer != null) {
-					p.battles = oldPlayer.battles;
 
+				if (oldPlayer != null) {
+					if (!p.nick().equals(oldPlayer.nick())) {
+						for (Channel chan : channels.values()) {
+							if (chan.joined && chan.channelEvents) {
+								CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
+								chan.writeToHistSmall(message);
+							}
+						}
+					}
+					p.battles = oldPlayer.battles;
+					// name change event
 					if (chatActivity != null) {
+
 						/* Updates the player in the adapter memory */
 						chatActivity.updatePlayer(p, oldPlayer);
 					}
 				}
-				
 				/* Updates self player */
 				if (p.id == myid) {
 					me.setTo(p);
@@ -869,7 +889,7 @@ public class NetworkService extends Service {
 				int player1 = msg.readInt();
 				int player2 = msg.readInt();
 
-				addBattle(battleId, new BattleDesc(player1, player2));
+				addBattle(battleId, new BattleDesc(player1, player2), false);
 			}
 			break;
 		}
@@ -880,7 +900,7 @@ public class NetworkService extends Service {
 			int player1 = msg.readInt();
 			int player2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(player1, player2));
+			addBattle(battleId, new BattleDesc(player1, player2), false);
 			break;
 		} case ChallengeStuff: {
 			IncomingChallenge challenge = new IncomingChallenge(msg);
@@ -951,6 +971,7 @@ public class NetworkService extends Service {
 			// Only sent when player is in a PM with you and logs out
 			int playerID = msg.readInt();
 			removePlayer(playerID);
+				// logout event
 			//System.out.println("Player " + playerID + " logged out.");
 			break;
 		} case BattleFinished: {
@@ -1024,7 +1045,7 @@ public class NetworkService extends Service {
 			int p1 = msg.readInt();
 			int p2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode));
+			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
 
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);

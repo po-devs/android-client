@@ -7,7 +7,9 @@ import android.graphics.Color;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 
 import com.podevs.android.poAndroid.Command;
@@ -29,6 +31,7 @@ public class Channel {
 	public boolean flashed = false;
 	public final static int HIST_LIMIT = 700;
 	public static final String TAG = "Pokemon Online Channel";
+	public boolean channelEvents = false;
 	
 	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
 	
@@ -40,6 +43,20 @@ public class Channel {
 			spannable = new SpannableStringBuilder(text);
 		else
 			spannable = (SpannableStringBuilder)text;
+		write(spannable);
+	}
+
+	public void writeToHistSmall(CharSequence text) {
+		SpannableStringBuilder spannable;
+		if (text.getClass() != SpannableStringBuilder.class)
+			spannable = new SpannableStringBuilder(text);
+		else
+			spannable = (SpannableStringBuilder)text;
+		spannable.setSpan(new RelativeSizeSpan(0.75f), 0, spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		write(spannable);
+	}
+
+	private void write(SpannableStringBuilder spannable) {
 		synchronized(messageList) {
 			messageList.add(spannable);
 			lastSeen++;
@@ -54,23 +71,18 @@ public class Channel {
 			spannable = new SpannableStringBuilder(text);
 		}
 		else {spannable = (SpannableStringBuilder)text;}
-		synchronized(messageList) {
+		try {
+			Integer i = 0;
 			try {
-				Integer i = 0;
-				try {
-					i = Color.parseColor(color);
-				} catch (Exception e) {
-					i = Color.YELLOW;
-				} finally {}
-				spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			} finally {
+				i = Color.parseColor(color);
+			} catch (Exception e) {
+				i = Color.YELLOW;
+			} finally {}
+			spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		} finally {
 
-			}
-			messageList.add(spannable);
-			lastSeen++;
-			while (messageList.size() > HIST_LIMIT)
-				messageList.remove();
 		}
+		write(spannable);
 	}
 	private NetworkService netServ;
 	
@@ -89,7 +101,7 @@ public class Channel {
 	public void addPlayer(PlayerInfo p) {
 		if(p != null) {
 			players.put(p.id, p);
-			
+			if (joined && channelEvents) writeToHistSmall(Html.fromHtml("<i><font color=\"#A0A0A0\">" + p.nick() + " joined the channel.</font></i>"));
 			if(netServ != null && netServ.chatActivity != null && this.equals(netServ.chatActivity.currentChannel()))
 				netServ.chatActivity.addPlayer(p);
 		}
@@ -213,6 +225,10 @@ public class Channel {
 					p = new PlayerInfo();
 					p.id = pid;
 				}
+				if (pid != netServ.myid && channelEvents) {
+					writeToHistSmall(Html.fromHtml("<i><font color=\"#A0A0A0\">" + p.nick() + " left the channel.</font></i>"));
+				}
+				// player event
 				removePlayer(p);
 				break;
 			default:
