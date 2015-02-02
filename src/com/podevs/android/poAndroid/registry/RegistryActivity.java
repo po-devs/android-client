@@ -73,7 +73,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
 		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
 		tracker.setScreenName("Registry Screen");
-		tracker.setAppVersion("2.5.3.3");
+		tracker.setAppVersion("2.5.3.6");
 		// tracker.enableAdvertisingIdCollection(true);
 		tracker.send(new HitBuilders.AppViewBuilder().build());
 

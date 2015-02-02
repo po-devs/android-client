@@ -214,7 +214,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		- Superpower						8
 		- Pursuit							9
 		*/
-		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd", " HP", " Atk", " Def", " Spa", " SpD", " Spe"};
+		String[] stats = {" HP", " Atk", " Def", " SAtk", " SDef", " Spd", " HP", " Atk", " Def", " SpA", " SpD", " Spe"};
 		Team newTeam = new Team();
 		textToParse = textToParse.replace("\r\n", "\n").replace("\r", "\n").replaceAll("(\n.\n)", "\n\n");
 		String[] newPokesToParse = textToParse.split("\n\n");

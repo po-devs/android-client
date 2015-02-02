@@ -164,8 +164,12 @@ public class NetworkService extends Service {
 		if (show) {
 			for (Channel chan : channels.values()) {
 				if (chan.joined && chan.channelEvents) {
-					CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
-					chan.writeToHistSmall(message);
+					if (chan.players.contains(players.get(desc.p1)) || chan.players.contains(players.get(desc.p2))) {
+						// needs better method.
+						// Maybe create an array of channels to check?
+						CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
+						chan.writeToHistSmall(message);
+					}
 				}
 			}
 		}
@@ -696,8 +700,10 @@ public class NetworkService extends Service {
 					if (!p.nick().equals(oldPlayer.nick())) {
 						for (Channel chan : channels.values()) {
 							if (chan.joined && chan.channelEvents) {
-								CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
-								chan.writeToHistSmall(message);
+								if (chan.players.contains(p) || chan.players.contains(oldPlayer)) {
+									CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
+									chan.writeToHistSmall(message);
+								}
 							}
 						}
 					}
@@ -1045,7 +1051,7 @@ public class NetworkService extends Service {
 			int p1 = msg.readInt();
 			int p2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
+			addBattle(battleId, new BattleDesc(p1, p2, mode), false);
 
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
