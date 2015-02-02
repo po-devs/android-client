@@ -24,9 +24,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.chat.ChatActivity;
@@ -52,7 +49,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private boolean bound = false;
 	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
-	protected MyApplication app;
 
 	/*
 	enum RegistryDialog {
@@ -69,13 +65,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     	}
 
         super.onCreate(savedInstanceState);
-
-
-		Tracker tracker = ((MyApplication) getApplication()).getTracker(MyApplication.TrackerName.GLOBAL_TRACKER);
-		tracker.setScreenName("Registry Screen");
-		tracker.setAppVersion("2.5.3.6");
-		// tracker.enableAdvertisingIdCollection(true);
-		tracker.send(new HitBuilders.AppViewBuilder().build());
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
