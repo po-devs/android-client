@@ -203,7 +203,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	private Team importableParse(String textToParse) {
 
 		/*
-		Tyranitar (M) @ Choice Scarf		0
+		Tyranitar (M) @ Choice Scarf		0 	Bruh (Raikou) @ Choice Specs
 		Lvl: 100							1
 		Trait: Sand Stream					2
 		IVs: 0 Spd							3
@@ -258,28 +258,46 @@ public class TeambuilderActivity extends FragmentActivity {
 							}
 						}
 						newPoke.moves[I] = new TeamMove(MoveInfo.indexOf(s));
+						// If move has return make it 255 happiness
+						if (newPoke.moves[I].num() == 216) {
+							newPoke.happiness = (byte) 255;
+						}
 					}
-					// If move has return make it 100 happiness / frustration 0 happiness
 					I++;
-					String testBlock = "";
 				} else if (s.contains("@")) {
 					p = Pattern.compile("(.*) @");
 					m = p.matcher(s);
 					if (m.find()) {
 						String pokemonLine = m.group(1);
 						if (pokemonLine.contains("(") || pokemonLine.contains(")")) {
-							String gender = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
-							if (gender.equals("M")) {
-								newPoke.gender = 1;
-							} else if (gender.equals("F")) {
-								newPoke.gender = 2;
+							String genderOrRealName = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
+							if (genderOrRealName.length() > 1) {
+								newPoke.uID = new UniqueID(PokemonInfo.indexOf(genderOrRealName));
+								newPoke.gender = 0;
+								pokemonLine = pokemonLine.replace(" (" + genderOrRealName + ")", "");
+								if (pokemonLine.contains("(") || pokemonLine.contains(")")) {
+									genderOrRealName = pokemonLine.substring(pokemonLine.indexOf("(") + 1, pokemonLine.indexOf(")"));
+									if (genderOrRealName.equals("M")) {
+										newPoke.gender = 1;
+									} else if (genderOrRealName.equals("F")) {
+										newPoke.gender = 2;
+									}
+								}
+							} else {
+								if (genderOrRealName.equals("M")) {
+									newPoke.gender = 1;
+								} else if (genderOrRealName.equals("F")) {
+									newPoke.gender = 2;
+								}
 							}
 						} else {
 							newPoke.gender = 0;
 						}
 						pokemonLine = pokemonLine.replaceAll("( \\(.*\\))", "");
-						newPoke.uID = new UniqueID(PokemonInfo.indexOf(pokemonLine));
-						newPoke.nick = PokemonInfo.name(newPoke.uID());
+						if (newPoke.uID().pokeNum == (short) 0) {
+							newPoke.uID = new UniqueID(PokemonInfo.indexOf(pokemonLine));
+						}
+						newPoke.nick = pokemonLine;
 					}
 					p = Pattern.compile("@ (.*)");
 					m = p.matcher(s);
@@ -480,7 +498,7 @@ public class TeambuilderActivity extends FragmentActivity {
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
-								String link = "http://pastebin.com/raw.php?i=trC07dka"; //input.getText().toString();
+								String link = input.getText().toString();
 
 								try {
 									URL Link = new URL(link);
