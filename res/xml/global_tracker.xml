@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <screenName name="com.podevs.android.poAndroid.registry.RegistryActivity">Registry Screen</screenName>
-    <screenName name="com.podevs.android.poAndroid.chat.ChatActivity">Chat Screen</screenName>
-    <screenName name="com.podevs.android.poAndroid.battle.BattleActivity">Battle Screen</screenName>
-    <screenName name="com.podevs.android.poAndroid.teambuilder.TeambuilderActivity">Teambuilder Screen</screenName>
-    <string name="ga_trackingId">UA-57223660-1</string>
-</resources>

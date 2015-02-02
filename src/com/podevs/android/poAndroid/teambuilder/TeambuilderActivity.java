@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.*;
@@ -371,19 +370,6 @@ public class TeambuilderActivity extends FragmentActivity {
 		if (trainerFragment != null) {
 			trainerFragment.updateTeam();
 		}
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
 	}
 
     @Override

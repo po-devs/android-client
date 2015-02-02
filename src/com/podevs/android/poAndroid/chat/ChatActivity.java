@@ -40,7 +40,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.IncomingChallenge;
 import com.podevs.android.poAndroid.MessageListAdapter;
@@ -327,19 +326,6 @@ public class ChatActivity extends Activity {
             }
         });
 	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
-
 
 	@Override
 	public void onResume() {
