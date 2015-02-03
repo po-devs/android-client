@@ -1,5 +1,7 @@
 package com.podevs.android.poAndroid.teambuilder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,7 +22,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	}
 
 	private EVSlider sliders[] = null;
-	private TextView labels[] = null;
+	private TextView labels[] = null, levelChooser = null, happinessChooser = null;
 	private Spinner formesChooser = null, itemChooser = null, abilityChooser = null, natureChooser = null, genderChooser = null;
 	private CheckBox shinyChooser = null;
 	private LinearLayout formesLayout;
@@ -60,6 +62,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		formesChooser = (Spinner)v.findViewById(R.id.formes);
 		formesLayout = (LinearLayout)v.findViewById(R.id.formesLayout);
 		shinyChooser = (CheckBox)v.findViewById(R.id.shiny);
+		levelChooser = (TextView)v.findViewById(R.id.level);
+		happinessChooser = (TextView)v.findViewById(R.id.happiness);
 		
 		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		int usefulItems[] = ItemInfo.usefulItems();
@@ -150,6 +154,49 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
+		levelChooser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final EditText input = new EditText((getActivity()));
+
+				new AlertDialog.Builder((getActivity()))
+						.setTitle(R.string.download_team)
+						.setMessage("Change Level")
+						.setView(input)
+						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String link = input.getText().toString();
+								int i = Integer.parseInt(link);
+								if (i > 100) i = 100;
+								poke().level = (byte) i;
+								levelChooser.setText(" Lvl: " + i);
+								updateStats();
+							}
+						}).show();
+			}
+		});
+
+		happinessChooser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final EditText input = new EditText((getActivity()));
+
+				new AlertDialog.Builder((getActivity()))
+						.setTitle("Change Happiness")
+						.setMessage("Happiness: ")
+						.setView(input)
+						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String link = input.getText().toString();
+								int i = Integer.parseInt(link);
+								if (i > 255) i = 255;
+								poke().happiness = (byte) i;
+								happinessChooser.setText("Happy: " + i);
+							}
+						}).show();
 			}
 		});
 
@@ -262,16 +309,21 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 					break;
 				}
 			}
+			shinyChooser.setChecked(poke().shiny);
+			happinessChooser.setText("Happy: " + (poke().happiness & 0xFF));
+
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
+			happinessChooser.setVisibility(View.VISIBLE);
 		} else {
 			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);
+			happinessChooser.setVisibility(View.GONE);
 		}
 
-		shinyChooser.setChecked(poke().shiny);
+		levelChooser.setText(" Lvl: " + poke().level());
 	}
 	
 	public void updateStats() {

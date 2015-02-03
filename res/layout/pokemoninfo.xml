@@ -65,12 +65,31 @@
 
         </LinearLayout>
 
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
-        <CheckBox
-                android:text="@string/shiny"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/shiny"/>
+            <TextView
+                    android:id="@+id/level"
+                    android:layout_width="0dp"
+                    android:paddingLeft="2dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
+
+            <TextView
+                    android:id="@+id/happiness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2" />
+
+            <CheckBox
+                    android:text="@string/shiny"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.3"
+                    android:id="@+id/shiny"/>
+
+        </LinearLayout>
 
         <include
             android:id="@+id/hpev"

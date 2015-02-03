@@ -48,11 +48,11 @@ public class MoveChooserFragment extends Fragment {
 					if (move == 237) {
 						buildHiddenPowerDialog();
 					} else if (move == 216) { /* return */
-						poke().happiness = (byte)255;
+						poke().happiness = (byte) 255;
 					}
 					
 					if (listener != null) {
-						listener.onMovesetChanged(false);
+						listener.onMovesetChanged(move == 216);
 					}
 				} else if (poke().removeMove(move)) {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
@@ -67,7 +67,7 @@ public class MoveChooserFragment extends Fragment {
 					}
 					
 					if (listener != null) {
-						listener.onMovesetChanged(move == 237);
+						listener.onMovesetChanged(move == 237 || move == 216);
 					}
 				}
 			}

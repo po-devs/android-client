@@ -36,10 +36,12 @@ public class ShallowBattlePoke implements SerializeBytes {
 		uID = new UniqueID(msg);
 		rnick = nick = msg.readString();
 		if (!isMe) {
-			nick = "the foe's " + nick;
-			
 			// A little optimization; these only matter if it's not your poke
 			pokeName = PokemonInfo.name(uID);
+			if (!rnick.equals(pokeName)) {
+				rnick = rnick + " (" + pokeName + ")";
+			}
+			nick = "the foe's " + pokeName;
 		}
 		lifePercent = msg.readByte();
 		fullStatus = msg.readInt();
