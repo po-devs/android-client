@@ -258,6 +258,7 @@ public class ChatActivity extends Activity {
 
     	//Player List Stuff**
     	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
+
     	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
     	registerForContextMenu(players);
     	players.setOnItemClickListener(new OnItemClickListener() {
@@ -1206,6 +1207,7 @@ public class ChatActivity extends Activity {
 					if (playerAdapter.getPosition(oldPlayer) != -1) {
 						playerAdapter.remove(oldPlayer);
 						playerAdapter.add(newPlayer);
+						playerAdapter.notifyDataSetChanged();
 					}
 				}
 			}

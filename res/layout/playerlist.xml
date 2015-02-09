@@ -10,7 +10,7 @@
         android:id="@+id/playerlisttitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="left"
         android:text="@string/player_list"
         android:textSize="15sp"
         android:textStyle="bold" >
@@ -19,6 +19,7 @@
     <view
         android:id="@+id/playerlisting"
         android:layout_width="fill_parent"
+        android:layout_gravity="left"
         android:layout_height="fill_parent"
         class="com.podevs.android.poAndroid.chat.ChatListView" >
     </view>

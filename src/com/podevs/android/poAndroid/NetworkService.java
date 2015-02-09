@@ -161,6 +161,7 @@ public class NetworkService extends Service {
 			players.get(desc.p2).addBattle(battleid);
 			n2 = players.get(desc.p2).nick();
 		}
+		/*
 		if (show) {
 			for (Channel chan : channels.values()) {
 				if (chan.joined && chan.channelEvents) {
@@ -173,6 +174,7 @@ public class NetworkService extends Service {
 				}
 			}
 		}
+		*/
 	}
 
 	/**
@@ -418,7 +420,7 @@ public class NetworkService extends Service {
 				try {
 					versionCode = (short)getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
 				} catch (NameNotFoundException e1) {
-					versionCode = 0;
+					versionCode = 404;
 				}
 				loginCmd.putShort(versionCode);
 				loginCmd.putString(meLoginPlayer.nick());
@@ -729,7 +731,7 @@ public class NetworkService extends Service {
 			if (p != null) {
 				p.hasLadderEnabled = dataFlags.readBool();
 				p.isAway = dataFlags.readBool();
-				
+
 				if (p.id == myid) {
 					me.setTo(p);
 				}
@@ -1051,7 +1053,7 @@ public class NetworkService extends Service {
 			int p1 = msg.readInt();
 			int p2 = msg.readInt();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode), false);
+			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
 
 			if(flags.readBool()) { // This is us!
 				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);

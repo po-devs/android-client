@@ -5,6 +5,8 @@ import java.util.Comparator;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +32,12 @@ public class PlayerListAdapter extends ArrayAdapter<com.podevs.android.poAndroid
 		synchronized(this) {
 			super.sort(new Comparator<PlayerInfo>() {
 				public int compare(PlayerInfo pi1, PlayerInfo pi2) {
-					return pi1.nick().toLowerCase().compareTo(pi2.nick().toLowerCase());
+					if (pi1.auth % 4 > pi2.auth % 4)
+						return -1;
+					else if (pi1.auth % 4 < pi2.auth % 4)
+						return 1;
+					else
+						return pi1.nick().toLowerCase().compareTo(pi2.nick().toLowerCase());
 				}
 			});
 		}
@@ -51,18 +58,68 @@ public class PlayerListAdapter extends ArrayAdapter<com.podevs.android.poAndroid
 			if (NetworkService.pmedPlayers.contains(player.id)) {
 				nick.setText(Html.fromHtml("<b><i>"  + StringUtilities.escapeHtml(player.nick()) + "</i></b>" ));
 			} else {
-				nick.setText(player.nick());
+				SpannableString text = new SpannableString("   " + player.nick());
+				if (player.auth == 3) {
+					if (player.battling()) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3b);
+						text.setSpan(is, 1, 2 , 0);
+					} else if (player.isAway) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3a);
+						text.setSpan(is, 1, 2 , 0);
+					} else {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3);
+						text.setSpan(is, 1, 2 , 0);
+					}
+				} else if (player.auth == 2) {
+					if (player.battling()) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2b);
+						text.setSpan(is, 1, 2 , 0);
+					} else if (player.isAway) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2a);
+						text.setSpan(is, 1, 2 , 0);
+					} else {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2);
+						text.setSpan(is, 1, 2 , 0);
+					}
+				} else if (player.auth == 1) {
+					if (player.battling()) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1b);
+						text.setSpan(is, 1, 2 , 0);
+					} else if (player.isAway) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1a);
+						text.setSpan(is, 1, 2 , 0);
+					} else {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1);
+						text.setSpan(is, 1, 2 , 0);
+					}
+				} else {
+					if (player.battling()) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0b);
+						text.setSpan(is, 1, 2 , 0);
+					} else if (player.isAway) {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0a);
+						text.setSpan(is, 1, 2 , 0);
+					} else {
+						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0);
+						text.setSpan(is, 1, 2 , 0);
+					}
+				}
+				nick.setText(text);
 			}
-			
+
+			nick.setTextColor(player.color.colorInt);
+
+			/*
 			if (defaultColor == -1) {
 				defaultColor = nick.getTextColors().getDefaultColor();
 			}
-			
+
 			if (player.battling()) {
 				nick.setTextColor(battlingColor);
 			} else {
 				nick.setTextColor(defaultColor);
 			}
+			*/
 		}
 		return view;
 	}
