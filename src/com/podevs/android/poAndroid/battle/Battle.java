@@ -112,8 +112,8 @@ public class Battle extends SpectatingBattle {
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
 
-			if(msg.available() > 0) // this is the first time you've seen it
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+			if (msg.available() > 0) // this is the first time you've seen it
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 
 			if(activity != null) {
 				activity.updatePokes(player);

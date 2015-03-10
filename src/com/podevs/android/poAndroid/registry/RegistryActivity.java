@@ -179,7 +179,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         			return;
 				}
 				
-				String nick = editName.getText().toString();
+				String nick = editName.getText().toString().trim();
 				if (nick.length() == 0) {
 					Toast.makeText(RegistryActivity.this, "Please enter a trainer name.", Toast.LENGTH_LONG).show();
 					return;

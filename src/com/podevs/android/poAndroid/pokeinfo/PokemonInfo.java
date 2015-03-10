@@ -268,6 +268,12 @@ public class PokemonInfo {
 		}
 	}
 
+	public static Drawable itemIcon(Integer itemId) {
+		Resources resource = InfoConfig.context.getResources();
+		Integer identifier = resource.getIdentifier("i" + itemId.toString(), "drawable", InfoConfig.pkgName);
+		return resource.getDrawable(identifier);
+	}
+
 	public static Drawable gender(Integer gender) {
 		Resources resource = InfoConfig.context.getResources();
 		Integer identifier = resource.getIdentifier("battle_gender" + gender.toString(), "drawable", InfoConfig.pkgName);

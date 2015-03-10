@@ -35,7 +35,7 @@ public class MessageListAdapter extends BaseAdapter {
 		TextView toAdd = new TextView(context);
 		// toAdd.setLongClickable(true);
 		toAdd.setText(span);
-		Linkify.addLinks(toAdd, Linkify.ALL);
+		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
 		
 		messageViews.add(toAdd);
 		if (getCount() > Channel.HIST_LIMIT)

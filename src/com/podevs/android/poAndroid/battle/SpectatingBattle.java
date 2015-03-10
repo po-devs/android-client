@@ -1,6 +1,5 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
 
@@ -194,8 +193,8 @@ public class SpectatingBattle {
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
 			}*/ //No Clue how this works, but it doesn't to the intended effect - MM
 				//So I replaced it with the function below
-			if (pokes[player][0].uID.pokeNum == 0) {
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
+			if (pokes[player][0].uID.pokeNum == 0 || silent) {
+				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 				if (activity == null) {
 					pokes[player][0].pokeName = PokemonInfo.name(pokes[player][0].uID);
 				}

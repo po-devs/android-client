@@ -64,6 +64,7 @@ public class NetworkService extends Service {
 	public boolean serverSupportsZipCompression = false;
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
+	private ImageParser imageParser;
 
 	private static class chatPrefs {
 		// Chat
@@ -336,6 +337,7 @@ public class NetworkService extends Service {
 
 		loadPOPreferences(getBaseContext());
 		loadSettings();
+		imageParser = new ImageParser(this);
 	}
 
 	public static SharedPreferences POPreferences = null;
@@ -436,8 +438,8 @@ public class NetworkService extends Service {
 				if (autoJoinChannels != null) {
 					Object channels [] = autoJoinChannels.toArray();
 					loginCmd.putInt(channels.length);
-					for (int i = 0; i < channels.length; i++) {
-						loginCmd.putString(channels[i].toString());
+					for (Object chan : channels) {
+						loginCmd.putString(chan.toString());
 					}
 				}
 				
@@ -467,7 +469,6 @@ public class NetworkService extends Service {
 					
 					if (halted) {
 						return;
-
 					}
 					
 					writeMessage("(" + StringUtilities.timeStamp() + ") Disconnected from server");
@@ -814,33 +815,7 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
-					/*
-					Html.ImageGetter imageGetter = new Html.ImageGetter() {
-						@Override
-						public Drawable getDrawable(String source) {
-							String t = "p";
-							int i = 0;
-							int foo = Integer.parseInt(source.substring(source.indexOf("num=") + "num=".length(), source.indexOf("&")));
-							while (foo > 65536) {
-								foo = foo - 65536;
-								i++;
-							}
-							t = t + foo;
-							if (i > 0) {
-								t = t + "_" + i;
-							}
-							t = t + "_front";
-							if (source.contains("shiny=true")) {
-								t = t + "s";
-							}
-							Drawable d = getResources().getDrawable(getResources().getIdentifier(t, "drawable", pkgName));
-							d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-							return d;
-						}
-					};
-					message = Html.fromHtml((String)message, imageGetter, null);
-					*/
-					message = Html.fromHtml((String)message);
+					message = Html.fromHtml((String)message, imageParser, null);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');

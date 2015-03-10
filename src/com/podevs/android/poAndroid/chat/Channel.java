@@ -56,7 +56,7 @@ public class Channel {
 		write(spannable);
 	}
 
-	private void write(SpannableStringBuilder spannable) {
+	protected void write(SpannableStringBuilder spannable) {
 		synchronized(messageList) {
 			messageList.add(spannable);
 			lastSeen++;

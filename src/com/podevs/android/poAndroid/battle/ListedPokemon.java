@@ -19,7 +19,7 @@ import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 
 public class ListedPokemon {
 	TextView name, item, ability, hp;
-	ImageView icon, gender;
+	ImageView icon, gender, itemIcon;
 	TextView [] moves = new TextView[4];
 	RelativeLayout whole;
 		
@@ -42,6 +42,7 @@ public class ListedPokemon {
         
 		icon = (ImageView) whole.findViewById(R.id.pokeViewIcon);
 		gender = (ImageView) whole.findViewById(R.id.listedGender);
+		itemIcon = (ImageView) whole.findViewById(R.id.itemIcon);
 	}
 	
 	public void update(Poke poke) {
@@ -51,6 +52,7 @@ public class ListedPokemon {
 	public void update(Poke poke, boolean canSwitch) {
 		icon.setImageDrawable(PokemonInfo.icon(poke.uID()));
 		gender.setImageDrawable(PokemonInfo.gender(poke.gender()));
+		itemIcon.setImageDrawable(PokemonInfo.itemIcon(poke.item()));
 		name.setText(poke.nick());
 		hp.setText(poke.currentHP() + "/" + poke.totalHP());
 		item.setText(ItemInfo.name(poke.item()));

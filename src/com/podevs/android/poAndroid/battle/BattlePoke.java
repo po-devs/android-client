@@ -98,6 +98,10 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		return s;
 	}
 
+	public ShallowBattlePoke toShallowBattlePoke() {
+		return (ShallowBattlePoke) this;
+	}
+
 	public int ability() {
 		return ability;
 	}

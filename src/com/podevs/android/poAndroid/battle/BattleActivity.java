@@ -355,20 +355,46 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		else
 			updateOppPoke(player);
 	}
+
+	public int beta(int status) {
+		switch (status) {
+			case 0:
+				return 0;
+			case 31:
+				return 0x7D000000;
+			case 1:
+				return 0x7DF8D030;
+			case 2:
+				return 0x7D888888;
+			case 3:
+				return 0x7D98D8D8;
+			case 4:
+				return 0x7DF08030;
+			case 5:
+				return 0x7DA040A0;
+			case 6:
+				return 0x7DC8C8C8;
+			default:
+				return 0;
+		}
+	}
 	
 	public void updatePokeballs() {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 2; i++) {
 					for (int j = 0; j < 6; j++) {
-						pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", 
-								InfoConfig.pkgName));
+						pokeballs[i][j].setImageResource(resources.getIdentifier("pi_" + (battle.pokes[i][j].uID.pokeNum > 0 ? battle.pokes[i][j].uID.pokeNum : "status"), "drawable", InfoConfig.pkgName));
+						// pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
+						pokeballs[i][j].setColorFilter(beta(battle.pokes[i][j].status()));
 					}
 				}
+				/// PorterDuff.Mode.MULTIPLY;
 			}
 		});
 	}
-	
+
+
 	private String getAnimSprite(ShallowBattlePoke poke, boolean front) {
 		String res;
         UniqueID uID;
@@ -644,10 +670,15 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        }
 		        for(int i = 0; i < 6; i++) {
 		        	RelativeLayout whole = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
-		        	pokeList[i] = new ListedPokemon(whole);		        	
+		        	pokeList[i] = new ListedPokemon(whole);
 		        	whole.setOnClickListener(battleListener);
 		        }
-		        
+
+				// Pre-load known info
+				for (int i = 0; i < 6; i++) {
+					battle.pokes[battle.me][i] = activeBattle.myTeam.pokes[i].toShallowBattlePoke();
+				}
+
 		        /* Changed to two pages */
 				realViewSwitcher.getAdapter().notifyDataSetChanged();
 			}

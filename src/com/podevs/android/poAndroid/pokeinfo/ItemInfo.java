@@ -34,6 +34,10 @@ public class ItemInfo {
 		return 15;
 	}
 
+	public static int indexOf(int i) {
+		return itemNames.keyAt(i);
+	}
+
 	public static String message(int num, int part) {
 		if (itemMessages == null) {
 			 loadItemMessages();
@@ -140,7 +144,7 @@ public class ItemInfo {
 		});
 		
 		usefulItems = new int[items.size()+berries.size()];
-		
+
 		for (int i = 0; i < items.size(); i++) {
 			usefulItems[i] = items.get(i).intValue();
 		}

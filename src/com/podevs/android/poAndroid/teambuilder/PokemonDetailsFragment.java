@@ -14,6 +14,10 @@ import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.*;
 import com.podevs.android.poAndroid.teambuilder.EVSlider.EVListener;
+import com.podevs.android.utilities.ImageSpinnerAdapter;
+import com.podevs.android.utilities.SpinnerData;
+
+import java.util.ArrayList;
 
 
 public class PokemonDetailsFragment extends Fragment implements EVListener {
@@ -62,14 +66,17 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		formesChooser = (Spinner)v.findViewById(R.id.formes);
 		formesLayout = (LinearLayout)v.findViewById(R.id.formesLayout);
 		shinyChooser = (CheckBox)v.findViewById(R.id.shiny);
-		levelChooser = (TextView)v.findViewById(R.id.level);
+		levelChooser = (TextView)v.findViewById(R.id.level);;
 		happinessChooser = (TextView)v.findViewById(R.id.happiness);
-		
-		ArrayAdapter<CharSequence> itemChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+
+		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
 		int usefulItems[] = ItemInfo.usefulItems();
 		for (int usefulItem : usefulItems) {
-			itemChooserAdapter.add(ItemInfo.name(usefulItem));
+			SpinnerData tempData = new SpinnerData(ItemInfo.name(usefulItem), usefulItem);
+			temp.add(tempData);
 		}
+		ImageSpinnerAdapter itemChooserAdapter = new ImageSpinnerAdapter(getActivity(), R.layout.row_item, temp, getResources());
+
 		itemChooser.setAdapter(itemChooserAdapter);
 
 		// Create an ArrayAdapter using the string array and a default spinner layout
