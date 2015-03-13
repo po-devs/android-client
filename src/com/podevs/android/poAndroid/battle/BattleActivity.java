@@ -378,13 +378,25 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				return 0;
 		}
 	}
+
+	private int iconResBattle(UniqueID uID) {
+		if (uID.pokeNum > 0) {
+			int resID = resources.getIdentifier("pi_" + uID.pokeNum +
+					(uID.subNum == 0 ? "" : "_" + uID.subNum), "drawable", InfoConfig.pkgName);
+			if (resID == 0)
+				resID = resources.getIdentifier("pi_" + uID.pokeNum, "drawable", InfoConfig.pkgName);
+			return resID;
+		} else {
+			return resources.getIdentifier("pi_status", "drawable", InfoConfig.pkgName);
+		}
+	}
 	
 	public void updatePokeballs() {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 2; i++) {
 					for (int j = 0; j < 6; j++) {
-						pokeballs[i][j].setImageResource(resources.getIdentifier("pi_" + (battle.pokes[i][j].uID.pokeNum > 0 ? battle.pokes[i][j].uID.pokeNum : "status"), "drawable", InfoConfig.pkgName));
+						pokeballs[i][j].setImageResource(iconResBattle(battle.pokes[i][j].uID));
 						// pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
 						pokeballs[i][j].setColorFilter(beta(battle.pokes[i][j].status()));
 					}
@@ -674,9 +686,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        	whole.setOnClickListener(battleListener);
 		        }
 
-				// Pre-load known info
+				// Pre-load PokeBall and sprite info
 				for (int i = 0; i < 6; i++) {
-					battle.pokes[battle.me][i] = activeBattle.myTeam.pokes[i].toShallowBattlePoke();
+					battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
 				}
 
 		        /* Changed to two pages */
@@ -968,7 +980,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	.setPositiveButton("Done", new DialogInterface.OnClickListener(){
         		public void onClick(DialogInterface dialog, int which) {
         			netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
-        			battle.shouldShowPreview = false;
+					// re-pre-load PokeBall and sprite info
+					for (int i = 0; i < 6; i++) {
+						battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
+					}
+					battle.shouldShowPreview = false;
         			removeDialog(id);
         		}})
         		.setCancelable(false);

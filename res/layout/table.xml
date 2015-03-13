@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/tableLayout1"
+             android:id="@+id/table22"
              android:layout_width="fill_parent"
-             android:layout_height="wrap_content" >
+             android:layout_height="wrap_content" android:background="#ff4dd0ff">
 
     <!-- 2 columns -->
     <TableRow
@@ -19,7 +19,7 @@
 
         <Button
                 android:id="@+id/button1"
-                android:text="Column 2" />
+                android:text="asdg" />
     </TableRow>
 
     <!-- edittext span 2 column -->
@@ -54,11 +54,11 @@
 
         <Button
                 android:id="@+id/button2"
-                android:text="Column 2" />
+                android:text="fgfg" />
 
         <Button
                 android:id="@+id/button3"
-                android:text="Column 3" />
+                android:text="asg" />
     </TableRow>
 
     <!-- display this button in 3rd column via layout_column(zero based) -->

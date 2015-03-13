@@ -163,7 +163,7 @@ public class SpectatingBattle {
 		synchronized (this) {
             byte command = msg.readByte();
 
-            if (command < 0 || command >= BattleCommand.values().length) {
+            if (command < 0 || command > BattleCommand.values().length) {
                 Log.w("Spectating battle", "Battle command unknown " + String.valueOf((int) command));
                 return;
             }
@@ -193,7 +193,7 @@ public class SpectatingBattle {
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me) ? true : false, conf.gen);
 			}*/ //No Clue how this works, but it doesn't to the intended effect - MM
 				//So I replaced it with the function below
-			if (pokes[player][0].uID.pokeNum == 0 || silent) {
+			if (pokes[player][0].level == 0 || silent) {
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 				if (activity == null) {
 					pokes[player][0].pokeName = PokemonInfo.name(pokes[player][0].uID);
@@ -316,7 +316,14 @@ public class SpectatingBattle {
                     netServ.getString(Stat.values()[stat].rstring()) +
                     (max ? " can't go any higher!" : " can't go any lower!")));
             break;
-        } case StatusChange: {
+        } case UseItem: {
+				byte item = msg.readByte();
+				Log.w("SpectatingBattle", bc.name() + item);
+		} case ItemCountChange: {
+				byte item = msg.readByte();
+				byte count = msg.readByte();
+				Log.w("SpectatingBattle", bc.name() + item + ":" + count);
+		} case StatusChange: {
 			final String[] statusChangeMessages = {
 					" is paralyzed! It may be unable to move!",
 					" fell asleep!",

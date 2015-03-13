@@ -301,6 +301,13 @@ public class Battle extends SpectatingBattle {
 			for (int i = 0; i < 5; i++)
 				myTeam.pokes[player / 2].stats[i] = msg.readShort();
 			break;
+		} case UseItem: {
+			byte item = msg.readByte();
+			Log.w("SpectatingBattle", bc.name() + item);
+		} case ItemCountChange: {
+			byte item = msg.readByte();
+			byte count = msg.readByte();
+			Log.w("SpectatingBattle", bc.name() + item + ":" + count);
 		} default: {
 			super.dealWithCommand(bc, player, msg);
 			break;
