@@ -22,7 +22,7 @@ public class PrivateMessage {
 			this.other = info;
 		}
 
-		if (!message.trim().isEmpty()) {
+		if (!(message.trim().length() == 0)) {
 			if (timeStamp) {
 				message = "(" + StringUtilities.timeStamp() + ") " + message;
 			}

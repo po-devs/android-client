@@ -28,7 +28,8 @@
             android:layout_width="0dip"
             android:layout_weight="13"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" android:text="movename"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="movename"/>
 
         <TextView
             android:id="@+id/damageClass"
@@ -36,7 +37,9 @@
             android:layout_width="0dip"
             android:layout_weight="4.35"
             android:layout_height="wrap_content"
-            android:linksClickable="false" android:text="damageClass" android:layout_gravity="bottom"
+            android:linksClickable="false"
+            android:text="damageClass"
+            android:layout_gravity="bottom"
             android:editable="false"/>
         </LinearLayout>
         <LinearLayout
@@ -59,7 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceSmall" android:text="pw"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="pw"/>
 
             <TextView
                 android:id="@+id/accuracy"
@@ -67,7 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceSmall" android:text="acc"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="acc"/>
 
             <TextView
                 android:id="@+id/pps"
@@ -75,7 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
                 android:layout_weight="1"
-                android:textAppearance="?android:attr/textAppearanceSmall" android:text="pp"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="pp"/>
         </LinearLayout>
     </LinearLayout>
 
