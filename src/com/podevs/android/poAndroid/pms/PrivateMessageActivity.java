@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
-import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.viewpagerindicator.TitlePageIndicator;
 
 public class PrivateMessageActivity extends Activity {
@@ -151,9 +150,6 @@ public class PrivateMessageActivity extends Activity {
 				netServ.ignoreList.add(id);
 				Toast.makeText(PrivateMessageActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
 			}
-		}
-		if (item.getItemId() == R.id.settings) {
-			startActivity(new Intent(PrivateMessageActivity.this, SetPreferenceActivity.class));
 		}
 		return true;
 	}

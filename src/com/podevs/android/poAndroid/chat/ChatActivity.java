@@ -53,7 +53,6 @@ import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
-import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
@@ -769,7 +768,7 @@ public class ChatActivity extends Activity {
             	}});
             final AlertDialog pInfoDialog = builder.create();
             
-
+			//TODO: Work with pPokeIcons
             for(int i = 0; i < 6; i++){
         	pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + 
         			(i+1), "id", packName));
@@ -977,11 +976,7 @@ public class ChatActivity extends Activity {
 				*/
 				showDialog(ChatDialog.AskForName.ordinal());
 				break;
-			case R.id.settings:
-				startActivity(new Intent(ChatActivity.this, SetPreferenceActivity.class));
-
-				break;
-			}
+		}
 		return true;
 	}
 

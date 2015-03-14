@@ -6,7 +6,7 @@
     android:versionName="2.5.3.7" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -49,10 +49,6 @@
             android:label="@string/private_messages"
             android:launchMode="singleTask"
             android:theme="@style/DarkAppTheme" >
-        </activity>
-        <activity
-                android:name="com.podevs.android.poAndroid.settings.SetPreferenceActivity"
-                android:label="@string/settings" >
         </activity>
         <activity android:name="com.podevs.android.poAndroid.teambuilder.EditPokemonActivity"/>
 

@@ -90,9 +90,7 @@ public class Team implements SerializeBytes {
 	}
 
 	public boolean isValid() {
-		boolean ret = poke(0).uID().pokeNum != 0;
-		
-		return ret;
+		return (poke(0).uID().pokeNum != 0);
 	}
 
 	public void save(Context c) {

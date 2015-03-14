@@ -1,7 +1,6 @@
 package com.podevs.android.poAndroid.teambuilder;
 
 import android.database.DataSetObserver;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

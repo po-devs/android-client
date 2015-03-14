@@ -33,11 +33,12 @@ public class Tier {
 	public void reset() {
 		subTiers = new ArrayList<Tier>();
 	}
-	
-	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {
-		ArrayAdapter<Tier> aat = new ArrayAdapter<Tier>(c, textViewResId, subTiers);
-		return aat;
+
+	/*
+	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {;
+		return new ArrayAdapter<Tier>(c, textViewResId, subTiers);
 	}
+	*/
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void save(Context ctx) {

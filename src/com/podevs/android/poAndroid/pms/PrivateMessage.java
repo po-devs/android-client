@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.pms;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 import com.podevs.android.poAndroid.player.PlayerInfo;
