@@ -1529,33 +1529,45 @@ public class NetworkService extends Service {
 
 	public String getUniqueID() {
 		String msg = "";
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
-			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-			if (ANDROID_ID != null) {
-				String serial;
-				try {
-					serial = Build.class.getField("SERIAL").get(null).toString();
-				} catch (NoSuchFieldException e) {
-					serial = "PokemonOnline";
-				} catch (IllegalAccessException e) {
-					serial = "PokemonOnline";
+		try {
+			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+				String ANDROID_ID = "";
+				ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+				if (ANDROID_ID != null) {
+					if (ANDROID_ID.length() > 2) {
+						String serial;
+						try {
+							serial = Build.class.getField("SERIAL").get(null).toString();
+						} catch (NoSuchFieldException e) {
+							serial = "PokemonOnline";
+						} catch (IllegalAccessException e) {
+							serial = "PokemonOnline";
+						}
+						ANDROID_ID += this.ip;
+						serial += this.ip;
+						UUID ANDROID = new UUID(ANDROID_ID.hashCode(), serial.hashCode());
+						msg = ANDROID.toString();
+					} else {
+						msg = getPseudoUniqueID();
+					}
+				} else {
+					msg = getPseudoUniqueID();
 				}
-				ANDROID_ID += this.ip;
-				serial += this.ip;
-				UUID ANDROID = new UUID(ANDROID_ID.hashCode(), serial.hashCode());
-				msg = ANDROID.toString();
 			} else {
 				msg = getPseudoUniqueID();
 			}
-		} else {
-			msg = getPseudoUniqueID();
+			if (msg == null || msg.length() < 2) {
+				return "SomethingBadHappened";
+			}
+		} catch (Exception e) {
+			return "SomethingBadHappened";
 		}
 		return msg;
 	}
 
 	public Boolean getUniqueIDFlag() {
 		Boolean flag;
-		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD) {
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
 			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 			if (ANDROID_ID != null) {
 				flag = true;
@@ -1570,19 +1582,27 @@ public class NetworkService extends Service {
 
 
 	private String getPseudoUniqueID() {
-		String serial;
 		try {
-			serial = Build.class.getField("SERIAL").get(null).toString();
-		} catch (NoSuchFieldException e) {
-			serial = "PokemonOnline";
-		} catch (IllegalAccessException e) {
-			serial = "PokemonOnline";
+			String serial = "";
+			try {
+				serial = Build.class.getField("SERIAL").get(null).toString();
+			} catch (NoSuchFieldException e) {
+				serial = "PokemonOnline";
+			} catch (IllegalAccessException e) {
+				serial = "PokemonOnline";
+			}
+			String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
+			PSEUDO_ID += this.ip;
+			serial += this.ip;
+			UUID PSEUDO = new UUID(PSEUDO_ID.hashCode(), serial.hashCode());
+			String PSEUDO_String = PSEUDO.toString();
+			if (PSEUDO_String == null || PSEUDO_String.length() < 2) {
+				return "SomethingBadHappened";
+			}
+			return PSEUDO_String;
+		} catch (Exception e) {
+			return "SomethingBadHappened";
 		}
-		String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);
-		PSEUDO_ID += this.ip;
-		serial += this.ip;
-		UUID PSEUDO = new UUID(PSEUDO_ID.hashCode(), serial.hashCode());
-		return PSEUDO.toString();
 	}
 
 	public String getDefaultPass() {
