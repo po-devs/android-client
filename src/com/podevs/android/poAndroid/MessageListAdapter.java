@@ -3,6 +3,7 @@ package com.podevs.android.poAndroid;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import android.text.method.LinkMovementMethod;
 import com.podevs.android.poAndroid.chat.Channel;
 
 import android.content.Context;
@@ -33,8 +34,11 @@ public class MessageListAdapter extends BaseAdapter {
 	
 	public void add(SpannableStringBuilder span) {
 		TextView toAdd = new TextView(context);
-		// toAdd.setLongClickable(true);
 		toAdd.setText(span);
+		toAdd.setTextIsSelectable(true);
+		if (toAdd.getLinksClickable())
+			toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
 		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
 		
 		messageViews.add(toAdd);

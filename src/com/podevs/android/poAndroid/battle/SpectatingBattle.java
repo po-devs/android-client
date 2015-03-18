@@ -521,7 +521,7 @@ public class SpectatingBattle {
 				case Rain: message = "The rain stopped!"; break;
                 case HeavySun: message = "The intense sunlight faded!"; break;
                 case HeavyRain: message = "The heavy downpour stopped!"; break;
-					case Delta: message = "The mysterious air current has dissipated!"; break;
+				case Delta: message = "The mysterious air current has dissipated!"; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));

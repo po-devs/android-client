@@ -47,11 +47,6 @@ public class PrivateMessageActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null) {
-			if (connection != null) {
-				unbindService(connection);
-			}
-		}
         bindService(new Intent(this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
@@ -162,6 +157,10 @@ public class PrivateMessageActivity extends Activity {
 	public void onPause() {
 		isViewed = false;
 		super.onPause();
+
+		if (connection != null) {
+			unbindService(connection);
+		}
 
 	}
 

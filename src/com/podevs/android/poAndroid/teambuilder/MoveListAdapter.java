@@ -15,10 +15,7 @@ import android.widget.TextView;
 
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.poAndroid.pokeinfo.DamageClassInfo;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
+import com.podevs.android.poAndroid.pokeinfo.*;
 
 public class MoveListAdapter implements ListAdapter {
 	TeamPoke poke = null;
@@ -40,7 +37,11 @@ public class MoveListAdapter implements ListAdapter {
 		nick.setText(MoveInfo.name(move));
 
 		TextView power = (TextView)view.findViewById(R.id.power);
-		power.setText("pow: " + MoveInfo.powerString(move));
+		if (move == 237) {
+			power.setText("pow: " + HiddenPowerInfo.power(poke));
+		} else {
+			power.setText("pow: " + MoveInfo.powerString(move));
+		}
 
 		TextView pps = (TextView)view.findViewById(R.id.pps);
 		pps.setText("pp: " + MoveInfo.pp(move));
@@ -49,7 +50,11 @@ public class MoveListAdapter implements ListAdapter {
 		accuracy.setText("acc: " + MoveInfo.accuracyString(move));
 
 		ImageView type = (ImageView)view.findViewById(R.id.type);
-		type.setImageResource(TypeInfo.typeRes(MoveInfo.type(move)));
+		if (move == 237) {
+			type.setImageResource(TypeInfo.typeRes(HiddenPowerInfo.Type(poke)));
+		} else {
+			type.setImageResource(TypeInfo.typeRes(MoveInfo.type(move)));
+		}
 
 		TextView damageClass = (TextView)view.findViewById(R.id.damageClass);
 		damageClass.setText(DamageClassInfo.name(MoveInfo.damageClass(move)));

@@ -10,8 +10,10 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 
+import android.view.View;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
@@ -37,12 +39,21 @@ public class Channel {
 	
 	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
 
-	public void writeToHist(CharSequence text) {
+	public void writeToHist(CharSequence text, boolean clickable, final String command) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class)
 			spannable = new SpannableStringBuilder(text);
 		else
 			spannable = (SpannableStringBuilder)text;
+		if (clickable) {
+			// With more customization could do something like clickable text that spectates battles and such
+			spannable.setSpan(new ClickableSpan() {
+				@Override
+				public void onClick(View widget) {
+					netServ.joinChannel(command.replace("#", ""));
+				}
+			}, text.toString().indexOf(command), text.toString().indexOf(command) + command.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
 		write(spannable);
 	}
 
@@ -129,7 +140,7 @@ public class Channel {
 		if (!netServ.joinedChannels.contains(this)) {
 			netServ.joinedChannels.addFirst(this);
 			netServ.updateJoinedChannels();
-			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
+			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"), false, null);
 		}
 	}
 	
@@ -214,7 +225,7 @@ public class Channel {
 					netServ.joinedChannels.remove(this);
 					netServ.updateJoinedChannels();
 					
-					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
+					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"), false , null);
 				}
 				// TODO Let pm know
 				/* If a pmed players logs out, we receive the log out message before the leave channel one
