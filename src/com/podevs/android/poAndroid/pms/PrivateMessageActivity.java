@@ -178,6 +178,15 @@ public class PrivateMessageActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		if (connection != null) {
+			unbindService(connection);
+		}
+	}
+
 	private ServiceConnection connection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			netServ = ((NetworkService.LocalBinder)service).getService();
