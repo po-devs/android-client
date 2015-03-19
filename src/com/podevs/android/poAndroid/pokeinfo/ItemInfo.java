@@ -1,12 +1,11 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
+import android.util.SparseArray;
+import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import android.util.SparseArray;
-
-import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 
 public class ItemInfo {
 	private static SparseArray<String> itemNames = new SparseArray<String>();

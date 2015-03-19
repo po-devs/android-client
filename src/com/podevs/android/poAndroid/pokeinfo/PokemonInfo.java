@@ -7,8 +7,8 @@ import android.util.LruCache;
 import android.util.SparseArray;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
+import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
@@ -16,18 +16,40 @@ import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
 
 import java.util.*;
 
+/**
+ * Static data used to store all information regarding pokemon at all times.
+ * Uses caching to reduce read from disk time.
+ *
+ */
+
 public class PokemonInfo {
+	/**
+	 * MashMap linking pokeNames to UniqueID
+	 */
 	private static HashMap<String, UniqueID> namesToIds = null;
+
+	/**
+	 * SpareArray of pokeNames
+	 */
 	private static SparseArray<String> pokeNames = null;
 	private static SparseArray<PokeGenData> pokemons[] = null;
 	private static SparseArray<PokeData> pokemonsg = null;
 	private static int pokeCount = 0;
+
+	/**
+	 * Number of pokemon in a generation
+	 */
 	private static int pokeCountg[] = null;
+
+	/**
+	 *  Cache of images
+	 */
 	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(40);
 
-	/* Data depending on a gen:
-	 * ability, type, evolutions, ...
+	/**
+	 * Pokemon Data object
 	 */
+
 	private static class PokeGenData {
 		byte type1 = -1;
 		byte type2 = -1;
@@ -37,14 +59,22 @@ public class PokemonInfo {
 		byte stats[] = null;
 	}
 
-	/* Global data:
-	 * base stats, weight, height, ...
+	/**
+	 * Extra PokeData object
 	 */
+
 	private static class PokeData {
 		byte maxForme = 0;
 		byte gender = -1;
 		String options = null;
 	}
+
+	/**
+	 * indexOf method for pokeNames SparseArray
+	 *
+	 * @param pokemonName String to be find in list of pokemon names
+	 * @return Index of pokemon name. Returns 0 if not found
+	 */
 
 	public static int indexOf(String pokemonName) {
 		loadPokeNames();
@@ -56,6 +86,13 @@ public class PokemonInfo {
 		return 0;
 	}
 
+	/**
+	 * Name of pokemon by dex number
+	 *
+	 * @param uID UniqueID of pokemon
+	 * @return Gets standard name from uID
+	 */
+
 	public static String name(UniqueID uID) {
 		int num = uID.hashCode();
 
@@ -63,6 +100,13 @@ public class PokemonInfo {
 
 		return pokeNames.get(num);
 	}
+
+	/**
+	 * Checks if
+	 *
+	 * @param uID UniqueID of pokemon
+	 * @return true if pokemon has multiple formes in the teambuilder
+	 */
 
 	public static boolean hasVisibleFormes(UniqueID uID) {
 		loadPokeNames();
@@ -73,6 +117,14 @@ public class PokemonInfo {
 		//Check the pokemon has formes, and that they are not hidden
 		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
 	}
+
+	/**
+	 * Loads formes into list by uID
+	 *
+	 * @param uniqueID UniqueID of pokemon
+	 * @param gen Generation to load
+	 * @return list of formes by uID
+	 */
 
 	public static List<UniqueID> formes(UniqueID uniqueID, Gen gen) {
 		loadPokeNames();
@@ -91,22 +143,51 @@ public class PokemonInfo {
 		return ret;
 	}
 
+	/**
+	 * Checks if uID is valid or exists.
+	 *
+	 * @param uID UniqueID to check
+	 * @return true is uID exists
+	 */
+
 	public static boolean exists (UniqueID uID) {
 		loadPokeNames();
 
 		return pokeNames.get(uID.hashCode()) != null;
 	}
 
+	/**
+	 * Number of pokemon in specified generation
+	 *
+	 * @param gen Generation
+	 * @return Number of pokemon in Generation given
+	 */
+
 	public static int numberOfPokemons(Gen gen) {
 		testLoad(gen.num);
 		return pokeCountg[gen.num];
 	}
+
+	/**
+	 *
+	 * @param uID UniqueID to check
+	 * @param gen Generation to check in
+	 * @return true is exists
+	 */
 
 	public static boolean exists (UniqueID uID, Gen gen) {
 		testLoad(gen.num);
 
 		return exists(uID) && pokemons[gen.num].get(uID.hashCode()) != null;
 	}
+
+	/**
+	 * Gets first type of Pokemon by gen
+	 *
+	 * @param uID Unique Id
+	 * @param gen Gen to check in
+	 * @return type of uID in gen
+	 */
 
 	public static int type1(UniqueID uID, int gen) {
 		testLoad(gen);
@@ -124,6 +205,14 @@ public class PokemonInfo {
 		return type;
 	}
 
+	/**
+	 * Gets second type of Pokemon by gen
+	 *
+	 * @param uID Unique Id
+	 * @param gen Gen to check in
+	 * @return type of uID in gen
+	 */
+
 	public static int type2(UniqueID uID, int gen) {
 		testLoad(gen);
 
@@ -140,6 +229,15 @@ public class PokemonInfo {
 		return type;
 	}
 
+	/**
+	 * Gets stat for Pokemon
+	 *
+	 * @param uId UniqueID
+	 * @param stat 0-5
+	 * @param gen gen
+	 * @return stat of uID in gen
+	 */
+
 	public static int stat(UniqueID uId, int stat, int gen) {
 		loadStats(gen);
 		byte stats[] = pokemons[gen].get(uId.hashCode()).stats;
@@ -149,6 +247,15 @@ public class PokemonInfo {
 		}
 		return (stats[stat] + 256) % 256;
 	}
+
+	/**
+	 * Gets moves for Pokemon
+	 *
+	 * @param uId UniqueID
+	 * @param gen int generation
+	 * @param sub sub generation
+	 * @return short[] of moves for uID
+	 */
 
 	public static short[] moves(UniqueID uId, int gen, int sub) {
 		testLoadMoves(gen, sub);
@@ -187,6 +294,13 @@ public class PokemonInfo {
 		}
 	}
 
+	/**
+	 * Ensures data pokemons array is filled
+	 *
+	 * @param gen int generation
+	 * @param sub sub generation
+	 */
+
 	private static void testLoadMoves(final int gen, final int sub) {
 		testLoad(gen);
 		if (pokemons[gen].get(1).moveString != null || pokemons[gen].get(1).moves != null) {
@@ -212,9 +326,22 @@ public class PokemonInfo {
 		});
 	}
 
+	/**
+	 * A temporary method to account for move changes between XY and ORAS.
+	 */
+
 	public static void resetGen6() {
 		pokemons[6] = null;
 	}
+
+	/**
+	 * Calculate the specified stat of a known pokemon in a specified generation (You?)
+	 *
+	 * @param poke Pokemon to check
+	 * @param stat Which stat 0-5
+	 * @param gen int generation
+	 * @return stat
+	 */
 
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
@@ -226,6 +353,17 @@ public class PokemonInfo {
 		}
 	}
 
+	/**
+	 * Calculate the specified stat of an unknown pokemon in a specified generation (Enemy?)
+	 *
+	 * @param ID Unique ID
+	 * @param stat which stat 0-5
+	 * @param gen int generation
+	 * @param level pokemon level
+	 * @param minmax 0 minimized, 1 maximized.
+	 * @return calculated stat
+	 */
+
 	public static int calcMinMaxStat(UniqueID ID, int stat, int gen, int level, int minmax) {
 		if (stat == 0) {
 			return (int) Math.floor(((2*stat(ID, stat, gen) + (minmax == 1 ? 31 : 0) * (1 + (gen <= 2 ? 1 : 0) ) + (minmax == 1 ? 252 : 0)/4)*level)/100 + 5 + 5 + level);
@@ -235,7 +373,11 @@ public class PokemonInfo {
 		}
 	}
 
-
+	/**
+	 * Loads stats for generation
+	 *
+	 * @param gen int generation
+	 */
 
 	private static void loadStats(final int gen) {
 		testLoad(gen);
@@ -259,6 +401,11 @@ public class PokemonInfo {
 		});
 	}
 
+	/**
+	 * @param uid Unique
+	 * @return resource identifier of uid
+	 */
+
 	private static int iconRes(UniqueID uid) {
 		Resources resources = InfoConfig.resources;
 		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
@@ -267,6 +414,13 @@ public class PokemonInfo {
 			resID = resources.getIdentifier("pi_" + uid.pokeNum, "drawable", InfoConfig.pkgName);
 		return resID;
 	}
+
+	/**
+	 * Attempts to get Drawable of a UniqueID. Handles missing resource errors
+	 *
+	 * @param uid UniqueID
+	 * @return Drawable of uid
+	 */
 
 	public static Drawable iconDrawable(UniqueID uid) {
 		try {
@@ -279,6 +433,12 @@ public class PokemonInfo {
 		}
 	}
 
+	/**
+	 * For BattleActivity to return a pokeball instead of a missigno icon. Implements caching
+	 *
+	 * @return drawable of "pi_status.png"
+	 */
+
 	public static Drawable iconDrawablePokeballStatus() {
 		String iconKey = "pi_status";
 		Drawable drawable = ImageCache.get(iconKey);
@@ -290,6 +450,13 @@ public class PokemonInfo {
 		return drawable;
 	}
 
+	/**
+	 * Returns drawable of specified UniqueID. Implements caching
+	 *
+	 * @param uid UniqueID
+	 * @return drawable of uid
+	 */
+
 	public static Drawable iconDrawableCache(UniqueID uid) {
 		String iconKey = "pi"+uid.pokeNum+"-"+uid.subNum;
 		Drawable drawable = ImageCache.get(iconKey);
@@ -300,11 +467,28 @@ public class PokemonInfo {
 		return drawable;
 	}
 
+	/**
+	 * Get drawable from resources.
+	 *
+	 * @throws android.content.res.Resources.NotFoundException Throws NotFoundException if the given ID does not exist.
+	 *
+	 * @param itemId Local resource name.
+	 * @return Local drawable.
+	 */
+
 	private static Drawable itemDrawable(String itemId) {
 		Resources resource = InfoConfig.resources;
 		Integer identifier = resource.getIdentifier(itemId, "drawable", InfoConfig.pkgName);
 		return resource.getDrawable(identifier);
 	}
+
+	/**
+	 * Attempts to get Drawable from Cache, if not it reads from file then writes it to cache.
+	 *
+	 *
+	 * @param itemId
+	 * @return Drawable from cache or directly from local.
+	 */
 
 	public static Drawable itemDrawableCache(Integer itemId) {
 		String itemKey = "i" + itemId.toString();
@@ -316,11 +500,28 @@ public class PokemonInfo {
 		return drawable;
 	}
 
+	/**
+	 * Get drawable from resources.
+	 *
+	 * @throws android.content.res.Resources.NotFoundException Throws NotFoundException if the given ID does not exist.
+	 *
+	 * @param key Local resource name.
+	 * @return Local drawable.
+	 */
+
 	private static Drawable genderDrawable(String key) {
 		Resources resource = InfoConfig.resources;
 		Integer identifier = resource.getIdentifier(key, "drawable", InfoConfig.pkgName);
 		return resource.getDrawable(identifier);
 	}
+
+
+	/**
+	 * Attempts to get Drawable from Cache, if not it reads from file then writes it to cache.
+	 *
+	 * @param gender 0, 1 or 2
+	 * @return Drawable from cache or directly from local.
+	 */
 
 	public static Drawable genderDrawableCache(Integer gender) {
 		String genderKey = "battle_gender" + gender.toString();
@@ -331,6 +532,14 @@ public class PokemonInfo {
 		}
 		return drawable;
 	}
+
+	/**
+	 *
+	 *
+	 * @param poke pokemon
+	 * @param front front or back
+	 * @return string for resources.getIdentifier()
+	 */
 
 	public static String sprite(ShallowBattlePoke poke, boolean front) {
 		String res;
@@ -369,9 +578,20 @@ public class PokemonInfo {
 		}
 	}
 
+	/**
+	 * Returns the status of the ImageCache
+	 *
+	 * @return ImageCache.toString()
+	 */
 	public static String cacheStatus() {
 		return ImageCache.toString();
 	}
+
+	/**
+	 * Init arrays
+	 *
+	 * @param gen int Generation
+	 */
 
 	@SuppressWarnings("unchecked")
 	private static void testLoad(int gen) {
@@ -388,6 +608,10 @@ public class PokemonInfo {
 			loadTypes(gen);
 		}
 	}
+
+	/**
+	 * Fill SparseArrays involving names
+	 */
 
 	private static void loadPokeNames() {
 		if (pokeNames != null) {
@@ -411,6 +635,12 @@ public class PokemonInfo {
 			}
 		});
 	}
+
+	/**
+	 * Fill type data for specified generation
+	 *
+	 * @param gen int generation
+	 */
 
 	private static void loadTypes(final int gen) {
 		pokeCountg[gen] = 0;
@@ -455,6 +685,13 @@ public class PokemonInfo {
 	}
 	*/
 
+	/**
+	 *
+	 *
+	 * @param gen Generation to load
+	 * @return Array of names
+	 */
+
 	public static String[] nameArray(Gen gen) {
 		String ret[] = new String[numberOfPokemons(gen) + 1]; //+1 for missingno
 
@@ -466,6 +703,14 @@ public class PokemonInfo {
 		return ret;
 	}
 
+	/**
+	 * Get allowed abilities for pokemon in specified gen
+	 *
+	 * @param id UniqueID
+	 * @param gen int generation
+	 * @return abilities
+	 */
+
 	public static short[] abilities(UniqueID id, int gen) {
 		testLoadAbilities(id, gen);
 
@@ -476,6 +721,13 @@ public class PokemonInfo {
 		}
 		return abilities;
 	}
+
+	/**
+	 * Fill Ability array
+	 *
+	 * @param id UniqueID
+	 * @param gen int Generation
+	 */
 
 	private static void testLoadAbilities(UniqueID id, final int gen) {
 		if (gen >= 3) {
@@ -503,9 +755,23 @@ public class PokemonInfo {
 		}
 	}
 
+	/**
+	 * Search for pokemon name
+	 *
+	 * @param name Pokemon Name
+	 * @return UniqueID of pokemon
+	 */
+
 	public static UniqueID number(String name) {
 		return namesToIds.get(name);
 	}
+
+	/**
+	 * Return possible genders for a pokemon
+	 *
+	 * @param uID UniqueID
+	 * @return gender
+	 */
 
 	public static int gender(UniqueID uID) {
 		testLoadGenders();
@@ -519,6 +785,11 @@ public class PokemonInfo {
 	}
 
 	private static boolean gendersLoaded = false;
+
+	/**
+	 * Load Gender information
+	 */
+
 	private static void testLoadGenders() {
 		if (!gendersLoaded) {
 			loadPokeNames();

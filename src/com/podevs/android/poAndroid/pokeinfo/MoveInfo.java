@@ -1,11 +1,10 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import java.util.ArrayList;
-
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
+
+import java.util.ArrayList;
 
 public class MoveInfo extends GenInfo {
 	public static class Move {

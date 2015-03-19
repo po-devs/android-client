@@ -1,12 +1,11 @@
 package com.podevs.android.poAndroid.poke;
 
 import com.podevs.android.poAndroid.pokeinfo.GenInfo;
+import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.utilities.StringUtilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.utilities.StringUtilities;
 
 
 public class XMLHandler extends DefaultHandler {

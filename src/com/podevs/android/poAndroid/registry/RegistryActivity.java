@@ -18,12 +18,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.chat.ChatActivity;

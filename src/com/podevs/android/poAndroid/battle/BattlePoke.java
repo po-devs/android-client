@@ -1,10 +1,6 @@
 package com.podevs.android.poAndroid.battle;
 
-import com.podevs.android.poAndroid.poke.Gen;
-import com.podevs.android.poAndroid.poke.Move;
-import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
-import com.podevs.android.poAndroid.poke.UniqueID;
+import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;

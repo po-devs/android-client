@@ -1,46 +1,23 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.*;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.ResultReceiver;
-import android.os.SystemClock;
+import android.os.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
+import android.widget.*;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
@@ -329,24 +306,24 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	
 	public void updateBattleInfo(boolean scroll) {
 		runOnUiThread(new Runnable() {
-			public void run() {
-				if (battle == null)
-					return;
-				synchronized (battle.histDelta) {
-					infoView.append(battle.histDelta);
-					if (battle.histDelta.length() != 0 || true) {
-						infoScroll.post(new Runnable() {
-							public void run() {
-								infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
-							}
-						});
-					}
-					infoScroll.invalidate();
-					battle.hist.append(battle.histDelta);
-					battle.histDelta.clear();
-				}
-			}
-		});
+            public void run() {
+                if (battle == null)
+                    return;
+                synchronized (battle.histDelta) {
+                    infoView.append(battle.histDelta);
+                    if (battle.histDelta.length() != 0 || true) {
+                        infoScroll.post(new Runnable() {
+                            public void run() {
+                                infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
+                            }
+                        });
+                    }
+                    infoScroll.invalidate();
+                    battle.hist.append(battle.histDelta);
+                    battle.histDelta.clear();
+                }
+            }
+        });
 	}
 	
 	public void updatePokes(byte player) {
@@ -382,17 +359,17 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	
 	public void updatePokeballs() {
 		runOnUiThread(new Runnable() {
-			public void run() {
-				for (int i = 0; i < 2; i++) {
-					for (int j = 0; j < 6; j++) {
-						pokeballs[i][j].setImageDrawable((battle.pokes[i][j].uID.pokeNum != 0 ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID) : PokemonInfo.iconDrawablePokeballStatus()));
-						// pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
-						pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
-					}
-				}
-				/// PorterDuff.Mode.MULTIPLY;
-			}
-		});
+            public void run() {
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < 6; j++) {
+                        pokeballs[i][j].setImageDrawable((battle.pokes[i][j].uID.pokeNum != 0 ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID) : PokemonInfo.iconDrawablePokeballStatus()));
+                        // pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
+                        pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
+                    }
+                }
+                /// PorterDuff.Mode.MULTIPLY;
+            }
+        });
 	}
 
 
@@ -480,7 +457,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 							type = TypeInfo.name(activeBattle.myTeam.pokes[0].hiddenPowerType());
 						else
 							type = TypeInfo.name(MoveInfo.type(move.num()));
-						type = type.toLowerCase(Locale.UK);
+						type = type.toLowerCase();
 						attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
 								"drawable", InfoConfig.pkgName));
 					}
@@ -715,27 +692,28 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        pokeballs[opp][i] = (ImageView)mainLayout.findViewById(resources.getIdentifier("pokeball" + (i + 1) + "A", "id", InfoConfig.pkgName));
 	        }
 	        updatePokeballs();
-	        
+
 	        names[me].setText(battle.players[me].nick());
 	        names[opp].setText(battle.players[opp].nick());
 
-	        hpBars[me] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarB);
-	        hpBars[opp] = (TextProgressBar)mainLayout.findViewById(R.id.hpBarA);
+	        hpBars[me] = (TextProgressBar) battleView.findViewById(R.id.hpBarB);
+	        hpBars[opp] = (TextProgressBar) battleView.findViewById(R.id.hpBarA);
 	        
-	        currentPokeNames[me] = (TextView)mainLayout.findViewById(R.id.currentPokeNameB);
-	        currentPokeNames[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeNameA);
+	        currentPokeNames[me] = (TextView) battleView.findViewById(R.id.currentPokeNameB);
+	        currentPokeNames[opp] = (TextView) battleView.findViewById(R.id.currentPokeNameA);
 
-	        currentPokeLevels[me] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelB);
-	        currentPokeLevels[opp] = (TextView)mainLayout.findViewById(R.id.currentPokeLevelA);
+	        currentPokeLevels[me] = (TextView) battleView.findViewById(R.id.currentPokeLevelB);
+	        currentPokeLevels[opp] = (TextView) battleView.findViewById(R.id.currentPokeLevelA);
 	        
-	        currentPokeGenders[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderB);
-	        currentPokeGenders[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeGenderA);
+	        currentPokeGenders[me] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB);
+	        currentPokeGenders[opp] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA);
 	        
-	        currentPokeStatuses[me] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusB);
-	        currentPokeStatuses[opp] = (ImageView)mainLayout.findViewById(R.id.currentPokeStatusA);
-	        
-	        pokeSprites[me] = (WebView)mainLayout.findViewById(R.id.pokeSpriteB);
-	        pokeSprites[opp] = (WebView)mainLayout.findViewById(R.id.pokeSpriteA);
+	        currentPokeStatuses[me] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB);
+	        currentPokeStatuses[opp] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA);
+
+	        pokeSprites[me] = (WebView) battleView.findViewById(R.id.pokeSpriteB);
+	        pokeSprites[opp] = (WebView) battleView.findViewById(R.id.pokeSpriteA);
+
 	        for(int i = 0; i < 2; i++) {
 	        	pokeSprites[i].setOnLongClickListener(spriteListener);
 	        	pokeSprites[i].setBackgroundColor(0);
@@ -802,7 +780,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	};
 	
 	public void end() {
-		runOnUiThread(new Runnable() { public void run() { BattleActivity.this.finish(); } } );
+		runOnUiThread(new Runnable() {
+            public void run() {
+                BattleActivity.this.finish();
+            }
+        });
 	}
   
     @Override
@@ -953,7 +935,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
     }
 
 	public void notifyRearrangeTeamDialog() {
-		runOnUiThread(new Runnable() { public void run() { checkRearrangeTeamDialog(); } } );
+		runOnUiThread(new Runnable() {
+            public void run() {
+                checkRearrangeTeamDialog();
+            }
+        });
 	}
 	
 	private void checkRearrangeTeamDialog() {
@@ -979,16 +965,17 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         case RearrangeTeam: {
         	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout) findViewById(R.id.rearrange_team_dialog));
         	builder.setView(layout)
-        	.setPositiveButton("Done", new DialogInterface.OnClickListener(){
-        		public void onClick(DialogInterface dialog, int which) {
-        			netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
-					// re-pre-load PokeBall and sprite info
-					for (int i = 0; i < 6; i++) {
-						battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
-					}
-					battle.shouldShowPreview = false;
-        			removeDialog(id);
-        		}})
+        	.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
+                    // re-pre-load PokeBall and sprite info
+                    for (int i = 0; i < 6; i++) {
+                        battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
+                    }
+                    battle.shouldShowPreview = false;
+                    removeDialog(id);
+                }
+            })
         		.setCancelable(false);
         	dialog = builder.create();
 
@@ -1011,10 +998,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			builder.setMessage("Really Forfeit?")
 			.setCancelable(true)
 			.setPositiveButton("Forfeit", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					endBattle();
-				}
-			})
+                public void onClick(DialogInterface dialog, int which) {
+                    endBattle();
+                }
+            })
 			.setNegativeButton("Cancel", null);
 			return builder.create();
         case OppDynamicInfo:
@@ -1064,10 +1051,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	dialog = builder.setTitle(lastClickedMove.toString())
         	.setMessage(lastClickedMove.descAndEffects())
         	.setOnCancelListener(new DialogInterface.OnCancelListener() {
-        		public void onCancel(DialogInterface dialog) {
-        			removeDialog(id);
-        		}
-        	})
+                public void onCancel(DialogInterface dialog) {
+                    removeDialog(id);
+                }
+            })
         	.create();
         	dialog.setCanceledOnTouchOutside(true);
         	return dialog;

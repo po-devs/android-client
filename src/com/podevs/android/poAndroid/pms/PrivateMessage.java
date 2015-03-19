@@ -1,11 +1,9 @@
 package com.podevs.android.poAndroid.pms;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.StringUtilities;
+
+import java.util.LinkedList;
 
 /**
  * Data containing the information of a private message

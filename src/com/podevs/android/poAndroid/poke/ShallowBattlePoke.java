@@ -1,10 +1,7 @@
 package com.podevs.android.poAndroid.poke;
 
-import java.util.LinkedList;
-
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-
 import com.podevs.android.poAndroid.ColorEnums;
 import com.podevs.android.poAndroid.battle.BattleMove;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
@@ -13,6 +10,8 @@ import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
+
+import java.util.LinkedList;
 
 // This class represents the Opponent's poke during a battle.
 public class ShallowBattlePoke implements SerializeBytes {

@@ -1,8 +1,5 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.Locale;
-import java.util.Random;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,7 +8,6 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.ColorEnums.QtColor;
 import com.podevs.android.poAndroid.ColorEnums.StatusColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeColor;
@@ -19,11 +15,7 @@ import com.podevs.android.poAndroid.ColorEnums.TypeForWeatherColor;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
-import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
-import com.podevs.android.poAndroid.poke.PokeEnums.Status;
-import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
-import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
-import com.podevs.android.poAndroid.poke.PokeEnums.WeatherState;
+import com.podevs.android.poAndroid.poke.PokeEnums.*;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
@@ -33,6 +25,9 @@ import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.StringUtilities;
+
+import java.util.Locale;
+import java.util.Random;
 
 public class SpectatingBattle {
 	static protected final String TAG = "SpectatingBattle";

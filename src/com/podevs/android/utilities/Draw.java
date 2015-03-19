@@ -4,8 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import java.io.InputStream;
-
 @Deprecated
 public class Draw extends BitmapDrawable {
     protected Drawable drawable;

@@ -1,23 +1,22 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.Hashtable;
-import java.util.LinkedList;
-
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.ClickableSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-
 import android.view.View;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.Bais;
+
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Contains all info regarding a channel: name, id, joined,
@@ -57,6 +56,11 @@ public class Channel {
 		write(spannable);
 	}
 
+	/**
+	 *
+	 * @param text Text to write in small font.
+	 */
+
 	public void writeToHistSmall(CharSequence text) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class)
@@ -67,6 +71,11 @@ public class Channel {
 		write(spannable);
 	}
 
+	/**
+	 *
+	 * @param spannable Spannable to write to history.
+	 */
+
 	protected void write(SpannableStringBuilder spannable) {
 		synchronized(messageList) {
 			messageList.add(spannable);
@@ -76,6 +85,13 @@ public class Channel {
 		}
 	}
 
+	/**
+	 *
+	 * @param text Text to write.
+	 * @param left Left index to color.
+	 * @param right Right index to color.
+	 * @param color Hex color to apply to left-right range.
+	 */
 	public void writeToHist(CharSequence text, int left, int right, String color) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class) {

@@ -1,21 +1,15 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.Locale;
-
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
-import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
-import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
+import com.podevs.android.poAndroid.pokeinfo.*;
+
+import java.util.Locale;
 
 public class ListedPokemon {
 	TextView name, item, ability, hp;

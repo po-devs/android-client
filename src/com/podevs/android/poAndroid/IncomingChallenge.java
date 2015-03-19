@@ -1,14 +1,13 @@
 package com.podevs.android.poAndroid;
 
-import java.util.Hashtable;
-import java.util.Random;
-
 import android.os.Bundle;
-
 import com.podevs.android.poAndroid.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.utilities.Bais;
+
+import java.util.Hashtable;
+import java.util.Random;
 
 public class IncomingChallenge {
 	byte desc;

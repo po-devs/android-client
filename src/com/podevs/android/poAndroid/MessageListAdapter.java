@@ -1,18 +1,17 @@
 package com.podevs.android.poAndroid;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import android.text.method.LinkMovementMethod;
-import com.podevs.android.poAndroid.chat.Channel;
-
 import android.content.Context;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import com.podevs.android.poAndroid.chat.Channel;
+
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class MessageListAdapter extends BaseAdapter {
 	LinkedList<TextView> messageViews = new LinkedList<TextView>();

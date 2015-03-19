@@ -1,10 +1,6 @@
 package com.podevs.android.poAndroid.chat;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.NotificationManager;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.res.Configuration;
@@ -15,37 +11,14 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.podevs.android.poAndroid.Command;
-import com.podevs.android.poAndroid.IncomingChallenge;
-import com.podevs.android.poAndroid.MessageListAdapter;
-import com.podevs.android.poAndroid.NetworkService;
-import com.podevs.android.poAndroid.R;
-import com.podevs.android.poAndroid.Tier;
+import com.podevs.android.poAndroid.*;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
@@ -58,7 +31,10 @@ import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ChatActivity extends Activity {
 	

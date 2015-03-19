@@ -1,7 +1,11 @@
 package com.podevs.android.poAndroid.poke;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import android.content.Context;
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,15 +16,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import android.content.Context;
-
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
-import com.podevs.android.utilities.SerializeBytes;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Team implements SerializeBytes {
 	public Gen gen = new Gen();

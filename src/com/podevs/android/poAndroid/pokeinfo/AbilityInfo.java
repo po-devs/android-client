@@ -1,10 +1,9 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import java.util.ArrayList;
-
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
+
+import java.util.ArrayList;
 
 public class AbilityInfo {
 	private static ArrayList<String> abilityNames = null;

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ListedPokemon;
 import com.podevs.android.poAndroid.poke.Team;

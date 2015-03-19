@@ -9,6 +9,10 @@ import java.nio.ByteOrder;
 
 import android.util.Log;
 
+/**
+ * Custom ByteArrayOutPutStream
+ */
+
 public class Baos extends ByteArrayOutputStream {
 	final static String TAG = "BAOS";
 	

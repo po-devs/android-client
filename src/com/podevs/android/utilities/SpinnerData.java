@@ -1,7 +1,7 @@
 package com.podevs.android.utilities;
 
 /**
- * Created by JonathanJM on 3/5/2015.
+ * Object for Item Spinner
  */
 public class SpinnerData {
     public CharSequence text;

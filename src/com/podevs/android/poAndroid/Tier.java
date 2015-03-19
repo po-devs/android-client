@@ -1,14 +1,14 @@
 package com.podevs.android.poAndroid;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Tier {
 	public byte level = 0;

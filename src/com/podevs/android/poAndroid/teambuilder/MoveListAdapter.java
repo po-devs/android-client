@@ -1,8 +1,5 @@
 package com.podevs.android.poAndroid.teambuilder;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
@@ -12,10 +9,12 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MoveListAdapter implements ListAdapter {
 	TeamPoke poke = null;

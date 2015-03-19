@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.Comparator;
-
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -9,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.utilities.StringUtilities;
+
+import java.util.Comparator;
 
 public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.poAndroid.chat.Channel>{
 	

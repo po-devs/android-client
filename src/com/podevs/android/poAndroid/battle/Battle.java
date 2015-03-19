@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.Html;
 import android.util.Log;
-
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;

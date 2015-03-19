@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.podevs.android.poAndroid"
     android:installLocation="auto"
-    android:versionCode="48"
-    android:versionName="2.5.3.7" >
+    android:versionCode="49"
+    android:versionName="2.5.3.8" >
 
     <uses-sdk
         android:minSdkVersion="12"

@@ -1,7 +1,6 @@
 package com.podevs.android.poAndroid.battle;
 
 import android.util.Log;
-
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;

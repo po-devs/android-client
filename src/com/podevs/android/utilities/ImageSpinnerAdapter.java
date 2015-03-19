@@ -8,14 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import com.podevs.android.poAndroid.R;
+import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 
 import java.util.ArrayList;
 
 /**
- * Created by JonathanJM on 3/5/2015.
+ * Custom ArrayAdapter of SpinnerData
  */
 public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
     private Activity activity;
@@ -57,7 +57,8 @@ public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
         ImageView image = (ImageView)row.findViewById(R.id.image);
 
         text.setText(value.text);
-        image.setImageResource(resources.getIdentifier("i" + value.key, "drawable" ,pkgName));
+        image.setImageDrawable(PokemonInfo.itemDrawableCache(value.key));
+        // image.setImageResource(resources.getIdentifier("i" + value.key, "drawable" ,pkgName));
 
         return row;
     }
