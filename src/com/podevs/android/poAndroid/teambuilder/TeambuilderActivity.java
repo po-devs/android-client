@@ -560,7 +560,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		} else if (requestCode == POKEEDIT_RESULT_CODE) {
 			if (resultCode == RESULT_OK) {
 				int slot = intent.getIntExtra("slot", 0);
-				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")));
+				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")), team.gen);
 
 				team.setPoke(slot, poke);
 				teamChanged = true;

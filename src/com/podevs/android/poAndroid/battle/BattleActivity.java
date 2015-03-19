@@ -350,13 +350,14 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	}
 	
 	public void updatePokes(byte player) {
+		Log.e(TAG, PokemonInfo.cacheStatus());
 		if (player == me)
 			updateMyPoke();
 		else
 			updateOppPoke(player);
 	}
 
-	public int beta(int status) {
+	public int statusTint(int status) {
 		switch (status) {
 			case 0:
 				return 0;
@@ -378,27 +379,15 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 				return 0;
 		}
 	}
-
-	private int iconResBattle(UniqueID uID) {
-		if (uID.pokeNum > 0) {
-			int resID = resources.getIdentifier("pi_" + uID.pokeNum +
-					(uID.subNum == 0 ? "" : "_" + uID.subNum), "drawable", InfoConfig.pkgName);
-			if (resID == 0)
-				resID = resources.getIdentifier("pi_" + uID.pokeNum, "drawable", InfoConfig.pkgName);
-			return resID;
-		} else {
-			return resources.getIdentifier("pi_status", "drawable", InfoConfig.pkgName);
-		}
-	}
 	
 	public void updatePokeballs() {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 2; i++) {
 					for (int j = 0; j < 6; j++) {
-						pokeballs[i][j].setImageResource(iconResBattle(battle.pokes[i][j].uID));
+						pokeballs[i][j].setImageDrawable((battle.pokes[i][j].uID.pokeNum != 0 ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID) : PokemonInfo.iconDrawablePokeballStatus()));
 						// pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
-						pokeballs[i][j].setColorFilter(beta(battle.pokes[i][j].status()));
+						pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
 					}
 				}
 				/// PorterDuff.Mode.MULTIPLY;
@@ -460,24 +449,28 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public boolean isSpectating() {
 		return activeBattle == null;
 	}
-	
+
 	public void updateMyPoke() {
 		if (isSpectating()) {
 			updateOppPoke(me);
 			return;
 		}
-        runOnUiThread(new Runnable() {
-		
+		runOnUiThread(new Runnable() {
+
 			public void run() {
 				ShallowBattlePoke poke = battle.currentPoke(me);
 				poke.shiny = activeBattle.myTeam.pokes[0].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
 				// Load correct moveset and name
 				if (poke != null) {
-					currentPokeNames[me].setText(poke.rnick);
-					currentPokeLevels[me].setText("Lv. " + poke.level);
-					currentPokeGenders[me].setImageResource(resources.getIdentifier("battle_gender" + poke.gender, "drawable", InfoConfig.pkgName));
+					if (!samePokes[me]) {
+						currentPokeNames[me].setText(poke.rnick);
+						currentPokeLevels[me].setText("Lv. " + poke.level);
+						currentPokeGenders[me].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+					}
+
 					currentPokeStatuses[me].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
 					setHpBarTo(me, poke.lifePercent);
+
 					for (int i = 0; i < 4; i++) {
 						BattleMove move = activeBattle.displayedMoves[i];
 						updateMovePP(i);
@@ -492,66 +485,75 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 								"drawable", InfoConfig.pkgName));
 					}
 
-					String sprite = null;
-					if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
-						sprite = "empty_sprite.png";
-					} else if (poke.sub) {
-						sprite = "sub_back.png";
-					} else {
-						if (useAnimSprites) {
-							Intent data = new Intent();
-							data.setComponent(servName);
-							data.putExtra("me", true);
-							data.putExtra("sprite", getAnimSprite(poke, false));
-							data.putExtra("cb", mRecvr);
-							startService(data);
+					if (!samePokes[me]) {
+						String sprite = null;
+						if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
+							sprite = "empty_sprite.png";
+						} else if (poke.sub) {
+							sprite = "sub_back.png";
 						} else {
-							sprite = PokemonInfo.sprite(poke, false);
+							if (useAnimSprites) {
+								Intent data = new Intent();
+								data.setComponent(servName);
+								data.putExtra("me", true);
+								data.putExtra("sprite", getAnimSprite(poke, false));
+								data.putExtra("cb", mRecvr);
+								startService(data);
+							} else {
+								sprite = PokemonInfo.sprite(poke, false);
+							}
 						}
-					}
 
-					if (sprite != null) {
-						pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
-					}
+						if (sprite != null) {
+							pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+						}
+					} else samePokes[me] = true;
 				}
 			}
 		});
 		updateTeam();
 	}
-	
+
+	public boolean samePokes[] = new boolean[2];
+
 	public void updateOppPoke(final int opp) {
 		runOnUiThread(new Runnable() {
 			public void run() {
 					ShallowBattlePoke poke = battle.currentPoke(opp);
 					// Load correct moveset and name
 					if(poke != null) {
-						currentPokeNames[opp].setText(poke.rnick);
-						currentPokeLevels[opp].setText("Lv. " + poke.level);
-						currentPokeGenders[opp].setImageResource(resources.getIdentifier("battle_gender" + poke.gender, "drawable", InfoConfig.pkgName));
+						if (!samePokes[opp]) {
+							currentPokeNames[opp].setText(poke.rnick);
+							currentPokeLevels[opp].setText("Lv. " + poke.level);
+							currentPokeGenders[opp].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+						}
+
 						currentPokeStatuses[opp].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
 						setHpBarTo(opp, poke.lifePercent);
 
-				        String sprite = null;
-				        if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
-				        	sprite = "empty_sprite.png";
-				        } else if (poke.sub) {
-				        	sprite = opp == me ? "sub_back.png" : "sub_front.png";
-				        } else {
-				        	if (useAnimSprites) {
-						        Intent data = new Intent();
-						        data.setComponent(servName);
-						        data.putExtra("me", false);
-						        data.putExtra("sprite", getAnimSprite(poke, opp != me));
-						        data.putExtra("cb", mRecvr);
-						        startService(data);
-				        	} else {
-				        		sprite = PokemonInfo.sprite(poke, opp != me);
-				        	}
-				        }
-				        
-				        if (sprite != null) {
-							pokeSprites[opp].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);			        	
-				        }
+						if (!samePokes[opp]) {
+							String sprite = null;
+							if (battle.shouldShowPreview || poke.status() == Status.Koed.poValue()) {
+								sprite = "empty_sprite.png";
+							} else if (poke.sub) {
+								sprite = opp == me ? "sub_back.png" : "sub_front.png";
+							} else {
+								if (useAnimSprites) {
+									Intent data = new Intent();
+									data.setComponent(servName);
+									data.putExtra("me", false);
+									data.putExtra("sprite", getAnimSprite(poke, opp != me));
+									data.putExtra("cb", mRecvr);
+									startService(data);
+								} else {
+									sprite = PokemonInfo.sprite(poke, opp != me);
+								}
+							}
+
+							if (sprite != null) {
+								pokeSprites[opp].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+							}
+						} else samePokes[opp] = true;
 					}
 				}
 		});		
@@ -995,13 +997,13 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		BattlePoke poke = activeBattle.myTeam.pokes[i];
         		myArrangePokeIcons[i] = (PokeDragIcon)layout.findViewById(resources.getIdentifier("my_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
         		myArrangePokeIcons[i].setOnTouchListener(dialogListener);
-        		myArrangePokeIcons[i].setImageDrawable(PokemonInfo.icon(poke.uID));
+        		myArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID));
         		myArrangePokeIcons[i].num = i;
         		myArrangePokeIcons[i].battleActivity = this;
 
         		ShallowShownPoke oppPoke = activeBattle.oppTeam.pokes[i];
         		oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
-        		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.icon(oppPoke.uID));
+        		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
         	}
             return dialog;
         }

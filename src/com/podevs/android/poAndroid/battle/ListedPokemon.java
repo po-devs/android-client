@@ -50,9 +50,9 @@ public class ListedPokemon {
 	}
 	
 	public void update(Poke poke, boolean canSwitch) {
-		icon.setImageDrawable(PokemonInfo.icon(poke.uID()));
-		gender.setImageDrawable(PokemonInfo.gender(poke.gender()));
-		itemIcon.setImageDrawable(PokemonInfo.itemIcon(poke.item()));
+		icon.setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID()));
+		gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
+		itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
 		name.setText(poke.nick());
 		hp.setText(poke.currentHP() + "/" + poke.totalHP());
 		item.setText(ItemInfo.name(poke.item()));

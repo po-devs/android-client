@@ -241,13 +241,15 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			return;
 		}
 
-		if (PokemonInfo.hasVisibleFormes(poke().uID())) {
+		TeamPoke tempPoke = poke();
+
+		if (PokemonInfo.hasVisibleFormes(tempPoke.uID())) {
 			formesLayout.setVisibility(View.VISIBLE);
 			formesChooserAdapter.clear();
 
-			for (UniqueID uID : PokemonInfo.formes(poke().uID(), poke().gen)) {
+			for (UniqueID uID : PokemonInfo.formes(tempPoke.uID(), tempPoke.gen)) {
 				formesChooserAdapter.add(PokemonInfo.name(uID));
-				if (uID.equals(poke().uID())) {
+				if (uID.equals(tempPoke.uID())) {
 					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
 				}
 			}
@@ -256,33 +258,33 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		}
 
 		for (int i = 0; i < 6; i++) {
-			sliders[i].setNum(poke().ev(i));
+			sliders[i].setNum(tempPoke.ev(i));
 		}
 		
 		updateStats();
 
-		if (poke().gen.num >= 3) {
-			short[] abilities = PokemonInfo.abilities(poke().uID(), poke().gen.num);
+		if (tempPoke.gen.num >= 3) {
+			short[] abilities = PokemonInfo.abilities(poke().uID(), tempPoke.gen.num);
 	
 			abilityChooserAdapter.clear();
 			abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
-			if (abilities[0] == poke().ability) {
+			if (abilities[0] == tempPoke.ability) {
 				abilityChooser.setSelection(0);
 			}
 			if (abilities[1]!=0) {
 				abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
-				if (abilities[1] == poke().ability) {
+				if (abilities[1] == tempPoke.ability) {
 					abilityChooser.setSelection(1);
 				}
 			}
 			if (abilities[2]!=0) {
 				abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
-				if (abilities[2] == poke().ability) {
+				if (abilities[2] == tempPoke.ability) {
 					abilityChooser.setSelection(abilityChooserAdapter.getCount()-1);
 				}
 			}
 
-			natureChooser.setSelection(poke().nature);
+			natureChooser.setSelection(tempPoke.nature);
 
 			natureChooser.setVisibility(View.VISIBLE);
 			abilityChooser.setVisibility(View.VISIBLE);
@@ -291,11 +293,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			abilityChooser.setVisibility(View.GONE);
 		}
 
-		if (poke().gen.num >= 2) {
+		tempPoke = poke();
+
+		if (tempPoke.gen.num >= 2) {
 			genderChooserAdapter.clear();
-			int genderChoice = PokemonInfo.gender(poke().uID());
+			int genderChoice = PokemonInfo.gender(tempPoke.uID());
 			if (genderChoice == 0) {
-				poke().gender = 0;
+				tempPoke.gender = 0;
 				genderChooserAdapter.add("Neutral");
 			} else if (genderChoice == 1) {
 				genderChooserAdapter.add("Male");
@@ -305,19 +309,19 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				genderChooserAdapter.add("Male");
 				genderChooserAdapter.add("Female");
 
-				genderChooser.setSelection(poke().gender == 1 ? 0 : 1);
+				genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
 			}
 
 			int usefulItems[] = ItemInfo.usefulItems();
-			int pokeitem = poke().item();
+			int pokeitem = tempPoke.item();
 			for (int i = 0; i < usefulItems.length; i++) {
 				if (usefulItems[i] == pokeitem) {
 					itemChooser.setSelection(i);
 					break;
 				}
 			}
-			shinyChooser.setChecked(poke().shiny);
-			happinessChooser.setText("Happy: " + (poke().happiness & 0xFF));
+			shinyChooser.setChecked(tempPoke.shiny);
+			happinessChooser.setText("Happy: " + (tempPoke.happiness & 0xFF));
 
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
@@ -330,27 +334,29 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			happinessChooser.setVisibility(View.GONE);
 		}
 
-		levelChooser.setText(" Lvl: " + poke().level());
+		levelChooser.setText(" Lvl: " + tempPoke.level());
 	}
 	
 	public void updateStats() {
+		TeamPoke tempPoke = poke();
 		for (int i = 0; i < 6; i++) {
-			labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+			labels[i].setText(StatsInfo.Shortcut(i) + ": " + tempPoke.stat(i));
 		}
 	}
 
 	public void onEVChanged(int stat, int ev) {
-		int totalEVs = poke().totalEVs() - poke().ev(stat) + ev;
+		TeamPoke tempPoke = poke();
+		int totalEVs = tempPoke.totalEVs() - tempPoke.ev(stat) + ev;
 		
 		if (totalEVs > 510 && poke().gen().num > 2) {
-			ev = (510 - (poke().totalEVs() - poke().ev(stat)));
+			ev = (510 - (tempPoke.totalEVs() - tempPoke.ev(stat)));
 			ev = ev/4*4;
 			sliders[stat].setNum(ev);
 		}
 		
 		poke().EVs[stat] = (byte)ev;
 
-		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + poke().stat(stat));
+		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
 
 		notifyUpdated();
 	}

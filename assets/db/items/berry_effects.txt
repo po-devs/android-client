@@ -1,5 +1,4 @@
-﻿0 0
-1 1-1#Cheri
+﻿1 1-1#Cheri
 2 1-2#Chesto
 3 1-5#Pecha
 4 1-4#Rawst

@@ -15,10 +15,12 @@ public class HiddenPowerInfo {
 					16 * (spAttDv & 1) + 32 * (spDefDv & 1)) * 15) / 63) + 1;
 			// Odd = 1, Even = 0
 			// return (Integer.parseInt("" + (spDefDv & 1) + (spAttDv & 1) + (speedDv & 1) + (defDv & 1) + (attDv & 1) + (hpDv & 1), 2)*15)/63; // Interesting way
-		} else {
+		} else if (gen.num == 2) {
 			return (4 * (attDv % 4) + (defDv % 4)) + 1;
 			// Gen 2
 			// 4*(Attack mod 4) + (Defense mod 4) + 1;
+		} else {
+			return 0;
 		}
 	}
 

@@ -3,6 +3,7 @@ package com.podevs.android.poAndroid.pokeinfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.LruCache;
 import android.util.SparseArray;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
@@ -22,6 +23,7 @@ public class PokemonInfo {
 	private static SparseArray<PokeData> pokemonsg = null;
 	private static int pokeCount = 0;
 	private static int pokeCountg[] = null;
+	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(40);
 
 	/* Data depending on a gen:
 	 * ability, type, evolutions, ...
@@ -257,36 +259,77 @@ public class PokemonInfo {
 		});
 	}
 
-	public static Drawable icon(UniqueID uid) {
-		try {
-			return InfoConfig.context.getResources().getDrawable(iconRes(uid));
-		} catch (Resources.NotFoundException e) {
-			return InfoConfig.context.getResources().getDrawable(iconRes(uid.original()));
-		} catch (NullPointerException e) {
-			Log.e("PokemonInfo", "NULL ICON" + uid);
-			return InfoConfig.context.getResources().getDrawable(iconRes(new UniqueID()));
-		}
-	}
-
-	public static Drawable itemIcon(Integer itemId) {
-		Resources resource = InfoConfig.context.getResources();
-		Integer identifier = resource.getIdentifier("i" + itemId.toString(), "drawable", InfoConfig.pkgName);
-		return resource.getDrawable(identifier);
-	}
-
-	public static Drawable gender(Integer gender) {
-		Resources resource = InfoConfig.context.getResources();
-		Integer identifier = resource.getIdentifier("battle_gender" + gender.toString(), "drawable", InfoConfig.pkgName);
-		return resource.getDrawable(identifier);
-	}
-
 	private static int iconRes(UniqueID uid) {
-		Resources resources = InfoConfig.context.getResources();
+		Resources resources = InfoConfig.resources;
 		int resID = resources.getIdentifier("pi_" + uid.pokeNum +
 				(uid.subNum == 0 ? "" : "_" + uid.subNum), "drawable", InfoConfig.pkgName);
 		if (resID == 0)
 			resID = resources.getIdentifier("pi_" + uid.pokeNum, "drawable", InfoConfig.pkgName);
 		return resID;
+	}
+
+	public static Drawable iconDrawable(UniqueID uid) {
+		try {
+			return InfoConfig.resources.getDrawable(iconRes(uid));
+		} catch (Resources.NotFoundException e) {
+			return InfoConfig.resources.getDrawable(iconRes(uid.original()));
+		} catch (NullPointerException e) {
+			Log.e("PokemonInfo", "NULL ICON" + uid);
+			return InfoConfig.resources.getDrawable(iconRes(new UniqueID()));
+		}
+	}
+
+	public static Drawable iconDrawablePokeballStatus() {
+		String iconKey = "pi_status";
+		Drawable drawable = ImageCache.get(iconKey);
+		if (drawable == null) {
+			int i = InfoConfig.resources.getIdentifier(iconKey, "drawable", InfoConfig.pkgName);
+			drawable = InfoConfig.resources.getDrawable(i);
+			ImageCache.put(iconKey, drawable);
+		}
+		return drawable;
+	}
+
+	public static Drawable iconDrawableCache(UniqueID uid) {
+		String iconKey = "pi"+uid.pokeNum+"-"+uid.subNum;
+		Drawable drawable = ImageCache.get(iconKey);
+		if (drawable == null) {
+			drawable = iconDrawable(uid);
+			ImageCache.put(iconKey, drawable);
+		}
+		return drawable;
+	}
+
+	private static Drawable itemDrawable(String itemId) {
+		Resources resource = InfoConfig.resources;
+		Integer identifier = resource.getIdentifier(itemId, "drawable", InfoConfig.pkgName);
+		return resource.getDrawable(identifier);
+	}
+
+	public static Drawable itemDrawableCache(Integer itemId) {
+		String itemKey = "i" + itemId.toString();
+		Drawable drawable =  ImageCache.get(itemKey);
+		if (drawable == null) {
+			drawable = itemDrawable(itemKey);
+			ImageCache.put(itemKey, drawable);
+		}
+		return drawable;
+	}
+
+	private static Drawable genderDrawable(String key) {
+		Resources resource = InfoConfig.resources;
+		Integer identifier = resource.getIdentifier(key, "drawable", InfoConfig.pkgName);
+		return resource.getDrawable(identifier);
+	}
+
+	public static Drawable genderDrawableCache(Integer gender) {
+		String genderKey = "battle_gender" + gender.toString();
+		Drawable drawable = ImageCache.get(genderKey);
+		if (drawable == null) {
+			drawable = genderDrawable(genderKey);
+			ImageCache.put(genderKey, drawable);
+		}
+		return drawable;
 	}
 
 	public static String sprite(ShallowBattlePoke poke, boolean front) {
@@ -324,6 +367,10 @@ public class PokemonInfo {
 		} else {
 			return res + ".png";
 		}
+	}
+
+	public static String cacheStatus() {
+		return ImageCache.toString();
 	}
 
 	@SuppressWarnings("unchecked")

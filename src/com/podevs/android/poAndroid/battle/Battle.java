@@ -116,6 +116,7 @@ public class Battle extends SpectatingBattle {
 				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 
 			if(activity != null) {
+				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
 			}
@@ -183,6 +184,7 @@ public class Battle extends SpectatingBattle {
 				else if (currentPoke(player).specialSprites.size() > 0)
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 				break;
@@ -197,6 +199,7 @@ public class Battle extends SpectatingBattle {
 						currentPoke(slot(player, poke)).setTypes(conf.gen.num);
 					}
 					if (activity !=null) {
+						activity.samePokes[player] = false;
 						activity.updatePokes(player);
 					}
 				}
@@ -205,6 +208,7 @@ public class Battle extends SpectatingBattle {
 				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 			default: break;

@@ -96,11 +96,16 @@ public class TeamPoke implements SerializeBytes, Poke {
 		for(int i = 0; i < 6; i++)
 			EVs[i] = b.readByte();
 
-		if (network.readBool()) { //Ivs flags
+		boolean hasIVs = network.readBool();
+		if (hasIVs || true) { //Ivs flags
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
 		} else {
-			DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+			if (gen.num > 2) {
+				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 31;
+			} else {
+				DVs[0] = DVs[1] = DVs[2] = DVs[3] = DVs[4] = DVs[5] = 15;
+			}
 		}
 	}
 
@@ -225,9 +230,8 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
-//		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
-//      isShiny=0
-		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0, false, true});
+//								hasGen, hasNickname, 	hasPokeball, hasHappiness, hasPPups,  hasIVs,
+		b.putFlags(new boolean[]{true, nick.length() > 0, false, 	happiness != 0, false, 	true});
 
 		b.putBaos(gen);
 		b.putBaos(uID);

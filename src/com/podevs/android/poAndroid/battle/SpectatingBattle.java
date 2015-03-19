@@ -201,6 +201,7 @@ public class SpectatingBattle {
 			}
 
 			if (activity != null) {
+				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
 			}
@@ -585,9 +586,10 @@ public class SpectatingBattle {
 		} case Substitute: {
 			currentPoke(player).sub = msg.readBool();
 
-			if (activity != null)
-				activity.updateOppPoke(player);
-
+			if (activity != null) {
+				activity.samePokes[player] = false;
+				activity.updatePokes(player);
+			}
 			break;
 		} case BattleEnd: {
 			byte res = msg.readByte();
@@ -646,6 +648,7 @@ public class SpectatingBattle {
 				else
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 				break;
@@ -656,6 +659,7 @@ public class SpectatingBattle {
 				if (isOut(poke)) {
 					currentPoke(slot(player, poke)).uID = newForm;
 					if (activity !=null) {
+						activity.samePokes[player] = false;
 						activity.updatePokes(player);
 					}
 				}
@@ -664,6 +668,7 @@ public class SpectatingBattle {
 				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 			default: break;

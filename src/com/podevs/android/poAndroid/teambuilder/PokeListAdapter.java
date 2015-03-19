@@ -59,7 +59,7 @@ public class PokeListAdapter implements ListAdapter {
 
 		UniqueID poke = new UniqueID(pos,0);
 		ImageView image = (ImageView)convertView.findViewById(R.id.image);
-		image.setImageDrawable(PokemonInfo.icon(poke));
+		image.setImageDrawable(PokemonInfo.iconDrawable(poke));
 		((TextView)convertView.findViewById(R.id.pokename)).setText(PokemonInfo.name(poke));
 		((ImageView)convertView.findViewById(R.id.type1)).setImageResource(TypeInfo.typeRes(PokemonInfo.type1(poke, gen.num)));
 		

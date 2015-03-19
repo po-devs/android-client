@@ -1,5 +1,4 @@
-﻿0 (No Berry)
-1 Cheri Berry
+﻿1 Cheri Berry
 2 Chesto Berry
 3 Pecha Berry
 4 Rawst Berry
