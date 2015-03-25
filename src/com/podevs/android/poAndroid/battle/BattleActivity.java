@@ -665,10 +665,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 		        	whole.setOnClickListener(battleListener);
 		        }
 
+                /* Well it helps you keep track what your opponent has seen!
 				// Pre-load PokeBall and sprite info
 				for (int i = 0; i < 6; i++) {
 					battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
 				}
+				*/
 
 		        /* Changed to two pages */
 				realViewSwitcher.getAdapter().notifyDataSetChanged();
@@ -771,6 +773,8 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	        handler.postDelayed(updateTimeTask, 100);
 	        
 			checkRearrangeTeamDialog();
+
+            Runtime.getRuntime().gc();
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {
@@ -968,10 +972,12 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
+                    /*
                     // re-pre-load PokeBall and sprite info
                     for (int i = 0; i < 6; i++) {
                         battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
                     }
+                    */
                     battle.shouldShowPreview = false;
                     removeDialog(id);
                 }

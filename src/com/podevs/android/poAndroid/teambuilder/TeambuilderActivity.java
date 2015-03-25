@@ -118,6 +118,7 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
+        Runtime.getRuntime().gc();
     }
 
 	// This function will allow you do download txt from web.
@@ -157,6 +158,7 @@ public class TeambuilderActivity extends FragmentActivity {
 								e.printStackTrace();
 							}
 						}
+
 					});
 
 				} catch (MalformedURLException e) {
@@ -192,6 +194,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 				}
 				*/
+                Runtime.getRuntime().gc();
 				if (progressDialog.isShowing()) {
 					progressDialog.dismiss();
 				}
@@ -227,6 +230,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			boolean IVsGiven = false;
 			int I = 0;
 			for (String s: parseList) {
+                s = s.trim();
 				if (movesNext && s.contains("- ")) {
 					if (s.contains("(No Move")) {
 						newPoke.moves[I] = new TeamMove(0);
@@ -594,5 +598,6 @@ public class TeambuilderActivity extends FragmentActivity {
 		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
 		updateTeam();
 		PokemonInfo.resetGen6();
+        Runtime.getRuntime().gc();
 	}
 }
