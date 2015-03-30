@@ -2,9 +2,11 @@ package com.podevs.android.poAndroid.chat;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,58 +55,60 @@ public class PlayerListAdapter extends ArrayAdapter<com.podevs.android.poAndroid
 		PlayerInfo player = getItem(position);
 		if (player != null) {
 			TextView nick = (TextView)view.findViewById(R.id.player_list_name);
-			
-			if (NetworkService.pmedPlayers.contains(player.id)) {
-				nick.setText(Html.fromHtml("<b><i>"  + StringUtilities.escapeHtml(player.nick()) + "</i></b>" ));
-			} else {
-				SpannableString text = new SpannableString("   " + player.nick());
-				if (player.auth == 3) {
-					if (player.battling()) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3b);
-						text.setSpan(is, 1, 2 , 0);
-					} else if (player.isAway) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3a);
-						text.setSpan(is, 1, 2 , 0);
-					} else {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b3);
-						text.setSpan(is, 1, 2 , 0);
-					}
-				} else if (player.auth == 2) {
-					if (player.battling()) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2b);
-						text.setSpan(is, 1, 2 , 0);
-					} else if (player.isAway) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2a);
-						text.setSpan(is, 1, 2 , 0);
-					} else {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b2);
-						text.setSpan(is, 1, 2 , 0);
-					}
-				} else if (player.auth == 1) {
-					if (player.battling()) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1b);
-						text.setSpan(is, 1, 2 , 0);
-					} else if (player.isAway) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1a);
-						text.setSpan(is, 1, 2 , 0);
-					} else {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b1);
-						text.setSpan(is, 1, 2 , 0);
-					}
-				} else {
-					if (player.battling()) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0b);
-						text.setSpan(is, 1, 2 , 0);
-					} else if (player.isAway) {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0a);
-						text.setSpan(is, 1, 2 , 0);
-					} else {
-						ImageSpan is = new ImageSpan(getContext(), R.drawable.b0);
-						text.setSpan(is, 1, 2 , 0);
-					}
-				}
-				nick.setText(text);
-			}
+
+            SpannableString text = new SpannableString("   " + StringUtilities.escapeHtml(player.nick()));
+            if (player.auth == 3) {
+                if (player.battling()) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b3b);
+                    text.setSpan(is, 1, 2 , 0);
+                } else if (player.isAway) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b3a);
+                    text.setSpan(is, 1, 2 , 0);
+                } else {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b3);
+                    text.setSpan(is, 1, 2 , 0);
+                }
+            } else if (player.auth == 2) {
+                if (player.battling()) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b2b);
+                    text.setSpan(is, 1, 2 , 0);
+                } else if (player.isAway) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b2a);
+                    text.setSpan(is, 1, 2 , 0);
+                } else {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b2);
+                    text.setSpan(is, 1, 2 , 0);
+                }
+            } else if (player.auth == 1) {
+                if (player.battling()) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b1b);
+                    text.setSpan(is, 1, 2 , 0);
+                } else if (player.isAway) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b1a);
+                    text.setSpan(is, 1, 2 , 0);
+                } else {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b1);
+                    text.setSpan(is, 1, 2 , 0);
+                }
+            } else {
+                if (player.battling()) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b0b);
+                    text.setSpan(is, 1, 2 , 0);
+                } else if (player.isAway) {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b0a);
+                    text.setSpan(is, 1, 2 , 0);
+                } else {
+                    ImageSpan is = new ImageSpan(getContext(), R.drawable.b0);
+                    text.setSpan(is, 1, 2 , 0);
+                }
+            }
+
+            if (NetworkService.pmedPlayers.contains(player.id)) {
+                final StyleSpan bis = new StyleSpan(Typeface.BOLD_ITALIC);
+                text.setSpan(bis, 1, text.length() , 0);
+            }
+
+            nick.setText(text);
 
 			nick.setTextColor(player.color.colorInt);
 

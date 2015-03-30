@@ -57,4 +57,13 @@
                 android:inputType="number"
                 android:defaultValue="10"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:summary=""
+        android:title="Miscellaneous" >
+        <CheckBoxPreference
+            android:key="shouldWrite"
+            android:summary="Dump crash data to file"
+            android:title="Save crash log"
+            android:defaultValue="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

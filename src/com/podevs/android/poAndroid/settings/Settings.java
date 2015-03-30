@@ -6,13 +6,14 @@ import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.widget.Toast;
 import com.podevs.android.poAndroid.R;
+import com.podevs.android.poAndroid.registry.CustomExceptionHandler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Settings extends PreferenceFragment {
     private static final Pattern hex = Pattern.compile("[#][A-F0-9]{6}");
-    private static final String[] keys = {"flashColor", "timeStamp", "flashing"};
+    private static final String[] keys = {"flashColor", "soundVolume", "shouldWrite", "pokemonNumber"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,14 @@ public class Settings extends PreferenceFragment {
             }
             if (key.equals("soundVolume")) {
                 return dealWithVolume(newValue.toString());
+            }
+            if (key.equals("shouldWrite")) {
+                if ((Boolean) newValue) {
+                    CustomExceptionHandler.shouldWrite = true;
+                } else {
+                    CustomExceptionHandler.shouldWrite = false;
+                }
+                return true;
             }
             return true;
         }
@@ -75,6 +84,7 @@ public class Settings extends PreferenceFragment {
             makeToast("Volume: " + number);
             return true;
         }
+        makeToast("Select a value between 0 and 100");
         return false;
     }
 

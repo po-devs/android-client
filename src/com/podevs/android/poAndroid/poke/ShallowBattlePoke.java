@@ -150,4 +150,9 @@ public class ShallowBattlePoke implements SerializeBytes {
 		types[0] = Type.values()[PokemonInfo.type1(uID, gen)];
 		types[1] = Type.values()[PokemonInfo.type2(uID, gen)];
 	}
+
+	@Override
+	public String toString() {
+		return "" + this.uID.toString() + (this.shiny ? "s" : "") + (this.gender == 2 ? "f" : "");
+	}
 }

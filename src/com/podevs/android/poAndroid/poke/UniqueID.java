@@ -152,4 +152,13 @@ public class UniqueID implements SerializeBytes {
 	public UniqueID original() {
 		return new UniqueID(pokeNum);
 	}
+
+	/**
+	 *
+	 * @return pokeNum + (subNum == 0 ? "" : "_" + subNum);
+	 */
+	@Override
+	public String toString() {
+		return "" + this.pokeNum + (this.subNum == 0 ? "" : "_" + this.subNum);
+	}
 }

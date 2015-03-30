@@ -447,7 +447,7 @@ public class PokemonInfo {
 			drawable = InfoConfig.resources.getDrawable(i);
 			ImageCache.put(iconKey, drawable);
 		}
-		return drawable;
+		return drawable.mutate().getConstantState().newDrawable();
 	}
 
 	/**
@@ -458,13 +458,13 @@ public class PokemonInfo {
 	 */
 
 	public static Drawable iconDrawableCache(UniqueID uid) {
-		String iconKey = "pi"+uid.pokeNum+"-"+uid.subNum;
+		String iconKey = "pi" + uid.toString();
 		Drawable drawable = ImageCache.get(iconKey);
 		if (drawable == null) {
 			drawable = iconDrawable(uid);
 			ImageCache.put(iconKey, drawable);
 		}
-		return drawable;
+		return drawable.mutate().getConstantState().newDrawable();
 	}
 
 	/**

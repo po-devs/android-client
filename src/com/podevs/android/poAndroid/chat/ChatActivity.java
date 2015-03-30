@@ -3,6 +3,7 @@ package com.podevs.android.poAndroid.chat;
 import android.app.*;
 import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -185,6 +186,13 @@ public class ChatActivity extends Activity {
 					disconnect();
 				}
 			});
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 		}
 		
 		super.onCreate(savedInstanceState);
@@ -325,8 +333,10 @@ public class ChatActivity extends Activity {
 			netServ.chatActivity = ChatActivity.this;
 			if (netServ.joinedChannels.peek() != null && !netServ.joinedChannels.isEmpty()) {
 				populateUI(false);
-				if (progressDialog.isShowing())
-					progressDialog.dismiss();
+				if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+                }
 				loading = false;
 			}
 			checkAskForServerPass();
@@ -348,6 +358,11 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
+
+    public void networkDismissDialog() {
+        progressDialog.dismiss();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+    }
 	
 	/**
 	 * Gives the current channel
@@ -574,6 +589,13 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
 					.setCancelable(true)
 					.setView(passField)
@@ -590,6 +612,8 @@ public class ChatActivity extends Activity {
 								}
 							}
 							removeDialog(id);
+                            if (!loading)
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 						}
 					})
 					.setOnCancelListener(new OnCancelListener() {
@@ -598,6 +622,8 @@ public class ChatActivity extends Activity {
 							if (!registering) {
 								disconnect();
 							}
+                            if (!loading)
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 				}
 			});
 			if (netServ != null) {
@@ -724,7 +750,7 @@ public class ChatActivity extends Activity {
 			return new TierAlertDialog(this, netServ.superTier);
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
-            ImageView[] pPokeIcons = new ImageView[6];
+            // ImageView[] pPokeIcons = new ImageView[6];
             TextView pInfo, pName;
             ListView ratings;
 			builder.setView(layout)
@@ -746,11 +772,10 @@ public class ChatActivity extends Activity {
             final AlertDialog pInfoDialog = builder.create();
             
 
-            for(int i = 0; i < 6; i++){
-        	pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + 
-        			(i+1), "id", packName));
+            // for(int i = 0; i < 6; i++){
+        	// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
-            }
+            // }
         	pInfo = (TextView)layout.findViewById(R.id.player_info);
         	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
         	pName = (TextView)layout.findViewById(R.id.player_info_name);
@@ -1106,6 +1131,7 @@ public class ChatActivity extends Activity {
 		}
 		if (progressDialog != null) {
 			progressDialog.dismiss();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 		}
 		
 		Intent intent = new Intent(this, RegistryActivity.class);

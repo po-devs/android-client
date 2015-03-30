@@ -97,7 +97,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 			EVs[i] = b.readByte();
 
 		boolean hasIVs = network.readBool();
-		if (hasIVs || true) { //Ivs flags
+		if (hasIVs || gen.num == 2) { //Ivs flags
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
 		} else {

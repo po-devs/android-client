@@ -156,15 +156,15 @@ public class NetworkService extends Service {
 	public void addBattle(int battleid, BattleDesc desc, boolean show) {
 		battles.put(battleid, desc);
 // battle event
-		String n1 = "";
+		// String n1 = "";
 		if (players.containsKey(desc.p1)) {
 			players.get(desc.p1).addBattle(battleid);
-			n1 = players.get(desc.p1).nick();
+		//	n1 = players.get(desc.p1).nick();
 		}
-		String n2 = "";
+		// String n2 = "";
 		if (players.containsKey(desc.p2)) {
 			players.get(desc.p2).addBattle(battleid);
-			n2 = players.get(desc.p2).nick();
+			// n2 = players.get(desc.p2).nick();
 		}
 		/*
 		if (show) {
@@ -735,12 +735,14 @@ public class NetworkService extends Service {
 			
 			PlayerInfo p = players.get(id);
 			if (p != null) {
-				p.hasLadderEnabled = dataFlags.readBool();
-				p.isAway = dataFlags.readBool();
+                PlayerInfo p2 = p;
+				p2.hasLadderEnabled = dataFlags.readBool();
+				p2.isAway = dataFlags.readBool();
 
-				if (p.id == myid) {
-					me.setTo(p);
+				if (p2.id == myid) {
+					me.setTo(p2);
 				}
+                chatActivity.updatePlayer(p, p2);
 			}
 			break;
 		}	case SendMessage: {
@@ -1465,6 +1467,7 @@ public class NetworkService extends Service {
 		this.stopSelf();
 	}
 
+    /*
 	public PlayerInfo getPlayerByName(String playerName) {
 		Enumeration<Integer> e = players.keys();
 		while(e.hasMoreElements()) {
@@ -1474,6 +1477,7 @@ public class NetworkService extends Service {
 		}
 		return null;
 	}
+	*/
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);
@@ -1503,25 +1507,13 @@ public class NetworkService extends Service {
 		pmedPlayers.add(id);
 	}
 
-	public Object getPreference(String pref) {
-		SharedPreferences POPreferences = PreferenceManager.getDefaultSharedPreferences(NetworkService.this);
-		if (pref.equals("flashColor")) {
-			return POPreferences.getString("flashColor", "#FFFF00");
-		}
-		if (pref.equals("flashing")) {
-			return POPreferences.getBoolean("flashing", true);
-		}
-		if (pref.equals("timeStamp")) {
-			return POPreferences.getBoolean("timeStamp", false);
-		}
-		return null;
-	}
-
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
 		if (chatActivity != null) {
 			chatActivity.populateUI(true);
-			chatActivity.progressDialog.dismiss();
+            if (chatActivity.progressDialog != null) {
+                chatActivity.networkDismissDialog();
+            }
 		}
 		
 		SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);

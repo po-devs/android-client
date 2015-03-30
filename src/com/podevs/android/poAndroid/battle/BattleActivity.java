@@ -337,7 +337,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	public int statusTint(int status) {
 		switch (status) {
 			case 0:
-				return 0;
+				return 1;
 			case 31:
 				return 0x7D000000;
 			case 1:
@@ -362,8 +362,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
             public void run() {
                 for (int i = 0; i < 2; i++) {
                     for (int j = 0; j < 6; j++) {
-                        pokeballs[i][j].setImageDrawable((battle.pokes[i][j].uID.pokeNum != 0 ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID) : PokemonInfo.iconDrawablePokeballStatus()));
-                        // pokeballs[i][j].setImageResource(resources.getIdentifier("status" + battle.pokes[i][j].status(), "drawable", InfoConfig.pkgName));
+                        pokeballs[i][j].setImageDrawable((
+                                battle.pokes[i][j].uID.pokeNum != 0
+                                    ? PokemonInfo.iconDrawableCache(battle.pokes[i][j].uID)
+                                    : PokemonInfo.iconDrawablePokeballStatus()
+                        ));
                         pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
                     }
                 }

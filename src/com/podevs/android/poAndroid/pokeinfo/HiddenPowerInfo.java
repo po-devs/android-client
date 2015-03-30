@@ -72,7 +72,11 @@ public class HiddenPowerInfo {
 	}
 
 	static private int power(Gen gen, int hpDv, int attDv, int defDv, int spAttDv, int spDefDv, int speedDv) {
-		if (gen.num > 2) {
+		if (gen.num >= 6) {
+            // Gen 6 made it always 60
+            return 60;
+        } else
+        if (gen.num >= 3) {
 			return floor(((((hpDv % 4) >> 1) + 2 *((attDv % 4) >> 1) + 4 * ((defDv % 4) >> 1) +
 					8 * ((speedDv % 4) >> 1) + 16 * ((spAttDv % 4) >> 1) + 32 * ((spDefDv % 4) >> 1)) * 40) / 63 + 30);
 			// (HP + 2*Attack + 4*Defense + 8*Speed + 16*Special Attack + 32*Special Defense)x40/63 + 30

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.*;
 import android.view.View.OnKeyListener;
 import android.widget.EditText;
@@ -152,10 +153,13 @@ public class PrivateMessageActivity extends Activity {
 		isViewed = false;
 		super.onPause();
 
-		if (connection != null) {
-			unbindService(connection);
-		}
-
+        try {
+            if (connection != null) {
+                unbindService(connection);
+            }
+        } catch (IllegalArgumentException e) {
+           Log.e("PM", "Illegal Argument Exception");
+        }
 	}
 
 	@Override
