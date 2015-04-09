@@ -1046,8 +1046,14 @@ public class ChatActivity extends Activity {
 			}
     		break;
     	case R.id.channellisting:
-    		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
-    		String cName = lastClickedChannel.name;
+            String cName = "Default";
+            try {
+                lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
+                cName = lastClickedChannel.name;
+            } catch (IndexOutOfBoundsException e) {
+                cName = "Error: " + aMenuInfo.position + " " + channelAdapter.getCount();
+                lastClickedChannel = netServ.joinedChannels.getFirst();
+            }
     		menu.setHeaderTitle(cName);
     		if (netServ.joinedChannels.contains(lastClickedChannel)) {
 				menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
@@ -1060,6 +1066,7 @@ public class ChatActivity extends Activity {
 			}
     		else
         		menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
+
     		break;
     	}
     }
@@ -1099,11 +1106,15 @@ public class ChatActivity extends Activity {
     			netServ.socket.sendMessage(join, Command.JoinChannel);
     		break;
     	case LeaveChannel:
-    		Baos leave = new Baos();
-    		leave.putInt(lastClickedChannel.id);
-    		if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
-    			netServ.socket.sendMessage(leave, Command.LeaveChannel);
-    		break;
+            try {
+                Baos leave = new Baos();
+                leave.putInt(lastClickedChannel.id);
+                if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
+                    netServ.socket.sendMessage(leave, Command.LeaveChannel);
+                break;
+            } catch (Exception e) {
+                //blah blah blah
+            }
     	case PrivateMessage:
     		if (netServ == null) {
     			Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();

@@ -35,11 +35,17 @@ public class MessageListAdapter extends BaseAdapter {
 		TextView toAdd = new TextView(context);
 		toAdd.setText(span);
 
-        toAdd.setTextIsSelectable(true);
+        try {
+            toAdd.setTextIsSelectable(true);
 
-        if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
 
-		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
+            if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
+            Linkify.addLinks(toAdd, Linkify.WEB_URLS);
+
+        }  catch (RuntimeException e) {
+            toAdd.setText("THERE WAS AN ERROR WITH THIS MESSAGE" + span);
+        }
 
 		messageViews.add(toAdd);
 		if (getCount() > Channel.HIST_LIMIT)
