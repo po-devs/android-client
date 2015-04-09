@@ -34,12 +34,12 @@ public class MessageListAdapter extends BaseAdapter {
 	public void add(SpannableStringBuilder span) {
 		TextView toAdd = new TextView(context);
 		toAdd.setText(span);
-		if (toAdd.getLinksClickable())
-			toAdd.setMovementMethod(LinkMovementMethod.getInstance());
-
-		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
 
         toAdd.setTextIsSelectable(true);
+
+        if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
+		Linkify.addLinks(toAdd, Linkify.WEB_URLS);
 
 		messageViews.add(toAdd);
 		if (getCount() > Channel.HIST_LIMIT)

@@ -54,6 +54,49 @@ public class InfoFiller {
 		}
 	}
 
+    static void plainFill(String file, Filler filler) {
+        InputStream assetsDB = null;
+        try {
+            assetsDB = getContext().getAssets().open(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        BufferedReader buf = null;
+        try {
+            buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
+        } catch (UnsupportedEncodingException e2) {
+            e2.printStackTrace();
+        }
+
+        try {
+            while (buf.ready()) {
+                String str = buf.readLine();
+				/*
+				 * Test for BOM
+				 */
+                if (str == null) {
+                    break;
+                }
+                if (str.length() > 0 && (int)str.charAt(0) == 65279) {
+                    str = str.substring(1);
+                }
+
+                filler.fill(Integer.parseInt(str), null);
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            assetsDB.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 	static void uIDfill(String file, Filler filler, boolean readAll) {
 
 		InputStream assetsDB = null;

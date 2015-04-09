@@ -11,6 +11,16 @@ public class ItemInfo {
 	private static SparseArray<String> itemNames = new SparseArray<String>();
 	private static SparseArray<String> itemMessages = null;
 	private static int usefulItems[] = null;
+    private static int usefulThisGeneration[] = null;
+    private static byte Generation = 2;
+
+    public static void setGeneration(byte gen) {
+        usefulThisGeneration = null;
+        if (gen < 2) {
+            gen = 2;
+        }
+        Generation = gen;
+    }
 	
 	public static String name(int item) {
 		if (itemNames.indexOfKey(item) < 0) {
@@ -49,14 +59,26 @@ public class ItemInfo {
 			return "";
 		}
 	}
-	
+
+    /*
 	public static int[] usefulItems() {
 		if (usefulItems == null) {
 			loadUsefulItems();
 		}
-		
+
 		return usefulItems;
 	}
+	*/
+
+    public static int[] getUsefulThisGeneration() {
+        if (usefulThisGeneration == null) {
+            if (usefulItems == null) {
+                loadUsefulItems();
+            }
+            loadGenerationItems();
+        }
+        return usefulThisGeneration;
+    }
 	
 	private static short plates[] = new short[] {
 		0,
@@ -152,6 +174,70 @@ public class ItemInfo {
 			usefulItems[i+items.size()] = berries.get(i).intValue();
 		}
 	}
+
+    private static boolean primitiveContains(int toFind) {
+        for (int i = 0; i < usefulItems.length ; i++) {
+            if (usefulItems[i] == toFind) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void loadGenerationItems() {
+        final ArrayList<Integer> released_items = new ArrayList<Integer>();
+
+        InfoFiller.plainFill("db/items/" + Generation + "G/released_items.txt", new Filler() {
+            public void fill(int i, String s) {
+                released_items.add(Integer.valueOf(i));
+            }
+        });
+
+        for (int i = released_items.size() - 1; i > -1; i--) {
+            if (!primitiveContains(released_items.get(i))) {
+                released_items.remove(released_items.get(i));
+            }
+        }
+
+        Collections.sort(released_items, new Comparator<Integer>() {
+            public int compare(Integer lhs, Integer rhs) {
+                return name(lhs).compareTo(name(rhs));
+            }
+        });
+
+        final ArrayList<Integer> released_berries = new ArrayList<Integer>();
+
+        InfoFiller.plainFill("db/items/" + Generation + "G/released_berries.txt", new Filler() {
+            public void fill(int i, String s) {
+                released_berries.add(8000 + i);
+            }
+        });
+
+        for (int i = released_berries.size() - 1; i > -1; i--) {
+            if (!primitiveContains(released_berries.get(i))) {
+                released_berries.remove(released_berries.get(i));
+            }
+        }
+
+        Collections.sort(released_berries, new Comparator<Integer>() {
+            public int compare(Integer lhs, Integer rhs) {
+                return name(lhs).compareTo(name(rhs));
+            }
+        });
+
+        // Add (No Item)
+        released_items.add(0, 0);
+
+        usefulThisGeneration = new int[released_items.size() + released_berries.size()];
+
+        for (int i = 0; i < released_items.size(); i++) {
+            usefulThisGeneration[i] = released_items.get(i).intValue();
+        }
+
+        for (int i = 0; i < released_berries.size(); i++) {
+            usefulThisGeneration[i+released_items.size()] = released_berries.get(i).intValue();
+        }
+    }
 
 	public static int plateType(short item) {
 		for (int i = 0; i < plates.length; i++) {

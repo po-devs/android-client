@@ -118,6 +118,15 @@ public class PokemonInfo {
 		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
 	}
 
+    public static boolean hasHackmonFormes(UniqueID uID) {
+        loadPokeNames();
+
+        int num = uID.originalHashCode();
+        PokeData data = pokemonsg.get(num);
+
+        return data.maxForme > 0;
+    }
+
 	/**
 	 * Loads formes into list by uID
 	 *

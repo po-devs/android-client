@@ -11,6 +11,7 @@ import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ListedPokemon;
 import com.podevs.android.poAndroid.poke.Team;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
+import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
 import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 
 public class TeamFragment extends Fragment {
@@ -56,6 +57,7 @@ public class TeamFragment extends Fragment {
 	public void updateTeam() {
 		Team team = activity().team;
 		MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+        ItemInfo.setGeneration(team.gen.num);
 		for (int i = 0; i < 6; i++) {
 			pokeList[i].update(team.poke(i), true);
 		}

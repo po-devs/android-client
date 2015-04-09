@@ -27,6 +27,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public TeamMove[] moves = new TeamMove[4];
 	public byte[] DVs = new byte[6];
 	public byte[] EVs = new byte[6];
+    public boolean isHackmon = false;
 
 	public TeamPoke(Bais msg) {
 		loadFromBais(msg);
@@ -59,6 +60,8 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 		Bais data = b.readFlags();
 		shiny = data.readBool();
+
+        isHackmon = data.readBool();
 
 		if (network.readBool()) { //nickname flag
 			nick = b.readString();
@@ -123,6 +126,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		gen = new Gen();
 		shiny = false;
 		happiness = 0;
+        isHackmon = false;
 		level = 100;
 		/*moves[0] = 331;
 		moves[1] = 213;
@@ -236,7 +240,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 		b.putBaos(gen);
 		b.putBaos(uID);
 		b.write(level);
-		b.write(shiny ? 1 : 0);
+		//b.write(shiny ? 1 : 0);
+
+        b.putFlags(new boolean[]{shiny, isHackmon});
 
 		if (nick.length() > 0) {
 			b.putString(nick);
@@ -329,6 +335,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		poke.setAttribute("Shiny", String.valueOf(shiny ? 1 : 0));
 		poke.setAttribute("Nature", String.valueOf(nature));
 		poke.setAttribute("Happiness", String.valueOf(happiness));
+        poke.setAttribute("Hackmon", String.valueOf(isHackmon ? 1 : 0));
 
 		for (int i = 0; i < 4; i++) {
 			Element move = doc.createElement("Move");
@@ -356,10 +363,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public void setItem(short s) {
 		item = s;
 
-		if (uID.pokeNum == 487) {
+		if (uID.pokeNum == 487 && !isHackmon) {
 			/* Giratina */
 			setNum(new UniqueID(uID.pokeNum, item == 213 ? 1 : 0));
-		} else if (uID.pokeNum == 493) {
+		} else if (uID.pokeNum == 493 && !isHackmon) {
 			/* Arceus */
 			setNum(new UniqueID(uID.pokeNum, ItemInfo.plateType(item)));
 		}

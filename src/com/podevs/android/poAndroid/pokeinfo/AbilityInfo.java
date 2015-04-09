@@ -4,10 +4,12 @@ import android.util.SparseArray;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AbilityInfo {
 	private static ArrayList<String> abilityNames = null;
 	private static SparseArray<String> abilityMessages = null;
+    private static Short[] allAbilities = null;
 	
 	public static String name(int item) {
 		if (abilityNames == null) {
@@ -46,6 +48,7 @@ public class AbilityInfo {
 				abilityNames.add(b);
 			}
 		});
+        loadAllArray();
 	}
 	
 	private static void loadAbilityMessages() {
@@ -56,4 +59,21 @@ public class AbilityInfo {
 			}
 		});
 	}
+
+    private static void loadAllArray() {
+        allAbilities = new Short[abilityNames.size() - 1];
+        for (int i = 0; i <= allAbilities.length - 1; i++) {
+            allAbilities[i] = (short) (i + 1);
+        }
+        java.util.Arrays.sort(allAbilities, new Comparator<Short>() {
+            @Override
+            public int compare(Short lhs, Short rhs) {
+                return name(lhs).compareToIgnoreCase(name(rhs));
+            }
+        });
+    }
+
+    public static Short[] allAbility() {
+        return allAbilities;
+    }
 }

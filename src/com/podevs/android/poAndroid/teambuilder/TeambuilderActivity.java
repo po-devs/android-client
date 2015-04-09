@@ -118,7 +118,7 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
-        Runtime.getRuntime().gc();
+       // Runtime.getRuntime().gc();
     }
 
 	// This function will allow you do download txt from web.
@@ -150,6 +150,7 @@ public class TeambuilderActivity extends FragmentActivity {
 									team = importableParse(textToParse);
 								}
 								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                                ItemInfo.setGeneration(team.gen.num);
 								updateTeam();
 								if (progressDialog.isShowing()) {
 									progressDialog.dismiss();
@@ -194,7 +195,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 				}
 				*/
-                Runtime.getRuntime().gc();
+               // Runtime.getRuntime().gc();
 				if (progressDialog.isShowing()) {
 					progressDialog.dismiss();
 				}
@@ -406,6 +407,7 @@ public class TeambuilderActivity extends FragmentActivity {
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
     					team = new PokeParser(TeambuilderActivity.this, file, true).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                        ItemInfo.setGeneration(team.gen.num);
     					updateTeam();
     				}
     			});
@@ -596,8 +598,9 @@ public class TeambuilderActivity extends FragmentActivity {
 	public void onGenChanged() {
 		MoveInfo.newGen();
 		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
+        ItemInfo.setGeneration(team.gen.num);
 		updateTeam();
 		PokemonInfo.resetGen6();
-        Runtime.getRuntime().gc();
+       // Runtime.getRuntime().gc();
 	}
 }

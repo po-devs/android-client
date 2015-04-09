@@ -179,6 +179,27 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Manual IV"
+                    android:id="@+id/manualiv">
+            </Button>
+
+            <ToggleButton android:layout_width="0dp"
+                          android:layout_weight="1"
+                          android:layout_height="wrap_content"
+                          android:textOff="Hackmon Disabled"
+                          android:textOn="Hackmon Enabled"
+                    android:id="@+id/hackmon">
+            </ToggleButton>
+        </LinearLayout>
+
     </LinearLayout>
 
 </ScrollView>

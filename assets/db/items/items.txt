@@ -378,7 +378,7 @@
 2032 Pidgeotite
 2033 Slowbronite
 2034 Steelixite
-2035 Sablite
+2035 Sablenite
 2036 Sharpedonite
 2037 Cameruptite
 2038 Altarianite

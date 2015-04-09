@@ -777,7 +777,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	        
 			checkRearrangeTeamDialog();
 
-            Runtime.getRuntime().gc();
+        //    Runtime.getRuntime().gc();
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {

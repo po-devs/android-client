@@ -199,7 +199,7 @@ public class SpectatingBattle {
 				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
-                Runtime.getRuntime().gc();
+               // Runtime.getRuntime().gc();
 			}
 
 			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
