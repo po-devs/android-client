@@ -3,9 +3,10 @@ package com.podevs.android.poAndroid.registry;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Environment;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import com.podevs.android.poAndroid.BuildConfig;
+import android.widget.Toast;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -83,6 +84,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
         } catch (Exception e) {
             Log.e(TAG, "Error getting meta data", e);
         }
+        mContext = context;
     }
 
     /**
@@ -92,7 +94,26 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
      * @param e Error thrown
      */
 
-    public void uncaughtException(Thread t, Throwable e) {
+    private Context mContext;
+
+    public void uncaughtException(Thread t, final Throwable e) {
+        if (!shouldWrite) {
+            new Thread() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast.makeText(mContext, e.getClass().getName() + "\n" + Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            }.start();
+
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException dontcare) {
+                // don't care
+            }
+        }
+
         if (shouldWrite) {
             try {
                 String timestamp = "default";
