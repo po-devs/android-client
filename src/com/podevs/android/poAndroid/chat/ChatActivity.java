@@ -1113,7 +1113,7 @@ public class ChatActivity extends Activity {
                     netServ.socket.sendMessage(leave, Command.LeaveChannel);
                 break;
             } catch (Exception e) {
-                //blah blah blah
+                makeToast(e.getClass().getName(), "long");
             }
     	case PrivateMessage:
     		if (netServ == null) {
