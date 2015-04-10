@@ -32,6 +32,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	private LinearLayout formesLayout;
 	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter, formesChooserAdapter;
 	public PokemonDetailsListener listener = null;
+    private Button manualIVButton = null;
+    private ToggleButton hackmonButton = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,9 +70,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		shinyChooser = (CheckBox)v.findViewById(R.id.shiny);
 		levelChooser = (TextView)v.findViewById(R.id.level);;
 		happinessChooser = (TextView)v.findViewById(R.id.happiness);
+        manualIVButton = (Button) v.findViewById(R.id.manualiv);
+        hackmonButton = (ToggleButton) v.findViewById(R.id.hackmon);
+
+        manualIVButton.setEnabled(false);
 
 		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
-		int usefulItems[] = ItemInfo.usefulItems();
+		int usefulItems[] = ItemInfo.getUsefulThisGeneration();
 		for (int usefulItem : usefulItems) {
 			SpinnerData tempData = new SpinnerData(ItemInfo.name(usefulItem), usefulItem);
 			temp.add(tempData);
@@ -79,9 +85,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		itemChooser.setAdapter(itemChooserAdapter);
 
-		// Create an ArrayAdapter using the string array and a default spinner layout
+
 		abilityChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-		// Apply the adapter to the spinner
+
 		abilityChooser.setAdapter(abilityChooserAdapter);
 		
 		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
@@ -127,7 +133,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 					int arg2, long arg3) {
 				int orid = poke().uID().hashCode();
 				
-				poke().setItem((short) ItemInfo.usefulItems()[arg2]);
+				poke().setItem((short) ItemInfo.getUsefulThisGeneration()[arg2]);
 				notifyUpdated(orid != poke().uID().hashCode());
 			}
 
@@ -138,14 +144,25 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		abilityChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				short abilities [] = PokemonInfo.abilities(poke().uID(), poke().gen.num);
-				for (short ability : abilities) {
-					if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
-						poke().ability = ability;
-						notifyUpdated();
-						break;
-					}
-				}
+                if (!poke().isHackmon) {
+                    short abilities[] = PokemonInfo.abilities(poke().uID(), poke().gen.num);
+                    for (short ability : abilities) {
+                        if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
+                            poke().ability = ability;
+                            notifyUpdated();
+                            break;
+                        }
+                    }
+                } else {
+                    Short[] abilities = AbilityInfo.allAbility();
+                    for (Short ability : abilities) {
+                        if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
+                            poke().ability = ability;
+                            notifyUpdated();
+                            break;
+                        }
+                    }
+                }
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -217,6 +234,19 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			}
 		});
 
+        hackmonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (hackmonButton.isChecked()) {
+                    poke().isHackmon = true;
+                } else {
+                    poke().isHackmon = false;
+                    resetEVs();
+                }
+                updatePoke();
+            }
+        });
+
 		return v;
 	}
 	
@@ -241,13 +271,22 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			return;
 		}
 
-		if (PokemonInfo.hasVisibleFormes(poke().uID())) {
+		TeamPoke tempPoke = poke();
+
+        if (tempPoke.gen().num != 6 && tempPoke.gen().subNum != 1) {
+            hackmonButton.setEnabled(false);
+        } else {
+            hackmonButton.setEnabled(true);
+            hackmonButton.setChecked(tempPoke.isHackmon);
+        }
+
+		if (PokemonInfo.hasVisibleFormes(tempPoke.uID()) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
 			formesLayout.setVisibility(View.VISIBLE);
 			formesChooserAdapter.clear();
 
-			for (UniqueID uID : PokemonInfo.formes(poke().uID(), poke().gen)) {
+			for (UniqueID uID : PokemonInfo.formes(tempPoke.uID(), tempPoke.gen)) {
 				formesChooserAdapter.add(PokemonInfo.name(uID));
-				if (uID.equals(poke().uID())) {
+				if (uID.equals(tempPoke.uID())) {
 					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
 				}
 			}
@@ -256,68 +295,89 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		}
 
 		for (int i = 0; i < 6; i++) {
-			sliders[i].setNum(poke().ev(i));
+			sliders[i].setNum(tempPoke.ev(i));
 		}
 		
 		updateStats();
 
-		if (poke().gen.num >= 3) {
-			short[] abilities = PokemonInfo.abilities(poke().uID(), poke().gen.num);
+		if (tempPoke.gen.num >= 3) {
 	
 			abilityChooserAdapter.clear();
-			abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
-			if (abilities[0] == poke().ability) {
-				abilityChooser.setSelection(0);
-			}
-			if (abilities[1]!=0) {
-				abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
-				if (abilities[1] == poke().ability) {
-					abilityChooser.setSelection(1);
-				}
-			}
-			if (abilities[2]!=0) {
-				abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
-				if (abilities[2] == poke().ability) {
-					abilityChooser.setSelection(abilityChooserAdapter.getCount()-1);
-				}
-			}
+            if (!poke().isHackmon) {
+                short[] abilities = PokemonInfo.abilities(poke().uID(), tempPoke.gen.num);
 
-			natureChooser.setSelection(poke().nature);
+                abilityChooserAdapter.add(AbilityInfo.name(abilities[0]));
+                if (abilities[0] == tempPoke.ability) {
+                    abilityChooser.setSelection(0);
+                }
+                if (abilities[1] != 0) {
+                    abilityChooserAdapter.add(AbilityInfo.name(abilities[1]));
+                    if (abilities[1] == tempPoke.ability) {
+                        abilityChooser.setSelection(1);
+                    }
+                }
+                if (abilities[2] != 0) {
+                    abilityChooserAdapter.add(AbilityInfo.name(abilities[2]));
+                    if (abilities[2] == tempPoke.ability) {
+                        abilityChooser.setSelection(abilityChooserAdapter.getCount() - 1);
+                    }
+                }
+            } else {
+                Short[] abilities = AbilityInfo.allAbility();
+
+                for (int i = 0; i <= abilities.length - 1; i++) {
+                    abilityChooserAdapter.add(AbilityInfo.name(abilities[i]));
+                    if (abilities[i] == tempPoke.ability) {
+                        abilityChooser.setSelection(i);
+                    }
+                }
+            }
+
+			natureChooser.setSelection(tempPoke.nature);
 
 			natureChooser.setVisibility(View.VISIBLE);
 			abilityChooser.setVisibility(View.VISIBLE);
-		} else {
+        } else {
 			natureChooser.setVisibility(View.GONE);
 			abilityChooser.setVisibility(View.GONE);
 		}
 
-		if (poke().gen.num >= 2) {
+		tempPoke = poke();
+
+		if (tempPoke.gen.num >= 2) {
 			genderChooserAdapter.clear();
-			int genderChoice = PokemonInfo.gender(poke().uID());
-			if (genderChoice == 0) {
-				poke().gender = 0;
-				genderChooserAdapter.add("Neutral");
-			} else if (genderChoice == 1) {
-				genderChooserAdapter.add("Male");
-			} else if (genderChoice == 2) {
-				genderChooserAdapter.add("Female");
-			} else {
-				genderChooserAdapter.add("Male");
-				genderChooserAdapter.add("Female");
+            if (poke().isHackmon) {
+                genderChooserAdapter.add("Neutral");
+                genderChooserAdapter.add("Male");
+                genderChooserAdapter.add("Female");
+                genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
+            } else {
+                int genderChoice = PokemonInfo.gender(tempPoke.uID());
+                if (genderChoice == 0) {
+                    tempPoke.gender = 0;
+                    genderChooserAdapter.add("Neutral");
+                } else if (genderChoice == 1) {
+                    genderChooserAdapter.add("Male");
+                } else if (genderChoice == 2) {
+                    genderChooserAdapter.add("Female");
+                } else {
+                    genderChooserAdapter.add("Male");
+                    genderChooserAdapter.add("Female");
 
-				genderChooser.setSelection(poke().gender == 1 ? 0 : 1);
-			}
+                    genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
+                }
+            }
 
-			int usefulItems[] = ItemInfo.usefulItems();
-			int pokeitem = poke().item();
+			int usefulItems[] = ItemInfo.getUsefulThisGeneration();
+			int pokeitem = tempPoke.item();
 			for (int i = 0; i < usefulItems.length; i++) {
 				if (usefulItems[i] == pokeitem) {
 					itemChooser.setSelection(i);
 					break;
 				}
 			}
-			shinyChooser.setChecked(poke().shiny);
-			happinessChooser.setText("Happy: " + (poke().happiness & 0xFF));
+			shinyChooser.setChecked(tempPoke.shiny);
+			happinessChooser.setText("Happy: " + (tempPoke.happiness & 0xFF));
 
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
@@ -330,28 +390,40 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			happinessChooser.setVisibility(View.GONE);
 		}
 
-		levelChooser.setText(" Lvl: " + poke().level());
+		levelChooser.setText(" Lvl: " + tempPoke.level());
 	}
 	
 	public void updateStats() {
+		TeamPoke tempPoke = poke();
 		for (int i = 0; i < 6; i++) {
-			labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+			labels[i].setText(StatsInfo.Shortcut(i) + ": " + tempPoke.stat(i));
 		}
 	}
 
 	public void onEVChanged(int stat, int ev) {
-		int totalEVs = poke().totalEVs() - poke().ev(stat) + ev;
-		
-		if (totalEVs > 510 && poke().gen().num > 2) {
-			ev = (510 - (poke().totalEVs() - poke().ev(stat)));
-			ev = ev/4*4;
-			sliders[stat].setNum(ev);
-		}
+		TeamPoke tempPoke = poke();
+		int totalEVs = tempPoke.totalEVs() - tempPoke.ev(stat) + ev;
+
+        if (!tempPoke.isHackmon) {
+            if (totalEVs > 510 && tempPoke.gen().num > 2) {
+                ev = (510 - (tempPoke.totalEVs() - tempPoke.ev(stat)));
+                ev = ev / 4 * 4;
+                sliders[stat].setNum(ev);
+            }
+        }
 		
 		poke().EVs[stat] = (byte)ev;
 
-		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + poke().stat(stat));
+		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
 
 		notifyUpdated();
 	}
+
+    private void resetEVs() {
+        for (int i = 0; i < 6; i++) {
+            sliders[i].setNum(0);
+            poke().EVs[i] = 0;
+            labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+        }
+    }
 }

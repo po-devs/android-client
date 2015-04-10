@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:summary="@string/chat_summary"
+            android:title="@string/chat_title" >
+        <CheckBoxPreference
+                android:key="flashing"
+                android:summary="@string/flash_summary"
+                android:title="@string/flash_title"
+                android:defaultValue="true"/>
+        <EditTextPreference
+                android:key="flashColor"
+                android:summary="@string/flash_color_summary"
+                android:title="@string/flash_color_title"
+                android:defaultValue="#FFFF00"/>
+        <CheckBoxPreference
+                android:key="timeStamp"
+                android:summary="@string/timestamp_chat_summary"
+                android:title="@string/timestamp_chat_title"
+                android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="notificationsFlash"
+            android:summary="@string/notifications_chat_summary"
+            android:title="@string/notifications_chat_title"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:summary="@string/pm_summary"
+            android:title="@string/pm_title" >
+        <CheckBoxPreference
+                android:key="timeStampPM"
+                android:summary="@string/timestamp_pm_summary"
+                android:title="@string/timestamp_pm_title"
+                android:defaultValue="true"/>
+        <CheckBoxPreference
+                android:key="notificationsPM"
+                android:summary="@string/notifications_pm_summary"
+                android:title="@string/notifications_pm_title"
+                android:defaultValue="true"/>
+        <CheckBoxPreference
+                android:key="crySound"
+                android:summary="@string/sound_notification_summary"
+                android:title="@string/sound_notification_title"
+                android:defaultValue="false"/>
+        <EditTextPreference
+                android:key="pokemonNumber"
+                android:summary="@string/poke_number_summary"
+                android:title="@string/poke_number_title"
+                android:inputType="number"
+                android:defaultValue="648"/>
+        <EditTextPreference
+                android:key="soundVolume"
+                android:summary="@string/volume_summary"
+                android:title="@string/volume_title"
+                android:inputType="number"
+                android:defaultValue="10"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:summary=""
+        android:title="Miscellaneous" >
+        <CheckBoxPreference
+            android:key="shouldWrite"
+            android:summary="Dump crash data to file"
+            android:title="Save crash log"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

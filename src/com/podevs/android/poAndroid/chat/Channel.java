@@ -1,21 +1,22 @@
 package com.podevs.android.poAndroid.chat;
 
-import java.util.Hashtable;
-import java.util.LinkedList;
-
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-
+import android.view.View;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.Bais;
+
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Contains all info regarding a channel: name, id, joined,
@@ -37,14 +38,28 @@ public class Channel {
 	
 	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
 
-	public void writeToHist(CharSequence text) {
+	public void writeToHist(CharSequence text, boolean clickable, final String command) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class)
 			spannable = new SpannableStringBuilder(text);
 		else
 			spannable = (SpannableStringBuilder)text;
+		if (clickable) {
+			// With more customization could do something like clickable text that spectates battles and such
+			spannable.setSpan(new ClickableSpan() {
+				@Override
+				public void onClick(View widget) {
+					netServ.joinChannel(command.replace("#", ""));
+				}
+			}, text.toString().indexOf(command), text.toString().indexOf(command) + command.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
 		write(spannable);
 	}
+
+	/**
+	 *
+	 * @param text Text to write in small font.
+	 */
 
 	public void writeToHistSmall(CharSequence text) {
 		SpannableStringBuilder spannable;
@@ -56,6 +71,11 @@ public class Channel {
 		write(spannable);
 	}
 
+	/**
+	 *
+	 * @param spannable Spannable to write to history.
+	 */
+
 	protected void write(SpannableStringBuilder spannable) {
 		synchronized(messageList) {
 			messageList.add(spannable);
@@ -65,6 +85,13 @@ public class Channel {
 		}
 	}
 
+	/**
+	 *
+	 * @param text Text to write.
+	 * @param left Left index to color.
+	 * @param right Right index to color.
+	 * @param color Hex color to apply to left-right range.
+	 */
 	public void writeToHist(CharSequence text, int left, int right, String color) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class) {
@@ -129,7 +156,7 @@ public class Channel {
 		if (!netServ.joinedChannels.contains(this)) {
 			netServ.joinedChannels.addFirst(this);
 			netServ.updateJoinedChannels();
-			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"));
+			writeToHist(Html.fromHtml("<i>Joined channel: <b>" + name + "</b></i>"), false, null);
 		}
 	}
 	
@@ -214,7 +241,7 @@ public class Channel {
 					netServ.joinedChannels.remove(this);
 					netServ.updateJoinedChannels();
 					
-					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"));
+					writeToHist(Html.fromHtml("<i>Left channel: <b>" + name + "</b></i>"), false , null);
 				}
 				// TODO Let pm know
 				/* If a pmed players logs out, we receive the log out message before the leave channel one

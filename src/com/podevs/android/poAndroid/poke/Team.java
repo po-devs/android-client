@@ -1,7 +1,11 @@
 package com.podevs.android.poAndroid.poke;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import android.content.Context;
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,15 +16,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import android.content.Context;
-
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
-import com.podevs.android.utilities.SerializeBytes;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class Team implements SerializeBytes {
 	public Gen gen = new Gen();
@@ -131,26 +128,41 @@ public class Team implements SerializeBytes {
 		}
 		DOMSource source = new DOMSource(doc);
 		StreamResult result;
+  //      StringWriter writer = new StringWriter();
+   //     StreamResult result1 = new StreamResult(writer);
 		try {
 			result = new StreamResult(c.openFileOutput(c.getSharedPreferences("team", 0).getString("file", "team.xml"), Context.MODE_WORLD_READABLE));
-		} catch (FileNotFoundException e1) {
+        } catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return;
 		}
- 
+
 		// Output to console for testing
 		// StreamResult result = new StreamResult(System.out);
- 
-		try {
+
+        try {
 			transformer.transform(source, result);
+      //      transformer.transform(source, result1);
 		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
 			result.getOutputStream().close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+
+        /* Bootleg
+        try {
+            String file = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + c.getSharedPreferences("team", 0).getString("file", "team.xml");
+            BufferedWriter bos = new BufferedWriter(new FileWriter(file));
+            bos.write(writer.toString());
+            bos.flush();
+            bos.close();
+        } catch (Exception e) {
+            return;
+        }
+        */
+    }
 }

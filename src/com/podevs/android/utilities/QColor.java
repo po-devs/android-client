@@ -2,6 +2,9 @@ package com.podevs.android.utilities;
 
 import android.graphics.Color;
 
+/**
+ * QColor support
+ */
 
 public class QColor implements SerializeBytes {
 	public int colorInt = Color.BLACK;

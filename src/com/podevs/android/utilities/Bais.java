@@ -1,12 +1,15 @@
 package com.podevs.android.utilities;
 
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-
-import android.util.Log;
+/**
+ * Custom ByteArrayInputStream
+ */
 
 public class Bais extends ByteArrayInputStream {
 	final static String TAG = "BAIS";

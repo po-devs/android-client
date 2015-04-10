@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.teambuilder;
 
-import java.util.Set;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,7 +23,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.player.PlayerProfile;
 import com.podevs.android.poAndroid.poke.Gen;
@@ -33,6 +30,8 @@ import com.podevs.android.poAndroid.poke.Team;
 import com.podevs.android.poAndroid.pokeinfo.GenInfo;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.QColor;
+
+import java.util.Set;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TrainerFragment extends Fragment {

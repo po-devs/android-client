@@ -1,5 +1,8 @@
 package com.podevs.android.poAndroid;
 
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
@@ -7,9 +10,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
 import java.text.ParseException;
-
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
 
 public class PokeClientSocket {
 	// Socket channel, true connection.

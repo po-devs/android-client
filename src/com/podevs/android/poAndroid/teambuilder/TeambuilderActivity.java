@@ -118,6 +118,7 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
+       // Runtime.getRuntime().gc();
     }
 
 	// This function will allow you do download txt from web.
@@ -149,6 +150,7 @@ public class TeambuilderActivity extends FragmentActivity {
 									team = importableParse(textToParse);
 								}
 								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                                ItemInfo.setGeneration(team.gen.num);
 								updateTeam();
 								if (progressDialog.isShowing()) {
 									progressDialog.dismiss();
@@ -157,6 +159,7 @@ public class TeambuilderActivity extends FragmentActivity {
 								e.printStackTrace();
 							}
 						}
+
 					});
 
 				} catch (MalformedURLException e) {
@@ -192,6 +195,7 @@ public class TeambuilderActivity extends FragmentActivity {
 
 				}
 				*/
+               // Runtime.getRuntime().gc();
 				if (progressDialog.isShowing()) {
 					progressDialog.dismiss();
 				}
@@ -227,6 +231,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			boolean IVsGiven = false;
 			int I = 0;
 			for (String s: parseList) {
+                s = s.trim();
 				if (movesNext && s.contains("- ")) {
 					if (s.contains("(No Move")) {
 						newPoke.moves[I] = new TeamMove(0);
@@ -413,6 +418,7 @@ public class TeambuilderActivity extends FragmentActivity {
     					getSharedPreferences("team", 0).edit().putString("file", file).commit();
     					team = new PokeParser(TeambuilderActivity.this, file, true).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+                        ItemInfo.setGeneration(team.gen.num);
     					updateTeam();
     				}
     			});
@@ -571,7 +577,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		} else if (requestCode == POKEEDIT_RESULT_CODE) {
 			if (resultCode == RESULT_OK) {
 				int slot = intent.getIntExtra("slot", 0);
-				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")));
+				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")), team.gen);
 
 				team.setPoke(slot, poke);
 				teamChanged = true;
@@ -603,7 +609,9 @@ public class TeambuilderActivity extends FragmentActivity {
 	public void onGenChanged() {
 		MoveInfo.newGen();
 		MoveInfo.forceSetGen(this.team.gen.num, this.team.gen.subNum);
+        ItemInfo.setGeneration(team.gen.num);
 		updateTeam();
 		PokemonInfo.resetGen6();
+       // Runtime.getRuntime().gc();
 	}
 }

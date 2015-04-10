@@ -1,8 +1,7 @@
 package com.podevs.android.poAndroid.poke;
 
-import org.w3c.dom.Element;
-
 import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
+import org.w3c.dom.Element;
 
 public class TeamMove implements Move {
 	short num;

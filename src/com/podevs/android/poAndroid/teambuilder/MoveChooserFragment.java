@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CheckBox;
 import android.widget.ListView;
-
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;

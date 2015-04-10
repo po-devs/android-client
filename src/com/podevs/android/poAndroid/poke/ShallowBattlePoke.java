@@ -1,10 +1,7 @@
 package com.podevs.android.poAndroid.poke;
 
-import java.util.LinkedList;
-
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-
 import com.podevs.android.poAndroid.ColorEnums;
 import com.podevs.android.poAndroid.battle.BattleMove;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
@@ -13,6 +10,8 @@ import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
+
+import java.util.LinkedList;
 
 // This class represents the Opponent's poke during a battle.
 public class ShallowBattlePoke implements SerializeBytes {
@@ -150,5 +149,10 @@ public class ShallowBattlePoke implements SerializeBytes {
 	public void setTypes(Byte gen) {
 		types[0] = Type.values()[PokemonInfo.type1(uID, gen)];
 		types[1] = Type.values()[PokemonInfo.type2(uID, gen)];
+	}
+
+	@Override
+	public String toString() {
+		return "" + this.uID.toString() + (this.shiny ? "s" : "") + (this.gender == 2 ? "f" : "");
 	}
 }

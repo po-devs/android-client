@@ -1,12 +1,11 @@
 package com.podevs.android.poAndroid.poke;
 
 import com.podevs.android.poAndroid.pokeinfo.GenInfo;
+import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.utilities.StringUtilities;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.utilities.StringUtilities;
 
 
 public class XMLHandler extends DefaultHandler {
@@ -58,6 +57,7 @@ public class XMLHandler extends DefaultHandler {
 			poke.shiny = Integer.parseInt(StringUtilities.def(atts.getValue("Shiny"), "0")) != 0;
 			poke.happiness = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Happiness"), "0"));
 			poke.level = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Lvl"), "0"));
+            poke.isHackmon = Integer.parseInt(StringUtilities.def(atts.getValue("Hackmon"), "0")) != 0;
 		}
 		else if (localName.equals("Move"))
 			inMove = true;

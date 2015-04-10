@@ -1,8 +1,5 @@
 package com.podevs.android.poAndroid.battle;
 
-import java.util.Locale;
-import java.util.Random;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,7 +8,6 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.ColorEnums.QtColor;
 import com.podevs.android.poAndroid.ColorEnums.StatusColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeColor;
@@ -19,11 +15,7 @@ import com.podevs.android.poAndroid.ColorEnums.TypeForWeatherColor;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
-import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
-import com.podevs.android.poAndroid.poke.PokeEnums.Status;
-import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
-import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
-import com.podevs.android.poAndroid.poke.PokeEnums.WeatherState;
+import com.podevs.android.poAndroid.poke.PokeEnums.*;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
@@ -33,6 +25,9 @@ import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.StringUtilities;
+
+import java.util.Locale;
+import java.util.Random;
 
 public class SpectatingBattle {
 	static protected final String TAG = "SpectatingBattle";
@@ -201,8 +196,10 @@ public class SpectatingBattle {
 			}
 
 			if (activity != null) {
+				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
+               // Runtime.getRuntime().gc();
 			}
 
 			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
@@ -521,7 +518,7 @@ public class SpectatingBattle {
 				case Rain: message = "The rain stopped!"; break;
                 case HeavySun: message = "The intense sunlight faded!"; break;
                 case HeavyRain: message = "The heavy downpour stopped!"; break;
-					case Delta: message = "The mysterious air current has dissipated!"; break;
+				case Delta: message = "The mysterious air current has dissipated!"; break;
 				default: message = "";
 				}
 				writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
@@ -585,9 +582,10 @@ public class SpectatingBattle {
 		} case Substitute: {
 			currentPoke(player).sub = msg.readBool();
 
-			if (activity != null)
-				activity.updateOppPoke(player);
-
+			if (activity != null) {
+				activity.samePokes[player] = false;
+				activity.updatePokes(player);
+			}
 			break;
 		} case BattleEnd: {
 			byte res = msg.readByte();
@@ -646,6 +644,7 @@ public class SpectatingBattle {
 				else
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 				break;
@@ -656,6 +655,7 @@ public class SpectatingBattle {
 				if (isOut(poke)) {
 					currentPoke(slot(player, poke)).uID = newForm;
 					if (activity !=null) {
+						activity.samePokes[player] = false;
 						activity.updatePokes(player);
 					}
 				}
@@ -664,6 +664,7 @@ public class SpectatingBattle {
 				short newForm = msg.readShort();
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
+					activity.samePokes[player] = false;
 					activity.updatePokes(player);
 				}
 			default: break;

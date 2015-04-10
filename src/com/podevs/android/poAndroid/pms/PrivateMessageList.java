@@ -1,8 +1,8 @@
 package com.podevs.android.poAndroid.pms;
 
-import java.util.TreeMap;
-
 import com.podevs.android.poAndroid.player.PlayerInfo;
+
+import java.util.TreeMap;
 
 public class PrivateMessageList {
 	protected TreeMap<Integer, PrivateMessage> privateMessages = new TreeMap<Integer, PrivateMessage>();

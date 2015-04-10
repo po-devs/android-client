@@ -1,11 +1,11 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import java.util.ArrayList;
-
 import android.util.SparseArray;
-
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class MoveInfo extends GenInfo {
 	public static class Move {
@@ -25,6 +25,7 @@ public class MoveInfo extends GenInfo {
 
 	private static ArrayList<Move> moveNames = null;
 	private static SparseArray<String> moveMessages = null;
+    private static Short[] allMoves = null;
 
 	private static int thisGen = genMax();
 	// private static int thisSubGen = 6;
@@ -242,7 +243,21 @@ public class MoveInfo extends GenInfo {
 				moveNames.add(new Move(b));
 			}
 		});
+        fillAllMoves();
 	}
+
+    private static void fillAllMoves() {
+        allMoves = new Short[moveNames.size() - 1];
+        for (int i = 0; i <= allMoves.length - 1; i++) {
+            allMoves[i] = (short) (i + 1);
+        }
+        java.util.Arrays.sort(allMoves, new Comparator<Short>() {
+            @Override
+            public int compare(Short lhs, Short rhs) {
+                return name(lhs).compareToIgnoreCase(name(rhs));
+            }
+        });
+    }
 
 	private static void loadMoveMessages() {
 		moveMessages = new SparseArray<String>();
@@ -252,4 +267,8 @@ public class MoveInfo extends GenInfo {
 			}
 		});
 	}
+
+    public static Short[] getAllMoves() {
+        return allMoves;
+    }
 }

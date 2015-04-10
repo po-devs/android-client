@@ -36,6 +36,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NetworkService extends Service {
 	static final String TAG = "Network Service";
@@ -65,6 +67,8 @@ public class NetworkService extends Service {
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
 	private ImageParser imageParser;
+	private Pattern hashTagPattern;
+	private Matcher hashTagMatcher;
 
 	private static class chatPrefs {
 		// Chat
@@ -152,15 +156,15 @@ public class NetworkService extends Service {
 	public void addBattle(int battleid, BattleDesc desc, boolean show) {
 		battles.put(battleid, desc);
 // battle event
-		String n1 = "";
+		// String n1 = "";
 		if (players.containsKey(desc.p1)) {
 			players.get(desc.p1).addBattle(battleid);
-			n1 = players.get(desc.p1).nick();
+		//	n1 = players.get(desc.p1).nick();
 		}
-		String n2 = "";
+		// String n2 = "";
 		if (players.containsKey(desc.p2)) {
 			players.get(desc.p2).addBattle(battleid);
-			n2 = players.get(desc.p2).nick();
+			// n2 = players.get(desc.p2).nick();
 		}
 		/*
 		if (show) {
@@ -337,6 +341,7 @@ public class NetworkService extends Service {
 
 		loadPOPreferences(getBaseContext());
 		loadSettings();
+		hashTagPattern = Pattern.compile("(#\\S*\\s??)");
 		imageParser = new ImageParser(this);
 	}
 
@@ -730,12 +735,14 @@ public class NetworkService extends Service {
 			
 			PlayerInfo p = players.get(id);
 			if (p != null) {
-				p.hasLadderEnabled = dataFlags.readBool();
-				p.isAway = dataFlags.readBool();
+                PlayerInfo p2 = p;
+				p2.hasLadderEnabled = dataFlags.readBool();
+				p2.isAway = dataFlags.readBool();
 
-				if (p.id == myid) {
-					me.setTo(p);
+				if (p2.id == myid) {
+					me.setTo(p2);
 				}
+                chatActivity.updatePlayer(p, p2);
 			}
 			break;
 		}	case SendMessage: {
@@ -844,6 +851,7 @@ public class NetworkService extends Service {
 					}
 				}
 			}
+
 			if (!hasChannel) {
 				// Broadcast message
 				if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
@@ -851,14 +859,25 @@ public class NetworkService extends Service {
 				else {
 					Iterator<Channel> it = joinedChannels.iterator();
 					while (it.hasNext()) {
-						it.next().writeToHist(message);
+						it.next().writeToHist(message, false, null);
 					}
 				}
 			} else {
 				if (chan == null) {
 					Log.e(TAG, "Received message for nonexistent channel");
 				} else {
-					chan.writeToHist(message);
+					boolean click = false;
+					String command = null;
+					hashTagMatcher = hashTagPattern.matcher(message);
+					if (hashTagMatcher.find()) {
+						command = hashTagMatcher.group(0);
+						if (channelNameTagger(command.toLowerCase().replace("#", ""))) {
+							click = true;
+						} else {
+							command = null;
+						}
+					}
+					chan.writeToHist(message, click, command);
 				}
 			}
 			break;
@@ -980,7 +999,7 @@ public class NetworkService extends Service {
 				if (battleDesc < 2) {
 					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
 							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
-							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"));
+							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"), false, null);
 				}
 
 				if (battleDesc == 0 || battleDesc == 3) {
@@ -1038,7 +1057,7 @@ public class NetworkService extends Service {
 				activeBattles.put(battleId, battle);
 
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
-						" and " + playerName(p2) + " started!");
+						" and " + playerName(p2) + " started!", false, null);
 				Intent intent;
 				intent = new Intent(this, BattleActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1159,11 +1178,11 @@ public class NetworkService extends Service {
 
 	private void writeMessage(String s) {
 		if (chatActivity != null && chatActivity.currentChannel() != null) {
-			chatActivity.currentChannel().writeToHist("\n"+s);
+			chatActivity.currentChannel().writeToHist("\n"+s, false, null);
 			chatActivity.updateChat();
 		} else if (joinedChannels.size() > 0) {
 			for (Channel c: joinedChannels) {
-				c.writeToHist("\n"+s);
+				c.writeToHist("\n"+s, false, null);
 			}
 		}
 	}
@@ -1178,6 +1197,22 @@ public class NetworkService extends Service {
 		}
 		
 		return p;
+	}
+
+	public void joinChannel(String channelName) {
+		Baos join = new Baos();
+		join.putString(channelName);
+		if (socket.isConnected())
+			socket.sendMessage(join, Command.JoinChannel);
+	}
+
+	public boolean channelNameTagger(String channelName) {
+		for (Channel c : channels.values()) {
+			if (c.name().toLowerCase().equals(channelName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1432,6 +1467,7 @@ public class NetworkService extends Service {
 		this.stopSelf();
 	}
 
+    /*
 	public PlayerInfo getPlayerByName(String playerName) {
 		Enumeration<Integer> e = players.keys();
 		while(e.hasMoreElements()) {
@@ -1441,6 +1477,7 @@ public class NetworkService extends Service {
 		}
 		return null;
 	}
+	*/
 
 	public BattleDesc battle(Integer battleid) {
 		return battles.get(battleid);
@@ -1470,25 +1507,13 @@ public class NetworkService extends Service {
 		pmedPlayers.add(id);
 	}
 
-	public Object getPreference(String pref) {
-		SharedPreferences POPreferences = PreferenceManager.getDefaultSharedPreferences(NetworkService.this);
-		if (pref.equals("flashColor")) {
-			return POPreferences.getString("flashColor", "#FFFF00");
-		}
-		if (pref.equals("flashing")) {
-			return POPreferences.getBoolean("flashing", true);
-		}
-		if (pref.equals("timeStamp")) {
-			return POPreferences.getBoolean("timeStamp", false);
-		}
-		return null;
-	}
-
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
 		if (chatActivity != null) {
 			chatActivity.populateUI(true);
-			chatActivity.progressDialog.dismiss();
+            if (chatActivity.progressDialog != null) {
+                chatActivity.networkDismissDialog();
+            }
 		}
 		
 		SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);

@@ -1,12 +1,9 @@
 package com.podevs.android.poAndroid.chat;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.NotificationManager;
-import android.app.ProgressDialog;
+import android.app.*;
 import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -15,37 +12,14 @@ import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.podevs.android.poAndroid.Command;
-import com.podevs.android.poAndroid.IncomingChallenge;
-import com.podevs.android.poAndroid.MessageListAdapter;
-import com.podevs.android.poAndroid.NetworkService;
-import com.podevs.android.poAndroid.R;
-import com.podevs.android.poAndroid.Tier;
+import com.podevs.android.poAndroid.*;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
@@ -57,7 +31,10 @@ import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class ChatActivity extends Activity {
 	
@@ -208,6 +185,13 @@ public class ChatActivity extends Activity {
 					disconnect();
 				}
 			});
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 		}
 		
 		super.onCreate(savedInstanceState);
@@ -348,8 +332,10 @@ public class ChatActivity extends Activity {
 			netServ.chatActivity = ChatActivity.this;
 			if (netServ.joinedChannels.peek() != null && !netServ.joinedChannels.isEmpty()) {
 				populateUI(false);
-				if (progressDialog.isShowing())
-					progressDialog.dismiss();
+				if (progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+                }
 				loading = false;
 			}
 			checkAskForServerPass();
@@ -371,6 +357,11 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
+
+    public void networkDismissDialog() {
+        progressDialog.dismiss();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+    }
 	
 	/**
 	 * Gives the current channel
@@ -597,6 +588,13 @@ public class ChatActivity extends Activity {
         	final EditText passField = new EditText(this);
         	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+            }
 			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
 					.setCancelable(true)
 					.setView(passField)
@@ -613,6 +611,8 @@ public class ChatActivity extends Activity {
 								}
 							}
 							removeDialog(id);
+                            if (!loading)
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 						}
 					})
 					.setOnCancelListener(new OnCancelListener() {
@@ -621,6 +621,8 @@ public class ChatActivity extends Activity {
 							if (!registering) {
 								disconnect();
 							}
+                            if (!loading)
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 				}
 			});
 			if (netServ != null) {
@@ -747,7 +749,7 @@ public class ChatActivity extends Activity {
 			return new TierAlertDialog(this, netServ.superTier);
 		} case PlayerInfo: {
 			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
-            ImageView[] pPokeIcons = new ImageView[6];
+            // ImageView[] pPokeIcons = new ImageView[6];
             TextView pInfo, pName;
             ListView ratings;
 			builder.setView(layout)
@@ -768,12 +770,18 @@ public class ChatActivity extends Activity {
             	}});
             final AlertDialog pInfoDialog = builder.create();
             
+<<<<<<< HEAD
 			//TODO: Work with pPokeIcons
             for(int i = 0; i < 6; i++){
         	pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + 
         			(i+1), "id", packName));
+=======
+
+            // for(int i = 0; i < 6; i++){
+        	// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
+>>>>>>> 27dfb5d8269228d3cb67e458ee6492e7974b85b9
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
-            }
+            // }
         	pInfo = (TextView)layout.findViewById(R.id.player_info);
         	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
         	pName = (TextView)layout.findViewById(R.id.player_info_name);
@@ -1040,8 +1048,14 @@ public class ChatActivity extends Activity {
 			}
     		break;
     	case R.id.channellisting:
-    		lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
-    		String cName = lastClickedChannel.name;
+            String cName = "Default";
+            try {
+                lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
+                cName = lastClickedChannel.name;
+            } catch (IndexOutOfBoundsException e) {
+                cName = "Error: " + aMenuInfo.position + " " + channelAdapter.getCount();
+                lastClickedChannel = netServ.joinedChannels.getFirst();
+            }
     		menu.setHeaderTitle(cName);
     		if (netServ.joinedChannels.contains(lastClickedChannel)) {
 				menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
@@ -1054,6 +1068,7 @@ public class ChatActivity extends Activity {
 			}
     		else
         		menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
+
     		break;
     	}
     }
@@ -1093,11 +1108,15 @@ public class ChatActivity extends Activity {
     			netServ.socket.sendMessage(join, Command.JoinChannel);
     		break;
     	case LeaveChannel:
-    		Baos leave = new Baos();
-    		leave.putInt(lastClickedChannel.id);
-    		if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
-    			netServ.socket.sendMessage(leave, Command.LeaveChannel);
-    		break;
+            try {
+                Baos leave = new Baos();
+                leave.putInt(lastClickedChannel.id);
+                if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
+                    netServ.socket.sendMessage(leave, Command.LeaveChannel);
+                break;
+            } catch (Exception e) {
+                makeToast(e.getClass().getName(), "long");
+            }
     	case PrivateMessage:
     		if (netServ == null) {
     			Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
@@ -1125,6 +1144,7 @@ public class ChatActivity extends Activity {
 		}
 		if (progressDialog != null) {
 			progressDialog.dismiss();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 		}
 		
 		Intent intent = new Intent(this, RegistryActivity.class);

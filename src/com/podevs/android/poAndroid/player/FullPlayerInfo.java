@@ -2,7 +2,6 @@ package com.podevs.android.poAndroid.player;
 
 import android.content.Context;
 import android.widget.Toast;
-
 import com.podevs.android.poAndroid.poke.PokeParser;
 import com.podevs.android.poAndroid.poke.Team;
 import com.podevs.android.utilities.Bais;

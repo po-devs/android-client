@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 /**
- * Created by JonathanJM on 3/4/2015.
+ * Custom Html.ImageGetter
  */
 
 public class ImageParser implements Html.ImageGetter {

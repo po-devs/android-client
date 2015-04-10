@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+
 /**
- * Created by coyotte508 on 2/21/14.
+ * Gets data from file
  */
+
 public class FileContent {
     public static String getFileContent(Context context, String filename) {
         try {

@@ -2,17 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.podevs.android.poAndroid"
     android:installLocation="auto"
-    android:versionCode="48"
-    android:versionName="2.5.3.7" >
+    android:versionCode="51"
+    android:versionName="2.6.0" >
 
     <uses-sdk
+<<<<<<< HEAD
         android:minSdkVersion="8"
+=======
+        android:minSdkVersion="12"
+>>>>>>> 27dfb5d8269228d3cb67e458ee6492e7974b85b9
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application android:allowBackup="true" android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/AppTheme">
         <activity

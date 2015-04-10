@@ -1,8 +1,5 @@
 package com.podevs.android.poAndroid.pms;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.ComponentName;
@@ -13,21 +10,19 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.util.Log;
+import android.view.*;
 import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
 import com.viewpagerindicator.TitlePageIndicator;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class PrivateMessageActivity extends Activity {
 	private static class PMPrefs{
@@ -46,11 +41,6 @@ public class PrivateMessageActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null) {
-			if (connection != null) {
-				unbindService(connection);
-			}
-		}
         bindService(new Intent(this, NetworkService.class), connection,
         		Context.BIND_AUTO_CREATE);
         
@@ -159,6 +149,13 @@ public class PrivateMessageActivity extends Activity {
 		isViewed = false;
 		super.onPause();
 
+        try {
+            if (connection != null) {
+                unbindService(connection);
+            }
+        } catch (IllegalArgumentException e) {
+           Log.e("PM", "Illegal Argument Exception");
+        }
 	}
 
 	@Override

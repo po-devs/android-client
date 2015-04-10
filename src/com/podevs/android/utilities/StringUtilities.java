@@ -11,6 +11,10 @@ import java.util.Locale;
 
 import android.content.Context;
 
+/**
+ * Extra string methods
+ */
+
 public class StringUtilities {
 	public static String escapeHtml(String seq) {
 		return seq.replace("&", "&amp;").replace("<", "&lt;");
