@@ -173,7 +173,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				poke().gender = (byte)(1+arg2);
+				poke().gender = (byte) genderNames.indexOf((String) genderChooserAdapter.getItem(arg2));
 				notifyUpdated();
 			}
 
@@ -249,6 +249,12 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		return v;
 	}
+
+    private ArrayList<String> genderNames = new ArrayList<String>() {{
+        add("Neutral");
+        add("Male");
+        add("Female");
+    }};
 	
 	public void notifyUpdated() {
 		if (listener != null) {
