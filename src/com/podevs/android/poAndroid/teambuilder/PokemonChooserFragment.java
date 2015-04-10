@@ -124,5 +124,6 @@ public class PokemonChooserFragment extends Fragment {
 	public void setOnPokemonChosenListener(PokemonChooserListener listener) {
 		this.listener = listener;
 	}
+
 	public TeamPoke poke() {return ((EditPokemonActivity)getActivity()).getPoke();}
 }

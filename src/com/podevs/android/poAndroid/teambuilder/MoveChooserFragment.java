@@ -8,22 +8,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CheckBox;
-import android.widget.ListView;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
+import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
+import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+
+import java.util.ArrayList;
 
 public class MoveChooserFragment extends Fragment {
 	public interface MoveChooserListener {
 		public void onMovesetChanged(boolean stats);
 	}
 
-	ListView moveList = null;
-	MoveListAdapter moveAdapter = null;
+	private ListView moveList = null;
+	private MoveListAdapter moveAdapter = null;
+    private AutoCompleteTextView moveChoice = null;
+    private ArrayAdapter<String> moveChoiceAdapter = null;
 	public MoveChooserListener listener = null;
+    private ArrayList<String> names = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +40,17 @@ public class MoveChooserFragment extends Fragment {
 		moveAdapter.setPoke(poke());
 
 		moveList.setAdapter(moveAdapter);
+
+        moveChoice = (AutoCompleteTextView) v.findViewById(R.id.moveChoice);
+        moveChoiceAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        updateNames();
+        moveChoice.setAdapter(moveChoiceAdapter);
+
+        moveChoice.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                moveList.setSelection(names.indexOf(moveChoiceAdapter.getItem(arg2)));
+            }
+        });
 
 		moveList.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -110,12 +126,26 @@ public class MoveChooserFragment extends Fragment {
 
 	public void updatePoke() {
 		moveAdapter.notifyDataSetChanged();
+        updateNames();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 	}
+
+    public void updateNames() {
+        if (poke().isHackmon) {
+            names = MoveInfo.makeList(MoveInfo.getAllMoves());
+        } else {
+            names = MoveInfo.makeList(PokemonInfo.moves(poke().uID, poke().gen.num, poke().gen.subNum));
+        }
+        if (moveChoiceAdapter != null) {
+            moveChoiceAdapter.clear();
+            moveChoiceAdapter.addAll(names);
+        }
+    }
+
 
 	private TeamPoke poke() {
 		return ((EditPokemonActivity) getActivity()).getPoke();
