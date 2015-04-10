@@ -271,4 +271,20 @@ public class MoveInfo extends GenInfo {
     public static Short[] getAllMoves() {
         return allMoves;
     }
+
+    public static ArrayList<String> makeList(short[] input) {
+        ArrayList<String> nameList = new ArrayList<String>(input.length);
+        for (int i: input) {
+            nameList.add(name(i));
+        }
+        return nameList;
+    }
+
+    public static ArrayList<String> makeList(Short[] input) {
+        ArrayList<String> nameList = new ArrayList<String>(input.length);
+        for (int i: input) {
+            nameList.add(name(i));
+        }
+        return nameList;
+    }
 }
