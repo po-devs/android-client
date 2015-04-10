@@ -3,15 +3,11 @@
     package="com.podevs.android.poAndroid"
     android:installLocation="auto"
     android:versionCode="51"
-    android:versionName="2.6.0" >
+    android:versionName="2.6.0L" >
 
     <uses-sdk
-<<<<<<< HEAD
         android:minSdkVersion="8"
-=======
-        android:minSdkVersion="12"
->>>>>>> 27dfb5d8269228d3cb67e458ee6492e7974b85b9
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="10" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

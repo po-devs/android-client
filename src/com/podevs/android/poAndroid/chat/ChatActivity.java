@@ -769,17 +769,10 @@ public class ChatActivity extends Activity {
             		removeDialog(id);
             	}});
             final AlertDialog pInfoDialog = builder.create();
-            
-<<<<<<< HEAD
 			//TODO: Work with pPokeIcons
-            for(int i = 0; i < 6; i++){
-        	pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + 
-        			(i+1), "id", packName));
-=======
 
             // for(int i = 0; i < 6; i++){
         	// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
->>>>>>> 27dfb5d8269228d3cb67e458ee6492e7974b85b9
         	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
             // }
         	pInfo = (TextView)layout.findViewById(R.id.player_info);

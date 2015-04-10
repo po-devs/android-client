@@ -1,7 +1,6 @@
 package com.podevs.android.poAndroid.battle;
 
 import android.graphics.Color;
-
 import com.podevs.android.poAndroid.ColorEnums.TypeColor;
 import com.podevs.android.poAndroid.poke.Move;
 import com.podevs.android.poAndroid.pokeinfo.DamageClassInfo;

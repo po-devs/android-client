@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;

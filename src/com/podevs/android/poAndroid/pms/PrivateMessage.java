@@ -1,15 +1,9 @@
 package com.podevs.android.poAndroid.pms;
 
-<<<<<<< HEAD
-import java.util.LinkedList;
-
-=======
->>>>>>> 27dfb5d8269228d3cb67e458ee6492e7974b85b9
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.StringUtilities;
 
 import java.util.LinkedList;
-
 /**
  * Data containing the information of a private message
  *
