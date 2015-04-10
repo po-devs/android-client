@@ -36,8 +36,6 @@ public class MessageListAdapter extends BaseAdapter {
 		toAdd.setText(span);
 
         try {
-            toAdd.setTextIsSelectable(true);
-
 
             if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
 

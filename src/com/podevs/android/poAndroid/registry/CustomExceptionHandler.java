@@ -105,7 +105,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
                 @Override
                 public void run() {
                     Looper.prepare();
-                    Toast.makeText(mContext, e.getClass().getName() + "\n" + Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
                     Looper.loop();
                 }
             }.start();
