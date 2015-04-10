@@ -125,8 +125,8 @@ public class MoveChooserFragment extends Fragment {
 	}
 
 	public void updatePoke() {
-		moveAdapter.notifyDataSetChanged();
         updateNames();
+		moveAdapter.notifyDataSetChanged();
 	}
 
 	@Override

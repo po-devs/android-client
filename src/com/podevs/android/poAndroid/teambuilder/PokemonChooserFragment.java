@@ -29,6 +29,7 @@ public class PokemonChooserFragment extends Fragment {
 		public void onPokemonChosen(UniqueID id, String nickname);
 	}
 
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
