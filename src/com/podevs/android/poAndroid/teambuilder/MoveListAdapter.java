@@ -111,7 +111,7 @@ public class MoveListAdapter implements ListAdapter {
 		return getCount() == 0;
 	}
 
-	Set<DataSetObserver> observers = new HashSet<DataSetObserver>();
+	private HashSet<DataSetObserver> observers = new HashSet<DataSetObserver>();
 
 	public void registerDataSetObserver(DataSetObserver arg0) {
 		observers.add(arg0);
