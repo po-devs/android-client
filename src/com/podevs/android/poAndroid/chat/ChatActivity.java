@@ -249,6 +249,7 @@ public class ChatActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				PlayerInfo clicked = playerAdapter.getItem(position);
 				if(netServ != null && NetworkService.pmedPlayers.contains(clicked.id)) {
+                    netServ.pms.createPM(clicked);
 					Intent intent = new Intent(ChatActivity.this, PrivateMessageActivity.class);
 	    			intent.putExtra("playerId", clicked.id);
 	    			startActivity(intent);

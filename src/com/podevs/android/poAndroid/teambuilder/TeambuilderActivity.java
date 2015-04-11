@@ -339,7 +339,7 @@ public class TeambuilderActivity extends FragmentActivity {
 						}
 					}
 				} else if (s.contains(" Nature")) {
-					s = s.replace(" Nature", "");
+                    s = s.substring(0, s.indexOf(" Nature"));
 					newPoke.nature = (byte) NatureInfo.indexOf(s);
 					movesNext = true;
 				} else if (s.contains("Trait:") || s.contains("Ability:")) {

@@ -62,4 +62,6 @@ public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
 
         return row;
     }
+
+
 }
