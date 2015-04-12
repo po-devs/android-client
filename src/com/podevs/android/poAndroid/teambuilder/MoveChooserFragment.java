@@ -142,7 +142,9 @@ public class MoveChooserFragment extends Fragment {
         }
         if (moveChoiceAdapter != null) {
             moveChoiceAdapter.clear();
-            moveChoiceAdapter.addAll(names);
+            for (String s : names) {
+                moveChoiceAdapter.add(s);
+            }
         }
     }
 
