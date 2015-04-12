@@ -873,8 +873,6 @@ public class PokemonInfo {
                 throw new NullPointerException("key == null");
             }
 
-            addHistory((String) key);
-
             V mapValue;
             synchronized (this) {
                 mapValue = map.get(key);
@@ -891,6 +889,8 @@ public class PokemonInfo {
          * added to the map while create() was working, we leave that value in
          * the map and release the created value.
          */
+
+            addHistory((String) key);
 
             V createdValue = create(key);
             if (createdValue == null) {
@@ -976,7 +976,6 @@ public class PokemonInfo {
                         break;
                     }
 
-
                     map.remove(history.get(0));
                     history.remove(0);
 
@@ -986,7 +985,10 @@ public class PokemonInfo {
                     map.remove(history.get(0));
                     history.remove(0);
 
-                    evictionCount++;
+
+                    size -= 3;
+
+                    evictionCount += 3;
                 }
             }
         }
