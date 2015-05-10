@@ -34,8 +34,10 @@ public class StringUtilities {
 		return ret;
 	}
 
+    private static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
 	public static String timeStamp() {
-		return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());
+        return format.format(System.currentTimeMillis());
+		//return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());
 	}
 	
 	public static String def(String s, String def) {
@@ -68,4 +70,8 @@ public class StringUtilities {
 		}
 		return sb.toString();
 	}
+
+    public static boolean isNumeric(String str) {
+        return str.matches("\\d*");
+    }
 }

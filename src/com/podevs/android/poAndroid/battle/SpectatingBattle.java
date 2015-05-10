@@ -180,6 +180,7 @@ public class SpectatingBattle {
 			byte fromSpot = msg.readByte();
 
 			ShallowBattlePoke tempPoke = pokes[player][0];
+            tempPoke.sub = false;
 			pokes[player][0] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
 

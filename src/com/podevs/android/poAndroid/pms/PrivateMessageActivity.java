@@ -124,7 +124,7 @@ public class PrivateMessageActivity extends Activity {
 				int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
 				pms.removePM(id);
 			} catch (NullPointerException ex) {
-				
+
 			}
 			
 			if (pms.count() == 0) {
@@ -141,6 +141,7 @@ public class PrivateMessageActivity extends Activity {
 				netServ.ignoreList.add(id);
 				Toast.makeText(PrivateMessageActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
 			}
+            return true;
 		}
 		if (item.getItemId() == R.id.settings) {
 			startActivity(new Intent(PrivateMessageActivity.this, SetPreferenceActivity.class));
@@ -209,6 +210,7 @@ public class PrivateMessageActivity extends Activity {
 	    	
 	    	if (position != PagerAdapter.POSITION_NONE) {
 	    		vp.setCurrentItem(position, true);
+
 	    	}
 		}
 		
@@ -237,7 +239,7 @@ public class PrivateMessageActivity extends Activity {
 			}
 		}
 		
-		PrivateMessage getItemAt(int position) {
+		public PrivateMessage getItemAt(int position) {
 			if (pms == null) {
 				return null;
 			}
@@ -262,12 +264,12 @@ public class PrivateMessageActivity extends Activity {
 			}
 			
 			ListView lv = new ListView(PrivateMessageActivity.this);
-			container.addView(lv);
-			
-			lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
-			lv.setTag(R.id.associated_pm, pm);
-			lv.setTag(R.id.position, position);
+            container.addView(lv);
 
+            lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
+            lv.setTag(R.id.associated_pm, pm);
+            lv.setTag(R.id.position, position);
+            lv.setSelection(lv.getAdapter().getCount());
 			return lv;
 		}
 		

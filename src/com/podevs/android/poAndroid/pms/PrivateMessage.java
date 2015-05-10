@@ -11,6 +11,8 @@ import java.util.LinkedList;
  */
 public class PrivateMessage {
 	PrivateMessageListener listener;
+    LinkedList<Message> messages = new LinkedList<PrivateMessage.Message>();
+    PlayerInfo me, other;
 
 	public PrivateMessage(PlayerInfo other, PlayerInfo me) {
 		this.other = other;
@@ -28,7 +30,7 @@ public class PrivateMessage {
 			}
 			messages.add(new Message(info, message));
 			if (listener != null) {
-					listener.onNewMessage(messages.getLast());
+				listener.onNewMessage(messages.getLast());
 			}
 		}
 	}
@@ -50,9 +52,6 @@ public class PrivateMessage {
 		PlayerInfo sender;
 		String message;
 	}
-
-	LinkedList<Message> messages = new LinkedList<PrivateMessage.Message>();
-	PlayerInfo me, other;
 
 	interface PrivateMessageListener {
 		void onNewMessage(Message message);

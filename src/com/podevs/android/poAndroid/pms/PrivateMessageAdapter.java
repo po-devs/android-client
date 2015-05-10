@@ -26,6 +26,7 @@ public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> 
 		new Handler(getContext().getMainLooper()).post(new Runnable() {
 			public void run() {
 				//add(message);
+
 				notifyDataSetChanged();
 			}
 		});

@@ -18,6 +18,7 @@ public class MessageListAdapter extends BaseAdapter {
 	public Channel channel;
 	Context context;
     public int lastSeen = 0;
+    private boolean test = true;
 	
 	public MessageListAdapter(Channel ch, Context ctxt) {
 		super();
@@ -30,27 +31,29 @@ public class MessageListAdapter extends BaseAdapter {
 			lastSeen = channel.lastSeen;
 		}
 	}
-	
-	public void add(SpannableStringBuilder span) {
-		TextView toAdd = new TextView(context);
-		toAdd.setText(span);
 
-        try {
-            toAdd.setTextIsSelectable(true);
+    public void add(SpannableStringBuilder span) {
+        TextView toAdd = new TextView(context);
+        toAdd.setText(span);
 
-
-            if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
-
-            Linkify.addLinks(toAdd, Linkify.WEB_URLS);
-
-        }  catch (RuntimeException e) {
-            toAdd.setText("THERE WAS AN ERROR WITH THIS MESSAGE" + span);
+        if (test) {
+            try {
+                toAdd.setTextIsSelectable(true);
+            } catch (RuntimeException e) {
+                toAdd.setText("THERE WAS AN ERROR WITH THIS MESSAGE " + span);
+                test = false;
+            }
         }
 
-		messageViews.add(toAdd);
-		if (getCount() > Channel.HIST_LIMIT)
-			messageViews.remove();
-	}
+        if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
+        Linkify.addLinks(toAdd, Linkify.WEB_URLS);
+
+
+        messageViews.add(toAdd);
+        if (getCount() > Channel.HIST_LIMIT)
+            messageViews.remove();
+    }
 
 	public int getCount() {
 		return messageViews.size();

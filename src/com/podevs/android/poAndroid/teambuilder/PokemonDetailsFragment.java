@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,8 +74,6 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		happinessChooser = (TextView)v.findViewById(R.id.happiness);
         manualIVButton = (Button) v.findViewById(R.id.manualiv);
         hackmonButton = (ToggleButton) v.findViewById(R.id.hackmon);
-
-        manualIVButton.setEnabled(false);
 
 		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
 		int usefulItems[] = ItemInfo.getUsefulThisGeneration();
@@ -193,7 +193,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = Integer.parseInt(link);
+                                int i = 0;
+                                if (link.length() != 0) {
+                                    i = Integer.parseInt(link);
+                                }
 								if (i > 100) i = 100;
 								poke().level = (byte) i;
 								levelChooser.setText(" Lvl: " + i);
@@ -215,7 +218,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = Integer.parseInt(link);
+                                int i = 0;
+								if (link.length() != 0) {
+                                    i = Integer.parseInt(link);
+                                }
 								if (i > 255) i = 255;
 								poke().happiness = (byte) i;
 								happinessChooser.setText("Happy: " + i);
@@ -226,13 +232,84 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		shinyChooser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					poke().shiny = true;
-				} else {
-					poke().shiny = false;
-				}
-			}
-		});
+                if (isChecked) {
+                    poke().shiny = true;
+                } else {
+                    poke().shiny = false;
+                }
+            }
+        });
+
+        manualIVButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View view = LayoutInflater.from(getActivity()).inflate(R.layout.iv_changer, null);
+                final EditText[] inputs = new EditText[6];
+                inputs[0] =  (EditText) view.findViewById(R.id.iv1);
+                inputs[1] = (EditText) view.findViewById(R.id.iv2);
+                inputs[2] = (EditText) view.findViewById(R.id.iv3);
+                inputs[3] = (EditText) view.findViewById(R.id.iv4);
+                inputs[4] = (EditText) view.findViewById(R.id.iv5);
+                inputs[5] = (EditText) view.findViewById(R.id.iv6);
+                final byte gen = poke().gen().num;
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].setText(String.valueOf(poke().dv(i)));
+                }
+                /*
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            String test = "";
+                        }
+
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            String test = "";
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            String test = "";
+                        }
+                    });
+                }
+                */
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("IVs")
+                        .setView(view)
+                        .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (int i = 0; i < 6; i++) {
+                                    int temp;
+                                    if (inputs[i].getText().toString().length() == 0) {
+                                        temp = 0;
+                                    } else {
+                                        temp = Integer.decode(inputs[i].getText().toString());
+                                        if (gen > 2) {
+                                            if (temp > 31) temp = 31;
+                                        } else {
+                                            if (temp > 15) temp = 15;
+                                        }
+                                    }
+                                    poke().DVs[i] = (byte) temp;
+                                }
+                                updateStats();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        })
+
+                ;
+                builder.create().show();
+            }
+        });
 
         hackmonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,8 +324,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
             }
         });
 
-		return v;
-	}
+        return v;
+    }
 
     private ArrayList<String> genderNames = new ArrayList<String>() {{
         add("Neutral");
@@ -389,11 +466,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
 			happinessChooser.setVisibility(View.VISIBLE);
+            manualIVButton.setEnabled(true);
 		} else {
 			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);
 			happinessChooser.setVisibility(View.GONE);
+            manualIVButton.setEnabled(false);
 		}
 
 		levelChooser.setText(" Lvl: " + tempPoke.level());

@@ -38,11 +38,11 @@ public class TextProgressBar extends ProgressBar {
         textPaint.setFakeBoldText(true);
         textPaint.setAntiAlias(true);
     }  
-  
+
+    Rect bounds = new Rect();
     @Override  
     protected synchronized void onDraw(Canvas canvas) {  
-    	super.onDraw(canvas); 
-        Rect bounds = new Rect();  
+    	super.onDraw(canvas);
         textPaint.getTextBounds(text, 0, text.length(), bounds);  
         int x = getWidth() / 2 - bounds.centerX();  
         int y = getHeight() / 2 - bounds.centerY();  
