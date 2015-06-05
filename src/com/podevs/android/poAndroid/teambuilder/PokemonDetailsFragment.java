@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -193,11 +191,16 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-                                int i = 0;
+                                int i = 1;
                                 if (link.length() != 0) {
-                                    i = Integer.parseInt(link);
+                                    try {
+                                        i = Integer.parseInt(link);
+                                    } catch (Exception e) {
+                                        makeToast("Enter valid number");
+                                    }
                                 }
 								if (i > 100) i = 100;
+                                if (i < 1) i = 1;
 								poke().level = (byte) i;
 								levelChooser.setText(" Lvl: " + i);
 								updateStats();
@@ -220,7 +223,11 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 								String link = input.getText().toString();
                                 int i = 0;
 								if (link.length() != 0) {
-                                    i = Integer.parseInt(link);
+                                    try {
+                                        i = Integer.parseInt(link);
+                                    } catch (Exception e) {
+                                        makeToast("Enter valid number between 0 and 255");
+                                    }
                                 }
 								if (i > 255) i = 255;
 								poke().happiness = (byte) i;
@@ -320,11 +327,20 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                     poke().isHackmon = false;
                     resetEVs();
                 }
+                notifyMoveFragment();
                 updatePoke();
             }
         });
 
         return v;
+    }
+
+    public void notifyMoveFragment() {
+        ((MoveChooserFragment) getFragmentManager().getFragments().get(3)).updatePoke();
+    }
+
+    private void makeToast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
     }
 
     private ArrayList<String> genderNames = new ArrayList<String>() {{

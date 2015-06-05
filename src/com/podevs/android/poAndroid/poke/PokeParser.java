@@ -5,7 +5,6 @@ import org.apache.http.ParseException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -15,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class PokeParser extends DefaultHandler
+public class PokeParser
 {
 	private Team parsedTeam = new Team();
 	
