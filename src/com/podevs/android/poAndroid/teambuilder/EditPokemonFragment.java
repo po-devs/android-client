@@ -30,6 +30,7 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+        if (savedInstanceState != null) pokeChanged = true;
 		View v = inflater.inflate(R.layout.edit_pokemon, container, false);
 		
 		pokeList = new ListedPokemon((RelativeLayout)v.findViewById(R.id.pokeViewLayout));

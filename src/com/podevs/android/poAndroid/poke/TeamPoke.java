@@ -1,5 +1,7 @@
 package com.podevs.android.poAndroid.poke;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
@@ -12,7 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 // This class is how a poke is represented in the teambuilder.
-public class TeamPoke implements SerializeBytes, Poke {
+public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 	public UniqueID uID;
 	public String nick;
 	public short item;
@@ -419,4 +421,70 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public int gender() {
 		return gender;
 	}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uID.pokeNum);dest.writeByte(uID.subNum);
+        dest.writeString(nick);
+        dest.writeValue(item);
+        dest.writeValue(pokeball);
+        dest.writeValue(ability);
+        dest.writeByte(nature);
+        dest.writeByte(gender);
+        dest.writeByte(gen.num);dest.writeByte(gen.subNum);
+        dest.writeByte((byte) (shiny ? 0x01 : 0x00));
+        dest.writeByte(happiness);
+        dest.writeByte(level);
+        for (int i = 0; i < 4; i++) {
+            dest.writeInt(moves[i].num());
+        }
+        for (int i = 0; i < 6; i++) {
+            dest.writeByte(DVs[i]);
+        }
+        for (int i = 0; i < 6; i++) {
+            dest.writeByte(EVs[i]);
+        }
+        dest.writeByte((byte) (isHackmon ? 0x01 : 0x00));
+    }
+
+    protected TeamPoke(Parcel in) {
+        uID = new UniqueID(in.readInt(), in.readByte());
+        nick = in.readString();
+        item = (Short) in.readValue(short.class.getClassLoader());
+        pokeball = (Short) in.readValue(short.class.getClassLoader());
+        ability = (Short) in.readValue(short.class.getClassLoader());
+        nature = in.readByte();
+        gender = in.readByte();
+        gen = new Gen(in.readByte(), in.readByte());
+        shiny = in.readByte() != 0x00;
+        happiness = in.readByte();
+        level = in.readByte();
+        for (int i = 0; i < 4; i++) {
+            moves[i] = new TeamMove(in.readInt());
+        }
+        for (int i = 0; i < 6; i++) {
+            DVs[i] = in.readByte();
+        }
+        for (int i = 0; i < 6; i++) {
+            EVs[i] = in.readByte();
+        }
+        isHackmon = in.readByte() != 0x00;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public TeamPoke createFromParcel(Parcel source) {
+            return new TeamPoke(source);
+        }
+
+        @Override
+        public TeamPoke[] newArray(int size) {
+            return new TeamPoke[size];
+        }
+    };
 }

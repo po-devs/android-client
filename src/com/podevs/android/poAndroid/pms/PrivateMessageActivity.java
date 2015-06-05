@@ -262,13 +262,24 @@ public class PrivateMessageActivity extends Activity {
 			if (pm == null) {
 				return null;
 			}
-			
-			ListView lv = new ListView(PrivateMessageActivity.this);
-            container.addView(lv);
 
-            lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
-            lv.setTag(R.id.associated_pm, pm);
-            lv.setTag(R.id.position, position);
+            ListView lv;
+
+			if (pm.privateList == null) {
+                lv = new ListView(PrivateMessageActivity.this);
+                lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
+                lv.setTag(R.id.associated_pm, pm);
+                lv.setTag(R.id.position, position);
+                pm.privateList = lv;
+            } else {
+                lv = pm.privateList;
+                ViewGroup parent = (ViewGroup) lv.getParent();
+                if (parent != null) {
+                    parent.removeView(lv);
+                }
+            }
+
+            container.addView(lv);
             lv.setSelection(lv.getAdapter().getCount());
 			return lv;
 		}

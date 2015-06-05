@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.podevs.android.poAndroid"
     android:installLocation="auto"
-    android:versionCode="51"
-    android:versionName="2.6.0" >
+    android:versionCode="52"
+    android:versionName="2.6.1" >
 
     <uses-sdk
         android:minSdkVersion="12"
@@ -55,7 +55,7 @@
                 android:name="com.podevs.android.poAndroid.settings.SetPreferenceActivity"
                 android:label="@string/settings" >
         </activity>
-        <activity android:name="com.podevs.android.poAndroid.teambuilder.EditPokemonActivity"/>
+        <activity android:name="com.podevs.android.poAndroid.teambuilder.EditPokemonActivity" android:configChanges="orientation|screenSize"/>
 
         <service android:name="com.podevs.android.poAndroid.NetworkService" />
         <service android:name="com.podevs.android.poAndroid.registry.RegistryConnectionService" />

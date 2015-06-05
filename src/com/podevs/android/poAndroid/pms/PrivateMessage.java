@@ -1,5 +1,6 @@
 package com.podevs.android.poAndroid.pms;
 
+import android.widget.ListView;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.utilities.StringUtilities;
 
@@ -13,6 +14,7 @@ public class PrivateMessage {
 	PrivateMessageListener listener;
     LinkedList<Message> messages = new LinkedList<PrivateMessage.Message>();
     PlayerInfo me, other;
+    protected ListView privateList = null;
 
 	public PrivateMessage(PlayerInfo other, PlayerInfo me) {
 		this.other = other;

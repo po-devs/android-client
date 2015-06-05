@@ -18,7 +18,6 @@ public class MessageListAdapter extends BaseAdapter {
 	public Channel channel;
 	Context context;
     public int lastSeen = 0;
-    private boolean test = true;
 	
 	public MessageListAdapter(Channel ch, Context ctxt) {
 		super();
@@ -36,6 +35,7 @@ public class MessageListAdapter extends BaseAdapter {
         TextView toAdd = new TextView(context);
         toAdd.setText(span);
 
+        /* Too buggy. Needs custom gesture
         if (test) {
             try {
                 toAdd.setTextIsSelectable(true);
@@ -44,6 +44,7 @@ public class MessageListAdapter extends BaseAdapter {
                 test = false;
             }
         }
+        */
 
         if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
 
