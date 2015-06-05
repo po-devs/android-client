@@ -1,15 +1,10 @@
 package com.podevs.android.utilities;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import android.content.Context;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import android.content.Context;
 
 /**
  * Extra string methods

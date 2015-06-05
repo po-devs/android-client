@@ -3,7 +3,6 @@ package com.podevs.android.poAndroid.chat;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;

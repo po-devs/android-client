@@ -26,8 +26,12 @@ public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> 
 		new Handler(getContext().getMainLooper()).post(new Runnable() {
 			public void run() {
 				//add(message);
-
 				notifyDataSetChanged();
+                if (pm.privateList != null) {
+                    if (pm.privateList.getLastVisiblePosition() > getCount() - 3) {
+                        pm.privateList.setSelection(getCount());
+                    }
+                }
 			}
 		});
 	}

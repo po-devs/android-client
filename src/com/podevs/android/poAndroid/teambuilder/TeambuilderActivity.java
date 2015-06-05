@@ -23,8 +23,6 @@ import android.widget.Toast;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.*;
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -566,7 +564,8 @@ public class TeambuilderActivity extends FragmentActivity {
 		} else if (requestCode == POKEEDIT_RESULT_CODE) {
 			if (resultCode == RESULT_OK) {
 				int slot = intent.getIntExtra("slot", 0);
-				TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")), team.gen);
+				//TeamPoke poke = new TeamPoke(new Bais(intent.getExtras().getByteArray("pokemon")), team.gen);
+                TeamPoke poke = intent.getExtras().getParcelable("pokemon");
 
 				team.setPoke(slot, poke);
 				teamChanged = true;
@@ -590,7 +589,8 @@ public class TeambuilderActivity extends FragmentActivity {
     
     public void editPoke(int pos) {
     	Intent intent = new Intent(this, EditPokemonActivity.class);
-	    intent.putExtra("pokemon", new Baos().putBaos(team.poke(pos)).toByteArray());
+	    //intent.putExtra("pokemon", new Baos().putBaos(team.poke(pos)).toByteArray());
+        intent.putExtra("pokemon", team.poke(pos));
 	    intent.putExtra("slot", pos);
 	    startActivityForResult(intent, POKEEDIT_RESULT_CODE);
     }

@@ -433,13 +433,15 @@ public class SpectatingBattle {
 			boolean come = msg.readBool();
 			int id = msg.readInt();
 			String name = msg.readString();
-
-			if (come) {
-				addSpectator(id, name);
-			} else {
-				removeSpectator(id);
-			}
-
+            if (conf != null && conf.isInBattle(id)) {
+                onOpponentDisconnect(come);
+            } else {
+                if (come) {
+                    addSpectator(id, name);
+                } else {
+                    removeSpectator(id);
+                }
+            }
 			break;
 		} case SpectatorChat: {
 			// TODO if (ignoreSpecs) break;
@@ -710,15 +712,36 @@ public class SpectatingBattle {
 		}
 	}
 
+    private void onOpponentDisconnect(boolean come) {
+        if (come) {
+            if (containsClause(Clauses.NoTimeOut.ordinal())) {
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected! You can wait for their time to run out if you want the win.</font>"));
+            } else {
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected!</font>"));
+            }
+        } else {
+            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " logged back in and is ready to resume the battle!</font>"));
+        }
+    }
+
+    private boolean containsClause(int clause) {
+        for (int i = 0; i < Clauses.values().length; i++) {
+            if ((conf.clauses & (1 << i)) > 0) {
+                if (Clauses.values()[i].ordinal() == clause) return true;
+            }
+        }
+        return false;
+    }
+
 	private SparseArray<String> spectators = new SparseArray<String>();
 
 	private void addSpectator(int id, String name) {
 		spectators.put(id, name);
-		writeToHist(Html.fromHtml("<br/><font color="+QtColor.DarkGreen+ name + " is watching the battle</font>"));
+		writeToHist(Html.fromHtml("<br/><font color="+ QtColor.DarkGreen + name + " is watching the battle</font>"));
 	}
 
 	private void removeSpectator(int id) {
-		writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkGreen+ spectators.get(id) + " left the battle</font>"));
+		writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkGreen + spectators.get(id) + " left the battle</font>"));
 		spectators.remove(id);
 	}
 
