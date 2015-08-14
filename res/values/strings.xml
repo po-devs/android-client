@@ -99,6 +99,9 @@
     <string name="challenge">Challenge</string>
     <string name="pm">Private Message</string>
     <string name="watch_battle">Watch battle against</string>
+    <string name="change_happiness">Change Happiness</string>
+    <string name="change_level">Change Level</string>
+    <string name="switch_place">Switch place</string>
 
     <string name="chat_title">Chat Settings</string>
     <string name="chat_summary">Chat Settings</string>
@@ -122,6 +125,8 @@
     <string name="poke_number_summary">Number of the pokemon</string>
     <string name="sound_notification_title">Cry Sound notification</string>
     <string name="sound_notification_summary">Toggle cry sound notification</string>
+    <string name="crashlog_title">Save crash log</string>
+    <string name="crashlog_summary">Dump crash data to file</string>
 
     <string name="IV">IV</string>
 

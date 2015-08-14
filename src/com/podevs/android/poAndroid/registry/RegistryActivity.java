@@ -58,8 +58,9 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		InfoConfig.context = this;
     	}
 
-        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler))
-            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
+
+        //if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler))
+		//	Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
 
         super.onCreate(savedInstanceState);
 
@@ -142,18 +143,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
     }
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
 
     private OnClickListener registryListener = new OnClickListener() {
 		public void onClick(View v) {

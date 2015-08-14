@@ -14,9 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.*;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -130,6 +128,7 @@ public class TeambuilderActivity extends FragmentActivity {
 					c.connect();
 					InputStream in = c.getInputStream();
 					final ByteArrayOutputStream bo = new ByteArrayOutputStream();
+
 					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for information!!
 					in.read(buffer); // Read from Buffer
 					bo.write(buffer); // Write Into Buffer
@@ -479,6 +478,42 @@ public class TeambuilderActivity extends FragmentActivity {
 	    	    }).show();
     		break;
     	}
+            case R.id.switch_place: {
+                final View view = LayoutInflater.from(this).inflate(R.layout.switch_place, null);
+                final EditText[] inputs = new EditText[2];
+                inputs[0] = (EditText) view.findViewById(R.id.from_slot);
+                inputs[1] = (EditText) view.findViewById(R.id.to_slot);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.switch_place)
+                        .setView(view)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    int spot1 = Integer.parseInt(inputs[0].getText().toString()) - 1;
+                                    int spot2 = Integer.parseInt(inputs[1].getText().toString()) - 1;
+                                    if (spot1 < 0 || spot2 < 0) throw new NumberFormatException();
+                                    if (spot1 > 5 || spot2 > 5) throw new NumberFormatException();
+                                    TeamPoke tempPoke = team.poke(spot2);
+                                    team.setPoke(spot2, team.poke(spot1));
+                                    team.setPoke(spot1, tempPoke);
+                                    updateTeam();
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(TeambuilderActivity.this, "Enter Valid number from 1 to 6", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        }).show();
+                break;
+            }
+        /*
 			case R.id.download_team: {
 				final EditText input = new EditText(this);
 
@@ -501,6 +536,7 @@ public class TeambuilderActivity extends FragmentActivity {
 						}).show();
 
 			}
+			*/
         }
         return true;
     }
@@ -582,11 +618,64 @@ public class TeambuilderActivity extends FragmentActivity {
     	setResult(RESULT_OK);
     	updateTeam();
     }
-    
+
+    /*
     void onImportClicked() {
 		new SelectImportMethodDialogFragment().show(getSupportFragmentManager(), "select-import-method");
     }
-    
+    */
+
+    void buildDownloadDialog() {
+        final EditText input = new EditText(this);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.download_team)
+                .setMessage("Enter link of raw team: ")
+                .setView(input)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String link = input.getText().toString();
+
+                        try {
+                            URL Link = new URL(link);
+                            progressDialog = ProgressDialog.show(TeambuilderActivity.this, "", "Downloading. Please wait...", true);
+                            downloadTiers(Link);
+                        } catch (MalformedURLException e) {
+                            Toast.makeText(TeambuilderActivity.this, "Entire Valid Link.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
+
+    }
+
+    /*
+    private void buildImportDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder
+                .setTitle(R.string.hiddenpower_choice)
+                .setNegativeButton(R.string.cancel, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        builder.show().cancel();
+                    }
+                })
+                .setItems(new CharSequence[]{"From link"}, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            buildDownloadDialog();
+                            builder.show().cancel();
+                        }
+                        if (which == 1) {
+                            // Import from file
+                        }
+                    }
+                });
+        builder.create().show();
+    }
+    */
+
     public void editPoke(int pos) {
     	Intent intent = new Intent(this, EditPokemonActivity.class);
 	    //intent.putExtra("pokemon", new Baos().putBaos(team.poke(pos)).toByteArray());

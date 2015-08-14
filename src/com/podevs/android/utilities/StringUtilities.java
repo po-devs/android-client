@@ -29,7 +29,7 @@ public class StringUtilities {
 		return ret;
 	}
 
-    private static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
+    private final static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
 	public static String timeStamp() {
         return format.format(System.currentTimeMillis());
 		//return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());

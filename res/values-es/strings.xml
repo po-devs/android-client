@@ -122,6 +122,8 @@
     <string name="poke_number_summary">Elegir grito de Pokémon con su número</string>
     <string name="sound_notification_title">Notifiación con sonido</string>
     <string name="sound_notification_summary">Activar notificación con gritos de Pokémon</string>
+    <string name="crashlog_title">Guardar historial de errores</string>
+    <string name="crashlog_summary">Guarda los errores de la aplicación en un archivo</string>
 
     <string-array name="hp_array">
         <item>Peleador</item>
@@ -141,5 +143,6 @@
         <item>Dragon</item>
         <item>Siniestro</item>
     </string-array>
+    <string name="IV">IV</string>
 
 </resources>

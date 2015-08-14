@@ -185,8 +185,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				final EditText input = new EditText((getActivity()));
 
 				new AlertDialog.Builder((getActivity()))
-						.setTitle(R.string.download_team)
-						.setMessage("Change Level")
+						.setTitle(R.string.change_level)
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
@@ -215,8 +214,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				final EditText input = new EditText((getActivity()));
 
 				new AlertDialog.Builder((getActivity()))
-						.setTitle("Change Happiness")
-						.setMessage("Happiness: ")
+						.setTitle(R.string.change_happiness)
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
@@ -283,9 +281,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                 }
                 */
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("IVs")
+                builder.setTitle(R.string.IV + "s")
                         .setView(view)
-                        .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 for (int i = 0; i < 6; i++) {
@@ -305,7 +303,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                                 updateStats();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();

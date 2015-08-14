@@ -27,13 +27,11 @@ public class PokeClientSocket {
 	}
 
 	public boolean isConnected() {
-		boolean ret = false;
 		try {
-			ret = schan.finishConnect() && schan.isConnected();
+			return schan.finishConnect() && schan.isConnected();
 		} catch (IOException e) {
 			return false;
 		}
-		return ret;
 	}
 
 	class NetSender implements Runnable {

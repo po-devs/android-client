@@ -1058,8 +1058,7 @@ public class NetworkService extends Service {
 
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
 						" and " + playerName(p2) + " started!", false, null);
-				Intent intent;
-				intent = new Intent(this, BattleActivity.class);
+				Intent intent = new Intent(this, BattleActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra("battleId", battleId);
 				startActivity(intent);
@@ -1506,6 +1505,41 @@ public class NetworkService extends Service {
 		
 		pmedPlayers.add(id);
 	}
+
+    public void loadJoinedChannelSettings() {
+        SharedPreferences prefs = getSharedPreferences("autoJoinChannelsSettings", MODE_PRIVATE);
+
+        String key = this.ip + ":" + this.port;
+
+        Set<String> hasSettings = prefs.getStringSet(key, null);
+
+        if (hasSettings != null) {
+            for (Channel chan : joinedChannels) {
+                if (hasSettings.contains(chan.name())) {
+                    joinedChannels.get(joinedChannels.indexOf(chan)).channelEvents = true;
+                }
+            }
+        }
+    }
+
+    public void updateJoinedChannelSettings() {
+        SharedPreferences prefs = getSharedPreferences("autoJoinChannelsSettings", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+
+        String key = this.ip + ":" + this.port;
+
+        edit.remove(key);
+
+        HashSet<String> settings = new HashSet<String>();
+
+        for (Channel chan : joinedChannels) {
+            if (chan.channelEvents) {
+                settings.add(chan.name());
+            }
+        }
+
+        edit.putStringSet(key, settings).apply();
+    }
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {
