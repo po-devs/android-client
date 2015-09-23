@@ -46,6 +46,8 @@ public class Battle extends SpectatingBattle {
 
 		for (int i = 0; i < 4; i++)
 			displayedMoves[i] = new BattleMove();
+
+        startTime = System.currentTimeMillis();
 	}
 
 
@@ -89,12 +91,14 @@ public class Battle extends SpectatingBattle {
 
 	@Override
 	public void dealWithCommand(BattleCommand bc, byte player, Bais msg)  {
+        //Log.e(TAG, "Received bc: " + bc.toString() + " at state time: " + (System.currentTimeMillis() - startTime));
 		switch(bc) {
 		case SendOut: {
 			if (player != me) {
 				super.dealWithCommand(bc, player, msg);
 				return;
 			}
+
 			boolean silent = msg.readBool();
 			byte fromSpot = msg.readByte();
 
@@ -125,7 +129,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(5000);
+						if (!baked) wait(5000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -133,6 +137,7 @@ public class Battle extends SpectatingBattle {
 			if(!silent)
 				writeToHist("\n" + tu((players[player].nick() + " sent out " + 
 						currentPoke(player).rnick + "!")));
+
 			break;
 		} case AbsStatusChange: {
 			byte poke = msg.readByte();
@@ -253,8 +258,7 @@ public class Battle extends SpectatingBattle {
 				myTeam.pokes[0].currentHP = newHP;
 				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 				currentPoke(player).lifePercent = (byte)(newHP * 100 / myTeam.pokes[0].totalHP);
-			}
-			else {
+			} else {
 				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 				currentPoke(player).lifePercent = (byte)newHP;
 			}
@@ -263,8 +267,12 @@ public class Battle extends SpectatingBattle {
 				// Timeout after 10s
 				try {
 					synchronized (this) {
-						activity.animateHpBarTo(player, currentPoke(player).lifePercent);
-						wait(10000);
+						int change = currentPoke(player).lastKnownPercent - currentPoke(player).lifePercent;
+						activity.animateHpBarTo(player, currentPoke(player).lifePercent, change);
+                        //Log.e(TAG, "change " + change);
+                        if (change < 0) change = -change;
+                        if (change > 100) change = 100;
+						if (!baked) wait(10000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 				activity.updateCurrentPokeListEntry();

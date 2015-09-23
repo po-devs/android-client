@@ -62,8 +62,14 @@
         android:title="Miscellaneous" >
         <CheckBoxPreference
             android:key="shouldWrite"
-            android:summary="Dump crash data to file"
-            android:title="Save crash log"
+            android:summary="@string/crashlog_summary"
+            android:title="@string/crashlog_title"
             android:defaultValue="false" />
+        <CheckBoxPreference
+                android:key="baked"
+                android:summary="Use at your own risk"
+                android:title="Experimental Battle"
+                android:defaultValue="false"
+                android:enabled="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -7,8 +7,6 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.utilities.Bais;
-import com.podevs.android.utilities.Baos;
 
 /**
  * Just a wrapper for EditPokemonFragment.

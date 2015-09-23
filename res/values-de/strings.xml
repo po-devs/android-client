@@ -143,5 +143,6 @@
         <item>Drache</item>
         <item>Unlicht</item>
     </string-array>
+    <string name="IV">IV</string>
 
 </resources>

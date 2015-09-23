@@ -1,5 +1,7 @@
 package com.podevs.android.poAndroid.battle;
 
+import android.text.Html;
+import android.text.SpannableStringBuilder;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
@@ -94,9 +96,18 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		return s;
 	}
 
-	public ShallowBattlePoke toShallowBattlePoke() {
-		return (ShallowBattlePoke) this;
-	}
+    public SpannableStringBuilder movesString() {
+        SpannableStringBuilder s = new SpannableStringBuilder();
+        for (int i = 0; i < 4; i++) {
+            s.append(i == 0 ? "" : "\n");
+            if (this.moves[i] == null) {
+                s.append("????" + "    " +"??");
+            } else {
+                s.append(Html.fromHtml("<font color=\"" + moves[i].getHexColor() + "\">" + moves[i].toString() + "    " + moves[i].totalPP + "</font>"));
+            }
+        }
+        return s;
+    }
 
 	public int ability() {
 		return ability;

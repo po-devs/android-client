@@ -44,7 +44,7 @@ public class PokemonInfo {
 	/**
 	 *  Cache of images
 	 */
-	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(40);
+	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(30);
 
 	/**
 	 * Pokemon Data object
@@ -354,7 +354,7 @@ public class PokemonInfo {
 
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
-			return ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5 + 5 + poke.level();
+			return (stat(poke.uID(), stat, gen) == 1 ? 1 : ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5 + 5 + poke.level());
 		} else {
 			int base = ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
 

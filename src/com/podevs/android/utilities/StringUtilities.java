@@ -1,15 +1,10 @@
 package com.podevs.android.utilities;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import android.content.Context;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import android.content.Context;
 
 /**
  * Extra string methods
@@ -34,7 +29,7 @@ public class StringUtilities {
 		return ret;
 	}
 
-    private static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
+    private final static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
 	public static String timeStamp() {
         return format.format(System.currentTimeMillis());
 		//return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());

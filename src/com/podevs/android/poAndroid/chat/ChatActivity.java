@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ChatActivity extends Activity {
 	
@@ -344,6 +346,13 @@ public class ChatActivity extends Activity {
 	        checkChallenges();
 	        checkAskForPass();
 	        checkFailedConnection();
+            final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+            executor.schedule(new Runnable() {
+                @Override
+                public void run() {
+                       netServ.loadJoinedChannelSettings();
+                }
+            }, 5, TimeUnit.SECONDS);
         }
 		
 		public void onServiceDisconnected(ComponentName className) {
@@ -712,6 +721,7 @@ public class ChatActivity extends Activity {
 					.setCancelable(true)
 			.setPositiveButton("Disconnect", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+                    netServ.updateJoinedChannelSettings();
 					disconnect();
 				}
 			})
@@ -1142,8 +1152,7 @@ public class ChatActivity extends Activity {
 			netServ.disconnect();
 		}
 		if (progressDialog != null) {
-			progressDialog.dismiss();
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+            networkDismissDialog();
 		}
 		
 		Intent intent = new Intent(this, RegistryActivity.class);

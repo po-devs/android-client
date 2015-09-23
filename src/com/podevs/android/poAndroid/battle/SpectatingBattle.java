@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class SpectatingBattle {
 		Close
 	}
 
+	public long startTime;
+
 	// 0 = you, 1 = opponent
 	public PlayerInfo[] players = new PlayerInfo[2];
 
@@ -68,6 +71,8 @@ public class SpectatingBattle {
 			histDelta.append(text);
 		}
 	}
+
+    public boolean baked;
 
 	public BattleConf conf;
 	public BattleActivity activity = null; //activity associated with the battle
@@ -101,6 +106,8 @@ public class SpectatingBattle {
 				pokes[i][j] = new ShallowBattlePoke();
 			}
 		}
+
+        baked = PreferenceManager.getDefaultSharedPreferences(ns).getBoolean("baked", false);
 	}
 
 	/**
@@ -200,7 +207,6 @@ public class SpectatingBattle {
 				activity.samePokes[player] = false;
 				activity.updatePokes(player);
 				activity.updatePokeballs();
-               // Runtime.getRuntime().gc();
 			}
 
 			SharedPreferences prefs = netServ.getSharedPreferences("battle", Context.MODE_PRIVATE);
@@ -208,7 +214,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(10000);
+						if (!baked) wait(10000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -258,7 +264,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(10000);
+						if (!baked) wait(10000); else wait(2000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -693,8 +699,12 @@ public class SpectatingBattle {
 				// Timeout after 10s
 				try {
 					synchronized (this) {
-						activity.animateHpBarTo(player, currentPoke(player).lifePercent);
-						wait(10000);
+						int change = currentPoke(player).lastKnownPercent - currentPoke(player).lifePercent;
+						activity.animateHpBarTo(player, currentPoke(player).lifePercent, change);
+						//Log.e(TAG, change + "");
+                        if (change < 0) change = -change;
+                        if (change > 100) change = 100;
+						if (!baked) wait(10000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 			}

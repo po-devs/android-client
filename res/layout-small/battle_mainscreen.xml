@@ -1,113 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/battlelayout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#FFFFFF"
-    android:clickable="true"
-    android:orientation="vertical" >
+                android:id="@+id/battlelayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#FFFFFF"
+                android:clickable="true"
+                android:orientation="vertical" >
 
     <!-- START Player A Title -->
 
     <RelativeLayout
-        android:id="@+id/titleA"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="4dp" >
+            android:id="@+id/titleA"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="4dp" >
 
         <View android:visibility="gone"
-            android:id="@+id/smallBattleWindow"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            />
+              android:id="@+id/smallBattleWindow"
+              android:layout_width="0dp"
+              android:layout_height="0dp"
+                />
         <TextView
-            android:id="@+id/timerA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/battle_border"
-            android:gravity="center"
-            android:minWidth="60sp"
-            android:textColor="@color/poke_text_color"
-            android:textIsSelectable="false" />
+                android:id="@+id/timerA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/battle_border"
+                android:gravity="center"
+                android:minWidth="60sp"
+                android:textColor="@color/poke_text_color"
+                android:textIsSelectable="false" />
 
         <TextView
-            android:id="@+id/nameA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:textColor="@color/poke_text_color"
-            android:textIsSelectable="true" />
+                android:id="@+id/nameA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:textColor="@color/poke_text_color"
+                android:textIsSelectable="true" />
 
         <ImageView
-            android:id="@+id/pokeball1A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/timerA"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball1A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/timerA"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball2A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pokeball1A"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball2A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pokeball1A"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball3A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pokeball2A"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball3A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pokeball2A"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball4A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pokeball3A"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball4A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pokeball3A"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball5A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pokeball4A"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball5A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pokeball4A"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball6A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/pokeball5A"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball6A"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/pokeball5A"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
     </RelativeLayout>
     <!-- END Player A Title -->
 
@@ -115,136 +115,136 @@
     <!-- START Battle Screen -->
 
     <RelativeLayout
-        android:id="@+id/battleScreen"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@id/titleA"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:background="@drawable/battle_border"
-        android:textColor="@color/poke_text_color" >
+            android:id="@+id/battleScreen"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/titleA"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/battle_border"
+            android:textColor="@color/poke_text_color" >
 
         <WebView
-            android:id="@+id/pokeSpriteA"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:contentDescription="@string/sprite_description" />
+                android:id="@+id/pokeSpriteA"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/sprite_description" />
 
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="38dp"
-            android:layout_toLeftOf="@id/pokeSpriteA"
-            android:background="@drawable/battle_border" >
+                android:layout_width="fill_parent"
+                android:layout_height="38dp"
+                android:layout_toLeftOf="@id/pokeSpriteA"
+                android:background="@drawable/battle_border" >
 
             <com.podevs.android.poAndroid.TextProgressBar
-                android:id="@+id/hpBarA"
-                android:layout_width="fill_parent"
-                android:layout_height="10dp"
-                android:layout_alignParentTop="true"
-                android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
-                android:indeterminateOnly="false"
-                android:progressDrawable="@drawable/green_progress" />
+                    android:id="@+id/hpBarA"
+                    android:layout_width="fill_parent"
+                    android:layout_height="10dp"
+                    android:layout_alignParentTop="true"
+                    android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+                    android:indeterminateOnly="false"
+                    android:progressDrawable="@drawable/green_progress" />
 
             <TextView
-                android:id="@+id/currentPokeNameA"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@id/hpBarA"
-                android:textColor="@color/poke_text_color"
-                android:textIsSelectable="true" />
+                    android:id="@+id/currentPokeNameA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/hpBarA"
+                    android:textColor="@color/poke_text_color"
+                    android:textIsSelectable="true" />
 
             <TextView
-                android:id="@+id/currentPokeLevelA"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/hpBarA"
-                android:layout_marginLeft="2dp"
-                android:textColor="@color/poke_text_color"
-                android:textIsSelectable="false" />
+                    android:id="@+id/currentPokeLevelA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/hpBarA"
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/poke_text_color"
+                    android:textIsSelectable="false" />
 
             <ImageView
-                android:id="@+id/currentPokeGenderA"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/hpBarA"
-                android:layout_marginLeft="2dp"
-                android:layout_marginTop="3dp"
-                android:layout_toLeftOf="@id/currentPokeLevelA"
-                android:contentDescription="@string/gender_description" />
+                    android:id="@+id/currentPokeGenderA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hpBarA"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toLeftOf="@id/currentPokeLevelA"
+                    android:contentDescription="@string/gender_description" />
 
             <ImageView
-                android:id="@+id/currentPokeStatusA"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/hpBarA"
-                android:layout_marginTop="3dp"
-                android:layout_toLeftOf="@id/currentPokeGenderA"
-                android:contentDescription="@string/status_description" />
+                    android:id="@+id/currentPokeStatusA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hpBarA"
+                    android:layout_marginTop="3dp"
+                    android:layout_toLeftOf="@id/currentPokeGenderA"
+                    android:contentDescription="@string/status_description" />
         </RelativeLayout>
 
         <WebView
-            android:id="@+id/pokeSpriteB"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:contentDescription="@string/sprite_description" />
+                android:id="@+id/pokeSpriteB"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:contentDescription="@string/sprite_description" />
 
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="38dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@id/pokeSpriteB"
-            android:background="@drawable/battle_border" >
+                android:layout_width="fill_parent"
+                android:layout_height="38dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/pokeSpriteB"
+                android:background="@drawable/battle_border" >
 
             <com.podevs.android.poAndroid.TextProgressBar
-                android:id="@+id/hpBarB"
-                android:layout_width="fill_parent"
-                android:layout_height="10dp"
-                android:layout_alignParentBottom="true"
-                android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
-                android:indeterminateOnly="false"
-                android:progressDrawable="@drawable/green_progress" />
+                    android:id="@+id/hpBarB"
+                    android:layout_width="fill_parent"
+                    android:layout_height="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+                    android:indeterminateOnly="false"
+                    android:progressDrawable="@drawable/green_progress" />
 
             <TextView
-                android:id="@+id/currentPokeNameB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/hpBarB"
-                android:layout_alignParentLeft="true"
-                android:textColor="@color/poke_text_color" />
+                    android:id="@+id/currentPokeNameB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/hpBarB"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="@color/poke_text_color" />
 
             <TextView
-                android:id="@+id/currentPokeLevelB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/hpBarB"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="2dp"
-                android:textColor="@color/poke_text_color" />
+                    android:id="@+id/currentPokeLevelB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/hpBarB"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/poke_text_color" />
 
             <ImageView
-                android:id="@+id/currentPokeGenderB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/hpBarB"
-                android:layout_marginBottom="3dp"
-                android:layout_marginLeft="2dp"
-                android:layout_toLeftOf="@id/currentPokeLevelB"
-                android:contentDescription="@string/hp_bar_description" />
+                    android:id="@+id/currentPokeGenderB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/hpBarB"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toLeftOf="@id/currentPokeLevelB"
+                    android:contentDescription="@string/hp_bar_description" />
 
             <ImageView
-                android:id="@+id/currentPokeStatusB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/hpBarB"
-                android:layout_marginBottom="3dp"
-                android:layout_toLeftOf="@id/currentPokeGenderB"
-                android:contentDescription="@string/gender_description" />
+                    android:id="@+id/currentPokeStatusB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/hpBarB"
+                    android:layout_marginBottom="3dp"
+                    android:layout_toLeftOf="@id/currentPokeGenderB"
+                    android:contentDescription="@string/gender_description" />
         </RelativeLayout>
         <!-- android:layout_alignBottom="@id/hpBarB" -->
     </RelativeLayout>
@@ -254,97 +254,97 @@
     <!-- START Player B Title -->
 
     <RelativeLayout
-        android:id="@+id/titleB"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/battleScreen"
-        android:layout_margin="4dp" >
+            android:id="@+id/titleB"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/battleScreen"
+            android:layout_margin="4dp" >
 
         <TextView
-            android:id="@+id/timerB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="4dp"
-            android:background="@drawable/battle_border"
-            android:gravity="center"
-            android:minWidth="60sp"
-            android:textColor="@color/poke_text_color" />
+                android:id="@+id/timerB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="4dp"
+                android:background="@drawable/battle_border"
+                android:gravity="center"
+                android:minWidth="60sp"
+                android:textColor="@color/poke_text_color" />
 
         <TextView
-            android:id="@+id/nameB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:textColor="@color/poke_text_color" />
+                android:id="@+id/nameB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                android:textColor="@color/poke_text_color" />
 
         <ImageView
-            android:id="@+id/pokeball6B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/timerB"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball6B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/timerB"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball5B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/pokeball6B"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball5B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/pokeball6B"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball4B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/pokeball5B"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball4B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/pokeball5B"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball3B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/pokeball4B"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball3B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/pokeball4B"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball2B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/pokeball3B"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball2B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/pokeball3B"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
 
         <ImageView
-            android:id="@+id/pokeball1B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/pokeball2B"
-            android:contentDescription="@string/battle_opponent_team_poke_icon"
-            android:paddingLeft="-5dp"
-            android:paddingRight="-5dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+                android:id="@+id/pokeball1B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/pokeball2B"
+                android:contentDescription="@string/battle_opponent_team_poke_icon"
+                android:paddingLeft="-5dp"
+                android:paddingRight="-5dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"/>
     </RelativeLayout>
     <!-- END Player B Title -->
 
@@ -352,21 +352,21 @@
     <!-- START Info Window -->
 
     <ScrollView
-        android:id="@+id/infoScroll"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/titleB"
-        android:layout_marginBottom="78dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:background="@drawable/battle_border" >
+            android:id="@+id/infoScroll"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/titleB"
+            android:layout_marginBottom="78dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/battle_border" >
 
         <TextView
-            android:id="@+id/infoWindow"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/info_box"
-            android:textColor="@color/poke_text_color" >
+                android:id="@+id/infoWindow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/info_box"
+                android:textColor="@color/poke_text_color" >
         </TextView>
     </ScrollView>
     <!-- END Info Window -->
@@ -375,163 +375,163 @@
     <!-- START Action Buttons -->
 
     <RelativeLayout
-        android:id="@+id/struggleLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/infoScroll"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="-76dp"
-        android:background="@drawable/curse_type_button"
-        android:clickable="true"
-        android:visibility="gone" >
+            android:id="@+id/struggleLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/infoScroll"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="-76dp"
+            android:background="@drawable/curse_type_button"
+            android:clickable="true"
+            android:visibility="gone" >
 
         <TextView
-            android:id="@+id/struggleName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/struggle_attack"
-            android:textColor="@color/poke_text_color"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+                android:id="@+id/struggleName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/struggle_attack"
+                android:textColor="@color/poke_text_color"
+                android:textSize="30sp"
+                android:textStyle="bold" />
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/attackRow1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/infoScroll"
-        android:layout_marginBottom="39dp"
-        android:layout_marginTop="-76dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:visibility="gone" >
+            android:id="@+id/attackRow1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/infoScroll"
+            android:layout_marginBottom="39dp"
+            android:layout_marginTop="-76dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
         <RelativeLayout
-            android:id="@+id/attack1Layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="2dp"
-            android:layout_weight="1"
-            android:background="@drawable/battle_border_button" >
+                android:id="@+id/attack1Layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/battle_border_button" >
 
             <TextView
-                android:id="@+id/attack1Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/poke_text_color"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                    android:id="@+id/attack1Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/poke_text_color"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/attack1PP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/pp_text_color"
-                android:textSize="12sp" />
+                    android:id="@+id/attack1PP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/pp_text_color"
+                    android:textSize="12sp" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/attack2Layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/battle_border_button" >
+                android:id="@+id/attack2Layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/battle_border_button" >
 
             <TextView
-                android:id="@+id/attack2Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/poke_text_color"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                    android:id="@+id/attack2Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/poke_text_color"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/attack2PP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/pp_text_color"
-                android:textSize="12sp" />
+                    android:id="@+id/attack2PP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/pp_text_color"
+                    android:textSize="12sp" />
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/attackRow2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/attackRow1"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="-39dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:visibility="gone" >
+            android:id="@+id/attackRow2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attackRow1"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="-39dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
         <RelativeLayout
-            android:id="@+id/attack3Layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="2dp"
-            android:layout_weight="1"
-            android:background="@drawable/battle_border_button" >
+                android:id="@+id/attack3Layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/battle_border_button" >
 
             <TextView
-                android:id="@+id/attack3Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/poke_text_color"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                    android:id="@+id/attack3Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/poke_text_color"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/attack3PP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/pp_text_color"
-                android:textSize="12sp" />
+                    android:id="@+id/attack3PP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/pp_text_color"
+                    android:textSize="12sp" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/attack4Layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"
-            android:background="@drawable/battle_border_button" >
+                android:id="@+id/attack4Layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/battle_border_button" >
 
             <TextView
-                android:id="@+id/attack4Name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/poke_text_color"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                    android:id="@+id/attack4Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/poke_text_color"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/attack4PP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/pp_text_color"
-                android:textSize="12sp" />
+                    android:id="@+id/attack4PP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/pp_text_color"
+                    android:textSize="12sp" />
         </RelativeLayout>
     </LinearLayout>
 
