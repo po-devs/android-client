@@ -5,19 +5,16 @@ import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.TextView;
+import android.widget.*;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.*;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class MoveListAdapter implements ListAdapter {
 	TeamPoke poke = null;
+	boolean lastView = false;
 
 	public void setPoke(TeamPoke poke) {
 		this.poke = poke;
@@ -32,8 +29,22 @@ public class MoveListAdapter implements ListAdapter {
 		}
         short move;
         if (poke.isHackmon) {
+			if (!lastView) {
+				position = 1;
+				ListView listview = (ListView) parent;
+				listview.setSelection(position);
+				notifyDataSetChanged();
+				lastView = true;
+			}
             move = MoveInfo.getAllMoves()[position];
         } else {
+			if (lastView) {
+				position = 1;
+				ListView listview = (ListView) parent;
+				listview.setSelection(position);
+				notifyDataSetChanged();
+				lastView = false;
+			}
             move = PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[position];
         }
 

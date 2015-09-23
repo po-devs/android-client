@@ -122,6 +122,7 @@
     <string name="poke_number_summary">Number of the pokemon</string>
     <string name="sound_notification_title">Cry Sound notification</string>
     <string name="sound_notification_summary">Toggle cry sound notification</string>
+    <string name="IV">IV</string>
 
     <string-array name="hp_array">
         <item>Fighting</item>

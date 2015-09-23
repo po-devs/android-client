@@ -490,6 +490,9 @@ public class PokemonInfo {
 	private static Drawable itemDrawable(String itemId) {
 		Resources resource = InfoConfig.resources;
 		Integer identifier = resource.getIdentifier(itemId, "drawable", InfoConfig.pkgName);
+		if (identifier == 0) {
+			return itemDrawable("i328");
+		}
 		return resource.getDrawable(identifier);
 	}
 
