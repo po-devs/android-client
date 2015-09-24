@@ -20,6 +20,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.podevs.android.poAndroid.*;
+import com.podevs.android.poAndroid.battle.ChallengeEnums;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.ChallengeDesc;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
@@ -538,7 +539,7 @@ public class ChatActivity extends Activity {
 				return null;
 			}
 
-			TextView oppInfo, oppName;           
+			TextView oppInfo, oppName, challInfo;
 			builder.setView(challengedLayout)
 			.setCancelable(false)
 			.setNegativeButton(this.getString(R.string.decline), new DialogInterface.OnClickListener() {
@@ -584,6 +585,13 @@ public class ChatActivity extends Activity {
 
 			oppInfo = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info", "id", packName));
 			oppInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(opp.info())));
+
+			challInfo = (TextView) challengedLayout.findViewById(R.id.chall_info);
+			challInfo.setText(Html.fromHtml(
+					"<b>Their Tier: </b>" + challenge.srcTier + "<br />" +
+							"<b>Your Tier: </b>" + challenge.destTier + "<br />" +
+							"<b>Clauses: </b> " + ChallengeEnums.clausesToStringHtml(challenge.clauses)));
+			challInfo.setGravity(Gravity.CENTER_HORIZONTAL);
 
 			oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
 			oppName.setText(this.getString(R.string.accept_challenge) + " " + opp.nick() + "?");
