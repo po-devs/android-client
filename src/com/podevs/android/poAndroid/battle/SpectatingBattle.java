@@ -208,7 +208,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(10000);
+						wait(5000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -258,7 +258,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(10000);
+						wait(5000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -434,10 +434,14 @@ public class SpectatingBattle {
 			int id = msg.readInt();
 			String name = msg.readString();
 
-			if (come) {
-				addSpectator(id, name);
+			if (conf != null && conf.isInBattle(id)) {
+				onOpponentConnection(come, id);
 			} else {
-				removeSpectator(id);
+				if (come) {
+					addSpectator(id, name);
+				} else {
+					removeSpectator(id);
+				}
 			}
 
 			break;
@@ -692,7 +696,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						activity.animateHpBarTo(player, currentPoke(player).lifePercent);
-						wait(10000);
+						wait(7000);
 					}
 				} catch (InterruptedException e) {}
 			}
@@ -708,6 +712,28 @@ public class SpectatingBattle {
 			break;
 		}
 		}
+	}
+
+	private void onOpponentConnection(boolean come, int id) {
+		if (!come) {
+			if (containsClause(Clauses.NoTimeOut.ordinal())) {
+				writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected!</font>"));
+			} else {
+				writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected! You can wait for their time to run out if you want the win.</font>"));
+			}
+		} else {
+			writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " logged back in and is ready to resume the battle!</font>"));
+		}
+	}
+
+	private boolean containsClause(int clause) {
+		for (int i = 0; i < Clauses.values().length; i++) {
+			if ((conf.clauses & (1 << i)) > 0) {
+				if (Clauses.values()[i].ordinal() == clause)
+					return true;
+			}
+		}
+		return false;
 	}
 
 	private SparseArray<String> spectators = new SparseArray<String>();
