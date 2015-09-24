@@ -140,7 +140,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     }
                 });
                 try {
-                    Thread.sleep(40);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                 }
@@ -154,7 +154,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     }
                 });
                 try {
-                    Thread.sleep(40);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                 }

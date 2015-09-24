@@ -214,7 +214,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						if (!baked) wait(10000); else wait(1000);
+						if (!baked) wait(6000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -264,7 +264,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						if (!baked) wait(10000); else wait(2000);
+						if (!baked) wait(7000); else wait(2000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -704,7 +704,7 @@ public class SpectatingBattle {
 						//Log.e(TAG, change + "");
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;
-						if (!baked) wait(10000); else wait(change*43);
+						if (!baked) wait(7000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 			}

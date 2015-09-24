@@ -272,7 +272,7 @@ public class Battle extends SpectatingBattle {
                         //Log.e(TAG, "change " + change);
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;
-						if (!baked) wait(10000); else wait(change*43);
+						if (!baked) wait(6000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 				activity.updateCurrentPokeListEntry();
