@@ -307,24 +307,24 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 	
 	public void updateBattleInfo(boolean scroll) {
 		runOnUiThread(new Runnable() {
-            public void run() {
-                if (battle == null)
-                    return;
-                synchronized (battle.histDelta) {
-                    infoView.append(battle.histDelta);
-                    if (battle.histDelta.length() != 0 || true) {
-                        infoScroll.post(new Runnable() {
-                            public void run() {
-                                infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
-                            }
-                        });
-                    }
-                    infoScroll.invalidate();
-                    battle.hist.append(battle.histDelta);
-                    battle.histDelta.clear();
-                }
-            }
-        });
+			public void run() {
+				if (battle == null)
+					return;
+				synchronized (battle.histDelta) {
+					infoView.append(battle.histDelta);
+					if (battle.histDelta.length() != 0 || true) {
+						infoScroll.post(new Runnable() {
+							public void run() {
+								infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
+							}
+						});
+					}
+					infoScroll.invalidate();
+					battle.hist.append(battle.histDelta);
+					battle.histDelta.clear();
+				}
+			}
+		});
 	}
 	
 	public void updatePokes(byte player) {
@@ -733,7 +733,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 					.setTitle("Battle Chat")
 					.setMessage("Send Battle Message")
 					.setView(input)
-					.setPositiveButton("Send", new DialogInterface.OnClickListener() {			
+					.setPositiveButton("Send", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface i, int j) {
 							String message = input.getText().toString();
 							if (message.length() > 0) {
@@ -972,21 +972,9 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         switch(BattleDialog.values()[id]) {
         case RearrangeTeam: {
         	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout) findViewById(R.id.rearrange_team_dialog));
-			final TextView nameAndType = (TextView) layout.findViewById(R.id.nameTypeView);
-			final TextView statNames = (TextView) layout.findViewById(R.id.statNamesView);
-			final TextView statNums = (TextView) layout.findViewById(R.id.statNumsView);
-			final TextView moves = (TextView) layout.findViewById(R.id.moveString);
-
-			String s = "HP:";
-			s += "\nAttack:";
-			s += "\nDefense:";
-			s += "\nSp. Att:";
-			s += "\nSp. Def:";
-			s += "\nSpeed:";
-			statNames.setText(s);
 
         	builder.setView(layout)
-        	.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+        	.setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
                     battle.shouldShowPreview = false;
@@ -997,19 +985,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	dialog = builder.create();
 
         	mDragLayer = (DragLayer)layout.findViewById(R.id.drag_my_poke);
-			mDragLayer.addDragListener(new DragController.DragListener() {
-				@Override
-				public void onDragStart(View v, DragSource source, Object info, int dragAction) {
-
-				}
-
-				@Override
-				public void onDragEnd() {
-					nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
-					statNums.setText(activeBattle.myTeam.pokes[0].printStats());
-					moves.setText(activeBattle.myTeam.pokes[0].movesString());
-				}
-			});
 
         	for(int i = 0; i < 6; i++){
         		BattlePoke poke = activeBattle.myTeam.pokes[i];
@@ -1022,10 +997,6 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		ShallowShownPoke oppPoke = activeBattle.oppTeam.pokes[i];
         		oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
         		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
-
-				nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
-				statNums.setText(activeBattle.myTeam.pokes[0].printStats());
-				moves.setText(activeBattle.myTeam.pokes[0].movesString());
         	}
             return dialog;
         }
@@ -1033,11 +1004,11 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 			builder.setMessage("Really Forfeit?")
 			.setCancelable(true)
 			.setPositiveButton("Forfeit", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    endBattle();
-                }
-            })
-			.setNegativeButton("Cancel", null);
+				public void onClick(DialogInterface dialog, int which) {
+					endBattle();
+				}
+			})
+			.setNegativeButton(R.string.cancel, null);
 			return builder.create();
         case OppDynamicInfo:
         	player = opp;
@@ -1086,10 +1057,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	dialog = builder.setTitle(lastClickedMove.toString())
         	.setMessage(lastClickedMove.descAndEffects())
         	.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                public void onCancel(DialogInterface dialog) {
-                    removeDialog(id);
-                }
-            })
+				public void onCancel(DialogInterface dialog) {
+					removeDialog(id);
+				}
+			})
         	.create();
         	dialog.setCanceledOnTouchOutside(true);
         	return dialog;
