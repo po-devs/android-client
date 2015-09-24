@@ -234,7 +234,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			        servers.setAdapter(oldadapter);
 			        viewToggle = true;
 				}
-				printToast("ONCONFIGURATION CHANGED", Toast.LENGTH_SHORT);
 			}
 		});
 	}

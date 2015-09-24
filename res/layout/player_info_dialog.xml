@@ -24,7 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/player_info"></ListView>
+        android:layout_below="@+id/player_info">
+    </ListView>
 
     <TextView
         android:id="@+id/player_info"
@@ -34,5 +35,12 @@
         android:layout_below="@+id/player_info_name"
 		android:text="@string/rearrange_team_description"
         android:textSize="12sp" />
+
+    <TextView
+            android:id="@+id/chall_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/player_info"
+            android:textSize="12sp"/>
 
 </RelativeLayout>
