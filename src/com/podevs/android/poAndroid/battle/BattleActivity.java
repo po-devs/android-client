@@ -20,6 +20,7 @@ import android.webkit.WebView;
 import android.widget.*;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
+import com.android.launcher.DragSource;
 import com.android.launcher.PokeDragIcon;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
@@ -138,7 +139,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 					}
 				});
 				try {
-					Thread.sleep(40);
+					Thread.sleep(30);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 				}
@@ -152,7 +153,7 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
 					}
 				});
 				try {
-					Thread.sleep(40);
+					Thread.sleep(30);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 				}
@@ -971,16 +972,23 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         switch(BattleDialog.values()[id]) {
         case RearrangeTeam: {
         	View layout = inflater.inflate(R.layout.rearrange_team_dialog, (RelativeLayout) findViewById(R.id.rearrange_team_dialog));
+			final TextView nameAndType = (TextView) layout.findViewById(R.id.nameTypeView);
+			final TextView statNames = (TextView) layout.findViewById(R.id.statNamesView);
+			final TextView statNums = (TextView) layout.findViewById(R.id.statNumsView);
+			final TextView moves = (TextView) layout.findViewById(R.id.moveString);
+
+			String s = "HP:";
+			s += "\nAttack:";
+			s += "\nDefense:";
+			s += "\nSp. Att:";
+			s += "\nSp. Def:";
+			s += "\nSpeed:";
+			statNames.setText(s);
+
         	builder.setView(layout)
         	.setPositiveButton("Done", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     netServ.socket.sendMessage(activeBattle.constructRearrange(), Command.BattleMessage);
-                    /*
-                    // re-pre-load PokeBall and sprite info
-                    for (int i = 0; i < 6; i++) {
-                        battle.pokes[battle.me][i].uID = activeBattle.myTeam.pokes[i].uID;
-                    }
-                    */
                     battle.shouldShowPreview = false;
                     removeDialog(id);
                 }
@@ -989,6 +997,20 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         	dialog = builder.create();
 
         	mDragLayer = (DragLayer)layout.findViewById(R.id.drag_my_poke);
+			mDragLayer.addDragListener(new DragController.DragListener() {
+				@Override
+				public void onDragStart(View v, DragSource source, Object info, int dragAction) {
+
+				}
+
+				@Override
+				public void onDragEnd() {
+					nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
+					statNums.setText(activeBattle.myTeam.pokes[0].printStats());
+					moves.setText(activeBattle.myTeam.pokes[0].movesString());
+				}
+			});
+
         	for(int i = 0; i < 6; i++){
         		BattlePoke poke = activeBattle.myTeam.pokes[i];
         		myArrangePokeIcons[i] = (PokeDragIcon)layout.findViewById(resources.getIdentifier("my_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
@@ -1000,6 +1022,10 @@ public class BattleActivity extends Activity implements MyResultReceiver.Receive
         		ShallowShownPoke oppPoke = activeBattle.oppTeam.pokes[i];
         		oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
         		oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
+
+				nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
+				statNums.setText(activeBattle.myTeam.pokes[0].printStats());
+				moves.setText(activeBattle.myTeam.pokes[0].movesString());
         	}
             return dialog;
         }

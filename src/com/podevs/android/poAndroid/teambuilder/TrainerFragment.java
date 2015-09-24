@@ -57,7 +57,7 @@ public class TrainerFragment extends Fragment {
 		//Register onClick listener
 		importbutton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				((TeambuilderActivity)getActivity()).onImportClicked();
+				((TeambuilderActivity)getActivity()).buildDownloadDialog();
 			}
 		});
 

@@ -125,7 +125,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(5000);
+						wait(4000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -264,7 +264,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						activity.animateHpBarTo(player, currentPoke(player).lifePercent);
-						wait(10000);
+						wait(7000);
 					}
 				} catch (InterruptedException e) {}
 				activity.updateCurrentPokeListEntry();

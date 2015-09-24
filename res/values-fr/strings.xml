@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="empty"></string>
+    <string name="choosename">Nom de dresseur</string>
+    <string name="app_name">Pokémon Online</string>
+    <string name="connect">Connexion!</string>
+    <string name="inputname">Nom de dresseur</string>
+    <string name="inputaddr">Adresse IP:Port</string>
+    <string name="chooseaddr">Adresse du serveur</string>
+    <string name="importteam">Importer l\'équipe\'</string>
+    <string name="viewpokemon">Voir Pokémon</string>
+    <string name="tobattlescreen">Retour à la fenêtre du combat</string>
+    <string name="notinbattle">Vous n\'êtes pas actuellement dans un combat!</string>
+    <string name="forfeit">Déclarer forfait au combat actuel</string>
+    <string name="ok">Accepter</string>
+    <string name="cancel">Annuler</string>
+    <string name="no">Refuser</string>
+    <string name="disconnect">Se deconnecter</string>
+    <string name="change_name">Changer de nom</string>
+    <string name="suggest_draw">Faire match nul</string>
+    <string name="return_to_chat">Retourner à la discussion</string>
+    <string name="player_list">Liste des joeurs</string>
+    <string name="channel_list">Liste des chaînes</string>
+    <string name="accept">Accepter</string>
+    <string name="decline">Refuser</string>
+    <string name="accept_challenge">Accepter défi de</string>
+    <string name="stat_attack">Attaque</string>
+    <string name="stat_defense">Defense</string>
+    <string name="stat_spAttack">Att. spé</string>
+    <string name="stat_spDefense">Def. spé</string>
+    <string name="stat_speed">Vitesse</string>
+    <string name="stat_accuracy">Précision</string>
+    <string name="stat_evasion">Esquive</string>
+    <string name="rearrange_team_description">Vous pouvez réorganiser votre équipe en déplaçant votre Pokémon avant le combat.</string>
+    <string name="rearrange_team_title">Réorganiser votre équipe</string>
+    <string name="foes_team">Equipe adverse:</string>
+    <string name="your_team">Votre équipe:</string>
+    <string name="done">Terminer</string>
+    <string name="find_a_battle">Trouver combat</string>
+    <string name="enable_sounds">Cris des Pokémon</string>
+    <string name="stop_watching">Arrêter de regarder</string>
+    <string name="crash_toast_text">Pokémon Online a planté! Veuillez envoyer par mail l\'érreur correspondante\'.</string>
+    <string name="serv_name">Nom du serveur</string>
+    <string name="players">Joueurs</string>
+    <string name="serv_addr">Adresse du serveur</string>
+    <string name="connecttoserver">Se connecter au serveur</string>
+    <string name="major_compat_break_warning">Il y aura des problèmes durant la communication avec le serveur due à une version dépassée de l\'application Android</string>
+    <string name="minor_compat_break_warning">Il peut y avoir des problèmes mineurs lors de la communication avec le serveur due à une version dépassée de l\'application Android\'</string>
+    <string name="new_server_features_warning">Le serveur a de nouvelles fonctionalités incompatibles avec la version Android!</string>
+    <string name="send_message">Envoyer message</string>
+    <string name="battle_opponent_team_poke_icon">Icone poke équipe adverse</string>
+    <string name="struggle_attack">LUTTE</string>
+    <string name="info_box">Boîte d\'info\'</string>
+    <string name="hp_bar_description">Barre de PV</string>
+    <string name="gender_description">Sexe</string>
+    <string name="status_description">Statut</string>
+    <string name="sprite_description">Avatar</string>
+    <string name="team_poke_icon">Icone équipe pokémon </string>
+    <string name="no_netserv">Connexion au serveur a échoué</string>
+    <string name="private_messages">Messages Privés</string>
+    <!-- <string name="player">Joueurs</string> -->
+    <string name="closePM">Fermer MP</string>
+    <string name="ignorePlayer">Ignorer Joueur</string>
+    <string name="closeBattle">Quitter combat</string>
+    <string name="tierSelection">Sélection des tiers</string>
+    <string name="idle">Masquer</string>
+    <string name="register">Enregister votre nom</string>
+    <string name="teambuilder">Construire équipe</string>
+    <string name="primary_info">Informations primaires</string>
+    <string name="trainer_name">Nom d\'entraîneur\'</string>
+    <string name="color">Couleur</string>
+    <string name="team">Equipe</string>
+    <string name="team_tier">Tier de l\'équipe\'</string>
+    <string name="edit_team">Modifer l\'équipe\'</string>
+    <string name="optional">Optionel</string>
+    <string name="trainerinfo">Information de l\'entraîneur\'</string>
+    <string name="winningmessage">Message de victoire</string>
+    <string name="losingmessage">Message de défaite</string>
+    <string name="pokemon">Pokémon</string>
+    <string name="save_team_q">Voulez-vous appliquer les changements à l\'équipe?</string>
+    <string name="download_team">Télécharger équipe</string>
+    <string name="save">Sauvegarder</string>
+    <string name="no_save">Ne pas Sauvegarder</string>
+    <string name="hiddenpower_choice">Puis.cachée type</string>
+    <string name="new_team">Réinitialiser équipe</string>
+    <string name="load_team">Charger équipe</string>
+    <string name="save_team_as">Sauvegarder l\'équipe</string>
+    <string name="delete_team">Supprimer équipe</string>
+    <string name="full_happiness">100% Bonheur</string>
+    <string name="megavolve">Méga évoluer</string>
+    <string name="formes">Formes: </string>
+    <string name="settings">Options</string>
+    <string name="shiny">Chromatique</string>
+    <string name="force_rated">Forcer mode Classé</string>
+    <string name="force_same_tier">Forcer même Tier</string>
+    <string name="only_within_range">Uniquement avec un équart de</string>
+    <string name="view_player_info">Voir informations du joueur</string>
+    <string name="challenge">Défier</string>
+    <string name="pm">Message Privé</string>
+    <string name="watch_battle">Regarder combat contre</string>
+
+    <string name="chat_title">Options de discussion</string>
+    <string name="chat_summary">Options de discussion</string>
+    <string name="flash_title">Clignotant</string>
+    <string name="flash_summary">Basculer clignotant</string>
+    <string name="flash_color_title">Couleur du clignotant</string>
+    <string name="flash_color_summary">Entrer en code hexadécimal une couleur valide</string>
+    <string name="timestamp_chat_title">Horodatage</string>
+    <string name="timestamp_chat_summary">Basculer l\'horodatage dans la discussion\'</string>
+    <string name="notifications_chat_title">Faire surgir le clignotant</string>
+    <string name="notifications_chat_summary">Basculer le clignotant de notification</string>
+    <string name="pm_title">MP Options</string>
+    <string name="pm_summary">Options Messages Privés</string>
+    <string name="timestamp_pm_title">Horodatage</string>
+    <string name="timestamp_pm_summary">Basculer l\'horodatage</string>
+    <string name="notifications_pm_title">Notifications</string>
+    <string name="notifications_pm_summary">Basculer les notifications</string>
+    <string name="volume_title">Volume</string>
+    <string name="volume_summary">Entier entre 0 et 100</string>
+    <string name="poke_number_title">Cris des Pokémons</string>
+    <string name="poke_number_summary">Numéro des pokemons</string>
+    <string name="sound_notification_title">Notification des sons Cris</string>
+    <string name="sound_notification_summary">Basculer notification sons Cris </string>
+
+    <string name="IV">IV</string>
+
+    <string-array name="hp_array">
+        <item>Combat</item>
+        <item>Vol</item>
+        <item>Poison</item>
+        <item>Sol</item>
+        <item>Roche</item>
+        <item>Insecte</item>
+        <item>Spectre</item>
+        <item>Acier</item>
+        <item>Feu</item>
+        <item>Eau</item>
+        <item>Plante</item>
+        <item>Electrique</item>
+        <item>Psy</item>
+        <item>Glace</item>
+        <item>Dragon</item>
+        <item>Tenèbres</item>
+    </string-array>
+
+</resources>

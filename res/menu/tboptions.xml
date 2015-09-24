@@ -5,5 +5,5 @@
 	<item android:title="@string/load_team" android:id="@+id/load_team"></item>
 	<item android:title="@string/save_team_as" android:id="@+id/save_team"></item>
 	<item android:title="@string/delete_team" android:id="@+id/delete_team"></item>
-	<item android:title="@string/download_team" android:id="@+id/download_team"></item>
+	<item android:title="Switch places" android:id="@+id/switch_place"></item>
 </menu>

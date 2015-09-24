@@ -1,11 +1,8 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.Log;
-import android.util.LruCache;
 import android.util.SparseArray;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;

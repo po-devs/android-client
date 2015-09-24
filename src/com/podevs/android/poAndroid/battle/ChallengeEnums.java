@@ -39,7 +39,7 @@ public class ChallengeEnums {
 		public final String toString() { return "Species Clause"; }
 		public final String battleText() { return ""; } },
 		RearrangeTeams { public final int mask() { return 128; }
-		public final String toString() { return "Wifi Battle"; }
+		public final String toString() { return "Team Preview"; }
 		public final String battleText() { return ""; } },
 		SelfKO { public final int mask() { return 256; }
 		public final String toString() { return "Self-KO Clause"; }
