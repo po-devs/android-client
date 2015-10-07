@@ -228,6 +228,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                                     }
                                 }
 								if (i > 255) i = 255;
+								if (i < 0) i = 0;
 								poke().happiness = (byte) i;
 								happinessChooser.setText("Happy: " + i);
 							}
