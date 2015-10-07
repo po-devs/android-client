@@ -69,21 +69,25 @@ public class Settings extends PreferenceFragment {
     }
 
     private Boolean dealWithPokemonNumber(String number) {
-        Integer i = Integer.parseInt(number);
-        if (718 >= i && i > 0) {
-            makeToast("Pokemon: " + number);
-            return true;
-        }
+        try {
+            Integer i = Integer.parseInt(number);
+            if (718 >= i && i > 0) {
+                makeToast("Pokemon: " + number);
+                return true;
+            }
+        } catch (Exception e) {}
         makeToast("Enter a valid pokemon number");
         return false;
     }
 
     private Boolean dealWithVolume(String number) {
+        try {
         Integer i = Integer.parseInt(number);
-        if (100 >= i && i >= 0) {
-            makeToast("Volume: " + number);
-            return true;
-        }
+            if (100 >= i && i >= 0) {
+                makeToast("Volume: " + number);
+                return true;
+            }
+        } catch (Exception e) {}
         makeToast("Select a value between 0 and 100");
         return false;
     }
