@@ -9,7 +9,8 @@ import android.graphics.Color;
 public class QColor implements SerializeBytes {
 	public int colorInt = Color.BLACK;
 	public boolean invalid = true;
-	
+	private static final String[] nameColorList = new String[]{"#5811b1", "#399bcd", "#0474bb", "#f8760d", "#a00c9e", "#0d762b", "#5f4c00", "#9a4f6d", "#d0990f", "#1b1390", "#028678", "#0324b1"};
+
 	public QColor(Bais msg) {
 		byte spec = msg.readByte();
 		/* Trick to convert signed short to unsigned short */
@@ -64,6 +65,11 @@ public class QColor implements SerializeBytes {
 			colorInt = Color.parseColor(hex);
 			invalid = false;
 		}
+	}
+
+	public QColor(int id, int length) {
+		colorInt = Color.parseColor(nameColorList[id % length]);
+		invalid = false;
 	}
 	
 	public String toHexString() {
