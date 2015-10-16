@@ -70,6 +70,10 @@ public class PlayerInfo implements SerializeBytes {
 		for (int i = 0; i < numTiers; i++) {
 			tierStandings.add(new TierStanding(msg.readString(), msg.readShort()));
 		}
+
+		if (!color.isValid()) {
+			color = new QColor(id, 12);
+		}
 	}
 	
 	public void serializeBytes(Baos b) {
