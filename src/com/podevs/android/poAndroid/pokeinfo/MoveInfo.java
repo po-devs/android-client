@@ -5,6 +5,7 @@ import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class MoveInfo extends GenInfo {
@@ -39,6 +40,7 @@ public class MoveInfo extends GenInfo {
 		typeloaded = false;
 		accuracyloaded = false;
 		effectsloaded = false;
+		genmovelistloaded = false;
 	}
 
 	public static void forceSetGen(int Gen, int SubGen) {
@@ -243,21 +245,46 @@ public class MoveInfo extends GenInfo {
 				moveNames.add(new Move(b));
 			}
 		});
-        fillAllMoves();
 	}
 
-    private static void fillAllMoves() {
-        allMoves = new Short[moveNames.size() - 1];
-        for (int i = 0; i <= allMoves.length - 1; i++) {
-            allMoves[i] = (short) (i + 1);
-        }
-        java.util.Arrays.sort(allMoves, new Comparator<Short>() {
-            @Override
-            public int compare(Short lhs, Short rhs) {
-                return name(lhs).compareToIgnoreCase(name(rhs));
-            }
-        });
-    }
+	static boolean genmovelistloaded = false;
+	private static void fillAllMoves() {
+		if (genmovelistloaded) {
+			return;
+		}
+		allMoves = new Short[moveNames.size()];
+
+		for (int i = 0; i <= allMoves.length - 1; i++) {
+			allMoves[i] = (short) 0;
+		}
+
+		InfoFiller.plainFill("db/moves/" + thisGen + "G/moves.txt", new Filler() {
+			@Override
+			public void fill(int i, String s) {
+				allMoves[i] = (short) i;
+			}
+		});
+
+		allMoves = trim(allMoves);
+
+		java.util.Arrays.sort(allMoves, new Comparator<Short>() {
+			@Override
+			public int compare(Short lhs, Short rhs) {
+				return name(lhs).compareToIgnoreCase(name(rhs));
+			}
+		});
+
+		genmovelistloaded = true;
+	}
+
+	private static Short[] trim(Short[] shorts) {
+		int i = shorts.length - 1;
+		while (i >= 0 && shorts[i] == 0) {
+			--i;
+		}
+
+		return Arrays.copyOf(shorts, i + 1);
+	}
 
 	private static void loadMoveMessages() {
 		moveMessages = new SparseArray<String>();
@@ -269,8 +296,12 @@ public class MoveInfo extends GenInfo {
 	}
 
     public static Short[] getAllMoves() {
-        return allMoves;
-    }
+		if (!genmovelistloaded) {
+			testLoad();
+			fillAllMoves();
+		}
+		return allMoves;
+	}
 
     public static ArrayList<String> makeList(short[] input) {
         ArrayList<String> nameList = new ArrayList<String>(input.length);
