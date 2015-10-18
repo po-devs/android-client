@@ -803,14 +803,25 @@ public class NetworkService extends Service {
 									else {
 										Iterator<Channel> it = joinedChannels.iterator();
 										while (it.hasNext()) {
-											it.next().writeToHist(message, left, right, chatSettings.color);
+											it.next().writeToHist(message, left, right, chatSettings.color, false, null);
 										}
 									}
 								} else {
 									if (chan == null) {
 										Log.e(TAG, "Received message for nonexistent channel");
 									} else {
-										chan.writeToHist(message, left, right, chatSettings.color);
+										boolean click = false;
+										String command = null;
+										hashTagMatcher = hashTagPattern.matcher(message);
+										if (hashTagMatcher.find()) {
+											command = hashTagMatcher.group(0);
+											if (channelNameTagger(command.toLowerCase().replace("#", ""))) {
+												click = true;
+											} else {
+												command = null;
+											}
+										}
+										chan.writeToHist(message, left, right, chatSettings.color, click, command);
 										if (chan != joinedChannels.getFirst()) {
 											chan.flashed = true;
 											if (chatSettings.notificationsFlash) {
