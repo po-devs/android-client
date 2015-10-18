@@ -67,6 +67,7 @@ public class NetworkService extends Service {
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
 	private ImageParser imageParser;
+	private BattleInlineHandler tagHandler;
 	private Pattern hashTagPattern;
 	private Matcher hashTagMatcher;
 
@@ -343,6 +344,7 @@ public class NetworkService extends Service {
 		loadSettings();
 		hashTagPattern = Pattern.compile("(#\\S*\\s??)");
 		imageParser = new ImageParser(this);
+		tagHandler = new BattleInlineHandler(this);
 	}
 
 	public static SharedPreferences POPreferences = null;
@@ -762,6 +764,22 @@ public class NetworkService extends Service {
 				player = players.get(pId = msg.readInt());
 			}
 			CharSequence message = msg.readString();
+			if (isHtml) {
+				if (message.toString().contains("<a href='po:watch/")) {
+					// THIS IS TEMPORARY //
+					String stringified = message.toString();
+					int openingtag = stringified.indexOf("<a href='po:watch/");
+					int closingtag = stringified.indexOf("</a>", openingtag);
+					String part1 = stringified.substring(0, openingtag);
+					String part2 = "<watch id='";
+					String part3 = stringified.substring(openingtag + "<a href='po:watch/".length(), closingtag);
+					String part4 = "</watch>";
+					String part5 = stringified.substring(closingtag + "</a>".length());
+					stringified = part1 + part2 + part3 + part4 + part5;
+					message = stringified;
+					// THIS IS TEMPORARY //
+				}
+			}
 			if (hasId) {
 				if (ignoreList.contains(pId)) {
 					break;
@@ -838,7 +856,7 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
-					message = Html.fromHtml((String)message, imageParser, null);
+					message = Html.fromHtml((String)message, imageParser, tagHandler);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');
@@ -1506,6 +1524,15 @@ public class NetworkService extends Service {
 	public void stopWatching(int bID) {
 		socket.sendMessage(new Baos().putInt(bID).putBool(false), Command.SpectateBattle);
 		closeBattle(bID);
+	}
+
+	public void startWatching(int bID) {
+		if (bID != 0) {
+			Baos watch = new Baos();
+			watch.putInt(bID);
+			watch.putBool(true); // watch, not leaving
+			socket.sendMessage(watch, Command.SpectateBattle);
+		}
 	}
 
 	/**
