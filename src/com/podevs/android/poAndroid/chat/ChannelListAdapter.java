@@ -56,11 +56,12 @@ public class ChannelListAdapter extends ArrayAdapter<com.podevs.android.poAndroi
 		Channel channel = getItem(position);
 		if (channel != null) {
 			TextView nick = (TextView)view.findViewById(R.id.channel_list_name);
-			nick.setText(Html.fromHtml((channel.flashed ? "<font color='red'>" : "" ) +
-					(channel.joined ? "<b><i>" : "" ) +
-					StringUtilities.escapeHtml(channel.name()) +
-					(channel.joined ? "</i></b>" : "" ) +
-					(channel.flashed ? "</font>" : "" )));
+			nick.setText(Html.fromHtml(
+					(channel.flashed ? "<font color='red'>" : channel.newmessage ? "<font color='#268a1e'" : "" ) +
+						(channel.joined ? "<b><i>" : "" ) +
+						StringUtilities.escapeHtml(channel.name()) +
+						(channel.joined ? "</i></b>" : "" ) +
+					(channel.flashed || channel.newmessage ? "</font>" : "" )));
 		}
 		return view;
 	}

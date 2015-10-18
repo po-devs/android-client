@@ -913,6 +913,9 @@ public class NetworkService extends Service {
 						}
 					}
 					chan.writeToHist(message, click, command);
+					if (chan != joinedChannels.getFirst()) {
+						chan.newmessage = true;
+					}
 				}
 			}
 			break;

@@ -30,6 +30,7 @@ public class Channel {
 	// protected boolean isReadyToQuit = false;
 	public boolean joined = false;
 	public boolean flashed = false;
+	public boolean newmessage = false;
 	public final static int HIST_LIMIT = 700;
 	public static final String TAG = "Pokemon Online Channel";
 	public boolean channelEvents = false;
