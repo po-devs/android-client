@@ -785,37 +785,42 @@ public class NetworkService extends Service {
 				} else {
 					if (chatSettings.flashing) {
 						if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
-							int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
-							left = left + name.length() + (chatSettings.timeStamp ? 13 : 2);
-							if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
-								left = left + 1;
-							}
-							int right = this.me.nick.length() + left;
-							message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
-							if (!hasChannel) {
-								// Broadcast message
-								if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
-									chatActivity.makeToast(message.toString(), "long");
-								else {
-									Iterator<Channel> it = joinedChannels.iterator();
-									while (it.hasNext()) {
-										it.next().writeToHist(message, left, right, chatSettings.color);
-									}
+							// Be certain!
+							Pattern myName = Pattern.compile("(?<!\\S)(" + this.me.nick.toLowerCase() + ")(?!\\w)");
+							Matcher myMatcher = myName.matcher(message.toString().toLowerCase());
+							if (myMatcher.find()) {
+								int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
+								left = left + name.length() + (chatSettings.timeStamp ? 13 : 2);
+								if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
+									left = left + 1;
 								}
-							} else {
-								if (chan == null) {
-									Log.e(TAG, "Received message for nonexistent channel");
+								int right = this.me.nick.length() + left;
+								message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+								if (!hasChannel) {
+									// Broadcast message
+									if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
+										chatActivity.makeToast(message.toString(), "long");
+									else {
+										Iterator<Channel> it = joinedChannels.iterator();
+										while (it.hasNext()) {
+											it.next().writeToHist(message, left, right, chatSettings.color);
+										}
+									}
 								} else {
-									chan.writeToHist(message, left, right, chatSettings.color);
-									if (chan != joinedChannels.getFirst()) {
-										chan.flashed = true;
-										if (chatSettings.notificationsFlash) {
-											chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+									if (chan == null) {
+										Log.e(TAG, "Received message for nonexistent channel");
+									} else {
+										chan.writeToHist(message, left, right, chatSettings.color);
+										if (chan != joinedChannels.getFirst()) {
+											chan.flashed = true;
+											if (chatSettings.notificationsFlash) {
+												chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+											}
 										}
 									}
 								}
+								break;
 							}
-							break;
 						}
 					}
 					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
