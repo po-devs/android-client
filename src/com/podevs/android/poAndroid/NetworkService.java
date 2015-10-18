@@ -68,7 +68,8 @@ public class NetworkService extends Service {
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
 	private ImageParser imageParser;
 	private BattleInlineHandler tagHandler;
-	private Pattern hashTagPattern;
+	private static Pattern hashTagPattern;
+	public static Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\w\\/_\\.]*(\\?\\S+)?)?)?");
 	private Matcher hashTagMatcher;
 
 	private static class chatPrefs {
