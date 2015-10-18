@@ -271,8 +271,9 @@ public class ChatActivity extends Activity {
 					// XXX remove is implemented as O(N) we could do it O(1) if we really had to
 					netServ.joinedChannels.remove(clicked);
 					netServ.joinedChannels.addFirst(clicked);
-					if (clicked.flashed) {
+					if (clicked.flashed || clicked.newmessage) {
 						clicked.flashed = false;
+						clicked.newmessage = false;
 					}
 					populateUI(true);
 				}
