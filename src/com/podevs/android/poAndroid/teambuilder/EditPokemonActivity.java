@@ -19,15 +19,18 @@ import com.podevs.android.poAndroid.poke.TeamPoke;
 public class EditPokemonActivity extends FragmentActivity {
 	private TeamPoke poke = null;
 	private int slot = 0;
+	private String tier = "";
 
 	public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             slot = savedInstanceState.getInt("slot", 0);
             poke = savedInstanceState.getParcelable("pokemon");
+			tier = savedInstanceState.getString("tier");
         } else {
             //poke = new TeamPoke(new Bais(getIntent().getExtras().getByteArray("pokemon")));
             poke = getIntent().getExtras().getParcelable("pokemon");
             slot = getIntent().getIntExtra("slot", 0);
+			tier = getIntent().getStringExtra("tier");
         }
 
 		super.onCreate(savedInstanceState);
@@ -62,5 +65,9 @@ public class EditPokemonActivity extends FragmentActivity {
 
 	public TeamPoke getPoke() {
 		return poke;
+	}
+
+	public String getTier() {
+		return tier;
 	}
 }

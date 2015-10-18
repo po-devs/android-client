@@ -364,6 +364,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		return ((EditPokemonActivity) getActivity()).getPoke();
 	}
 
+	private String tier() {
+		return ((EditPokemonActivity) getActivity()).getTier();
+	}
+
 	public void updatePoke() {
 		if (poke() == null) {
 			return;
@@ -371,12 +375,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		TeamPoke tempPoke = poke();
 
-        if (tempPoke.gen().num != 6 && tempPoke.gen().subNum != 1) {
-            hackmonButton.setEnabled(false);
-        } else {
-            hackmonButton.setEnabled(true);
-            hackmonButton.setChecked(tempPoke.isHackmon);
-        }
+		if ((tempPoke.gen().num == 6 && tempPoke.gen().subNum == 1) || tier().equals("All Gen Hackmons")) {
+			hackmonButton.setEnabled(true);
+			hackmonButton.setChecked(tempPoke.isHackmon);
+		} else {
+			hackmonButton.setEnabled(false);
+			hackmonButton.setChecked(false);
+		}
 
 		if (PokemonInfo.hasVisibleFormes(tempPoke.uID()) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
 			formesLayout.setVisibility(View.VISIBLE);

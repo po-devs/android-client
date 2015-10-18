@@ -681,6 +681,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	    //intent.putExtra("pokemon", new Baos().putBaos(team.poke(pos)).toByteArray());
         intent.putExtra("pokemon", team.poke(pos));
 	    intent.putExtra("slot", pos);
+		intent.putExtra("tier", team.defaultTier);
 	    startActivityForResult(intent, POKEEDIT_RESULT_CODE);
     }
 
