@@ -69,7 +69,7 @@ public class NetworkService extends Service {
 	private ImageParser imageParser;
 	private BattleInlineHandler tagHandler;
 	private static Pattern hashTagPattern;
-	public static Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\w\\/_\\.]*(\\?\\S+)?)?)?");
+	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
 	private Matcher hashTagMatcher;
 
 	private static class chatPrefs {
@@ -766,7 +766,7 @@ public class NetworkService extends Service {
 			}
 			CharSequence message = msg.readString();
 			if (isHtml) {
-				if (message.toString().contains("<a href='po:watch/")) {
+				while (message.toString().contains("<a href='po:watch/")) {
 					// THIS IS TEMPORARY //
 					String stringified = message.toString();
 					int openingtag = stringified.indexOf("<a href='po:watch/");

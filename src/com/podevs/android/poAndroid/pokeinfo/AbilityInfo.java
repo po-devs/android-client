@@ -4,12 +4,13 @@ import android.util.SparseArray;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class AbilityInfo {
 	private static ArrayList<String> abilityNames = null;
 	private static SparseArray<String> abilityMessages = null;
-    private static Short[] allAbilities = null;
+    private static Short[][] allAbilities = null;
 	
 	public static String name(int item) {
 		if (abilityNames == null) {
@@ -61,19 +62,27 @@ public class AbilityInfo {
 	}
 
     private static void loadAllArray() {
-        allAbilities = new Short[abilityNames.size() - 1];
-        for (int i = 0; i <= allAbilities.length - 1; i++) {
-            allAbilities[i] = (short) (i + 1);
+		allAbilities = new Short[4][];
+        allAbilities[3] = new Short[abilityNames.size() - 1];
+        for (int i = 0; i <= allAbilities[3].length - 1; i++) {
+            allAbilities[3][i] = (short) (i + 1);
         }
-        java.util.Arrays.sort(allAbilities, new Comparator<Short>() {
-            @Override
-            public int compare(Short lhs, Short rhs) {
-                return name(lhs).compareToIgnoreCase(name(rhs));
-            }
-        });
+
+		allAbilities[2] = Arrays.copyOf(allAbilities[3], 164);
+		allAbilities[1] = Arrays.copyOf(allAbilities[2], 123);
+		allAbilities[0] = Arrays.copyOf(allAbilities[1], 76);
+
+		for (int i = 0; i < 4; i++) {
+			java.util.Arrays.sort(allAbilities[i], new Comparator<Short>() {
+				@Override
+				public int compare(Short lhs, Short rhs) {
+					return name(lhs).compareToIgnoreCase(name(rhs));
+				}
+			});
+		}
     }
 
-    public static Short[] allAbility() {
-        return allAbilities;
+    public static Short[] getAllAbilities(int gen) {
+        return allAbilities[gen - 3];
     }
 }

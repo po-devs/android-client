@@ -152,7 +152,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                         }
                     }
                 } else {
-                    Short[] abilities = AbilityInfo.allAbility();
+                    Short[] abilities = AbilityInfo.getAllAbilities(poke().gen().num);
                     for (Short ability : abilities) {
                         if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
                             poke().ability = ability;
@@ -426,7 +426,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                     }
                 }
             } else {
-                Short[] abilities = AbilityInfo.allAbility();
+                Short[] abilities = AbilityInfo.getAllAbilities(poke().gen().num);
 
                 for (int i = 0; i <= abilities.length - 1; i++) {
                     abilityChooserAdapter.add(AbilityInfo.name(abilities[i]));
