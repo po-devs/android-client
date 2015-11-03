@@ -597,8 +597,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public void updateMoves(short attack) {
         if (!isSpectating()) {
-            activeBattle.pokes[opp][0].addMove(attack);
+            activeBattle.pokes[opp][0].addMove(attack , (byte) 1);
         }
+    }
+
+    public void updateMoves(byte player, byte spot, short attack, byte pp) {
+        activeBattle.pokes[player][spot].addMove(attack, pp);
     }
 
     public void switchToPokeViewer() {

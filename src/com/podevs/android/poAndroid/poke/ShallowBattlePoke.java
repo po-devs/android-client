@@ -87,16 +87,16 @@ public class ShallowBattlePoke implements SerializeBytes {
 		return i;
 	}
 
-	public void addMove(Short attack) {
+	public void addMove(Short attack, byte pp) {
 		if (this.moves[3] == null) {
 			for (int i = 0; i < 5; i++) {
 				if (this.moves[i] == null) {
 					BattleMove newMove = new BattleMove(attack);
-					newMove.currentPP = (byte) (newMove.totalPP - 1);
+					newMove.currentPP = pp;
 					this.moves[i] = newMove;
 					break;
 				} else if (this.moves[i].num == attack) {
-					this.moves[i].currentPP = (byte) (this.moves[i].currentPP - 1);
+					this.moves[i].currentPP = pp;
 					break;
 				}
 			}
