@@ -62,7 +62,7 @@ public class ShallowBattlePoke implements SerializeBytes {
 	}
 	
 	public SpannableStringBuilder nameAndType() {
-		SpannableStringBuilder s = new SpannableStringBuilder(Html.fromHtml("<b>" + pokeName + "</b>"));
+		SpannableStringBuilder s = new SpannableStringBuilder(Html.fromHtml("<b>" + pokeName + "</b>" + (gender == 0 ? "" : (gender == 1 ? " M." : " F.")) + " Lv. " + level));
 		s.append(Html.fromHtml("<br>" + "<font color=\"" + ColorEnums.TypeColor.values()[(byte) types[0].ordinal()].toString().replaceAll(">", "") + "\">" + types[0].toString() + "</font>"));
 		if(types[1] != Type.Curse) s.append(Html.fromHtml("/" + "<font color=\"" + ColorEnums.TypeColor.values()[(byte) types[1].ordinal()].toString().replaceAll(">", "") + "\">" + types[1].toString() + "</font>"));
 		return s;

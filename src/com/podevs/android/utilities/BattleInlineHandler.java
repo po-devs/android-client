@@ -1,9 +1,14 @@
 package com.podevs.android.utilities;
 
+import android.graphics.Color;
 import android.text.*;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
+import android.text.style.StrikethroughSpan;
+import android.util.Log;
 import android.view.View;
 import com.podevs.android.poAndroid.NetworkService;
+import com.podevs.android.poAndroid.chat.Channel;
 import org.xml.sax.XMLReader;
 
 import java.lang.reflect.Field;
@@ -12,6 +17,7 @@ import java.util.HashMap;
 public class BattleInlineHandler implements Html.TagHandler {
     private NetworkService netServ;
     private HashMap<String, String> attributes;
+    public Channel currentChannel;
 
     public BattleInlineHandler(NetworkService service) {
         netServ = service;
@@ -19,27 +25,12 @@ public class BattleInlineHandler implements Html.TagHandler {
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-        if (tag.equalsIgnoreCase("watch")) { // Disabled for now
+        if (tag.equalsIgnoreCase("watch")) {
             if (opening) {
                 // Opening Tag
                 attributes = new HashMap<String, String>();
-                try { // Reflection is messy
-                    Field elementField = xmlReader.getClass().getDeclaredField("theNewElement");
-                    elementField.setAccessible(true);
-                    Object element = elementField.get(xmlReader);
-                    Field attsField = element.getClass().getDeclaredField("theAtts");
-                    attsField.setAccessible(true);
-                    Object atts = attsField.get(element);
-                    Field dataField = atts.getClass().getDeclaredField("data");
-                    dataField.setAccessible(true);
-                    String[] data = (String[]) dataField.get(atts);
-                    Field lengthField = atts.getClass().getDeclaredField("length");
-                    lengthField.setAccessible(true);
-                    int len = (Integer) lengthField.get(atts);
-
-                    for (int i = 0; i < len; i++) {
-                        attributes.put(data[i * 5 + 1], data[i * 5 + 4]);
-                    }
+                try {
+                    getAtrributes(xmlReader);
 
                     String stringid = attributes.get("id");
                     if (stringid != null) {
@@ -54,15 +45,97 @@ public class BattleInlineHandler implements Html.TagHandler {
                 // Closing Tag
                 String stringid = attributes.get("id");
                 if (stringid != null) {
-                    Integer id = Integer.parseInt(stringid);
+                    try {
+                        Integer id = Integer.parseInt(stringid);
 
-                    end((SpannableStringBuilder) output, ClickableSpan.class, spectateSpan(id));
+                        end((SpannableStringBuilder) output, ClickableSpan.class, spectateSpan(id));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            return;
+        } else if (tag.equalsIgnoreCase("ping")) {
+            if (opening && currentChannel != null) {
+                Log.e("TagHandler", "Attempt flash");
+                netServ.tryFlashChannel(currentChannel);
+            }
+            return;
+        } else if (tag.equalsIgnoreCase("background")) {
+            try {
+                if (opening) {
+                    attributes = new HashMap<String, String>();
+
+                    getAtrributes(xmlReader);
+
+                    String stringcolor = attributes.get("color");
+                    if (stringcolor != null) {
+                        Integer color = Color.parseColor(stringcolor);
+
+                        start((SpannableStringBuilder) output, backgroundColor(color));
+                    }
+                } else {
+                    String stringcolor = attributes.get("color");
+                    if (stringcolor != null) {
+                        Integer color = Color.parseColor(stringcolor);
+
+                        end((SpannableStringBuilder) output, BackgroundColorSpan.class, backgroundColor(color));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        } else if (tag.equalsIgnoreCase("timestamp")) {
+            if (opening) {
+                if (netServ.getSettings().timeStamp) {
+                    output.append("(" + StringUtilities.timeStamp() + ") ");
+                }
+            }
+            return;
+        } else if (tag.equalsIgnoreCase("tr")) {
+            if (!opening) {
+                output.append("\n");
+            }
+            return;
+        } else if (tag.equalsIgnoreCase("strike")) {
+            if (opening) {
+                start((SpannableStringBuilder) output, new StrikethroughSpan());
+            } else {
+                end((SpannableStringBuilder) output, StrikethroughSpan.class, new StrikethroughSpan());
+            }
+        }
+        //Log.e("TagHandler", "Unhandled " + tag);
+    }
+
+    private void getAtrributes(XMLReader xmlReader) {
+        try {
+            Field elementField = xmlReader.getClass().getDeclaredField("theNewElement");
+            elementField.setAccessible(true);
+            Object element = elementField.get(xmlReader);
+            Field attsField = element.getClass().getDeclaredField("theAtts");
+            attsField.setAccessible(true);
+            Object atts = attsField.get(element);
+            Field dataField = atts.getClass().getDeclaredField("data");
+            dataField.setAccessible(true);
+            String[] data = (String[]) dataField.get(atts);
+            Field lengthField = atts.getClass().getDeclaredField("length");
+            lengthField.setAccessible(true);
+            int len = (Integer) lengthField.get(atts);
+
+            for (int i = 0; i < len; i++) {
+                attributes.put(data[i * 5 + 1], data[i * 5 + 4]);
+            }
+        } catch (Exception e) {
+
         }
     }
 
-    private ClickableSpan spectateSpan(int id) {
+    private BackgroundColorSpan backgroundColor(int color) {
+        return new BackgroundColorSpan(color);
+    }
+
+    private ClickableSpan spectateSpan(final int id) {
         return new ClickableSpan() {
             @Override
             public void onClick(View widget) {

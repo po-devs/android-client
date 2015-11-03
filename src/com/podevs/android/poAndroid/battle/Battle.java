@@ -290,7 +290,7 @@ public class Battle extends SpectatingBattle {
 			// TODO
 			break;
 		} case RearrangeTeam: {
-			oppTeam = new ShallowShownTeam(msg);
+			oppTeam = new ShallowShownTeam(msg, conf.gen.num);
 			shouldShowPreview = true;
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();

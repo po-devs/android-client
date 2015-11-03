@@ -72,10 +72,10 @@ public class NetworkService extends Service {
 	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
 	private Matcher hashTagMatcher;
 
-	private static class chatPrefs {
+	public static class chatPrefs {
 		// Chat
 		boolean flashing = true;
-		boolean timeStamp = false;
+		public boolean timeStamp = false;
 		String color = "#FFFF00";
 		boolean notificationsFlash = false;
 		// PM
@@ -364,6 +364,7 @@ public class NetworkService extends Service {
 
 	private static void loadPOPreferences(Context context) {
 		POPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		MessageListAdapter.copyandpaste = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("copyandpaste", false);
 	}
 
 	public static boolean getPMSettings() {
@@ -843,6 +844,7 @@ public class NetworkService extends Service {
 										chan.writeToHist(message, left, right, chatSettings.color, click, command);
 										if (chan != joinedChannels.getFirst()) {
 											chan.flashed = true;
+											chatActivity.notifyChannelList();
 											if (chatSettings.notificationsFlash) {
 												chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
 											}
@@ -857,6 +859,7 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
+					tagHandler.currentChannel = chan;
 					message = Html.fromHtml((String)message, imageParser, tagHandler);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
@@ -1232,8 +1235,22 @@ public class NetworkService extends Service {
 			p.nick = "???";
 			p.id = id;
 		}
-		
+
 		return p;
+	}
+
+	public chatPrefs getSettings() {
+		return chatSettings;
+	}
+
+	public void tryFlashChannel(Channel chan) {
+		if (chan != joinedChannels.getFirst()) {
+			chan.flashed = true;
+			chatActivity.notifyChannelList();
+			if (chatSettings.notificationsFlash) {
+				chatActivity.makeToast("You were flashed in " + chan.name() + ".", "short");
+			}
+		}
 	}
 
 	public void joinChannel(String channelName) {

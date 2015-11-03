@@ -245,6 +245,8 @@ public class SpectatingBattle {
 			}
 				if (player == opp) {
 					activity.updateMoves(attack);
+				} else if (activity.isSpectating()) {
+					activity.updateMoves(attack);
 				}
 				/*
 			boolean special = msg.readBool();
@@ -715,8 +717,13 @@ public class SpectatingBattle {
 		} case DynamicInfo: {
 			dynamicInfo[player] = new BattleDynamicInfo(msg);
 			break;
+		} case UsePP: {
+				short move = msg.readShort();
+				byte usedpp = msg.readByte();
+
+
 		} default: {
-			System.out.println("Battle command unimplemented -- " + bc);
+			Log.e(TAG, "Battle command unimplemented -- " + bc);
 			break;
 		}
 		}
