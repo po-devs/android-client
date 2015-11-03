@@ -21,7 +21,6 @@ import android.webkit.WebView;
 import android.widget.*;
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
-import com.android.launcher.DragSource;
 import com.android.launcher.PokeDragIcon;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
@@ -598,8 +597,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public void updateMoves(short attack) {
         if (!isSpectating()) {
-            activeBattle.pokes[opp][0].addMove(attack);
+            activeBattle.pokes[opp][0].addMove(attack , (byte) 1);
         }
+    }
+
+    public void updateMoves(byte player, byte spot, short attack, byte pp) {
+        activeBattle.pokes[player][spot].addMove(attack, pp);
     }
 
     public void switchToPokeViewer() {
@@ -804,6 +807,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         super.onDestroy();
     }
 
+    /*
     public OnTouchListener dialogListener = new OnTouchListener() {
         public boolean onTouch(View v, MotionEvent e) {
             int id = v.getId();
@@ -816,7 +820,56 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             }
             return true;
         }
-    };
+    };*/
+
+    public OnTouchListener dialogListener(final TextView nameAndType, final TextView statNames, final TextView statNums, final TextView moves) {
+        return new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int id = v.getId();
+                for(int i = 0; i < 6; i++) {
+                    if(id == myArrangePokeIcons[i].getId() && event.getAction() == MotionEvent.ACTION_DOWN) {
+                        int num = myArrangePokeIcons[i].num;
+                        nameAndType.setText(activeBattle.myTeam.pokes[num].nameAndType());
+                        String s = "HP:";
+                        s += "\nAttack:";
+                        s += "\nDefense:";
+                        s += "\nSp. Att:";
+                        s += "\nSp. Def:";
+                        s += "\nSpeed:";
+                        statNames.setText(s);
+                        statNums.setText(activeBattle.myTeam.pokes[num].printStats());
+                        moves.setText(activeBattle.myTeam.pokes[num].movesString());
+                        mDragLayer.startDrag(v, myArrangePokeIcons[i], (Object) event, DragController.DRAG_ACTION_MOVE);
+                        break;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    public OnTouchListener oppdialogListener(final TextView nameAndType, final TextView statNames, final TextView statNums, final TextView moves, final int index) {
+        return new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    nameAndType.setText(activeBattle.oppTeam.pokes[index].nameAndType());
+                    String s = "HP:";
+                    s += "\nAttack:";
+                    s += "\nDefense:";
+                    s += "\nSp. Att:";
+                    s += "\nSp. Def:";
+                    s += "\nSpeed:";
+                    statNames.setText(s);
+                    statNums.setText(activeBattle.oppTeam.pokes[index].statString());
+                    moves.setText(activeBattle.oppTeam.pokes[index].moves());
+                }
+                return true;
+            }
+        };
+    }
+
 
     public OnClickListener battleListener = new OnClickListener() {
         public void onClick(View v) {
@@ -1007,6 +1060,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 dialog = builder.create();
 
                 mDragLayer = (DragLayer)layout.findViewById(R.id.drag_my_poke);
+                /*
                 mDragLayer.addDragListener(new DragController.DragListener() {
                     @Override
                     public void onDragStart(View v, DragSource source, Object info, int dragAction) {
@@ -1026,11 +1080,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         statNums.setText(activeBattle.myTeam.pokes[0].printStats());
                         moves.setText(activeBattle.myTeam.pokes[0].movesString());
                     }
-                });
+                });*/
                 for(int i = 0; i < 6; i++){
                     BattlePoke poke = activeBattle.myTeam.pokes[i];
                     myArrangePokeIcons[i] = (PokeDragIcon)layout.findViewById(resources.getIdentifier("my_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
-                    myArrangePokeIcons[i].setOnTouchListener(dialogListener);
+                    myArrangePokeIcons[i].setOnTouchListener(dialogListener(nameAndType, statNames, statNums, moves));
                     myArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID));
                     myArrangePokeIcons[i].num = i;
                     myArrangePokeIcons[i].battleActivity = this;
@@ -1038,6 +1092,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     ShallowShownPoke oppPoke = activeBattle.oppTeam.pokes[i];
                     oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
                     oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
+                    oppArrangePokeIcons[i].setOnTouchListener(oppdialogListener(nameAndType, statNames, statNums, moves, i));
                 }
                 nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
                 String s = "HP:";

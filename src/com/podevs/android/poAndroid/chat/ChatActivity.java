@@ -411,10 +411,10 @@ public class ChatActivity extends Activity {
 			// Load scrollback
 			runOnUiThread(new Runnable() {
 				public void run() {
-			    	players.setAdapter(playerAdapter);
-			        channels.setAdapter(channelAdapter);
-			        chatView.setAdapter(messageAdapter);
-			        playerAdapter.notifyDataSetChanged();
+					players.setAdapter(playerAdapter);
+					channels.setAdapter(channelAdapter);
+					chatView.setAdapter(messageAdapter);
+					playerAdapter.notifyDataSetChanged();
 					channelAdapter.notifyDataSetChanged();
 					messageAdapter.notifyDataSetChanged();
 					chatView.setSelection(messageAdapter.getCount() - 1);
@@ -475,6 +475,15 @@ public class ChatActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void notifyChannelList() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				channelAdapter.notifyDataSetChanged();
+			}
+		});
 	}
 	
 	public void notifyChallenge() {

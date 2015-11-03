@@ -129,7 +129,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						if (!baked) wait(5000); else wait(1000);
+						if (!baked) wait(4000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -272,7 +272,7 @@ public class Battle extends SpectatingBattle {
                         //Log.e(TAG, "change " + change);
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;
-						if (!baked) wait(6000); else wait(change*43);
+						if (!baked) wait(5000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 				activity.updateCurrentPokeListEntry();
@@ -290,7 +290,7 @@ public class Battle extends SpectatingBattle {
 			// TODO
 			break;
 		} case RearrangeTeam: {
-			oppTeam = new ShallowShownTeam(msg);
+			oppTeam = new ShallowShownTeam(msg, conf.gen.num);
 			shouldShowPreview = true;
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();

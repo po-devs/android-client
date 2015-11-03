@@ -14,10 +14,11 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class MessageListAdapter extends BaseAdapter {
-	LinkedList<TextView> messageViews = new LinkedList<TextView>();
+	final LinkedList<TextView> messageViews = new LinkedList<TextView>();
 	public Channel channel;
 	Context context;
     public int lastSeen = 0;
+	public static boolean copyandpaste = false;
 	
 	public MessageListAdapter(Channel ch, Context ctxt) {
 		super();
@@ -35,16 +36,15 @@ public class MessageListAdapter extends BaseAdapter {
         TextView toAdd = new TextView(context);
         toAdd.setText(span);
 
-        /* Too buggy. Needs custom gesture
-        if (test) {
+        //Too buggy. Needs custom gesture
+        if (copyandpaste) {
             try {
                 toAdd.setTextIsSelectable(true);
             } catch (RuntimeException e) {
-                toAdd.setText("THERE WAS AN ERROR WITH THIS MESSAGE " + span);
-                test = false;
+				e.printStackTrace();
+				return;
             }
         }
-        */
 
         if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
 

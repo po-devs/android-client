@@ -65,5 +65,10 @@
             android:summary="@string/crashlog_summary"
             android:title="@string/crashlog_title"
             android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="copyandpaste"
+            android:summary="Requires restart"
+            android:title="Copy and Paste"
+            android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

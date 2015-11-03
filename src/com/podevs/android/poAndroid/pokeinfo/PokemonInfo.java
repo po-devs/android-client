@@ -44,7 +44,7 @@ public class PokemonInfo {
 	/**
 	 *  Cache of images
 	 */
-	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(30);
+	private final static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(22);
 
 	/**
 	 * Pokemon Data object
