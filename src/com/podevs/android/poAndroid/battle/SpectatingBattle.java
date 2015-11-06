@@ -255,8 +255,8 @@ public class SpectatingBattle {
 				if (prefs.getBoolean("pokemon_cries", true)) {
 					try {
 						synchronized (this) {
-							//netServ.playCry(this, pokes[player][slot]);
-							if (!baked) wait(5000); else wait(1000);
+							netServ.playCry(this, pokes[player][slot]);
+							if (!baked) wait(3000); else wait(1000);
 						}
 					} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 				}
@@ -761,7 +761,14 @@ public class SpectatingBattle {
 				} else if (activity.isSpectating()) {
 					activity.updateMoves(player, slot, move, usedpp);
 				}
-			} default: {
+			} case Notice: {
+				String rule = msg.readString();
+				String message = msg.readString();
+				writeToHist(Html.fromHtml("<strong><font color='blue'>" + rule + "</font></strong>: " + message));
+			} case HtmlMessage: {
+				String message = msg.readString();
+				writeToHist(Html.fromHtml(message));
+			} defaule: {
 				Log.e(TAG, "Battle command unimplemented -- " + bc);
 				break;
 			}
