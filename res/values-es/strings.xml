@@ -122,8 +122,11 @@
     <string name="poke_number_summary">Elegir grito de Pokémon con su número</string>
     <string name="sound_notification_title">Notifiación con sonido</string>
     <string name="sound_notification_summary">Activar notificación con gritos de Pokémon</string>
+    <string name="misc_title">Extras</string>
     <string name="crashlog_title">Guardar historial de errores</string>
     <string name="crashlog_summary">Guarda los errores de la aplicación en un archivo</string>
+    <string name="copypaste_title">Copiar y pegar</string>
+    <string name="copypaste_summary">Requiere reiniciar la aplicación</string>
 
     <string-array name="hp_array">
         <item>Peleador</item>

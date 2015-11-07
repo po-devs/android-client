@@ -125,8 +125,11 @@
     <string name="poke_number_summary">Number of the pokemon</string>
     <string name="sound_notification_title">Cry Sound notification</string>
     <string name="sound_notification_summary">Toggle cry sound notification</string>
+    <string name="misc_title">Miscellaneous</string>
     <string name="crashlog_title">Save crash log</string>
     <string name="crashlog_summary">Dump crash data to file</string>
+    <string name="copypaste_title">Copy and Paste</string>
+    <string name="copypaste_summary">May not function correctly on all devices</string>
 
     <string name="IV">IV</string>
 
