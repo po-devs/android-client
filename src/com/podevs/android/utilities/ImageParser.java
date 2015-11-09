@@ -33,6 +33,7 @@ public class ImageParser implements Html.ImageGetter {
         urlPattern = Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
     }
 
+    @Override
     public Drawable getDrawable(String src) {
         Draw drawable = new Draw();
         // Handle external resources
@@ -50,7 +51,6 @@ public class ImageParser implements Html.ImageGetter {
             drawable = (new ResourceParser(context)).parseText(src);
         }
         return drawable;
-        // return drawable;
     }
 
     private class ResourceParser {
@@ -100,8 +100,7 @@ public class ImageParser implements Html.ImageGetter {
                             src = src.replace("num=", "");
                             if (src.contains("&")) {
                                 int i = Integer.parseInt(src.substring(0, src.indexOf("&")));
-                                int j = 0;
-                                j = i >> 16;
+                                int j = i >> 16;
                                 i = i - (j << 16);
                                 return "p" + i + (j == 0 ? "" : "_" + j) + "_front" + (src.contains("shiny=true") ? "s" : "");
                             } else {
@@ -115,7 +114,9 @@ public class ImageParser implements Html.ImageGetter {
                     } catch (NumberFormatException e) {}
                 } else if (src.indexOf("icon:") == 0) {
                     int i = Integer.parseInt(src.replace("icon:", ""));
-                    return "pi_" + i;
+                    int j = i >> 16;
+                    i = i - (j << 16);
+                    return "pi_" + i + (j == 0 ? "" : "_" + j);
                 } else if (src.indexOf("trainer:") == 0) {
                     int i = Integer.parseInt(src.replace("trainer:", ""));
                     return "t" + i;
