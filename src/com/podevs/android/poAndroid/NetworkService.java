@@ -809,13 +809,9 @@ public class NetworkService extends Service {
 							Pattern myName = Pattern.compile("(?<!\\S)(" + this.me.nick.toLowerCase() + ")(?!\\w)");
 							Matcher myMatcher = myName.matcher(message.toString().toLowerCase());
 							if (myMatcher.find()) {
-								int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
-								left = left + name.length() + (chatSettings.timeStamp ? 13 : 2);
-								if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
-									left = left + 1;
-								}
-								int right = this.me.nick.length() + left;
 								message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+								int left = (String.valueOf(message)).toLowerCase().indexOf(this.me.nick.toLowerCase());
+								int right = this.me.nick.length() + left;
 								if (!hasChannel) {
 									// Broadcast message
 									if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
