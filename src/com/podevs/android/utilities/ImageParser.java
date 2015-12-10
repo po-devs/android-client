@@ -25,12 +25,11 @@ import java.util.regex.Pattern;
 
 public class ImageParser implements Html.ImageGetter {
     Context context;
-    Pattern urlPattern;
+    final static Pattern urlPattern =  Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
 
     public ImageParser(Context context) {
         // this.view = view;
         this.context = context;
-        urlPattern = Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
     }
 
     @Override

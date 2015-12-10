@@ -25,6 +25,7 @@ import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.FixedSizeStack;
 import com.podevs.android.utilities.StringUtilities;
 
 import java.util.Locale;
@@ -62,7 +63,7 @@ public class SpectatingBattle {
 	// ArrayList<Boolean> pokeAlive = new ArrayList<Boolean>();
 
 	public SpannableStringBuilder hist; //= new SpannableStringBuilder();
-	public SpannableStringBuilder histDelta; //= new SpannableStringBuilder();
+	public final SpannableStringBuilder histDelta; //= new SpannableStringBuilder();
 
 	public BattleDynamicInfo[] dynamicInfo = new BattleDynamicInfo[2];
 
@@ -194,6 +195,9 @@ public class SpectatingBattle {
 		}
 	}
 
+	BattlePacket lastPacket = null;
+	FixedSizeStack<BattlePacket> packetStack = new FixedSizeStack<BattlePacket>(25);
+
 	public void receiveCommand(Bais msg)  {
 		synchronized (this) {
 			byte command = msg.readByte();
@@ -207,11 +211,15 @@ public class SpectatingBattle {
 			byte player = msg.readByte();
 
 			/* Because we don't deal with double battles */
-			//player = (bc == BattleCommand.Clause ? player : (byte) (player % 2));
+			//num = (bc == BattleCommand.Clause ? num : (byte) (num % 2));
+
+			lastPacket = new BattlePacket(bc, player, msg.cloneRemaining());
+			packetStack.push(lastPacket);
 
 			try {
 				dealWithCommand(bc, player, msg);
 			} catch (Exception e) {
+				Log.e(TAG, lastPacket.toString());
 				e.printStackTrace();
 			}
 		}
@@ -510,7 +518,7 @@ public class SpectatingBattle {
 				if(type  != -1) s = s.replaceAll("%t", Type.values()[type].toString());
 				if(foe   != -1) s = s.replaceAll("%f", pokes[foe][slot].nick);
 				if(other  != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
-				s = s.replaceAll("%d", new Short(other).toString());
+				s = s.replaceAll("%d", Short.toString(other));
 				s = s.replaceAll("%q", q);
 				if(other != -1 && s.contains("%i")) s = s.replaceAll("%i", ItemInfo.name(other));
 				if(other != -1 && s.contains("%a")) s = s.replaceAll("%a", AbilityInfo.name(other));
@@ -659,10 +667,10 @@ public class SpectatingBattle {
 				break;
 			}
 			case Clause: {
-				if (player >= 0 && player < Clauses.values().length) {
-					writeToHist("\n" + Clauses.values()[player].battleText());
+				if (num >= 0 && num < Clauses.values().length) {
+					writeToHist("\n" + Clauses.values()[num].battleText());
 				} else {
-					Log.e(TAG, "Invalid Clause:" + player);
+					Log.e(TAG, "Invalid Clause:" + num);
 				}
 				break;
 			} case Rated: {
@@ -670,7 +678,7 @@ public class SpectatingBattle {
 				writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule:</b></font> " +
 						(rated ? "Rated" : "Unrated")));
 				for (int i = 0; i < Clauses.values().length; i++) {
-					if ((conf.clauses & (1 << i)) > 0 ? true : false) {
+					if ((conf.clauses & (1 << i)) > 0) {
 						writeToHist(Html.fromHtml("<br><b><font color =" + QtColor.Blue + "Rule: </b></font>" +
 								Clauses.values()[i]));
 					}
@@ -699,8 +707,8 @@ public class SpectatingBattle {
 					case DefiniteForme: {
 						byte poke = msg.readByte();
 						UniqueID newForm = new UniqueID(msg);
-						pokes[player][poke].uID = newForm;
-						if (isOut(poke)) {
+						pokes[player][slot].uID = newForm;
+						if (isOut(slot)) {
 							pokes[player][slot].uID = newForm;
 							if (activity !=null) {
 								//activity.samePokes[player][slot] = false;
@@ -761,14 +769,17 @@ public class SpectatingBattle {
 				} else if (activity.isSpectating()) {
 					activity.updateMoves(player, slot, move, usedpp);
 				}
+				break;
 			} case Notice: {
 				String rule = msg.readString();
 				String message = msg.readString();
 				writeToHist(Html.fromHtml("<strong><font color='blue'>" + rule + "</font></strong>: " + message));
+				break;
 			} case HtmlMessage: {
 				String message = msg.readString();
 				writeToHist(Html.fromHtml(message));
-			} defaule: {
+				break;
+			} default: {
 				Log.e(TAG, "Battle command unimplemented -- " + bc);
 				break;
 			}

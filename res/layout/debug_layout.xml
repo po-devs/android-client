@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+    <LinearLayout android:orientation="vertical"
+                  android:scrollbars="vertical"
+                  android:scrollbarAlwaysDrawVerticalTrack="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+        <TextView android:layout_width="wrap_content"
+                  android:id="@+id/debug_text"
+                  android:layout_height="wrap_content"
+                  android:textSize="12sp">
+        </TextView>
+    </LinearLayout>
+
+</ScrollView>

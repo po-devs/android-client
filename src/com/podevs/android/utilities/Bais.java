@@ -1,11 +1,13 @@
 package com.podevs.android.utilities;
 
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Custom ByteArrayInputStream
@@ -121,5 +123,26 @@ public class Bais extends ByteArrayInputStream {
 			list.add(readString());
 		}
 		return list;
+	}
+
+	public byte[] remaining() {
+		return Arrays.copyOfRange(buf, pos, count);
+	}
+
+	public Bais cloneRemaining() {
+		return new Bais(remaining());
+	}
+
+	@Override
+	public String toString() {
+		return "Bais{" + toBase64() + "}";
+	}
+
+	public String toBase64() {
+		return Base64.encodeToString(remaining(), Base64.DEFAULT);
+	}
+
+	public static Bais fromBase64(String encoded) {
+		return new Bais(Base64.decode(encoded, Base64.DEFAULT));
 	}
 }

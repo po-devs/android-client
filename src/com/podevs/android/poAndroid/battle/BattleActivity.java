@@ -71,7 +71,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         ConfirmForfeit,
         OppDynamicInfo,
         MyDynamicInfo,
-        MoveInfo
+        MoveInfo,
+        Debug
     }
 
     // public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -268,6 +269,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked), Command.BattleMessage); // This is how you struggle
             }
         });
+
+        setUncaughtHandler();
     }
 
     private Handler handler = new Handler();
@@ -1004,6 +1007,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 item.setChecked(!item.isChecked());
                 getSharedPreferences("battle", Context.MODE_PRIVATE).edit().putBoolean("pokemon_cries", item.isChecked()).commit();
                 break;
+            case R.id.debug:
+                showDialog(BattleDialog.Debug.ordinal());
+                break;
         }
         return true;
     }
@@ -1170,8 +1176,78 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         .create();
                 dialog.setCanceledOnTouchOutside(true);
                 return dialog;
+            case Debug:
+                String debug = battle.packetStack.toReadableString();
+                final Dialog simpleDialog = new Dialog(this);
+                simpleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                simpleDialog.setContentView(R.layout.debug_layout);
+
+                TextView t = (TextView) simpleDialog.findViewById(R.id.debug_text);
+                t.setText(debug);
+
+                simpleDialog.setCanceledOnTouchOutside(true);
+                simpleDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    public void onCancel(DialogInterface dialog) {
+                        removeDialog(id);
+                    }
+                });
+
+                return simpleDialog;
             default:
                 return new Dialog(this);
+        }
+    }
+
+    private void setUncaughtHandler() {
+        final BattleExceptionHandler exceptionHandler = new BattleExceptionHandler(this);
+        Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setUncaughtExceptionHandler(exceptionHandler);
+            }
+        });
+    }
+
+    private class BattleExceptionHandler implements Thread.UncaughtExceptionHandler {
+        BattleActivity mActivity;
+        private Thread.UncaughtExceptionHandler defaultHandler;
+
+        public BattleExceptionHandler(BattleActivity mActivity) {
+            this.mActivity = mActivity;
+            defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        }
+
+        @Override
+        public void uncaughtException(Thread thread, final Throwable ex) {
+            boolean isSpectating = mActivity.isSpectating();
+
+            final BattlePacket packet;
+            if (isSpectating) {
+                packet = mActivity.activeBattle.lastPacket;
+            } else {
+                packet = mActivity.battle.lastPacket;
+            }
+            boolean validPacket = (packet != null);
+
+            if (validPacket) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Looper.prepare();
+                        Toast.makeText(mActivity, ex.getClass().getName() + "\n" + packet.toCompactString() + "\n" + packet.toString(), Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    }
+                }.start();
+
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException dontcare) {
+                    // don't care
+                }
+            }
+
+            defaultHandler.uncaughtException(thread, ex);
         }
     }
 }
