@@ -509,6 +509,7 @@ public class SpectatingBattle {
 				s = s.replaceAll("%tf", players[(player == 0 ? 1 : 0)].nick());
 				if(type  != -1) s = s.replaceAll("%t", Type.values()[type].toString());
 				if(foe   != -1) s = s.replaceAll("%f", pokes[foe][slot].nick);
+				if(foe   != -1) s = s.replaceAll("%e", pokes[foe][slot].rnick);
 				if(other  != -1 && s.contains("%m")) s = s.replaceAll("%m", MoveInfo.name(other));
 				s = s.replaceAll("%d", new Short(other).toString());
 				s = s.replaceAll("%q", q);
