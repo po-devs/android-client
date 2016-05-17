@@ -27,5 +27,9 @@
         android:checkable="true"
         android:title="@string/enable_sounds">
     </item>
-
+    <item
+        android:id="@+id/debug"
+        android:title="Debug"
+        android:enabled="true">
+    </item>
 </menu>

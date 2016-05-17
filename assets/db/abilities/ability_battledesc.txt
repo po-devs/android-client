@@ -21,7 +21,7 @@
 20 Prevents a Pokémon with this ability from becoming Confused.
 21 Prevents the opponent from forcing a Pokémon with this ability to switch out.
 22 Lowers the opponent Pokémon's Attack one stage when a Pokémon with this ability switches in.
-23 Prevents opponent Pokémon, except for Ghost Pokémon, from switching out or running away as long as a Pokémon with this ability is on the field.
+23 Prevents opponent Pokémon, except for Ghost Pokémon and Pokémon with Shadow Tag themselves, from switching out or running away as long as a Pokémon with this ability is on the field.
 24 Damages Pokémon for 1/8 their max HP every time they use a contact move on a Pokémon with this ability.
 25 Makes a Pokémon with this ability only vulnerable to super-effective attacks.
 26 Makes a Pokémon with this ability immune to Ground moves, Spikes, Toxic Spikes and Sticky Web, as well as the effect of Arena Trap.
@@ -170,7 +170,7 @@
 169 Boosts the power of all Fairy-type moves used by any Pokémon on the field by 1/3.
 170 Prevents the stats of Grass-type partners of a Pokémon with this ability from being lowered by the opponent.
 171 Halves the damage taken from physical moves by a Pokémon with this ability.
-172 Boosts the power of Aura Sphere, Dark Pulse, Dragon Pulse, Heal Pulse and Water Pulse used by a Pokémon with this ability by 50%.
+172 Boosts the power of Aura Sphere, Dark Pulse, Dragon Pulse, Heal Pulse, Origin Pulse, and Water Pulse used by a Pokémon with this ability by 50%.
 173 Allows all attacking moves that strike a single target a single time used by a Pokémon with this ability to strike a second time with halved power.
 174 Changes all Normal-type moves used by a Pokémon with this Ability to Fairy-type, and boosts their power by 30%.
 175 Before a Pokémon with this ability uses any move, changes its type to match the move used.
