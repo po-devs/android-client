@@ -202,7 +202,7 @@ public class SpectatingBattle {
 		synchronized (this) {
 			byte command = msg.readByte();
 
-			if (command < 0 || command > BattleCommand.values().length) {
+			if (command < 0 || command >= BattleCommand.values().length) {
 				Log.w("Spectating battle", "Battle command unknown " + String.valueOf((int) command));
 				return;
 			}
