@@ -1,18 +1,19 @@
 package com.podevs.android.poAndroid.poke;
 
 import android.content.Context;
-import org.apache.http.ParseException;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 public class PokeParser
 {
@@ -60,13 +61,10 @@ public class PokeParser
 
 			try {
 				xr.parse(new InputSource(in));
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			parsedTeam = myHandler.getParsedData();
 
 			try {
@@ -98,13 +96,10 @@ public class PokeParser
 
 			try {
 				xr.parse(new InputSource(new StringReader(TextOrFile)));
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			parsedTeam = myHandler.getParsedData();
 		}
 	}

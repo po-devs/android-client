@@ -959,10 +959,30 @@ public class NetworkService extends Service {
 					if (chatActivity != null && chatActivity.hasWindowFocus()) {
 						chatActivity.notifyChallenge();
 					} else {
-						Notification note = new Notification(R.drawable.icon, "You've been challenged by " + challenge.oppName + "!", System.currentTimeMillis());
-						note.setLatestEventInfo(this, "Pokemon Online", "You've been challenged!", PendingIntent.getActivity(this, 0,
-								new Intent(NetworkService.this, ChatActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK));
-						getNotificationManager().notify(IncomingChallenge.note, note);
+						NotificationCompat.Builder mBuilder =
+								new NotificationCompat.Builder(this)
+										.setSmallIcon(R.drawable.icon)
+										.setContentTitle("Pokemon Online")
+										.setContentText("You've been challenged by " + challenge.oppName + "!");
+
+						// Because clicking the notification opens a new ("special") activity, there's
+						// no need to create an artificial back stack.
+						PendingIntent resultPendingIntent =
+								PendingIntent.getActivity(
+									this,
+									0,
+									new Intent(NetworkService.this, ChatActivity.class),
+									PendingIntent.FLAG_UPDATE_CURRENT
+								);
+
+						mBuilder.setContentIntent(resultPendingIntent);
+
+						// Sets an ID for the notification
+						int mNotificationId = IncomingChallenge.note;
+						// Gets an instance of the NotificationManager service
+						NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+						// Builds the notification and issues it.
+						mNotifyMgr.notify(mNotificationId, mBuilder.build());;
 					}
 				}
 				break;

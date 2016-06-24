@@ -11,16 +11,22 @@ import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
 import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
-import com.viewpagerindicator.TitlePageIndicator;
+import com.podevs.android.utilities.TitlePageIndicator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
