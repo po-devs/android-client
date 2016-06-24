@@ -17,7 +17,11 @@ import com.podevs.android.poAndroid.ColorEnums.TypeForWeatherColor;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
-import com.podevs.android.poAndroid.poke.PokeEnums.*;
+import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
+import com.podevs.android.poAndroid.poke.PokeEnums.Status;
+import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
+import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
+import com.podevs.android.poAndroid.poke.PokeEnums.WeatherState;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
@@ -203,14 +207,13 @@ public class SpectatingBattle {
         synchronized (this) {
             byte command = msg.readByte();
 
-            if (command < 0 || command > BattleCommand.values().length) {
+            if (command < 0 || command >= BattleCommand.values().length) {
                 Log.w("Spectating battle", "Battle command unknown " + String.valueOf((int) command));
                 return;
             }
 
             BattleCommand bc = BattleCommand.values()[command];
             byte player = msg.readByte();
-
 			/* Because we don't deal with double battles */
             //num = (bc == BattleCommand.Clause ? num : (byte) (num % 2));
 
