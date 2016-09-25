@@ -1,10 +1,12 @@
 package com.podevs.android.poAndroid.settings;
 
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.widget.Toast;
+import com.podevs.android.poAndroid.MessageListAdapter;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.registry.CustomExceptionHandler;
 
@@ -13,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class Settings extends PreferenceFragment {
     private static final Pattern hex = Pattern.compile("[#][A-F0-9]{6}");
-    private static final String[] keys = {"flashColor", "soundVolume", "shouldWrite", "pokemonNumber"};
+    private static final String[] keys = {"flashColor", "soundVolume", "shouldWrite", "pokemonNumber", "copyandpaste"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,16 @@ public class Settings extends PreferenceFragment {
                     CustomExceptionHandler.shouldWrite = false;
                 }
                 return true;
+            }
+            if (key.equals("copyandpaste")) {
+                Boolean val = (Boolean) newValue;
+                MessageListAdapter.copyandpaste = val;
+                if (val) {
+                    CheckBoxPreference p = (CheckBoxPreference) findPreference("shouldTryTapMenu");
+                    if (p.isChecked()) {
+                        p.setChecked(false);
+                    }
+                }
             }
             return true;
         }

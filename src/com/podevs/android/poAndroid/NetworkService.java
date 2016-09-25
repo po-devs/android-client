@@ -23,6 +23,7 @@ import com.podevs.android.poAndroid.chat.Channel;
 import com.podevs.android.poAndroid.chat.ChatActivity;
 import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo;
+import com.podevs.android.poAndroid.player.UserInfo;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.pms.PrivateMessageList;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
@@ -360,6 +361,7 @@ public class NetworkService extends Service {
 		chatSettings.cry = POPreferences.getBoolean("crySound", false);
 		chatSettings.pokeNumber = Integer.parseInt(POPreferences.getString("pokemonNumber", "648"));
 		chatSettings.soundVolume = Integer.parseInt(POPreferences.getString("soundVolume", "10"));
+		MessageListAdapter.copyandpaste = POPreferences.getBoolean("copyandpaste",false);
 	}
 
 	private static void loadPOPreferences(Context context) {
@@ -749,7 +751,36 @@ public class NetworkService extends Service {
                 chatActivity.updatePlayer(p, p2);
 			}
 			break;
-		}	case SendMessage: {
+		}	case GetUserInfo: {
+				UserInfo info = new UserInfo(msg);
+				String test = "";
+				ChatActivity.aliases = new ArrayList<String>();
+				break;
+			}
+			case GetUserAlias: {
+				ChatActivity.aliases.add(msg.readString());
+				String test = "";
+				break;
+			}
+			case GetBanList: {
+				String test = "";
+				break;
+			}
+			case ShowRankings: {
+				boolean starting = msg.readBool();
+				if (starting) {
+					int startingPage = msg.readInt();
+					int staringRank = msg.readInt();
+					int total = msg.readInt();
+					// Add Ranking window
+				} else {
+					String name = msg.readString();
+					int points = msg.readInt();
+					// Add ranking
+				}
+				break;
+			}
+			case SendMessage: {
 			Bais netFlags = msg.readFlags();
 			boolean hasChannel = netFlags.readBool();
 			boolean hasId = netFlags.readBool();
@@ -1588,6 +1619,32 @@ public class NetworkService extends Service {
 		socket.sendMessage(bb, Command.SendPM);
 		
 		pmedPlayers.add(id);
+	}
+
+	public void requestUserInfo(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.GetUserInfo);
+	}
+
+	public void requestBanInfo(String name) {
+
+	}
+
+	public void requestRanking(String tier, String name) {
+		Baos b = new Baos();
+		b.putString(tier);
+		b.putBool(false);
+		b.putString(name);
+		socket.sendMessage(b, Command.ShowRankings);
+	}
+
+	public void requestRanking(String tier, int page) {
+		Baos b = new Baos();
+		b.putString(tier);
+		b.putBool(false);
+		b.putInt(page);
+		socket.sendMessage(b, Command.ShowRankings);
 	}
 
     public void loadJoinedChannelSettings() {

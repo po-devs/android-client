@@ -65,10 +65,19 @@
             android:summary="@string/crashlog_summary"
             android:title="@string/crashlog_title"
             android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:summary="In testing"
+            android:title="Experimental" >
         <CheckBoxPreference
-            android:key="@string/misc_title"
-            android:summary="@string/copypaste_summary"
-            android:title="@string/copypaste_title"
-            android:defaultValue="false" />
+                android:key="copyandpaste"
+                android:summary="@string/copypaste_summary"
+                android:title="@string/copypaste_title"
+                android:defaultValue="false" />
+        <CheckBoxPreference
+                android:key="shouldTryTapMenu"
+                android:summary="Requires restart"
+                android:title="Tap menu in chat"
+                android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

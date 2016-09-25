@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -205,33 +206,6 @@ public class ChatActivity extends Activity {
 		channelsLayout = getLayoutInflater().inflate(R.layout.channellist, null);
 		playersLayout = getLayoutInflater().inflate(R.layout.playerlist, null);
 		chatView = (ListView)chatLayout.findViewById(R.id.chatView);
-		/*
-		chatView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				final String test = ((TextView) chatView.getItemAtPosition(position)).getText().toString();
-				AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-				builder.setMessage(test)
-				.setPositiveButton("Copy", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-						ClipData clip = ClipData.newPlainText("simple text", test);
-						clipboard.setPrimaryClip(clip);
-					}
-				}).setNeutralButton("Name", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-						ClipData clip = ClipData.newPlainText("simple text", test.substring(test.indexOf(") ") + 1, test.indexOf(":"))); // .*\) (.*?):
-						clipboard.setPrimaryClip(clip);
-					}
-				});
-				builder.create().show();
-				return false;
-			}
-		});
-		*/
 		chatViewSwitcher.setAdapter(new MyAdapter());
 		ImageButton findBattleButton = (ImageButton)chatLayout.findViewById(R.id.findbattle);
 		findBattleButton.setOnClickListener(new OnClickListener() {
@@ -241,6 +215,46 @@ public class ChatActivity extends Activity {
 		});
         setContentView(chatViewSwitcher);
         prefs = getPreferences(MODE_PRIVATE);
+
+		if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("shouldTryTapMenu", false)) {
+			chatView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					final String test = ((TextView) chatView.getItemAtPosition(position)).getText().toString();
+					AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+					builder.setMessage(test)
+							.setNegativeButton("Copy", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+									ClipData clip = ClipData.newPlainText("simple text", test);
+									clipboard.setPrimaryClip(clip);
+								}
+							}).setNeutralButton("Name", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+									String toCopy = test.substring(test.indexOf(") ") + 1, test.indexOf(":")); // .*\) (.*?):
+									if (toCopy.charAt(0) == '+') toCopy = toCopy.substring(1);
+									ClipData clip = ClipData.newPlainText("simple text", toCopy);
+									clipboard.setPrimaryClip(clip);
+								}
+					});
+					if (netServ.me.auth > 0) {
+						builder.setPositiveButton("Auth", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								String toCopy = test.substring(test.indexOf(") ") + 1, test.indexOf(":")); // .*\) (.*?):
+								if (toCopy.charAt(0) == '+') toCopy = toCopy.substring(1);
+								netServ.requestUserInfo(toCopy);
+							}
+						});
+					}
+					builder.create().show();
+					return false;
+				}
+			});
+		}
     	chatViewSwitcher.setCurrentItem(1);
 
     	//Player List Stuff**
@@ -838,6 +852,7 @@ public class ChatActivity extends Activity {
 				}
 			}).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
+					which = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
 					if (which == -1) {
 						which = 0;
 					}
@@ -912,7 +927,7 @@ public class ChatActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chatoptions, menu);
+		inflater.inflate(R.menu.chatoptions, menu);
         return true;
     }
     
@@ -937,6 +952,11 @@ public class ChatActivity extends Activity {
 				menu.findItem(R.id.register).setVisible(false);
 			} else {
 				menu.findItem(R.id.register).setVisible(true);
+			}
+			if (netServ.me.auth > 0) {
+				menu.findItem(R.id.controlpanel).setVisible(false);
+			} else {
+				menu.findItem(R.id.controlpanel).setVisible(true);
 			}
     	}
     	
@@ -1300,6 +1320,8 @@ public class ChatActivity extends Activity {
     	unbindService(connection);
     	super.onDestroy();
     }
+
+	public static ArrayList<String> aliases;
 }
 
 
