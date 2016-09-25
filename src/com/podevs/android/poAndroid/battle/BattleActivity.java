@@ -379,6 +379,18 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         });
     }
 
+    public void updatePokeBall(final int player, final int poke) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                pokeballs[player][poke].setImageDrawable((
+                        battle.pokes[player][poke].uID.pokeNum != 0
+                                ? PokemonInfo.iconDrawableCache(battle.pokes[player][poke].uID)
+                                : PokemonInfo.iconDrawablePokeballStatus()
+                ));
+                pokeballs[player][poke].setColorFilter(statusTint(battle.pokes[player][poke].status()));
+            }
+        });
+    }
 
     private String getAnimSprite(ShallowBattlePoke poke, boolean front) {
         String res;
