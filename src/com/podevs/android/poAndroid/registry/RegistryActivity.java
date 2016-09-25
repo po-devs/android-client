@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -44,6 +46,9 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
 
+	public static boolean localize_assets = false;
+	public static Resources resources;
+
 	/*
 	enum RegistryDialog {
 		SelectImportMethod,
@@ -58,10 +63,15 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		InfoConfig.context = this;
     	}
 
+		Log.e("HELLO", "HELLO");
 
-        //if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
+
+        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
 
         super.onCreate(savedInstanceState);
+
+		localize_assets = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("localize", false);
+		resources = getResources();
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -77,7 +87,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         if (getIntent().hasExtra("failedConnect")) {
         	Toast.makeText(this, "Server connection failed", Toast.LENGTH_LONG).show();
         }
-        
+
         this.stopService(new Intent(RegistryActivity.this, NetworkService.class));
         
         setContentView(R.layout.main);
@@ -141,6 +151,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
+
     }
 
     private OnClickListener registryListener = new OnClickListener() {

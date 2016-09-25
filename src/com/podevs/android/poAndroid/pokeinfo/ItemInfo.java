@@ -1,7 +1,9 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
 import android.util.SparseArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,12 +109,23 @@ public class ItemInfo {
 	}
 
 	private static void loadItemNames() {
-		InfoFiller.fill("db/items/items.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "items.txt";
+		} else {
+			path = "db/items/items.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				itemNames.put(i, b);
 			}
 		});
-		InfoFiller.fill("db/items/berries.txt", new Filler() {
+		if (RegistryActivity.localize_assets) {
+			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "berries.txt";
+		} else {
+			path = "db/items/berries.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				itemNames.put(8000+i, b);
 			}
@@ -121,12 +134,23 @@ public class ItemInfo {
 	
 	private static void loadItemMessages() {
 		itemMessages = new SparseArray<String>();
-		InfoFiller.fill("db/items/item_messages.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "item_messages.txt";
+		} else {
+			path = "db/items/item_messages.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				itemMessages.put(i, b);
 			}
 		});
-		InfoFiller.fill("db/items/berry_messages.txt", new Filler() {
+		if (RegistryActivity.localize_assets) {
+			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "berry_messages.txt";
+		} else {
+			path = "db/items/berry_messages.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				itemMessages.put(8000+i, b);
 			}

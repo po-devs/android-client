@@ -1,8 +1,10 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
 import android.util.SparseArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -240,7 +242,13 @@ public class MoveInfo extends GenInfo {
 
 	private static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();
-		InfoFiller.fill("db/moves/moves.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/moves/" + RegistryActivity.resources.getString(R.string.asset_localization) + "moves.txt";
+		} else {
+			path = "db/moves/moves.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				moveNames.add(new Move(b));
 			}
@@ -288,7 +296,13 @@ public class MoveInfo extends GenInfo {
 
 	private static void loadMoveMessages() {
 		moveMessages = new SparseArray<String>();
-		InfoFiller.fill("db/moves/move_message.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/moves/" + RegistryActivity.resources.getString(R.string.asset_localization) + "move_message.txt";
+		} else {
+			path = "db/moves/move_message.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				moveMessages.put(i, b);
 			}
