@@ -30,4 +30,8 @@
         android:id="@+id/settings"
         android:title="@string/settings">
      </item>
+    <item
+        android:id="@+id/controlpanel"
+        android:title="Control Panel">
+    </item>
 </menu>
