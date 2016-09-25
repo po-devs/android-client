@@ -148,4 +148,6 @@
     </string-array>
     <string name="IV">IV</string>
 
+    <string name="asset_localization">translation-es/</string>
+
 </resources>

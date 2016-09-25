@@ -144,4 +144,6 @@
         <item>Tenèbres</item>
     </string-array>
 
+    <string name="asset_localization">translation-fr/</string>
+
 </resources>

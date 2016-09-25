@@ -3,6 +3,14 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
+        android:title="@string/language_settings">
+        <CheckBoxPreference
+            android:key="localize"
+            android:summary="@string/localize_assets_summary"
+            android:title="@string/localize_assets_title">
+        </CheckBoxPreference>
+    </PreferenceCategory>
+    <PreferenceCategory
             android:summary="@string/chat_summary"
             android:title="@string/chat_title" >
         <CheckBoxPreference

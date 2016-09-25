@@ -55,7 +55,8 @@ public class ChatActivity extends Activity {
 		ChallengeMode,
 		ChooseTierMode,
 		AskForName,
-		AskForServerPass
+		AskForServerPass,
+		LoadTeam
 	}
 	
 	// public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -1030,6 +1031,9 @@ public class ChatActivity extends Activity {
 			case R.id.settings:
 				startActivity(new Intent(ChatActivity.this, SetPreferenceActivity.class));
 
+				break;
+			case R.id.loadteam:
+				showDialog(ChatDialog.LoadTeam.ordinal());
 				break;
 			}
 		return true;

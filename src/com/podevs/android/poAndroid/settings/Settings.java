@@ -9,13 +9,14 @@ import android.widget.Toast;
 import com.podevs.android.poAndroid.MessageListAdapter;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.registry.CustomExceptionHandler;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Settings extends PreferenceFragment {
     private static final Pattern hex = Pattern.compile("[#][A-F0-9]{6}");
-    private static final String[] keys = {"flashColor", "soundVolume", "shouldWrite", "pokemonNumber", "copyandpaste"};
+    private static final String[] keys = {"flashColor", "soundVolume", "shouldWrite", "pokemonNumber", "copyandpaste", "localize"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,9 @@ public class Settings extends PreferenceFragment {
                         p.setChecked(false);
                     }
                 }
+            }
+            if (key.equals("localize")) {
+                RegistryActivity.localize_assets = (Boolean) newValue;
             }
             return true;
         }

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
 import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
@@ -13,6 +14,7 @@ import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.*;
 
@@ -646,6 +648,23 @@ public class PokemonInfo {
 				namesToIds.put(s, new UniqueID(i));
 			}
 		});
+		if (RegistryActivity.localize_assets) {
+			String path = "db/pokes/" + RegistryActivity.resources.getString(R.string.asset_localization) + "pokemons.txt";
+			InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
+				public void fill(int i, String s, String options) {
+					pokeNames.put(i, s);
+					pokemonsg.put(i, new PokeData());
+
+					if (i > 16000) {
+						pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+					} else if (i > pokeCount) {
+						pokeCount = i;
+					}
+					pokemonsg.get(i).options = options;
+					namesToIds.put(s, new UniqueID(i));
+				}
+			});
+		}
 	}
 
 	/**

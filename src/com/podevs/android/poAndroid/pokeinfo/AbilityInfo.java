@@ -1,7 +1,9 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
 import android.util.SparseArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,8 +45,13 @@ public class AbilityInfo {
 
 	private static void loadAbilityNames() {
 		abilityNames = new ArrayList<String>();
-		
-		InfoFiller.fill("db/abilities/abilities.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/abilities/" + RegistryActivity.resources.getString(R.string.asset_localization) + "abilities.txt";
+		} else {
+			path = "db/abilities/abilities.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				abilityNames.add(b);
 			}
@@ -54,7 +61,13 @@ public class AbilityInfo {
 	
 	private static void loadAbilityMessages() {
 		abilityMessages = new SparseArray<String>();
-		InfoFiller.fill("db/abilities/ability_messages.txt", new Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/abilities/" + RegistryActivity.resources.getString(R.string.asset_localization) + "ability_messages.txt";
+		} else {
+			path = "db/abilities/ability_messages.txt";
+		}
+		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String b) {
 				abilityMessages.put(i, b);
 			}
