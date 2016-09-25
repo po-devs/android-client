@@ -122,8 +122,6 @@
     <string name="poke_number_summary">Nummer von dem Pokemon</string>
     <string name="sound_notification_title">Ton-Benachichtigung</string>
     <string name="sound_notification_summary">Ton-Benachichtigung aktivieren</string>
-    
-    <string name="IV">DV</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>

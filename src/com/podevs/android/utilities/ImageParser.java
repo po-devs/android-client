@@ -8,12 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -156,21 +154,29 @@ public class ImageParser implements Html.ImageGetter {
 
         private Drawable getDrawable(String url) {
             try {
-                InputStream is = download(url);
-                Drawable drawable = Drawable.createFromStream(is, "src");
-                drawable.setBounds(0,0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                Drawable drawable = download(url);
+
+                if (drawable != null) {
+                    drawable.setBounds(0,0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                }
                 return drawable;
             } catch (IOException e) {
-                String text = "src";
                 return null;
             }
         }
 
-        private InputStream download(String url) throws IOException{
-            DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
-            return httpResponse.getEntity().getContent();
+        private Drawable download(String url) throws IOException{
+            Drawable ret = null;
+
+            URL urlObj = new URL(url);
+            HttpURLConnection urlConnection = (HttpURLConnection) urlObj.openConnection();
+            try {
+                ret = Drawable.createFromStream(urlConnection.getInputStream(), "src");
+            } finally {
+                urlConnection.disconnect();
+            }
+
+            return ret;
         }
 
     }

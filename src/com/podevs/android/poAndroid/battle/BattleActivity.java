@@ -4,21 +4,44 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.ResultReceiver;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebView;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.launcher.DragController;
 import com.android.launcher.DragLayer;
 import com.android.launcher.PokeDragIcon;
@@ -39,6 +62,8 @@ import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 import com.podevs.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
+    public static final Creator<MyResultReceiver> CREATOR = null;
+
     private Receiver mReceiver;
 
     public MyResultReceiver(Handler handler) {
@@ -167,7 +192,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
         public void setHpBarToGoal() {
             runOnUiThread(new Runnable() {
-                public void run() {
+                public  void run() {
                     hpBars[i].setProgress(goal);
                     hpBars[i].setText(hpBars[i].getProgress() + "%");
                     checkHpColor();
@@ -245,7 +270,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 Context.BIND_AUTO_CREATE);
 
         resources = getResources();
-        realViewSwitcher = (ViewPager) new ViewPager(this);
+        realViewSwitcher = new ViewPager(this);
         mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
 
         //if (mainLayout.findViewById(R.id.smallBattleWindow) != null) {
