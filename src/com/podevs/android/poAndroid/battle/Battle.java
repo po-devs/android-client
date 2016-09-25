@@ -192,6 +192,7 @@ public class Battle extends SpectatingBattle {
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player);
+					activity.updatePokeBall(player, 0);
 				}
 				break;
 			case DefiniteForme:
@@ -199,14 +200,15 @@ public class Battle extends SpectatingBattle {
 				UniqueID uID = new UniqueID(msg);
 				pokes[player][poke].uID = uID;
 				if (isOut(poke)) {
-					currentPoke(slot(player, poke)).uID = uID;
+					pokes[player][poke].uID = uID;
 					if (player == opp) {
-						currentPoke(slot(player, poke)).setStats(conf.gen.num);
-						currentPoke(slot(player, poke)).setTypes(conf.gen.num);
+						pokes[player][poke].setStats(conf.gen.num);
+						pokes[player][poke].setTypes(conf.gen.num);
 					}
 					if (activity !=null) {
 						activity.samePokes[player] = false;
 						activity.updatePokes(player);
+						activity.updatePokeBall(player, poke);
 					}
 				}
 				break;
@@ -216,6 +218,7 @@ public class Battle extends SpectatingBattle {
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player);
+					activity.updatePokeBall(player, 0);
 				}
 			default: break;
 			}

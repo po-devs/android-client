@@ -761,6 +761,7 @@ public class NetworkService extends Service {
 			int pId = 0;
 			if (hasChannel) {
 				chan = channels.get(msg.readInt());
+				tagHandler.currentChannel = chan;
 			}
 			if (hasId) {
 				player = players.get(pId = msg.readInt());
@@ -819,7 +820,9 @@ public class NetworkService extends Service {
 									else {
 										Iterator<Channel> it = joinedChannels.iterator();
 										while (it.hasNext()) {
-											it.next().writeToHist(message, left, right, chatSettings.color, false, null);
+											Channel next = it.next();
+											tagHandler.currentChannel = next;
+											next.writeToHist(message, left, right, chatSettings.color, false, null);
 										}
 									}
 								} else {
@@ -855,7 +858,6 @@ public class NetworkService extends Service {
 				}
 			} else {
 				if (isHtml) {
-					tagHandler.currentChannel = chan;
 					message = Html.fromHtml((String)message, imageParser, tagHandler);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
@@ -893,7 +895,9 @@ public class NetworkService extends Service {
 				else {
 					Iterator<Channel> it = joinedChannels.iterator();
 					while (it.hasNext()) {
-						it.next().writeToHist(message, false, null);
+						Channel next = it.next();
+						tagHandler.currentChannel = next;
+						next.writeToHist(message, false, null);
 					}
 				}
 			} else {

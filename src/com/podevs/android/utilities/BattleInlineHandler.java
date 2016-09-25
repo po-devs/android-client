@@ -7,6 +7,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.View;
+import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.chat.Channel;
 import org.xml.sax.XMLReader;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 
 public class BattleInlineHandler implements Html.TagHandler {
     private NetworkService netServ;
-    private HashMap<String, String> attributes;
+    private HashMap<String, String> attributes = new HashMap<String, String>();
     public Channel currentChannel;
 
     public BattleInlineHandler(NetworkService service) {
@@ -28,7 +29,7 @@ public class BattleInlineHandler implements Html.TagHandler {
         if (tag.equalsIgnoreCase("watch")) {
             if (opening) {
                 // Opening Tag
-                attributes = new HashMap<String, String>();
+                attributes.clear();
                 try {
                     getAtrributes(xmlReader);
 
@@ -64,7 +65,7 @@ public class BattleInlineHandler implements Html.TagHandler {
         } else if (tag.equalsIgnoreCase("background")) {
             try {
                 if (opening) {
-                    attributes = new HashMap<String, String>();
+                    attributes.clear();
 
                     getAtrributes(xmlReader);
 
@@ -104,6 +105,22 @@ public class BattleInlineHandler implements Html.TagHandler {
             } else {
                 end((SpannableStringBuilder) output, StrikethroughSpan.class, new StrikethroughSpan());
             }
+        } else if (tag.equalsIgnoreCase("po")) {
+                if (opening) {
+                    attributes.clear();
+
+                    getAtrributes(xmlReader);
+
+                    String message = attributes.get("m");
+                    if (message != null) {
+                        start((SpannableStringBuilder) output, poSend(message));
+                    }
+                } else {
+                    String message = attributes.get("m");
+                    if (message != null) {
+                        end((SpannableStringBuilder) output, ClickableSpan.class, poSend(message));
+                    }
+                }
         }
         //Log.e("TagHandler", "Unhandled " + tag);
     }
@@ -133,6 +150,21 @@ public class BattleInlineHandler implements Html.TagHandler {
 
     private BackgroundColorSpan backgroundColor(int color) {
         return new BackgroundColorSpan(color);
+    }
+
+    private ClickableSpan poSend(final String message) {
+        final int id = currentChannel.id;
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Baos b = new Baos();
+                b.write(1);
+                b.write(0);
+                b.putInt(id);
+                b.putString(message);
+                netServ.socket.sendMessage(b, Command.SendMessage);
+            }
+        };
     }
 
     private ClickableSpan spectateSpan(final int id) {
