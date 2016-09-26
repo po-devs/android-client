@@ -21,7 +21,6 @@ import android.util.Log;
 import com.podevs.android.poAndroid.battle.*;
 import com.podevs.android.poAndroid.chat.Channel;
 import com.podevs.android.poAndroid.chat.ChatActivity;
-import com.podevs.android.poAndroid.chat.ControlPanelGroup;
 import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.UserInfo;
@@ -252,6 +251,24 @@ public class NetworkService extends Service {
 	 */
 	public boolean hasPlayer(int pid) {
 		return players.containsKey(pid);
+	}
+
+	public int getID(String name) {
+		Set<Integer> keys = players.keySet();
+		for (Integer id : keys) {
+			if (players.get(id).nick().equals(name)) {
+				return id;
+			}
+		}
+		return -1;
+	}
+
+	public String getName(int id) {
+		PlayerInfo info = players.get(id);
+		if (info == null) {
+			return "~Unknown~";
+		}
+		return info.nick();
 	}
 	
 	public boolean hasChannel(int cid) {
@@ -774,6 +791,9 @@ public class NetworkService extends Service {
 			break;
 		}	case GetUserInfo: {
 				UserInfo info = new UserInfo(msg);
+				if (!(getID(info.name) == -1)) {
+					info.flags |= UserInfo.FLAG_ONLINE;
+				}
 				chatActivity.updateControlPanel(info);
 				break;
 			}
@@ -1252,6 +1272,40 @@ public class NetworkService extends Service {
 					chatActivity.notifyAskForServerPass();
 				}
 			break;
+		}case PlayerKick: {
+				int dest = msg.readInt();
+				int src = msg.readInt();
+
+				String message;
+				if (src == 0) {
+					message = "<font color=#ff0000><b> " + getName(dest) + " was kicked by the server!</b></font>";
+				} else {
+					message = "<font color=#ff0000><b> " + getName(src) + " kicked " + getName(dest) + "</b></font>";
+				}
+				Iterator<Channel> it = joinedChannels.iterator();
+				while (it.hasNext()) {
+					Channel next = it.next();
+					tagHandler.currentChannel = next;
+					next.writeToHist(Html.fromHtml(message), false, null);
+				}
+				break;
+		}case PlayerBan: {
+				int dest = msg.readInt();
+				int src = msg.readInt();
+
+				String message;
+				if (src == 0) {
+					message = "<font color=#ff0000><b> " + getName(dest) + " was banned by the server!</b></font>";
+				} else {
+					message = "<font color=#ff0000><b> " + getName(src) + " banned " + getName(dest) + "</b></font>";
+				}
+				Iterator<Channel> it = joinedChannels.iterator();
+				while (it.hasNext()) {
+					Channel next = it.next();
+					tagHandler.currentChannel = next;
+					next.writeToHist(Html.fromHtml(message), false, null);
+				}
+				break;
 		}/*  case AndroidID: {
 +			new Thread(new Runnable() {
 +				@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -1650,9 +1704,47 @@ public class NetworkService extends Service {
 	public void requestRanking(String tier, int page) {
 		Baos b = new Baos();
 		b.putString(tier);
-		b.putBool(false);
+		b.putBool(true);
 		b.putInt(page);
 		socket.sendMessage(b, Command.ShowRankings);
+	}
+
+	public void playerKick(int id) {
+		Baos b = new Baos();
+		b.putInt(id);
+		socket.sendMessage(b, Command.PlayerKick);
+	}
+
+	public void playerBan(int id) {
+		Baos b = new Baos();
+		b.putInt(id);
+		socket.sendMessage(b, Command.PlayerBan);
+	}
+
+	public void playerTBan(int id, int time) {
+		Baos b = new Baos();
+		b.putInt(id);
+		b.putInt(time);
+		socket.sendMessage(b, Command.PlayerTBan);
+	}
+
+	public void playerBan(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.CPBan);
+	}
+
+	public void playerTBan(String name, int time) {
+		Baos b = new Baos();
+		b.putString(name);
+		b.putInt(time);
+		socket.sendMessage(b, Command.CPBan);
+	}
+
+	public void playerUnban(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.CPUnban);
 	}
 
     public void loadJoinedChannelSettings() {
