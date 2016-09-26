@@ -27,7 +27,9 @@ import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.UserInfo;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.pms.PrivateMessageList;
+import com.podevs.android.poAndroid.poke.PokeParser;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
+import com.podevs.android.poAndroid.poke.Team;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.*;
 
@@ -498,10 +500,11 @@ public class NetworkService extends Service {
 		socket.sendMessage(b, Command.SendTeam);
 	}
 
-	public void changeTeam(String nick) {
+	public void changeTeam(String path) {
+		Team team = new PokeParser(NetworkService.this, path, true).getTeam();
 		Baos b = new Baos();
 		b.putFlags(new boolean[] {true, meLoginPlayer.color().isValid(), true, true});
-		b.putString(nick);
+		b.putString(meLoginPlayer.nick());
 		if (meLoginPlayer.color().isValid()) {
 			b.putBaos(meLoginPlayer.color());
 		}
@@ -510,7 +513,7 @@ public class NetworkService extends Service {
 
 		b.write(0);
 		b.write(1);
-		b.putBaos(meLoginPlayer.team);
+		b.putBaos(team);
 
 		socket.sendMessage(b, Command.SendTeam);
 	}
@@ -1129,6 +1132,7 @@ public class NetworkService extends Service {
 				}
 				if (flags.readBool()) {
 					ArrayList<String> tiers = msg.readQStringList();
+					chatActivity.makeToast("Loaded " + tiers.get(0), "short");
 				}
 			break;
 

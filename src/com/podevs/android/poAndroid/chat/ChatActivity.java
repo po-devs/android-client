@@ -925,7 +925,22 @@ public class ChatActivity extends Activity {
 						.setTitle("Select clauses");
 				return builder.create();
 			}case LoadTeam:{
-				//View layout = inflater.inflate();
+				final CharSequence teams[] = getSharedPreferences("team", 0).getString("files", "team.xml").split("\\|");
+				builder.setTitle("Load Team")
+						.setItems(teams, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								CharSequence selectedTeam = teams[which];
+								netServ.changeTeam(selectedTeam.toString());
+							}
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						});
+				return builder.create();
 			}case ControlPanel: {
 				View layout = inflater.inflate(R.layout.control_panel_layout, (LinearLayout) findViewById(R.id.control_panel_layout));
 				final EditText searchEdit = (EditText) layout.findViewById(R.id.search_edit);
