@@ -5,8 +5,8 @@
     <string name="app_name">安卓PO</string>
     <string name="connect">连接服务器</string>
     <string name="inputname">请输入你的玩家名称</string>
-    <string name="inputaddr">电信入口IP：123.164.66.210:5080</string>
-    <string name="chooseaddr">吧服联通入口IP： 218.7.112.247:5080（冒号要半角）</string>
+    <string name="inputaddr">电信入口</string>
+    <string name="chooseaddr">吧服联通入口（冒号要半角）</string>
     <string name="importteam">导入队伍</string>
     <string name="viewpokemon">查看精灵</string>
     <string name="tobattlescreen">回到战斗</string>

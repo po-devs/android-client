@@ -63,9 +63,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		InfoConfig.context = this;
     	}
 
-		Log.e("HELLO", "HELLO");
-
-
         if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
 
         super.onCreate(savedInstanceState);

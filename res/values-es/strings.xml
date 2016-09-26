@@ -149,5 +149,8 @@
     <string name="IV">IV</string>
 
     <string name="asset_localization">translation-es/</string>
+    <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
+    <string name="language_settings">Configuracion de Idioma</string>
+    <string name="localize_assets_title">Localizar nombres</string>
 
 </resources>

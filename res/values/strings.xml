@@ -153,7 +153,7 @@
     </string-array>
 
     <string name="asset_localization"></string>
-    <string name="localize_assets_title">Localize Assets</string>
+    <string name="localize_assets_title">Localize Names</string>
     <string name="localize_assets_summary">Not all languages are supported</string>
     <string name="language_settings">Language Settings</string>
 

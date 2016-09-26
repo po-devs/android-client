@@ -27,6 +27,7 @@ import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Mode;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo.TierStanding;
+import com.podevs.android.poAndroid.player.UserInfo;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.registry.RegistryActivity;
 import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
@@ -42,7 +43,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ChatActivity extends Activity {
-	
+
 	// static final String TAG = "ChatActivity";
 
 	private enum ChatDialog {
@@ -56,11 +57,12 @@ public class ChatActivity extends Activity {
 		ChooseTierMode,
 		AskForName,
 		AskForServerPass,
-		LoadTeam
+		LoadTeam,
+		ControlPanel
 	}
-	
+
 	// public final static int SWIPE_TIME_THRESHOLD = 100;
-	
+
 	private enum ChatContext {
 		ChallengePlayer,
 		ViewPlayerInfo,
@@ -69,13 +71,15 @@ public class ChatActivity extends Activity {
 		WatchBattle,
 		PrivateMessage,
 		IgnorePlayer,
-		ChannelEvent
+		ChannelEvent,
+		ViewRanking,
+		ControlPanel
 	}
-	
+
 	private PlayerListAdapter playerAdapter = null;
 	private ChannelListAdapter channelAdapter = null;
 	private MessageListAdapter messageAdapter = null;
-	
+
 	public ProgressDialog progressDialog;
 
 	private ChatListView players;
@@ -92,11 +96,11 @@ public class ChatActivity extends Activity {
 	private boolean isChangingNames = false;
 	private String newNickname = null;
 	private boolean cancelScroll = false;
-	
+
 	class TierAlertDialog extends AlertDialog {
 		public Tier parentTier = null;
 		public ListView dialogListView = null;
-		
+
 		protected TierAlertDialog(Context context, Tier t) {
 			super(context);
 			parentTier = t;
@@ -105,7 +109,7 @@ public class ChatActivity extends Activity {
 			setView(dialogListView);
 			setIcon(0); // Don't want an icon
 		}
-		
+
 		@Override
 		public void onBackPressed() {
 			if(parentTier.parentTier == null) { // this is the top level
@@ -116,17 +120,17 @@ public class ChatActivity extends Activity {
 				parentTier = parentTier.parentTier;
 			}
 		}
-		
+
 		ListView makeTierListView() {
 			ListView lv = new ListView(ChatActivity.this);
 			lv.setAdapter(new ArrayAdapter<Tier>(ChatActivity.this, R.layout.tier_list_item, parentTier.subTiers));
 			lv.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view,
-						int position, long id) {
+										int position, long id) {
 					Tier self = parentTier.subTiers.get((int)id);
 					if(self.subTiers.size() > 0) {
 						parentTier = self;
-						((ListView)parent).setAdapter(new ArrayAdapter<Tier>(ChatActivity.this, 
+						((ListView)parent).setAdapter(new ArrayAdapter<Tier>(ChatActivity.this,
 								R.layout.tier_list_item, parentTier.subTiers));
 					}
 					else {
@@ -150,13 +154,13 @@ public class ChatActivity extends Activity {
 		public int getCount() {
 			return 3;
 		}
-		
+
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			switch (position) {
-			case 0: container.addView(playersLayout);return playersLayout;
-			case 1: container.addView(chatLayout);return chatLayout;
-			case 2: container.addView(channelsLayout);return channelsLayout;
+				case 0: container.addView(playersLayout);return playersLayout;
+				case 1: container.addView(chatLayout);return chatLayout;
+				case 2: container.addView(channelsLayout);return channelsLayout;
 			}
 			return null;
 		}
@@ -170,7 +174,7 @@ public class ChatActivity extends Activity {
 		public void destroyItem(ViewGroup container, int position, Object object) {
 			container.removeView((View)object);
 		}
-		
+
 		@Override
 		public float getPageWidth(int page) {
 			if (page == 0 || page == 2) {
@@ -182,7 +186,7 @@ public class ChatActivity extends Activity {
 
 	/** Called when the activity is first created. */
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		if (loading) {
 			progressDialog = ProgressDialog.show(ChatActivity.this, "","Loading. Please wait...", true);
 			progressDialog.setCancelable(true);
@@ -191,15 +195,15 @@ public class ChatActivity extends Activity {
 					disconnect();
 				}
 			});
-            int currentOrientation = getResources().getConfiguration().orientation;
-            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-            else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            }
+			int currentOrientation = getResources().getConfiguration().orientation;
+			if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+			}
+			else {
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+			}
 		}
-		
+
 		super.onCreate(savedInstanceState);
 
 		chatViewSwitcher = new ViewPager(this);
@@ -214,8 +218,8 @@ public class ChatActivity extends Activity {
 				dealWithFindBattle();
 			}
 		});
-        setContentView(chatViewSwitcher);
-        prefs = getPreferences(MODE_PRIVATE);
+		setContentView(chatViewSwitcher);
+		prefs = getPreferences(MODE_PRIVATE);
 
 		if (PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("shouldTryTapMenu", false)) {
 			chatView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -232,14 +236,14 @@ public class ChatActivity extends Activity {
 									clipboard.setPrimaryClip(clip);
 								}
 							}).setNeutralButton("Name", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-									String toCopy = test.substring(test.indexOf(") ") + 1, test.indexOf(":")); // .*\) (.*?):
-									if (toCopy.charAt(0) == '+') toCopy = toCopy.substring(1);
-									ClipData clip = ClipData.newPlainText("simple text", toCopy);
-									clipboard.setPrimaryClip(clip);
-								}
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+							String toCopy = test.substring(test.indexOf(") ") + 1, test.indexOf(":")); // .*\) (.*?):
+							if (toCopy.charAt(0) == '+') toCopy = toCopy.substring(1);
+							ClipData clip = ClipData.newPlainText("simple text", toCopy);
+							clipboard.setPrimaryClip(clip);
+						}
 					});
 					if (netServ.me.auth > 0) {
 						builder.setPositiveButton("Auth", new DialogInterface.OnClickListener() {
@@ -247,7 +251,9 @@ public class ChatActivity extends Activity {
 							public void onClick(DialogInterface dialog, int which) {
 								String toCopy = test.substring(test.indexOf(") ") + 1, test.indexOf(":")); // .*\) (.*?):
 								if (toCopy.charAt(0) == '+') toCopy = toCopy.substring(1);
-								netServ.requestUserInfo(toCopy);
+								controlUser = toCopy;
+								showDialog(ChatDialog.ControlPanel.ordinal());
+
 							}
 						});
 					}
@@ -256,30 +262,30 @@ public class ChatActivity extends Activity {
 				}
 			});
 		}
-    	chatViewSwitcher.setCurrentItem(1);
+		chatViewSwitcher.setCurrentItem(1);
 
-    	//Player List Stuff**
-    	players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
+		//Player List Stuff**
+		players = (ChatListView)playersLayout.findViewById(R.id.playerlisting);
 
-    	playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
-    	registerForContextMenu(players);
-    	players.setOnItemClickListener(new OnItemClickListener() {
+		playerAdapter = new PlayerListAdapter(ChatActivity.this, 0);
+		registerForContextMenu(players);
+		players.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				PlayerInfo clicked = playerAdapter.getItem(position);
 				if(netServ != null && NetworkService.pmedPlayers.contains(clicked.id)) {
-                    netServ.pms.createPM(clicked);
+					netServ.pms.createPM(clicked);
 					Intent intent = new Intent(ChatActivity.this, PrivateMessageActivity.class);
-	    			intent.putExtra("playerId", clicked.id);
-	    			startActivity(intent);
+					intent.putExtra("playerId", clicked.id);
+					startActivity(intent);
 				}
 			}
 		});
-        
-        //Channel List Stuff**
-    	channels = (ListView)channelsLayout.findViewById(R.id.channellisting);
-        channelAdapter = new ChannelListAdapter(this, 0);
-        registerForContextMenu(channels);
-        channels.setOnItemClickListener(new OnItemClickListener() {
+
+		//Channel List Stuff**
+		channels = (ListView)channelsLayout.findViewById(R.id.channellisting);
+		channelAdapter = new ChannelListAdapter(this, 0);
+		registerForContextMenu(channels);
+		channels.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Channel clicked = channelAdapter.getItem(position);
 				if(netServ != null && netServ.joinedChannels.contains(clicked)) {
@@ -294,42 +300,42 @@ public class ChatActivity extends Activity {
 				}
 			}
 		});
-        
-        Intent serviceIntent = new Intent(ChatActivity.this, NetworkService.class);
-        
-        startService(serviceIntent);
-        bindService(serviceIntent, connection, BIND_AUTO_CREATE);
-        chatInput = (EditText) chatLayout.findViewById(R.id.chatInput);
+
+		Intent serviceIntent = new Intent(ChatActivity.this, NetworkService.class);
+
+		startService(serviceIntent);
+		bindService(serviceIntent, connection, BIND_AUTO_CREATE);
+		chatInput = (EditText) chatLayout.findViewById(R.id.chatInput);
 		// Hide the soft-keyboard when the activity is created
-        chatInput.setInputType(InputType.TYPE_NULL);
-        chatInput.setOnTouchListener(new View.OnTouchListener() {
+		chatInput.setInputType(InputType.TYPE_NULL);
+		chatInput.setOnTouchListener(new View.OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				chatInput.setInputType(InputType.TYPE_CLASS_TEXT);
 				chatInput.onTouchEvent(event);
 				return true;
 			}
 		});
-        chatInput.setOnKeyListener(new OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-            	// and the socket is connected
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER) &&
-                    netServ != null && netServ.socket != null &&
-                    netServ.socket.isConnected()) {
-                  // Perform action on key press
-                	Baos b = new Baos();
-                	b.write(1); //channel message
-                	b.write(0); //no html
-                	b.putInt(currentChannel().id);
-                	b.putString(chatInput.getText().toString());
-                	netServ.socket.sendMessage(b, Command.SendMessage);
-                	chatInput.getText().clear();
-                  return true;
-                }
-                return false;
-            }
-        });
+		chatInput.setOnKeyListener(new OnKeyListener() {
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				// If the event is a key-down event on the "enter" button
+				// and the socket is connected
+				if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+						(keyCode == KeyEvent.KEYCODE_ENTER) &&
+						netServ != null && netServ.socket != null &&
+						netServ.socket.isConnected()) {
+					// Perform action on key press
+					Baos b = new Baos();
+					b.write(1); //channel message
+					b.write(0); //no html
+					b.putInt(currentChannel().id);
+					b.putString(chatInput.getText().toString());
+					netServ.socket.sendMessage(b, Command.SendMessage);
+					chatInput.getText().clear();
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 
 	@Override
@@ -354,30 +360,30 @@ public class ChatActivity extends Activity {
 			if (netServ.joinedChannels.peek() != null && !netServ.joinedChannels.isEmpty()) {
 				populateUI(false);
 				if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-                }
+					progressDialog.dismiss();
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+				}
 				loading = false;
 			}
 			checkAskForServerPass();
-	        checkChallenges();
-	        checkAskForPass();
-	        checkFailedConnection();
-            final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-            executor.schedule(new Runnable() {
-                @Override
-                public void run() {
-                       netServ.loadJoinedChannelSettings();
-                }
-            }, 5, TimeUnit.SECONDS);
-        }
-		
+			checkChallenges();
+			checkAskForPass();
+			checkFailedConnection();
+			final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+			executor.schedule(new Runnable() {
+				@Override
+				public void run() {
+					netServ.loadJoinedChannelSettings();
+				}
+			}, 5, TimeUnit.SECONDS);
+		}
+
 		public void onServiceDisconnected(ComponentName className) {
 			netServ.chatActivity = null;
 			netServ = null;
 		}
 	};
-	
+
 	public void updateTitle() {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -386,11 +392,11 @@ public class ChatActivity extends Activity {
 		});
 	}
 
-    public void networkDismissDialog() {
-        progressDialog.dismiss();
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-    }
-	
+	public void networkDismissDialog() {
+		progressDialog.dismiss();
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+	}
+
 	/**
 	 * Gives the current channel
 	 * @return the current channel as a {@link Channel} object
@@ -399,7 +405,7 @@ public class ChatActivity extends Activity {
 		/* Maybe later instead of this hack, use onSavedInstanceState properly ? */
 		return netServ.joinedChannels.peek();
 	}
-	
+
 	public void populateUI(boolean clear) {
 		Channel currentChannel = this.currentChannel();
 		if (currentChannel != null) {
@@ -438,7 +444,7 @@ public class ChatActivity extends Activity {
 			});
 		}
 	}
-	
+
 	public synchronized void updateChat() {
 		if (messageAdapter == null)
 			return;
@@ -475,13 +481,13 @@ public class ChatActivity extends Activity {
 						}
 					}
 				});
-				
-	            synchronized(this) {
-	                this.notify();
-	            }
+
+				synchronized(this) {
+					this.notify();
+				}
 			}
 		};
-		
+
 		synchronized(update) {
 			runOnUiThread(update);
 			try {
@@ -500,11 +506,11 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-	
+
 	public void notifyChallenge() {
 		runOnUiThread(new Runnable() { public void run() { checkChallenges(); } } );
 	}
-	
+
 	private void checkChallenges() {
 		if (netServ != null) {
 			IncomingChallenge challenge = netServ.challenges.peek();
@@ -532,11 +538,11 @@ public class ChatActivity extends Activity {
 		if (netServ != null && netServ.askedForPass)
 			showDialog(ChatDialog.AskForPass.ordinal());
 	}
-	
+
 	public void notifyFailedConnection() {
 		disconnect();
 	}
-	
+
 	private void checkFailedConnection() {
 		if(netServ != null && netServ.failedConnect) {
 			disconnect();
@@ -545,144 +551,144 @@ public class ChatActivity extends Activity {
 
 	String challengedTier = "";
 	boolean registering = false;
-	
+
 	@Override
 	protected Dialog onCreateDialog(final int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
 		switch (ChatDialog.values()[id]) {
-		case Challenge: {
-			if (netServ == null) {
-				return null;
-			}
-			final IncomingChallenge challenge = netServ.challenges.poll();
-			View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
-			PlayerInfo opp = netServ.players.get(challenge.opponent);
+			case Challenge: {
+				if (netServ == null) {
+					return null;
+				}
+				final IncomingChallenge challenge = netServ.challenges.poll();
+				View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
+				PlayerInfo opp = netServ.players.get(challenge.opponent);
 			
 			/* Like when activity resumed after a long time */
-			if (opp == null) {
-				return null;
-			}
-
-			TextView oppInfo, oppName, challInfo;
-			builder.setView(challengedLayout)
-			.setCancelable(false)
-			.setNegativeButton(this.getString(R.string.decline), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// Decline challenge
-					if (netServ.socket.isConnected())
-						netServ.socket.sendMessage(
-								constructChallenge(ChallengeDesc.Refused.ordinal(),
-										challenge.opponent,
-										0,
-										challenge.srcTier,
-										challenge.destTier,
-										challenge.clauses,
-										challenge.mode),
-										Command.ChallengeStuff);
-					removeDialog(id);
-					checkChallenges();
+				if (opp == null) {
+					return null;
 				}
-			})
-			.setPositiveButton(this.getString(R.string.accept), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					// Accept challenge
-					if (netServ.socket.isConnected())
-						netServ.socket.sendMessage(
-								constructChallenge(ChallengeDesc.Accepted.ordinal(),
-										challenge.opponent,
-										0,
-										challenge.srcTier,
-										challenge.destTier,
-										challenge.clauses,
-										challenge.mode),
-								Command.ChallengeStuff);
-					// Without removeDialog() the dialog is reused and can only
-					// be modified in onPrepareDialog(). This dialog changes
-					// so much that I doubt it's worth the code to deal with
-					// onPrepareDialog() but we should use it if we have complex
-					// dialogs that only need to change a little
-					removeDialog(id);
-					checkChallenges();
+
+				TextView oppInfo, oppName, challInfo;
+				builder.setView(challengedLayout)
+						.setCancelable(false)
+						.setNegativeButton(this.getString(R.string.decline), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								// Decline challenge
+								if (netServ.socket.isConnected())
+									netServ.socket.sendMessage(
+											constructChallenge(ChallengeDesc.Refused.ordinal(),
+													challenge.opponent,
+													0,
+													challenge.srcTier,
+													challenge.destTier,
+													challenge.clauses,
+													challenge.mode),
+											Command.ChallengeStuff);
+								removeDialog(id);
+								checkChallenges();
+							}
+						})
+						.setPositiveButton(this.getString(R.string.accept), new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								// Accept challenge
+								if (netServ.socket.isConnected())
+									netServ.socket.sendMessage(
+											constructChallenge(ChallengeDesc.Accepted.ordinal(),
+													challenge.opponent,
+													0,
+													challenge.srcTier,
+													challenge.destTier,
+													challenge.clauses,
+													challenge.mode),
+											Command.ChallengeStuff);
+								// Without removeDialog() the dialog is reused and can only
+								// be modified in onPrepareDialog(). This dialog changes
+								// so much that I doubt it's worth the code to deal with
+								// onPrepareDialog() but we should use it if we have complex
+								// dialogs that only need to change a little
+								removeDialog(id);
+								checkChallenges();
+							}
+						});
+				final AlertDialog oppInfoDialog = builder.create();
+
+				oppInfo = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info", "id", packName));
+				oppInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(opp.info())));
+
+				challInfo = (TextView) challengedLayout.findViewById(R.id.chall_info);
+				challInfo.setText(Html.fromHtml(
+						"<b>Their Tier: </b>" + challenge.srcTier + "<br />" +
+								"<b>Your Tier: </b>" + challenge.destTier + "<br />" +
+								"<b>Clauses: </b> " + ChallengeEnums.clausesToStringHtml(challenge.clauses)));
+				challInfo.setGravity(Gravity.CENTER_HORIZONTAL);
+
+				oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
+				oppName.setText(this.getString(R.string.accept_challenge) + " " + opp.nick() + "?");
+				oppName.setTextSize(18);
+				//oppTier = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_tier", "id", packName));
+				//oppTier.setText(Html.fromHtml("<b>Tier: </b>" + NetworkService.escapeHtml(opp.tier)));
+				//oppRating = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_rating", "id", packName));
+				//oppRating.setText(Html.fromHtml("<b>Rating: </b>" + NetworkService.escapeHtml(new Short(opp.rating).toString())));
+
+				return oppInfoDialog;
+			} case AskForPass: {
+				//View layout = inflater.inflate(R.layout.ask_for_pass, null);
+				final EditText passField = new EditText(this);
+				passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
+				int currentOrientation = getResources().getConfiguration().orientation;
+				if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 				}
-			});
-			final AlertDialog oppInfoDialog = builder.create();
-
-			oppInfo = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info", "id", packName));
-			oppInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(opp.info())));
-
-			challInfo = (TextView) challengedLayout.findViewById(R.id.chall_info);
-			challInfo.setText(Html.fromHtml(
-					"<b>Their Tier: </b>" + challenge.srcTier + "<br />" +
-							"<b>Your Tier: </b>" + challenge.destTier + "<br />" +
-							"<b>Clauses: </b> " + ChallengeEnums.clausesToStringHtml(challenge.clauses)));
-			challInfo.setGravity(Gravity.CENTER_HORIZONTAL);
-
-			oppName = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_name", "id", packName));
-			oppName.setText(this.getString(R.string.accept_challenge) + " " + opp.nick() + "?");
-			oppName.setTextSize(18);
-			//oppTier = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_tier", "id", packName));
-			//oppTier.setText(Html.fromHtml("<b>Tier: </b>" + NetworkService.escapeHtml(opp.tier)));
-			//oppRating = (TextView)challengedLayout.findViewById(getResources().getIdentifier("player_info_rating", "id", packName));
-			//oppRating.setText(Html.fromHtml("<b>Rating: </b>" + NetworkService.escapeHtml(new Short(opp.rating).toString())));    
-
-			return oppInfoDialog;
-		} case AskForPass: {
-        	//View layout = inflater.inflate(R.layout.ask_for_pass, null);
-        	final EditText passField = new EditText(this);
-        	passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        	//passField.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            int currentOrientation = getResources().getConfiguration().orientation;
-            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-            else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-            }
-			builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
-					.setCancelable(true)
-					.setView(passField)
-					.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							if (netServ != null) {
-								netServ.sendPass(passField.getText().toString(), true);
-								registering = false;
-								netServ.registered = true;
-								if (isChangingNames) {
-									isChangingNames = false;
-									Toast.makeText(ChatActivity.this, "Switched names to " + newNickname + ".", Toast.LENGTH_SHORT).show();
-									newNickname = null;
+				else {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+				}
+				builder.setMessage("Please enter your password " + (isChangingNames ? newNickname : netServ.me.nick()) + ".")
+						.setCancelable(true)
+						.setView(passField)
+						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								if (netServ != null) {
+									netServ.sendPass(passField.getText().toString(), true);
+									registering = false;
+									netServ.registered = true;
+									if (isChangingNames) {
+										isChangingNames = false;
+										Toast.makeText(ChatActivity.this, "Switched names to " + newNickname + ".", Toast.LENGTH_SHORT).show();
+										newNickname = null;
+									}
 								}
+								removeDialog(id);
+								if (!loading)
+									setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
 							}
-							removeDialog(id);
-                            if (!loading)
-                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+								if (!registering) {
+									disconnect();
+								}
+								if (!loading)
+									setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+							}
+						});
+				if (netServ != null) {
+					String defaultPass = netServ.getDefaultPass();
+					passField.setText(defaultPass);
+				}
+				final AlertDialog dialog = builder.create();
+				passField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					public void onFocusChange(View v, boolean hasFocus) {
+						if (hasFocus) {
+							dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 						}
-					})
-					.setOnCancelListener(new OnCancelListener() {
-						public void onCancel(DialogInterface dialog) {
-							removeDialog(id);
-							if (!registering) {
-								disconnect();
-							}
-                            if (!loading)
-                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-				}
-			});
-			if (netServ != null) {
-				String defaultPass = netServ.getDefaultPass();
-				passField.setText(defaultPass);
-			}
-			final AlertDialog dialog = builder.create();
-        	passField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-				public void onFocusChange(View v, boolean hasFocus) {
-					if (hasFocus) {
-						dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 					}
-				}
-			});
-			return dialog;
-		} case AskForServerPass: {
+				});
+				return dialog;
+			} case AskForServerPass: {
 				//View layout = inflater.inflate(R.layout.ask_for_pass, null);
 				final EditText passField = new EditText(this);
 				passField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -749,29 +755,29 @@ public class ChatActivity extends Activity {
 					}
 				});
 				return dialog;
-		} case ConfirmDisconnect: {
-			builder.setMessage("Really disconnect?")
-					.setCancelable(true)
-			.setPositiveButton("Disconnect", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-                    netServ.updateJoinedChannelSettings();
-					disconnect();
-				}
-			})
-			.setNegativeButton("Cancel", null);
-			return builder.create();
-		} case FindBattle: {
-			final EditText range = new EditText(this);
-			range.append("" + prefs.getInt("range", 200));
-			range.setInputType(InputType.TYPE_CLASS_NUMBER);
-			range.setHint("Range");
+			} case ConfirmDisconnect: {
+				builder.setMessage("Really disconnect?")
+						.setCancelable(true)
+						.setPositiveButton("Disconnect", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								netServ.updateJoinedChannelSettings();
+								disconnect();
+							}
+						})
+						.setNegativeButton("Cancel", null);
+				return builder.create();
+			} case FindBattle: {
+				final EditText range = new EditText(this);
+				range.append("" + prefs.getInt("range", 200));
+				range.setInputType(InputType.TYPE_CLASS_NUMBER);
+				range.setHint("Range");
 				builder.setTitle(R.string.find_a_battle)
 						.setMultiChoiceItems(new CharSequence[]{getString(R.string.force_rated), getString(R.string.force_same_tier), getString(R.string.only_within_range)}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
 							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
 							}
 						})
-			.setView(range)
+						.setView(range)
 						.setPositiveButton("Find", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								if (netServ != null && netServ.socket.isConnected()) {
@@ -783,190 +789,232 @@ public class ChatActivity extends Activity {
 									}
 									netServ.socket.sendMessage(
 											constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
-					}
+								}
+							}
+						});
+				return builder.create();
+			} case TierSelection: {
+				if (netServ == null) {
+					return null;
 				}
-			});
-			return builder.create();
-		} case TierSelection: {
-			if (netServ == null) {
-				return null;
-			}
-			return new TierAlertDialog(this, netServ.superTier);
-		} case PlayerInfo: {
-			View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
-            // ImageView[] pPokeIcons = new ImageView[6];
-            TextView pInfo, pName;
-            ListView ratings;
-			builder.setView(layout)
-            .setNegativeButton("Back", new DialogInterface.OnClickListener(){
-            	public void onClick(DialogInterface dialog, int which) {
-            		removeDialog(id);
-            	}
-            })
-            .setOnCancelListener(new DialogInterface.OnCancelListener(){
-            	public void onCancel(DialogInterface dialog) {
-            		removeDialog(id);
-            	}
-            })
-            .setPositiveButton("Challenge", new DialogInterface.OnClickListener(){
-            	public void onClick(DialogInterface dialog, int which) {
-        			showDialog(ChatDialog.ChooseTierMode.ordinal());
-            		removeDialog(id);
-            	}});
-            final AlertDialog pInfoDialog = builder.create();
-            
+				return new TierAlertDialog(this, netServ.superTier);
+			} case PlayerInfo: {
+				View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
+				// ImageView[] pPokeIcons = new ImageView[6];
+				TextView pInfo, pName;
+				ListView ratings;
+				builder.setView(layout)
+						.setNegativeButton("Back", new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which) {
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new DialogInterface.OnCancelListener(){
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						})
+						.setPositiveButton("Challenge", new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which) {
+								showDialog(ChatDialog.ChooseTierMode.ordinal());
+								removeDialog(id);
+							}});
+				final AlertDialog pInfoDialog = builder.create();
 
-            // for(int i = 0; i < 6; i++){
-        	// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
-        	//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
-            // }
-        	pInfo = (TextView)layout.findViewById(R.id.player_info);
-        	pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
-        	pName = (TextView)layout.findViewById(R.id.player_info_name);
-        	pName.setText(lastClickedPlayer.nick());
-        	ratings = (ListView)layout.findViewById(R.id.player_info_tiers);
-        	ratings.setAdapter(new TwoViewsArrayAdapter<TierStanding>(this, android.R.layout.simple_list_item_2, 
-        			android.R.id.text1, android.R.id.text2, lastClickedPlayer.tierStandings, PlayerInfo.tierGetter));
-            return pInfoDialog;
-		} case ChooseTierMode: {
-			@SuppressWarnings("unchecked")
-			final ArrayList<PlayerInfo.TierStanding> standings = (ArrayList<PlayerInfo.TierStanding>)lastClickedPlayer.tierStandings.clone();
+
+				// for(int i = 0; i < 6; i++){
+				// pPokeIcons[i] = (ImageView)layout.findViewById(getResources().getIdentifier("player_info_poke" + (i+1), "id", packName));
+				//pPokeIcons[i].setImageDrawable(getIcon(lastClickedPlayer.pokes[i]));
+				// }
+				pInfo = (TextView)layout.findViewById(R.id.player_info);
+				pInfo.setText(Html.fromHtml("<b>Info: </b>" + StringUtilities.escapeHtml(lastClickedPlayer.info())));
+				pName = (TextView)layout.findViewById(R.id.player_info_name);
+				pName.setText(lastClickedPlayer.nick());
+				ratings = (ListView)layout.findViewById(R.id.player_info_tiers);
+				ratings.setAdapter(new TwoViewsArrayAdapter<TierStanding>(this, android.R.layout.simple_list_item_2,
+						android.R.id.text1, android.R.id.text2, lastClickedPlayer.tierStandings, PlayerInfo.tierGetter));
+				return pInfoDialog;
+			} case ChooseTierMode: {
+				@SuppressWarnings("unchecked")
+				final ArrayList<PlayerInfo.TierStanding> standings = (ArrayList<PlayerInfo.TierStanding>)lastClickedPlayer.tierStandings.clone();
 			
 			/* If the opponent only has one team, no point in choosing which tier to challenge in */
-			if (standings.size() == 1) {
-				challengedTier = standings.get(0).tier;
-				showDialog(ChatDialog.ChallengeMode.ordinal());
-				return null;
-			}
-			
-			final String[] tiers = new String[standings.size()];
-			int checkedItem = -1;
-			for (int i = 0; i < standings.size(); i++) {
-				tiers[i] = standings.get(i).tier + " (" + standings.get(i).rating + ")";
-				
-				if (standings.get(i).tier == netServ.me.tierStandings.get(0).tier) {
-					checkedItem = i;
-				}
-			}
-			builder.setSingleChoiceItems(tiers, checkedItem, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			}).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					which = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-					if (which == -1) {
-						which = 0;
-					}
-					challengedTier = standings.get(which).tier; 
+				if (standings.size() == 1) {
+					challengedTier = standings.get(0).tier;
 					showDialog(ChatDialog.ChallengeMode.ordinal());
-					removeDialog(id);
+					return null;
 				}
-			})
-            .setNegativeButton("Back", new DialogInterface.OnClickListener(){
-            	public void onClick(DialogInterface dialog, int which) {
-            		removeDialog(id);
-            	}
-            })
-            .setOnCancelListener(new DialogInterface.OnCancelListener(){
-            	public void onCancel(DialogInterface dialog) {
-            		removeDialog(id);
-            	}
-            })
-            .setTitle("Select tier");
-			return builder.create();
-		} case ChallengeMode: {
-            final Clauses[] clauses = Clauses.values();
-            final int numClauses = clauses.length;
-			final String[] clauseNames = new String[numClauses];
-			final boolean[] checked = new boolean[numClauses];
-			for (int i=0; i < numClauses; i++) {
-				clauseNames[i] = clauses[i].toString();
-				checked[i] = prefs.getBoolean("challengeOption" + i, false);
-			}
-            builder.setMultiChoiceItems(clauseNames, checked, new DialogInterface.OnMultiChoiceClickListener() {
-				public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-					prefs.edit().putBoolean("challengeOption" + which, isChecked).commit();
-				}
-			})
-			.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					int clauses = 0;
-					for (int i = 0; i < numClauses; i++)
-						clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
-					if (netServ != null && netServ.socket != null && netServ.socket.isConnected()) {
-						ArrayList<TierStanding> standings = netServ.me.tierStandings;
-						netServ.socket.sendMessage(constructChallenge(ChallengeDesc.Sent.ordinal(), 
-								lastClickedPlayer.id, 
-								0, 
-								standings.get(0).tier, 
-								challengedTier,
-								clauses, 
-								Mode.Singles.ordinal()), Command.ChallengeStuff);
+
+				final String[] tiers = new String[standings.size()];
+				int checkedItem = -1;
+				for (int i = 0; i < standings.size(); i++) {
+					tiers[i] = standings.get(i).tier + " (" + standings.get(i).rating + ")";
+
+					if (standings.get(i).tier == netServ.me.tierStandings.get(0).tier) {
+						checkedItem = i;
 					}
-					removeDialog(id);
 				}
-			})
-            .setNegativeButton("Back", new DialogInterface.OnClickListener(){
-            	public void onClick(DialogInterface dialog, int which) {
-            		removeDialog(id);
-            	}
-            })
-            .setOnCancelListener(new DialogInterface.OnCancelListener(){
-            	public void onCancel(DialogInterface dialog) {
-            		removeDialog(id);
-            	}
-            })
-            .setTitle("Select clauses");
-            return builder.create();
-		} default: {
-			return new Dialog(this);
-		}
+				builder.setSingleChoiceItems(tiers, checkedItem, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						which = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+						if (which == -1) {
+							which = 0;
+						}
+						challengedTier = standings.get(which).tier;
+						showDialog(ChatDialog.ChallengeMode.ordinal());
+						removeDialog(id);
+					}
+				})
+						.setNegativeButton("Back", new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which) {
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new DialogInterface.OnCancelListener(){
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						})
+						.setTitle("Select tier");
+				return builder.create();
+			} case ChallengeMode: {
+				final Clauses[] clauses = Clauses.values();
+				final int numClauses = clauses.length;
+				final String[] clauseNames = new String[numClauses];
+				final boolean[] checked = new boolean[numClauses];
+				for (int i=0; i < numClauses; i++) {
+					clauseNames[i] = clauses[i].toString();
+					checked[i] = prefs.getBoolean("challengeOption" + i, false);
+				}
+				builder.setMultiChoiceItems(clauseNames, checked, new DialogInterface.OnMultiChoiceClickListener() {
+					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+						prefs.edit().putBoolean("challengeOption" + which, isChecked).commit();
+					}
+				})
+						.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								int clauses = 0;
+								for (int i = 0; i < numClauses; i++)
+									clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
+								if (netServ != null && netServ.socket != null && netServ.socket.isConnected()) {
+									ArrayList<TierStanding> standings = netServ.me.tierStandings;
+									netServ.socket.sendMessage(constructChallenge(ChallengeDesc.Sent.ordinal(),
+											lastClickedPlayer.id,
+											0,
+											standings.get(0).tier,
+											challengedTier,
+											clauses,
+											Mode.Singles.ordinal()), Command.ChallengeStuff);
+								}
+								removeDialog(id);
+							}
+						})
+						.setNegativeButton("Back", new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which) {
+								removeDialog(id);
+							}
+						})
+						.setOnCancelListener(new DialogInterface.OnCancelListener(){
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						})
+						.setTitle("Select clauses");
+				return builder.create();
+			}case LoadTeam:{
+				//View layout = inflater.inflate();
+			}case ControlPanel: {
+				View layout = inflater.inflate(R.layout.control_panel_layout, (LinearLayout) findViewById(R.id.control_panel_layout));
+				final EditText searchEdit = (EditText) layout.findViewById(R.id.search_edit);
+
+				final TextView status = (TextView) layout.findViewById(R.id.status_text);
+				final TextView auth = (TextView) layout.findViewById(R.id.auth_text);
+				final TextView ip = (TextView) layout.findViewById(R.id.ip_text);
+				final TextView seen = (TextView) layout.findViewById(R.id.last_seen_text);
+				final ListView aliases = (ListView) layout.findViewById(R.id.alias_list);
+
+				final ArrayAdapter<String> aliasesAdapter = new ArrayAdapter<String>(this, R.layout.alias_item, R.id.alias_text);
+				aliases.setAdapter(aliasesAdapter);
+
+				activeControlPanel = new ControlPanelGroup(searchEdit, status, auth, ip, seen, aliases, aliasesAdapter);
+
+				searchEdit.setText(controlUser);
+
+				final Button search = (Button) layout.findViewById(R.id.search_button);
+
+				search.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						netServ.requestUserInfo(searchEdit.getText().toString());
+					}
+				});
+
+				if (!controlUser.equals("")) {
+					netServ.requestUserInfo(searchEdit.getText().toString());
+				}
+
+				builder.setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeDialog(id);
+					}
+				});
+
+				builder.setView(layout);
+				return builder.create();
+			}
+			default: {
+				return new Dialog(this);
+			}
 		}
 	}
-	
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.chatoptions, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-    	MenuItem findbattle = menu.findItem(R.id.findbattle);
-    	if (netServ != null && netServ.findingBattle) {
-    		findbattle.setTitle("Cancel Find Battle");
-    	} 
-    	else {
-    		findbattle.setTitle(R.string.find_a_battle);
-    	}
-    	
-    	if (netServ != null && netServ.me != null) {
-    		menu.findItem(R.id.idle).setChecked(netServ.me.isAway);    		
-    	} else {
-    		menu.findItem(R.id.idle).setChecked(getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false));
-    	}
-    	
-    	if (netServ != null) {
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem findbattle = menu.findItem(R.id.findbattle);
+		if (netServ != null && netServ.findingBattle) {
+			findbattle.setTitle("Cancel Find Battle");
+		}
+		else {
+			findbattle.setTitle(R.string.find_a_battle);
+		}
+
+		if (netServ != null && netServ.me != null) {
+			menu.findItem(R.id.idle).setChecked(netServ.me.isAway);
+		} else {
+			menu.findItem(R.id.idle).setChecked(getSharedPreferences("clientOptions", MODE_PRIVATE).getBoolean("idle", false));
+		}
+
+		if (netServ != null) {
 			if (netServ.registered) {
 				menu.findItem(R.id.register).setVisible(false);
 			} else {
 				menu.findItem(R.id.register).setVisible(true);
 			}
 			if (netServ.me.auth > 0) {
-				menu.findItem(R.id.controlpanel).setVisible(false);
-			} else {
 				menu.findItem(R.id.controlpanel).setVisible(true);
+			} else {
+				menu.findItem(R.id.controlpanel).setVisible(false);
 			}
-    	}
-    	
-    	return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 			case R.id.chat_disconnect:
 				showDialog(ChatDialog.ConfirmDisconnect.ordinal());
 				break;
@@ -1035,12 +1083,16 @@ public class ChatActivity extends Activity {
 			case R.id.loadteam:
 				showDialog(ChatDialog.LoadTeam.ordinal());
 				break;
-			}
+			case R.id.controlpanel:
+				controlUser = "";
+				showDialog(ChatDialog.ControlPanel.ordinal());
+				break;
+		}
 		return true;
 	}
 
-    private void dealWithFindBattle() {
-    	if (netServ.socket.isConnected()) {
+	private void dealWithFindBattle() {
+		if (netServ.socket.isConnected()) {
 			if (netServ.findingBattle) {
 				netServ.findingBattle = false;
 				netServ.socket.sendMessage(
@@ -1055,173 +1107,183 @@ public class ChatActivity extends Activity {
 	}
 
 	public void makeToast(final String s, final String length) {
-    	if (length == "long") {
-    	runOnUiThread(new Runnable() {
-    		public void run() {
-    			Toast.makeText(ChatActivity.this, s, Toast.LENGTH_LONG).show();
-    		}
-    	});
-    	}
-    	else if(length == "short") {
-        	runOnUiThread(new Runnable() {
-        		public void run() {
-        			Toast.makeText(ChatActivity.this, s, Toast.LENGTH_SHORT).show();
-        		}
-        	});
-    	}
-    }
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-    	AdapterView.AdapterContextMenuInfo aMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-    	switch(v.getId()){
-    	case R.id.playerlisting:
-    		lastClickedPlayer = playerAdapter.getItem(aMenuInfo.position);
-    		String pName = lastClickedPlayer.nick();
-    		menu.setHeaderTitle(pName);
-    		menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, getString(R.string.challenge) + " " + pName);
-    		menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, getString(R.string.view_player_info));
-    		if (netServ != null) {
-    			if (netServ.myid != lastClickedPlayer.id) {
-	    			menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, getString(R.string.pm));
-	    		}
-    			for (Integer battleid : lastClickedPlayer.battles) {
-	    			menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, getString(R.string.watch_battle) + " " +
-							netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
-							.setIntent(new Intent().putExtra("battle", battleid));
-	    		}
-    		}
-			menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, getString(R.string.ignorePlayer));
-			menu.findItem(ChatContext.IgnorePlayer.ordinal()).setCheckable(true);
-			if (netServ.ignoreList.contains(lastClickedPlayer.id)) {
-				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(true);
-			} else {
-				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(false);
-			}
-    		break;
-    	case R.id.channellisting:
-            String cName = "Default";
-            try {
-                lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
-                cName = lastClickedChannel.name;
-            } catch (IndexOutOfBoundsException e) {
-                cName = "Error: " + aMenuInfo.position + " " + channelAdapter.getCount();
-                lastClickedChannel = netServ.joinedChannels.getFirst();
-            }
-    		menu.setHeaderTitle(cName);
-    		if (netServ.joinedChannels.contains(lastClickedChannel)) {
-				menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
-				menu.add(Menu.NONE, ChatContext.ChannelEvent.ordinal(), 0, "Channel Event").setCheckable(true);
-				if (lastClickedChannel.channelEvents) {
-					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(true);
-				} else {
-					menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(false);
+		if (length == "long") {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(ChatActivity.this, s, Toast.LENGTH_LONG).show();
 				}
-			}
-    		else
-        		menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
+			});
+		}
+		else if(length == "short") {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(ChatActivity.this, s, Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+	}
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		AdapterView.AdapterContextMenuInfo aMenuInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		switch(v.getId()){
+			case R.id.playerlisting:
+				lastClickedPlayer = playerAdapter.getItem(aMenuInfo.position);
+				String pName = lastClickedPlayer.nick();
+				menu.setHeaderTitle(pName);
+				menu.add(Menu.NONE, ChatContext.ChallengePlayer.ordinal(), 0, getString(R.string.challenge) + " " + pName);
+				menu.add(Menu.NONE, ChatContext.ViewPlayerInfo.ordinal(), 0, getString(R.string.view_player_info));
+				menu.add(Menu.NONE, ChatContext.ViewRanking.ordinal(), 0, "View Ranking");
+				if (netServ != null) {
+					if (netServ.myid != lastClickedPlayer.id) {
+						menu.add(Menu.NONE, ChatContext.PrivateMessage.ordinal(), 0, getString(R.string.pm));
+					}
+					for (Integer battleid : lastClickedPlayer.battles) {
+						menu.add(Menu.NONE, ChatContext.WatchBattle.ordinal(), 0, getString(R.string.watch_battle) + " " +
+								netServ.playerName(netServ.battle(battleid).opponent(lastClickedPlayer.id)))
+								.setIntent(new Intent().putExtra("battle", battleid));
+					}
+					if (netServ.me.auth > 0) {
+						menu.add(Menu.NONE, ChatContext.ControlPanel.ordinal(), 0, "Control Panel");
+					}
+				}
+				menu.add(Menu.NONE, ChatContext.IgnorePlayer.ordinal(), 0, getString(R.string.ignorePlayer));
+				menu.findItem(ChatContext.IgnorePlayer.ordinal()).setCheckable(true);
+				if (netServ.ignoreList.contains(lastClickedPlayer.id)) {
+					menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(true);
+				} else {
+					menu.findItem(ChatContext.IgnorePlayer.ordinal()).setChecked(false);
+				}
 
-    		break;
-    	}
-    }
-      
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-    	switch(ChatContext.values()[item.getItemId()]){
-		case IgnorePlayer:
-			Integer id = lastClickedPlayer.id;
-			if (netServ.ignoreList.contains(id)) {
-				netServ.ignoreList.remove(netServ.ignoreList.indexOf(id));
-				Toast.makeText(ChatActivity.this, "Unignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
-			} else {
-				netServ.ignoreList.add(id);
-				Toast.makeText(ChatActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
-			}
-			break;
-    	case ChallengePlayer:
-    		showDialog(ChatDialog.ChooseTierMode.ordinal());
-    		break;
-    	case ViewPlayerInfo:
-    		showDialog(ChatDialog.PlayerInfo.ordinal());
-    		break;
-    	case WatchBattle:
-    		int battleid = item.getIntent().getIntExtra("battle", 0);
-    		if (battleid != 0) {
-    			Baos watch = new Baos();
-    			watch.putInt(battleid);
-    			watch.putBool(true); // watch, not leaving
-    			netServ.socket.sendMessage(watch, Command.SpectateBattle);
-    		}
-    		break;
-    	case JoinChannel:
-    		Baos join = new Baos();
-    		join.putString(lastClickedChannel.name);
-    		if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
-    			netServ.socket.sendMessage(join, Command.JoinChannel);
-    		break;
-    	case LeaveChannel:
-            try {
-                Baos leave = new Baos();
-                leave.putInt(lastClickedChannel.id);
-                if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
-                    netServ.socket.sendMessage(leave, Command.LeaveChannel);
-                break;
-            } catch (Exception e) {
-                //blah blah blah
-            }
-    	case PrivateMessage:
-    		if (netServ == null) {
-    			Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
-    		} else {
-    			netServ.createPM(lastClickedPlayer.id);
-    			
-    			Intent intent = new Intent(this, PrivateMessageActivity.class);
-    			intent.putExtra("playerId", lastClickedPlayer.id);
-    			startActivity(intent);
-    		}
-    		break;
-		case ChannelEvent:
-			if (lastClickedChannel.channelEvents) {
-				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = false;
-			} else {
-				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = true;
-			}
-    	}
-    	return true;
-    }
+				break;
+			case R.id.channellisting:
+				String cName = "Default";
+				try {
+					lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
+					cName = lastClickedChannel.name;
+				} catch (IndexOutOfBoundsException e) {
+					cName = "Error: " + aMenuInfo.position + " " + channelAdapter.getCount();
+					lastClickedChannel = netServ.joinedChannels.getFirst();
+				}
+				menu.setHeaderTitle(cName);
+				if (netServ.joinedChannels.contains(lastClickedChannel)) {
+					menu.add(Menu.NONE, ChatContext.LeaveChannel.ordinal(), 0, "Leave " + cName);
+					menu.add(Menu.NONE, ChatContext.ChannelEvent.ordinal(), 0, "Channel Event").setCheckable(true);
+					if (lastClickedChannel.channelEvents) {
+						menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(true);
+					} else {
+						menu.findItem(ChatContext.ChannelEvent.ordinal()).setChecked(false);
+					}
+				}
+				else
+					menu.add(Menu.NONE, ChatContext.JoinChannel.ordinal(), 0, "Join " + cName);
 
-    private void disconnect() {
+				break;
+		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch(ChatContext.values()[item.getItemId()]){
+			case IgnorePlayer:
+				Integer id = lastClickedPlayer.id;
+				if (netServ.ignoreList.contains(id)) {
+					netServ.ignoreList.remove(netServ.ignoreList.indexOf(id));
+					Toast.makeText(ChatActivity.this, "Unignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
+				} else {
+					netServ.ignoreList.add(id);
+					Toast.makeText(ChatActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
+				}
+				break;
+			case ChallengePlayer:
+				showDialog(ChatDialog.ChooseTierMode.ordinal());
+				break;
+			case ViewPlayerInfo:
+				showDialog(ChatDialog.PlayerInfo.ordinal());
+				break;
+			case WatchBattle:
+				int battleid = item.getIntent().getIntExtra("battle", 0);
+				if (battleid != 0) {
+					Baos watch = new Baos();
+					watch.putInt(battleid);
+					watch.putBool(true); // watch, not leaving
+					netServ.socket.sendMessage(watch, Command.SpectateBattle);
+				}
+				break;
+			case JoinChannel:
+				Baos join = new Baos();
+				join.putString(lastClickedChannel.name);
+				if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
+					netServ.socket.sendMessage(join, Command.JoinChannel);
+				break;
+			case LeaveChannel:
+				try {
+					Baos leave = new Baos();
+					leave.putInt(lastClickedChannel.id);
+					if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
+						netServ.socket.sendMessage(leave, Command.LeaveChannel);
+					break;
+				} catch (Exception e) {
+					//blah blah blah
+				}
+			case PrivateMessage:
+				if (netServ == null) {
+					Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
+				} else {
+					netServ.createPM(lastClickedPlayer.id);
+
+					Intent intent = new Intent(this, PrivateMessageActivity.class);
+					intent.putExtra("playerId", lastClickedPlayer.id);
+					startActivity(intent);
+				}
+				break;
+			case ChannelEvent:
+				if (lastClickedChannel.channelEvents) {
+					channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = false;
+				} else {
+					channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = true;
+				}
+				break;
+			case ControlPanel:
+				controlUser = lastClickedPlayer.nick();
+				showDialog(ChatDialog.ControlPanel.ordinal());
+				break;
+		}
+		return true;
+	}
+
+	private void disconnect() {
 		if (netServ != null) {
 			netServ.disconnect();
 		}
 		if (progressDialog != null) {
-            networkDismissDialog();
+			networkDismissDialog();
 		}
-		
+
 		Intent intent = new Intent(this, RegistryActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra("sticky", true);
-		
+
 		if(netServ == null || netServ.socket == null)
 			intent.putExtra("failedConnect", true);
 		ChatActivity.this.finish();
 		startActivity(intent);
-    }
-    
-    private Baos constructChallenge(int desc, int opp, int team, String srcTier, String destTier, int clauses, int mode) {
-    	Baos challenge = new Baos();
-    	challenge.write(desc);
-    	challenge.putInt(opp);
-    	challenge.putInt(clauses);
-    	challenge.write(mode);
-    	challenge.write(team);
-    	challenge.putBaos(netServ.meLoginPlayer.team.gen);
-    	challenge.putString(srcTier);
-    	challenge.putString(destTier);
-    	return challenge;
-    }
-    
-    private Baos constructFindBattle(boolean forceRated, boolean forceSameTier,
-    		boolean onlyInRange, int range) {
+	}
+
+	private Baos constructChallenge(int desc, int opp, int team, String srcTier, String destTier, int clauses, int mode) {
+		Baos challenge = new Baos();
+		challenge.write(desc);
+		challenge.putInt(opp);
+		challenge.putInt(clauses);
+		challenge.write(mode);
+		challenge.write(team);
+		challenge.putBaos(netServ.meLoginPlayer.team.gen);
+		challenge.putString(srcTier);
+		challenge.putString(destTier);
+		return challenge;
+	}
+
+	private Baos constructFindBattle(boolean forceRated, boolean forceSameTier,
+									 boolean onlyInRange, int range) {
 		Baos find = new Baos();
 		find.putFlags(new boolean[]{onlyInRange, false});
 		find.putFlags(new boolean[]{forceRated, forceSameTier});
@@ -1229,7 +1291,7 @@ public class ChatActivity extends Activity {
 			find.putShort((short)range);
 		}
 		return find;
-    }
+	}
 
 	public void removePlayer(final PlayerInfo pi){
 		synchronized(players) {
@@ -1247,7 +1309,7 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-	
+
 	public void addPlayer(final PlayerInfo pi) {
 		synchronized(players) {
 			if (players.isPressed()) {
@@ -1264,7 +1326,7 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-	
+
 	public void updatePlayer(final PlayerInfo newPlayer, final PlayerInfo oldPlayer) {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -1278,23 +1340,23 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-	
+
 	public void removeChannel(final Channel ch){
 		runOnUiThread(new Runnable() {
 			public void run() {
-            	channelAdapter.removeChannel(ch);
+				channelAdapter.removeChannel(ch);
 			}
 		});
 	}
-	
+
 	public void addChannel(final Channel ch) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-            	channelAdapter.addChannel(ch);
+				channelAdapter.addChannel(ch);
 			}
 		});
 	}
-	
+
 //	private Drawable getIcon(UniqueID uid) {
 //		Resources resources = getResources();
 //		int resID = resources.getIdentifier("pi" + uid.pokeNum +
@@ -1305,7 +1367,7 @@ public class ChatActivity extends Activity {
 //					"drawable", packName);
 //		return resources.getDrawable(resID);
 //	}
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -1318,14 +1380,33 @@ public class ChatActivity extends Activity {
 			}
 		});
 	}
-	
-	@Override
-    public void onDestroy() {
-    	unbindService(connection);
-    	super.onDestroy();
-    }
 
-	public static ArrayList<String> aliases;
+	@Override
+	public void onDestroy() {
+		unbindService(connection);
+		super.onDestroy();
+	}
+
+	public void updateControlPanel(final UserInfo info) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activeControlPanel.setUserInfo(info);
+			}
+		});
+	}
+
+	public void updateControlPanel(final String name) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activeControlPanel.addAlias(name);
+			}
+		});
+	}
+
+	private ControlPanelGroup activeControlPanel;
+	private String controlUser = "";
 }
 
 
