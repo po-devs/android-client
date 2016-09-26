@@ -6,12 +6,12 @@ import com.podevs.android.utilities.SerializeBytes;
 
 public class UserInfo implements SerializeBytes {
 
-    byte flags;
-    byte auth;
-    String ip;
-    String name;
-    String date;
-    String os;
+    public byte flags;
+    public byte auth;
+    public String ip;
+    public String name;
+    public String date;
+    public String os;
 
     public UserInfo(Bais bias) {
         flags = bias.readByte();

@@ -21,6 +21,7 @@ import android.util.Log;
 import com.podevs.android.poAndroid.battle.*;
 import com.podevs.android.poAndroid.chat.Channel;
 import com.podevs.android.poAndroid.chat.ChatActivity;
+import com.podevs.android.poAndroid.chat.ControlPanelGroup;
 import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.player.UserInfo;
@@ -492,8 +493,25 @@ public class NetworkService extends Service {
 	public void changeConnect(String newNick) {
 		registered = false;
 		Baos b = new Baos();
-		b.write(1); // Why do this? 'Cause magic - MM
+		b.putFlags(new boolean[] {true});
 		b.putString(newNick);
+		socket.sendMessage(b, Command.SendTeam);
+	}
+
+	public void changeTeam(String nick) {
+		Baos b = new Baos();
+		b.putFlags(new boolean[] {true, meLoginPlayer.color().isValid(), true, true});
+		b.putString(nick);
+		if (meLoginPlayer.color().isValid()) {
+			b.putBaos(meLoginPlayer.color());
+		}
+
+		b.putBaos(meLoginPlayer.profile.trainerInfo);
+
+		b.write(0);
+		b.write(1);
+		b.putBaos(meLoginPlayer.team);
+
 		socket.sendMessage(b, Command.SendTeam);
 	}
 
@@ -753,17 +771,11 @@ public class NetworkService extends Service {
 			break;
 		}	case GetUserInfo: {
 				UserInfo info = new UserInfo(msg);
-				String test = "";
-				ChatActivity.aliases = new ArrayList<String>();
+				chatActivity.updateControlPanel(info);
 				break;
 			}
 			case GetUserAlias: {
-				ChatActivity.aliases.add(msg.readString());
-				String test = "";
-				break;
-			}
-			case GetBanList: {
-				String test = "";
+				chatActivity.updateControlPanel(msg.readString());
 				break;
 			}
 			case ShowRankings: {
@@ -1110,22 +1122,17 @@ public class NetworkService extends Service {
 			
 			dealWithPM(playerId, message);
 			break;
-		}/* case SendTeam: {
-			PlayerInfo p = new PlayerInfo(msg);
-			if (players.containsKey(p.id)) {
-				PlayerInfo player = players.get(p.id);
-				player.update(p);
-				Enumeration<Channel> e = channels.elements();
-				while (e.hasMoreElements()) {
-					Channel ch = e.nextElement();
-					if (ch.players.containsKey(player.id)) {
-						ch.updatePlayer(player);
-					}
+		} case SendTeam: {
+				Bais flags = msg.readFlags();
+				if (flags.readBool()) {
+					String name = msg.readString();
 				}
-			}
+				if (flags.readBool()) {
+					ArrayList<String> tiers = msg.readQStringList();
+				}
 			break;
 
-		} */ case BattleMessage: {
+		} case BattleMessage: {
 			int battleId = msg.readInt(); // currently support only one battle, unneeded
 			msg.readInt(); // discard the size, unneeded
 			if (isBattling(battleId)) {
@@ -1621,14 +1628,11 @@ public class NetworkService extends Service {
 		pmedPlayers.add(id);
 	}
 
+
 	public void requestUserInfo(String name) {
 		Baos b = new Baos();
 		b.putString(name);
 		socket.sendMessage(b, Command.GetUserInfo);
-	}
-
-	public void requestBanInfo(String name) {
-
 	}
 
 	public void requestRanking(String tier, String name) {

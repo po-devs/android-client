@@ -31,6 +31,10 @@
         android:title="@string/settings">
      </item>
     <item
+        android:id="@+id/loadteam"
+        android:title="@string/load_team">
+    </item>
+    <item
         android:id="@+id/controlpanel"
         android:title="Control Panel">
     </item>
