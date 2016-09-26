@@ -38,6 +38,7 @@ public class PrivateMessageActivity extends Activity {
 
 	private static PMPrefs PMSettings = new PMPrefs();
 	private static boolean isViewed = false;
+	private static int lastPosition = 0;
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
 	protected NetworkService netServ;
@@ -157,6 +158,7 @@ public class PrivateMessageActivity extends Activity {
 
 	@Override
 	public void onPause() {
+		lastPosition = vp.getCurrentItem();
 		isViewed = false;
 		super.onPause();
 
@@ -216,8 +218,9 @@ public class PrivateMessageActivity extends Activity {
 	    	
 	    	if (position != PagerAdapter.POSITION_NONE) {
 	    		vp.setCurrentItem(position, true);
-
-	    	}
+	    	} else {
+				vp.setCurrentItem(lastPosition);
+			}
 		}
 		
 		public void onServiceDisconnected(ComponentName className) {
