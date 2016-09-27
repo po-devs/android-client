@@ -649,21 +649,23 @@ public class PokemonInfo {
 			}
 		});
 		if (RegistryActivity.localize_assets) {
-			String path = "db/pokes/" + RegistryActivity.resources.getString(R.string.asset_localization) + "pokemons.txt";
-			InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
-				public void fill(int i, String s, String options) {
-					pokeNames.put(i, s);
-					pokemonsg.put(i, new PokeData());
+			String path = "db/pokes/" + InfoConfig.resources.getString(R.string.asset_localization) + "pokemons.txt";
+			if (InfoConfig.fileExists(path)) {
+				InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
+					public void fill(int i, String s, String options) {
+						pokeNames.put(i, s);
+						pokemonsg.put(i, new PokeData());
 
-					if (i > 16000) {
-						pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
-					} else if (i > pokeCount) {
-						pokeCount = i;
+						if (i > 16000) {
+							pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+						} else if (i > pokeCount) {
+							pokeCount = i;
+						}
+						pokemonsg.get(i).options = options;
+						namesToIds.put(s, new UniqueID(i));
 					}
-					pokemonsg.get(i).options = options;
-					namesToIds.put(s, new UniqueID(i));
-				}
-			});
+				});
+			}
 		}
 	}
 

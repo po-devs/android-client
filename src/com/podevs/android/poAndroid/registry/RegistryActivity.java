@@ -47,7 +47,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private SharedPreferences prefs;
 
 	public static boolean localize_assets = false;
-	public static Resources resources;
 
 	/*
 	enum RegistryDialog {
@@ -60,7 +59,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if (InfoConfig.context == null) {
-    		InfoConfig.context = this;
+    		InfoConfig.setContext(this);
     	}
 
         if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
@@ -68,7 +67,6 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         super.onCreate(savedInstanceState);
 
 		localize_assets = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("localize", false);
-		resources = getResources();
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);

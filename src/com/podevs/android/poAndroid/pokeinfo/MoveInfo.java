@@ -244,7 +244,10 @@ public class MoveInfo extends GenInfo {
 		moveNames = new ArrayList<Move>();
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/moves/" + RegistryActivity.resources.getString(R.string.asset_localization) + "moves.txt";
+			path = "db/moves/" + InfoConfig.resources.getString(R.string.asset_localization) + "moves.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/moves/moves.txt";
+			}
 		} else {
 			path = "db/moves/moves.txt";
 		}
@@ -298,7 +301,10 @@ public class MoveInfo extends GenInfo {
 		moveMessages = new SparseArray<String>();
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/moves/" + RegistryActivity.resources.getString(R.string.asset_localization) + "move_message.txt";
+			path = "db/moves/" + InfoConfig.resources.getString(R.string.asset_localization) + "move_message.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/moves/move_message.txt";
+			}
 		} else {
 			path = "db/moves/move_message.txt";
 		}

@@ -111,7 +111,10 @@ public class ItemInfo {
 	private static void loadItemNames() {
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "items.txt";
+			path = "db/items/" + InfoConfig.resources.getString(R.string.asset_localization) + "items.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/items/items.txt";
+			}
 		} else {
 			path = "db/items/items.txt";
 		}
@@ -121,7 +124,10 @@ public class ItemInfo {
 			}
 		});
 		if (RegistryActivity.localize_assets) {
-			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "berries.txt";
+			path = "db/items/" + InfoConfig.resources.getString(R.string.asset_localization) + "berries.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/items/berries.txt";
+			}
 		} else {
 			path = "db/items/berries.txt";
 		}
@@ -136,7 +142,10 @@ public class ItemInfo {
 		itemMessages = new SparseArray<String>();
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "item_messages.txt";
+			path = "db/items/" + InfoConfig.resources.getString(R.string.asset_localization) + "item_messages.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/item/item_messages.txt";
+			}
 		} else {
 			path = "db/items/item_messages.txt";
 		}
@@ -146,7 +155,10 @@ public class ItemInfo {
 			}
 		});
 		if (RegistryActivity.localize_assets) {
-			path = "db/items/" + RegistryActivity.resources.getString(R.string.asset_localization) + "berry_messages.txt";
+			path = "db/items/" + InfoConfig.resources.getString(R.string.asset_localization) + "berry_messages.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/items/berry_messages.txt";
+			}
 		} else {
 			path = "db/items/berry_messages.txt";
 		}
