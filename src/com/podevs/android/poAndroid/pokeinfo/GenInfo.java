@@ -56,7 +56,10 @@ public class GenInfo {
 
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/gens/" + RegistryActivity.resources.getString(R.string.asset_localization) + "gens.txt";
+			path = "db/gens/" + InfoConfig.resources.getString(R.string.asset_localization) + "gens.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/gens/gens.txt";
+			}
 		} else {
 			path = "db/gens/gens.txt";
 		}
@@ -76,7 +79,10 @@ public class GenInfo {
 		});
 
 		if (RegistryActivity.localize_assets) {
-			path = "db/gens/" + RegistryActivity.resources.getString(R.string.asset_localization) + "versions.txt";
+			path = "db/gens/" + InfoConfig.resources.getString(R.string.asset_localization) + "versions.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/gens/versions.txt";
+			}
 		} else {
 			path = "db/gens/versions.txt";
 		}

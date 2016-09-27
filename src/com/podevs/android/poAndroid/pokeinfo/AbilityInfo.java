@@ -47,7 +47,10 @@ public class AbilityInfo {
 		abilityNames = new ArrayList<String>();
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/abilities/" + RegistryActivity.resources.getString(R.string.asset_localization) + "abilities.txt";
+			path = "db/abilities/" + InfoConfig.resources.getString(R.string.asset_localization) + "abilities.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/abilities/abilities.txt";
+			}
 		} else {
 			path = "db/abilities/abilities.txt";
 		}
@@ -63,7 +66,10 @@ public class AbilityInfo {
 		abilityMessages = new SparseArray<String>();
 		String path;
 		if (RegistryActivity.localize_assets) {
-			path = "db/abilities/" + RegistryActivity.resources.getString(R.string.asset_localization) + "ability_messages.txt";
+			path = "db/abilities/" + InfoConfig.resources.getString(R.string.asset_localization) + "ability_messages.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/abilities/ability_messages.txt";
+			}
 		} else {
 			path = "db/abilities/ability_messages.txt";
 		}

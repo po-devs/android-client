@@ -12,4 +12,16 @@ public class InfoConfig {
 		context = ctx;
 		resources = ctx.getResources();
 	}
+
+	static boolean fileExists(String path) {
+		if (context != null) {
+			try {
+				context.getResources().getAssets().open(path).close();
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
+	}
 }
