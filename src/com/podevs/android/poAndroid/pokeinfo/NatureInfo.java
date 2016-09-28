@@ -1,10 +1,11 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
-
-
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 public class NatureInfo {
+	private static String[] natures = null;
 
 	public enum Nature {
 		Hardy,
@@ -39,14 +40,19 @@ public class NatureInfo {
 	}
 
 	public static String name(int num) {
-		return Nature.values()[num].toString();
+		if (natures == null) {
+			loadNatureNames();
+		}
+
+		return natures[num];
+		//return Nature.values()[num].toString();
 	}
 
 	public static int count() {
 		return Nature.Quirky.ordinal()+1;
 	}
 
-	public static int convertToStat(int num) {
+	private static int convertToStat(int num) {
 		switch(num) {
 		case 0: return Stats.Hp.ordinal();
 		case 1: return Stats.Attack.ordinal();
@@ -57,11 +63,11 @@ public class NatureInfo {
 		}
 	}
 
-	public static int boosted (int num) {
+	private static int boosted (int num) {
 		return convertToStat((num / 5) + 1);
 	}
 
-	public static int hindered (int num) {
+	private static int hindered (int num) {
 		return convertToStat((num % 5) + 1);
 	}
 
@@ -76,8 +82,28 @@ public class NatureInfo {
 		}
 	}
 
-	public static int boostStat(int base, int nature, int stat) {
+	static int boostStat(int base, int nature, int stat) {
 		int boost = (0 + boosted(nature) == stat ? 1 : 0) + (hindered(nature) == stat ? -1 : 0);
 		return base * (10+boost)/10;
+	}
+
+	private static void loadNatureNames() {
+		natures = new String[Nature.values().length];
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/natures/" + InfoConfig.resources.getString(R.string.asset_localization) + "nature.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/natures/nature.txt";
+			}
+		} else {
+			path = "db/natures/nature.txt";
+		}
+		InfoFiller.fill(path, new InfoFiller.Filler() {
+			int index = 0;
+			public void fill(int i, String s) {
+				natures[index] = s;
+				index++;
+			}
+		});
 	}
 }
