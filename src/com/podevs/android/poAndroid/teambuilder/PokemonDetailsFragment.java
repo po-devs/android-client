@@ -171,7 +171,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				poke().gender = (byte) genderNames.indexOf((String) genderChooserAdapter.getItem(arg2));
+				poke().gender = (byte) GenderInfo.indexOf((String) genderChooserAdapter.getItem(arg2));
 				notifyUpdated();
 			}
 
@@ -341,12 +341,6 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
     private void makeToast(String text) {
         Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
     }
-
-    private ArrayList<String> genderNames = new ArrayList<String>() {{
-        add("Neutral");
-        add("Male");
-        add("Female");
-    }};
 	
 	public void notifyUpdated() {
 		if (listener != null) {
@@ -450,22 +444,22 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		if (tempPoke.gen.num >= 2) {
 			genderChooserAdapter.clear();
             if (poke().isHackmon) {
-                genderChooserAdapter.add("Neutral");
-                genderChooserAdapter.add("Male");
-                genderChooserAdapter.add("Female");
+                genderChooserAdapter.add(GenderInfo.name(0));
+                genderChooserAdapter.add(GenderInfo.name(1));
+                genderChooserAdapter.add(GenderInfo.name(2));
                 genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
             } else {
                 int genderChoice = PokemonInfo.gender(tempPoke.uID());
                 if (genderChoice == 0) {
                     tempPoke.gender = 0;
-                    genderChooserAdapter.add("Neutral");
+                    genderChooserAdapter.add(GenderInfo.name(0));
                 } else if (genderChoice == 1) {
-                    genderChooserAdapter.add("Male");
+                    genderChooserAdapter.add(GenderInfo.name(1));
                 } else if (genderChoice == 2) {
-                    genderChooserAdapter.add("Female");
+                    genderChooserAdapter.add(GenderInfo.name(2));
                 } else {
-                    genderChooserAdapter.add("Male");
-                    genderChooserAdapter.add("Female");
+                    genderChooserAdapter.add(GenderInfo.name(1));
+                    genderChooserAdapter.add(GenderInfo.name(2));
 
                     genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
                 }
@@ -480,7 +474,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				}
 			}
 			shinyChooser.setChecked(tempPoke.shiny);
-			happinessChooser.setText("Happy: " + (tempPoke.happiness & 0xFF));
+			String s = getString(R.string.happiness_short) + (tempPoke.happiness & 0xFF);
+			happinessChooser.setText(s);
 
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
@@ -495,7 +490,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
             manualIVButton.setEnabled(false);
 		}
 
-		levelChooser.setText(" Lvl: " + tempPoke.level());
+		String s = getString(R.string.level_short) + " " + tempPoke.level();
+		levelChooser.setText(s);
 	}
 	
 	public void updateStats() {

@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
@@ -568,8 +567,8 @@ public class PokemonInfo {
 		} else {
 			res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
 					(front ? "_front" : "_back");
-			if (poke.gender == Gender.Female.ordinal()) {
-				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
+			if (poke.gender == GenderInfo.Gender.Female.ordinal()) {
+				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == GenderInfo.Gender.Female.ordinal())
 					// Special female sprite
 					res = res + "f";
 			}

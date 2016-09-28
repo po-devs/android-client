@@ -34,7 +34,7 @@ public class GenInfo {
 
 	public static String name(int gen) {
 		loadGenNames();
-		return genNames.get(gen);
+		return genNames.get(gen, "");
 	}
 
 	public static Gen version(String name) {
@@ -43,7 +43,7 @@ public class GenInfo {
 
 	public static String name(Gen gen) {
 		loadGenNames();
-		return versionNames.get(gen.hashCode());
+		return versionNames.get(gen.hashCode(), "");
 	}
 
 	private static void loadGenNames() {

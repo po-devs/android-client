@@ -3,11 +3,6 @@ package com.podevs.android.poAndroid.poke;
 import com.podevs.android.poAndroid.R;
 
 public class PokeEnums {
-	public enum Gender {
-		Neutral,
-		Male,
-		Female
-	}
 
 	public enum Status { // XXX this is a monster
 		Fine { public final int poValue() { return 0; } },
