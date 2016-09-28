@@ -193,7 +193,6 @@
     <string name="continue_delta_weather">A mysterious air current is protecting Flying-type Pokémon.</string>
 
     <string name="no_effect_message">\nIt had no effect!</string>
-    <string name="not_very_effective_message">It\'s not very effective…</string>
     <string name="super_effective_message">It\'s super effective!</string>
 
     <string name="disconnected_no_timeout"> got disconnected!</string>
@@ -204,5 +203,6 @@
     <string name="localize_assets_title">Localize Names</string>
     <string name="localize_assets_summary">Not all languages are supported</string>
     <string name="language_settings">Language Settings</string>
+    <string name="not_very_effective_message">It\'s not very effective…</string>
 
 </resources>
