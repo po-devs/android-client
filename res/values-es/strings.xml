@@ -4,10 +4,10 @@
     <string name="empty"></string>
     <string name="choosename">Nombre de Usuario</string>
     <string name="app_name">Pokémon Online</string>
-    <string name="connect">Conectar!</string>
+    <string name="connect">!Conectar!</string>
     <string name="inputname">Nombre de Usuario</string>
     <string name="inputaddr">Dirección IP:Puerto</string>
-    <string name="chooseaddr">Direccion del Servidor</string>
+    <string name="chooseaddr">Dirección del Servidor</string>
     <string name="importteam">Importar Equipo</string>
     <string name="viewpokemon">Ver Pokémon</string>
     <string name="tobattlescreen">Retornar a ventana de batalla</string>
@@ -18,118 +18,125 @@
     <string name="no">No</string>
     <string name="disconnect">Desconectar</string>
     <string name="change_name">Cambiar Nombre</string>
-    <string name="suggest_draw">Solicitar empate</string>
-    <string name="return_to_chat">Retornar al chat</string>
-    <string name="player_list">Lista de jugadores</string>
-    <string name="channel_list">Lista de canales</string>
+    <string name="suggest_draw">Solicitar Empate</string>
+    <string name="return_to_chat">Regresar al chat</string>
+    <string name="player_list">Lista de Jugadores</string>
+    <string name="channel_list">Lista De Canales</string>
     <string name="accept">Aceptar</string>
     <string name="decline">Rechazar</string>
-    <string name="accept_challenge">Aceptar desafío de</string>
+    <string name="accept_challenge">Aceptar reto de</string>
     <string name="stat_attack">Ataque</string>
     <string name="stat_defense">Defensa</string>
-    <string name="stat_spAttack">Atq. Esp</string>
-    <string name="stat_spDefense">Def. Esp</string>
+    <string name="stat_spAttack">At. Especial</string>
+    <string name="stat_spDefense">Def. Especial</string>
     <string name="stat_speed">Velocidad</string>
-    <string name="stat_accuracy">Precision</string>
-    <string name="stat_evasion">Evasion</string>
-    <string name="rearrange_team_description">Puedes reordenar tu equipo arrastrando al pokemon antes de la batalla.</string>
-    <string name="rearrange_team_title">Reordenar tu equipo</string>
+    <string name="stat_accuracy">Precisión</string>
+    <string name="stat_evasion">Evasión</string>
+    <string name="rearrange_team_description">Puedes reordenar tu equipo arrastrando al pokémon antes de la batalla.</string>
+    <string name="rearrange_team_title">Reordenar Equipo</string>
     <string name="foes_team">Equipo del oponente:</string>
     <string name="your_team">Tu equipo:</string>
-    <string name="done">Hecho</string>
+    <string name="done">Listo</string>
     <string name="find_a_battle">Buscar Batalla</string>
-    <string name="enable_sounds">Gritos del pokémon</string>
-    <string name="stop_watching">Dejar de ver</string>
-    <string name="crash_toast_text">Pokémon Online ha fallado! Porfavor ayudanos mandandonos un mensaje con el reporte de fallo resultante!.</string>
-    <string name="serv_name">Nombre del servidor</string>
+    <string name="enable_sounds">Gritos del Pokémon</string>
+    <string name="stop_watching">Dejar de Ver</string>
+    <string name="crash_toast_text">!Pokémon Online ha fallado! !Por favor ayúdanos al mandarnos un mensaje con el reporte de fallo resultante!</string>
+    <string name="serv_name">Nombre del Servidor</string>
     <string name="players">Jugadores</string>
-    <string name="serv_addr">Dirección del servidor</string>
-    <string name="connecttoserver">Conectarse a un servidor</string>
+    <string name="serv_addr">Dirección del Servidor</string>
+    <string name="connecttoserver">Conectarse a un Servidor</string>
     <string name="major_compat_break_warning">Habrán problemas importantes cuando se intente comunicar con el servidor debido a que el cliente de android está fuera de fecha</string>
     <string name="minor_compat_break_warning">Podrían haber problemas menores cuando se intente comunicar con el servidor debido a que el cliente de android está fuera de fecha</string>
     <string name="new_server_features_warning">El servidor dispone de nuevas características que no son accesibles con esta versión de android!</string>
-    <string name="send_message">Enviar mensaje</string>
-    <string name="battle_opponent_team_poke_icon">Poke icono del equipo del oponente</string>
-    <string name="struggle_attack">LUCHA</string>
-    <string name="info_box">Cuadro de inf.</string>
+    <string name="send_message">Enviar Mensaje</string>
+    <string name="battle_opponent_team_poke_icon">Poke icono del equipo enemigo</string>
+    <string name="struggle_attack">Combate</string>
+    <string name="info_box">Cuadro de Inf.</string>
     <string name="hp_bar_description">Bar. de PS</string>
     <string name="gender_description">Genero</string>
-    <string name="status_description">Estatus</string>
+    <string name="status_description">Estado</string>
     <string name="sprite_description">Imagen</string>
     <string name="team_poke_icon">Poke icono del equipo</string>
-    <string name="no_netserv">Fallo en conexión al servidor</string>
+    <string name="no_netserv">Conexión al servidor fallida</string>
     <string name="private_messages">Mensajes Privados</string>
     <!-- <string name="player">Jugador</string> -->
     <string name="closePM">Cerrar MP</string>
     <string name="ignorePlayer">Ignorar Jugador</string>
     <string name="closeBattle">Abandonar Batalla</string>
-    <string name="tierSelection">Seleccion de Tier</string>
+    <string name="tierSelection">Selección de Tier</string>
     <string name="idle">Ocupado</string>
-    <string name="register">Registra tu nombre</string>
-    <string name="teambuilder">Editor de equipo</string>
+    <string name="register">Registrar tu nombre</string>
+    <string name="teambuilder">Editor de Equipo</string>
     <string name="primary_info">Info Principal</string>
     <string name="trainer_name">Nombre de Usuario</string>
     <string name="color">Color</string>
     <string name="team">Equipo</string>
-    <string name="team_tier">Tier del Equipo</string>
+    <string name="team_tier">Tier Del Equipo</string>
     <string name="edit_team">Editar Equipo</string>
     <string name="optional">Opcional</string>
-    <string name="trainerinfo">Información del Entrenador</string>
+    <string name="trainerinfo">Información de Usuario</string>
     <string name="winningmessage">Mensaje de Victoria</string>
     <string name="losingmessage">Mensaje de Derrota</string>
     <string name="pokemon">Pokémon</string>
     <string name="save_team_q">¿Desea guardar los cambios al equipo?</string>
-    <string name="download_team">Descargar equipo</string>
+    <string name="download_team">Descargar Equipo</string>
     <string name="save">Guardar</string>
     <string name="no_save">No Guardar</string>
     <string name="hiddenpower_choice">Tipo del Poder Oculto</string>
-    <string name="new_team">Nuevo Equipo</string>
+    <string name="new_team">Resetear Equipo</string>
     <string name="load_team">Cargar Equipo</string>
     <string name="save_team_as">Guardar equipo como</string>
-    <string name="delete_team">Eliminar Equipo</string>
+    <string name="delete_team">Borrar Equipo</string>
     <string name="full_happiness">Felicidad 100%</string>
     <string name="megavolve">Megaevolucionar</string>
     <string name="formes">Formas: </string>
     <string name="settings">Opciones</string>
-    <string name="shiny">Shiny</string>
-    <string name="force_rated">Forzar batallas valoradas</string>
+    <string name="shiny">Variocolor</string>
+    <string name="happiness_short">Feliz</string>
+    <string name="level_short">Nv</string>
+    <string name="force_rated">Forzar Batallas Valoradas</string>
     <string name="force_same_tier">Sólo en la misma tier</string>
     <string name="only_within_range">Sólo dentro del rango</string>
-    <string name="view_player_info">Ver información de entrenador</string>
+    <string name="view_player_info">Ver Info del Jugador</string>
     <string name="challenge">Retar</string>
-    <string name="pm">Mensaje privado</string>
-    <string name="watch_battle">Ver pelea entre</string>
+    <string name="pm">Mensaje Privado</string>
+    <string name="watch_battle">Ver Batalla Contra</string>
+    <string name="change_happiness">Cambiar Felicidad</string>
+    <string name="change_level">Cambiar Nivel</string>
+    <string name="switch_place">Cambiar Posición</string>
 
     <string name="chat_title">Opciones de Chat</string>
     <string name="chat_summary">Opciones de Chat</string>
     <string name="flash_title">Efecto Flash</string>
-    <string name="flash_summary">Activar efecto flash</string>
-    <string name="flash_color_title">Color de Flash</string>
+    <string name="flash_summary">Activar Efecto Flash</string>
+    <string name="flash_color_title">Color del Flash</string>
     <string name="flash_color_summary">Ingresa un color en código hexadecimal valido</string>
     <string name="timestamp_chat_title">Marcas de tiempo</string>
     <string name="timestamp_chat_summary">Activar marcas de tiempo en chat</string>
     <string name="notifications_chat_title">Flash Pop up</string>
-    <string name="notifications_chat_summary">Activar notificación de flash</string>
+    <string name="notifications_chat_summary">Activar notificación de Flash</string>
     <string name="pm_title">Opciones de MP</string>
-    <string name="pm_summary">Opciones de Mensaje Privados</string>
+    <string name="pm_summary">Opciones de Mensajes Privados</string>
     <string name="timestamp_pm_title">Marcas de tiempo</string>
     <string name="timestamp_pm_summary">Activar marcas de tiempo</string>
     <string name="notifications_pm_title">Notificaciones</string>
-    <string name="notifications_pm_summary">Activar notificaciones</string>
-    <string name="volume_title">Vólumen</string>
-    <string name="volume_summary">Integrar un número entre 0 y 100</string>
+    <string name="notifications_pm_summary">Activar Notificaciones</string>
+    <string name="volume_title">Volumen</string>
+    <string name="volume_summary">Número entre 0 y 100</string>
     <string name="poke_number_title">Gritos de Pokémon</string>
     <string name="poke_number_summary">Elegir grito de Pokémon con su número</string>
-    <string name="sound_notification_title">Notifiación con sonido</string>
+    <string name="sound_notification_title">Notificación con sonido</string>
     <string name="sound_notification_summary">Activar notificación con gritos de Pokémon</string>
     <string name="misc_title">Extras</string>
     <string name="crashlog_title">Guardar historial de errores</string>
-    <string name="crashlog_summary">Guarda los errores de la aplicación en un archivo</string>
-    <string name="copypaste_title">Copiar y pegar</string>
-    <string name="copypaste_summary">Requiere reiniciar la aplicación</string>
+    <string name="crashlog_summary">Guardar los errores de la aplicación en un archivo</string>
+    <string name="copypaste_title">Copiar y Pegar</string>
+    <string name="copypaste_summary">Puede no funcionar correctamente en todos los dispositivos</string>
+
+    <string name="IV">VI</string>
 
     <string-array name="hp_array">
-        <item>Peleador</item>
+        <item>Lucha</item>
         <item>Volador</item>
         <item>Veneno</item>
         <item>Tierra</item>
@@ -139,18 +146,64 @@
         <item>Acero</item>
         <item>Fuego</item>
         <item>Agua</item>
-        <item>Hierba</item>
-        <item>Electrico</item>
-        <item>Psiquico</item>
+        <item>Planta</item>
+        <item>Eléctrico</item>
+        <item>Psíquico</item>
         <item>Hielo</item>
         <item>Dragon</item>
         <item>Siniestro</item>
     </string-array>
-    <string name="IV">IV</string>
+
+
+    <string-array name="status_change_array">
+        <item>¡ está paralizado! ¡Quizás no se pueda mover!</item>
+        <item>¡ se durmió!</item>
+        <item>¡ fue congelado!</item>
+        <item>¡ se ha quemado!</item>
+        <item>¡ fue envenenado!</item>
+        <item>¡ fue gravemente envenenado!</item>
+        <item>¡ se encuentra confuso!</item>
+    </string-array>
+
+    <string name="feel_confusion_status_message">¡ está confuso!</string>
+    <string name="hurt_confusion_status_message">¡Está tan confuso que se hirió a sí mismo!</string>
+    <string name="free_confusion_status_message">¡ ya no está confuso!</string>
+    <string name="prev_paralyzed_status_message">¡ está paralizado! ¡No se puede mover!</string>
+    <string name="prev_frozen_status_message">¡ está congelado!</string>
+    <string name="free_frozen_status_message">¡ ya no está congelado!</string>
+    <string name="feel_asleep_status_message"> está dormido como un tronco.</string>
+    <string name="free_asleep_status_message">¡ se despertó!</string>
+    <string name="hurt_burn_status_message">¡ se resiente de la quemadura!</string>
+    <string name="hurt_poison_status_message">¡El veneno resta PS a !</string>
+
+    <string name="end_hail_weather">Ha dejado de granizar.</string>
+    <string name="hurt_hail_weather">¡El granizo zarandea a !</string>
+    <string name="continue_hail_weather">Sigue granizando...</string>
+    <string name="end_sandstorm_weather">La tormenta de arena amainó.</string>
+    <string name="hurt_sandstorm_weather">¡La tormenta de arena zarandea a !</string>
+    <string name="continue_sandstorm_weather">La tormenta de arena arrecia...</string>
+    <string name="end_sunny_weather">Se ha ido el sol.</string>
+    <string name="continue_sunny_weather">Hace mucho sol...</string>
+    <string name="end_rain_weather">Dejó de llover.</string>
+    <string name="continue_rain_weather">Sigue lloviendo...</string>
+    <string name="end_heavysun_weather">!Los intensos rayos de sol se han ido!</string>
+    <string name="continue_heavysun_weather">Los intensos rayos de sol continúan brillando...</string>
+    <string name="end_heavyrain_weather">¡La fuerte lluvia se ha ido!</string>
+    <string name="continue_heavyrain_weather">La fuerte lluvia continúa...</string>
+    <string name="end_delta_weather">¡La misteriosa corriente de aire se ha desvanecido!</string>
+    <string name="continue_delta_weather">Una misteriosa corriente de aire está protegiendo a los Pokémon de tipo Volador...</string>
+
+    <string name="no_effect_message">¡No tuvo ningún efecto!</string>
+    <string name="not_very_effective_message">No es muy eficaz...</string>
+    <string name="super_effective_message">¡Es muy eficaz!</string>
+
+    <string name="disconnected_no_timeout">! se desconectó!</string>
+    <string name="disconnected_timeout"> se ha desconectado! Puedes esperar a que se le acabe el tiempo si quieres la victoria.</string>
+    <string name="logged_back_in">! se ha vuelto a conectar y esta listo para continuar!</string>
 
     <string name="asset_localization">translation-es/</string>
-    <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
-    <string name="language_settings">Configuracion de Idioma</string>
     <string name="localize_assets_title">Localizar nombres</string>
+    <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
+    <string name="language_settings">Configuración de Idioma</string>
 
 </resources>
