@@ -50,15 +50,11 @@ import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.TextProgressBar;
 import com.podevs.android.poAndroid.chat.ChatActivity;
-import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.ShallowShownPoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
-import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
+import com.podevs.android.poAndroid.pokeinfo.*;
 import com.podevs.android.utilities.Baos;
 
 class MyResultReceiver extends ResultReceiver {
@@ -429,7 +425,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             res = null;
         else {
             res = String.format("anim%03d", uID.pokeNum) + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
-                    (poke.gender == Gender.Female.ordinal() ? "f" : "") + (front ? "_front" : "_back") + (poke.shiny ? "s" : "") + ".gif";
+                    (poke.gender == GenderInfo.Gender.Female.ordinal() ? "f" : "") + (front ? "_front" : "_back") + (poke.shiny ? "s" : "") + ".gif";
         }
         return res;
     }

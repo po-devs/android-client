@@ -29,7 +29,7 @@ public class ItemInfo {
 			loadItemNames();
 		}
 		
-		return itemNames.get(item);
+		return itemNames.get(item, "");
 	}
 
 	public static int indexOf(String s) {
@@ -38,7 +38,7 @@ public class ItemInfo {
 		}
 
 		for (int i = 0; i < itemNames.size(); i ++) {
-			if (itemNames.get(itemNames.keyAt(i)).equals(s)) {
+			if (itemNames.get(itemNames.keyAt(i), "").equals(s)) {
 				return itemNames.keyAt(i);
 			}
 		}
@@ -192,7 +192,7 @@ public class ItemInfo {
 				berries.add(8000+Integer.valueOf(i));
 			}
 		});
-		
+
 		/* Sort item names */
 		Collections.sort(berries, new Comparator<Integer>() {
 			public int compare(Integer lhs, Integer rhs) {

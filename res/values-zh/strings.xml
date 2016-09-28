@@ -129,6 +129,69 @@
     <string name="copypaste_summary">可能不支持所有的设备</string>
     <string name="IV">IV</string>
 
+    <string-array name="hp_array">
+        <item>格斗</item>
+        <item>飞行</item>
+        <item>毒</item>
+        <item>地面</item>
+        <item>岩石</item>
+        <item>虫</item>
+        <item>幽灵</item>
+        <item>钢</item>
+        <item>火</item>
+        <item>水</item>
+        <item>草</item>
+        <item>超能</item>
+        <item>冰</item>
+        <item>龙</item>
+        <item>恶</item>
+    </string-array>
+
+    <string-array name="status_change_array">
+        <item> 麻痹了！它可能无法行动！</item>
+        <item> 睡着了！</item>
+        <item> 冻结了！</item>
+        <item> 烧伤了！</item>
+        <item> 中毒了！</item>
+        <item> 中了剧毒！</item>
+        <item> 混乱了！</item>
+    </string-array>
+
+    <string name="feel_confusion_status_message"> 混乱了！</string>
+    <string name="hurt_confusion_status_message">在混乱中攻击了自己！</string>
+    <string name="free_confusion_status_message"> 的混乱解除了。</string>
+    <string name="prev_paralyzed_status_message"> 麻痹了！它无法行动！</string>
+    <string name="prev_frozen_status_message"> 因冻结而无法行动。</string>
+    <string name="free_frozen_status_message"> 解冻了！</string>
+    <string name="feel_asleep_status_message"> 正在睡觉。</string>
+    <string name="free_asleep_status_message"> w醒来了！</string>
+    <string name="hurt_burn_status_message"> 因烧伤而受到伤害！</string>
+    <string name="hurt_poison_status_message"> 受到了毒素的伤害！</string>
+
+    <string name="end_hail_weather">冰雹停止了。</string>
+    <string name="hurt_hail_weather"> 被冰雹击中！</string>
+    <string name="continue_hail_weather">冰雹噼里啪啦地落下。</string>
+    <string name="end_sandstorm_weather">沙尘暴停止了。</string>
+    <string name="hurt_sandstorm_weather"> 被沙尘暴击中！</string>
+    <string name="continue_sandstorm_weather">沙尘暴继续刮着。</string>
+    <string name="end_sunny_weather">阳光变弱了。</string>
+    <string name="continue_sunny_weather">阳光很强。</string>
+    <string name="end_rain_weather">雨停了。</string>
+    <string name="continue_rain_weather">雨一直下。</string>
+    <string name="end_heavysun_weather">烈日消逝了！</string>
+    <string name="continue_heavysun_weather">强烈的阳光仍在持续。</string>
+    <string name="end_heavyrain_weather">大雨停止了！</string>
+    <string name="continue_heavyrain_weather">滂沱大雨仍在持续。</string>
+    <string name="end_delta_weather">神秘的气流飞散了！</string>
+    <string name="continue_delta_weather">神秘气流正在保护飞行系。</string>
+
+    <string name="no_effect_message">\n这没有效果</string>
+    <string name="not_very_effective_message">这不是很有效…</string>
+    <string name="super_effective_message">这非常有效！</string>
+
+    <string name="disconnected_no_timeout"> 断线了！!</string>
+    <string name="disconnected_timeout"> 断线了！你可以通过等待对方超时来取得胜利。</string>
+    <string name="logged_back_in"> 重新上线并且准备继续战斗！</string>
 
     <string name="asset_localization">translation-zh/</string>
 </resources>

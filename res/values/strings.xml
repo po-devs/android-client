@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="empty"></string>
+    <string name="empty" translatable="false"></string>
     <string name="choosename">Trainer Name</string>
     <string name="app_name">Pokémon Online</string>
     <string name="connect">Connect!</string>
@@ -92,6 +92,8 @@
     <string name="formes">Formes: </string>
     <string name="settings">Settings</string>
     <string name="shiny">Shiny</string>
+    <string name="happiness_short">Happy</string>
+    <string name="level_short">Lvl</string>
     <string name="force_rated">Force Rated</string>
     <string name="force_same_tier">Force Same Tier</string>
     <string name="only_within_range">Only within range</string>
@@ -191,7 +193,6 @@
     <string name="continue_delta_weather">A mysterious air current is protecting Flying-type Pokémon.</string>
 
     <string name="no_effect_message">\nIt had no effect!</string>
-    <string name="not_very_effective_message">It\'s not very effective…</string>
     <string name="super_effective_message">It\'s super effective!</string>
 
     <string name="disconnected_no_timeout"> got disconnected!</string>
@@ -202,5 +203,6 @@
     <string name="localize_assets_title">Localize Names</string>
     <string name="localize_assets_summary">Not all languages are supported</string>
     <string name="language_settings">Language Settings</string>
+    <string name="not_very_effective_message">It\'s not very effective…</string>
 
 </resources>
