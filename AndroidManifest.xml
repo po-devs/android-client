@@ -3,7 +3,7 @@
     package="com.podevs.android.poAndroid"
     android:installLocation="auto"
     android:versionCode="52"
-    android:versionName="2.6.1" >
+    android:versionName="2.6.3" >
 
     <uses-sdk
         android:minSdkVersion="12"
