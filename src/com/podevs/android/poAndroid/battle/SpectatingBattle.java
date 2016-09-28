@@ -15,6 +15,7 @@ import com.podevs.android.poAndroid.ColorEnums.StatusColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeForWeatherColor;
 import com.podevs.android.poAndroid.NetworkService;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
 import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
@@ -345,17 +346,17 @@ public class SpectatingBattle {
                 byte eff = msg.readByte();
                 switch (eff) {
                     case 0:
-                        writeToHist("\nIt had no effect!");
+                        writeToHist(getString(R.string.no_effect_message));
                         break;
                     case 1:
                     case 2:
                         writeToHist(Html.fromHtml("<br><font color=" + QtColor.Gray +
-                                "It's not very effective...</font>"));
+                                getString(R.string.not_very_effective_message) + "</font>"));
                         break;
                     case 8:
                     case 16:
                         writeToHist(Html.fromHtml("<br><font color=" + QtColor.Blue +
-                                "It's super effective!</fontColor>"));
+                                getString(R.string.super_effective_message) + "!</font>"));
                         break;
                 }
                 break;
@@ -401,14 +402,8 @@ public class SpectatingBattle {
                 Log.w("SpectatingBattle", bc.name() + item + ":" + count);
             }
             case StatusChange: {
-                final String[] statusChangeMessages = {
-                        " is paralyzed! It may be unable to move!",
-                        " fell asleep!",
-                        " was frozen solid!",
-                        " was burned!",
-                        " was poisoned!",
-                        " was badly poisoned!",
-                };
+                final String[] statusChangeMessages = netServ.getResources().getStringArray(R.array.status_change_array);
+
                 byte status = msg.readByte();
                 boolean multipleTurns = msg.readBool();
                 boolean silent = msg.readBool();
@@ -424,7 +419,7 @@ public class SpectatingBattle {
 				 * enum, so confusion does not correspond to the same value in the above
 				 * string array as its enum value. */
                     writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(status) + tu(
-                            pokes[player][slot].nick + " became confused!</font>")));
+                            pokes[player][slot].nick + statusChangeMessages[status] + "</font>")));
                 }
                 break;
             }
@@ -457,43 +452,43 @@ public class SpectatingBattle {
                 switch (StatusFeeling.values()[status]) {
                     case FeelConfusion:
                         writeToHist(Html.fromHtml("<br><font color=" + TypeColor.Ghost + tu(
-                                pokes[player][slot].nick + " is confused!</font>")));
+                                pokes[player][slot].nick + getString(R.string.hurt_confusion_status_message) + "</font>")));
                         break;
                     case HurtConfusion:
                         writeToHist(Html.fromHtml("<br><font color=" + TypeColor.Ghost + tu(
-                                "It hurt itself in its confusion!</font>")));
+                                getString(R.string.hurt_confusion_status_message) + "</font>")));
                         break;
                     case FreeConfusion:
                         writeToHist(Html.fromHtml("<br><font color=" + TypeColor.Dark + tu(
-                                pokes[player][slot].nick + " snapped out of its confusion!</font>")));
+                                pokes[player][slot].nick + getString(R.string.free_confusion_status_message) + "</font>")));
                         break;
                     case PrevParalysed:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Paralysed.poValue()) + tu(
-                                pokes[player][slot].nick + " is paralyzed! It can't move!</font>")));
+                                pokes[player][slot].nick + getString(R.string.prev_paralyzed_status_message) + "</font>")));
                         break;
                     case FeelAsleep:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Asleep.poValue()) + tu(
-                                pokes[player][slot].nick + " is fast asleep!</font>")));
+                                pokes[player][slot].nick + getString(R.string.feel_asleep_status_message) + "</font>")));
                         break;
                     case FreeAsleep:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Asleep.poValue()) + tu(
-                                pokes[player][slot].nick + " woke up!</font>")));
+                                pokes[player][slot].nick + getString(R.string.free_asleep_status_message) + "</font>")));
                         break;
                     case HurtBurn:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Burnt.poValue()) + tu(
-                                pokes[player][slot].nick + " is hurt by its burn!</font>")));
+                                pokes[player][slot].nick + getString(R.string.hurt_burn_status_message) + "</font>")));
                         break;
                     case HurtPoison:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Poisoned.poValue()) + tu(
-                                pokes[player][slot].nick + " is hurt by poison!</font>")));
+                                pokes[player][slot].nick + getString(R.string.hurt_poison_status_message) + "</font>")));
                         break;
                     case PrevFrozen:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Frozen.poValue()) + tu(
-                                pokes[player][slot].nick + " is frozen solid!</font>")));
+                                pokes[player][slot].nick + getString(R.string.prev_frozen_status_message) + "</font>")));
                         break;
                     case FreeFrozen:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Frozen.poValue()) + tu(
-                                pokes[player][slot].nick + " thawed out!</font>")));
+                                pokes[player][slot].nick + getString(R.string.free_frozen_status_message) + "</font>")));
                         break;
                 }
                 break;
@@ -615,25 +610,25 @@ public class SpectatingBattle {
                     case EndWeather:
                         switch (Weather.values()[weather]) {
                             case Hail:
-                                message = "The hail subsided!";
+                                message = getString(R.string.end_hail_weather);
                                 break;
                             case SandStorm:
-                                message = "The sandstorm subsided!";
+                                message = getString(R.string.end_sandstorm_weather);
                                 break;
                             case Sunny:
-                                message = "The sunlight faded!";
+                                message = getString(R.string.end_sunny_weather);
                                 break;
                             case Rain:
-                                message = "The rain stopped!";
+                                message = getString(R.string.end_rain_weather);
                                 break;
                             case HeavySun:
-                                message = "The intense sunlight faded!";
+                                message = getString(R.string.end_heavysun_weather);
                                 break;
                             case HeavyRain:
-                                message = "The heavy downpour stopped!";
+                                message = getString(R.string.end_heavyrain_weather);
                                 break;
                             case Delta:
-                                message = "The mysterious air current has dissipated!";
+                                message = getString(R.string.end_delta_weather);
                                 break;
                             default:
                                 message = "";
@@ -643,10 +638,10 @@ public class SpectatingBattle {
                     case HurtWeather:
                         switch (Weather.values()[weather]) {
                             case Hail:
-                                message = " is buffeted by the hail!";
+                                message = getString(R.string.hurt_hail_weather);
                                 break;
                             case SandStorm:
-                                message = " is buffeted by the sandstorm!";
+                                message = getString(R.string.hurt_sandstorm_weather);
                                 break;
                             default:
                                 message = "";
@@ -657,25 +652,25 @@ public class SpectatingBattle {
                     case ContinueWeather:
                         switch (Weather.values()[weather]) {
                             case Hail:
-                                message = "Hail continues to fall!";
+                                message = getString(R.string.continue_hail_weather);
                                 break;
                             case SandStorm:
-                                message = "The sandstorm rages!";
+                                message = getString(R.string.continue_sandstorm_weather);
                                 break;
                             case Sunny:
-                                message = "The sunlight is strong!";
+                                message = getString(R.string.continue_sunny_weather);
                                 break;
                             case Rain:
-                                message = "Rain continues to fall!";
+                                message = getString(R.string.continue_rain_weather);
                                 break;
                             case HeavySun:
-                                message = "The intense sunlight continues to shine!";
+                                message = getString(R.string.continue_heavysun_weather);
                                 break;
                             case HeavyRain:
-                                message = "The heavy downpour continues!";
+                                message = getString(R.string.continue_heavyrain_weather);
                                 break;
                             case Delta:
-                                message = "A mysterious air current is protecting Flying-type Pokémon.";
+                                message = getString(R.string.continue_delta_weather);
                                 break;
                             default:
                                 message = "";
@@ -895,12 +890,12 @@ public class SpectatingBattle {
     private void onOpponentDisconnect(boolean come) {
         if (!come) {
             if (containsClause(Clauses.NoTimeOut.ordinal())) {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected!</font>"));
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.disconnected_no_timeout) + "</font>"));
             } else {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected! You can wait for their time to run out if you want the win.</font>"));
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.disconnected_timeout) + "</font>"));
             }
         } else {
-            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " logged back in and is ready to resume the battle!</font>"));
+            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.logged_back_in) + "</font>"));
         }
     }
 
@@ -934,5 +929,15 @@ public class SpectatingBattle {
         AestheticForme, //6
         DefMove, //7
         TempPP //8
+    }
+
+    private String getString(int id) {
+        if (netServ != null) {
+            return netServ.getString(id);
+        } else if (activity != null) {
+            return activity.getString(id);
+        } else {
+            return "";
+        }
     }
 }

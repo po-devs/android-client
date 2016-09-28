@@ -71,34 +71,6 @@ public class PokeEnums {
 		FemaleAvail,
 		MaleAndFemaleAvail
 	}
-
-	public enum Nature {
-		Hardy,
-		Lonely,
-		Brave,
-		Adamant,
-		Naughty,
-		Bold,
-		Docile,
-		Relaxed,
-		Impish,
-		Lax,
-		Timid,
-		Hasty,
-		Serious,
-		Jolly,
-		Naive,
-		Modest,
-		Mild,
-		Quiet,
-		Bashful,
-		Rash,
-		Calm,
-		Gentle,
-		Sassy,
-		Careful,
-		Quirky
-	}
 	
 	public enum Stat {
 		HP { public final int rstring() { return R.string.empty; } },
