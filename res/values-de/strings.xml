@@ -92,6 +92,8 @@
     <string name="formes">Formen: </string>
     <string name="settings">Einstellungen</string>
     <string name="shiny">Shiny</string>
+    <string name="happiness_short">Freundschaft</string>
+    <string name="level_short">Lvl</string>
     <string name="force_rated">Wertungskämpfe erzwingen</string>
     <string name="force_same_tier">Gleichen Tier erzwingen</string>
     <string name="only_within_range">Nur im Bereich</string>
@@ -99,6 +101,9 @@
     <string name="challenge">Herausfordere</string>
     <string name="pm">Private Nachicht</string>
     <string name="watch_battle">Kampf ansehen gegen</string>
+    <string name="change_happiness">Freundsch. bearbeiten</string>
+    <string name="change_level">Level bearbeiten</string>
+    <string name="switch_place">Position verändern</string>
 
     <string name="chat_title">Chat-Einstellungen</string>
     <string name="chat_summary">Chat-Einstellungen</string>
@@ -122,6 +127,13 @@
     <string name="poke_number_summary">Nummer von dem Pokemon</string>
     <string name="sound_notification_title">Ton-Benachichtigung</string>
     <string name="sound_notification_summary">Ton-Benachichtigung aktivieren</string>
+    <string name="misc_title">Sonstiges</string>
+    <string name="crashlog_title">Crash-Log speichern</string>
+    <string name="crashlog_summary">Speichert die Crash-Daten in einer Datei</string>
+    <string name="copypaste_title">Kopieren und Einfügen</string>
+    <string name="copypaste_summary">Wird nicht von allen Geräten unterstützt</string>
+    
+    <string name="IV">IV</string>
 
     <string-array name="hp_array">
         <item>Kampf</item>
@@ -141,11 +153,47 @@
         <item>Drache</item>
         <item>Unlicht</item>
     </string-array>
-    <string name="IV">IV</string>
 
-    <string name="asset_localization">translation-de/</string>
-    <string name="localize_assets_title">Localize Assets</string>
-    <string name="localize_assets_summary">Nicht alle Sprachen werden unterstützt.</string>
-    <string name="language_settings">Spracheinstellungen</string>
+    
+    <string name="feel_confusion_status_message"> ist verwirrt!</string>
+    <string name="hurt_confusion_status_message">Es hat sich vor Verwirrung selbst verletzt!</string>
+    <string name="free_confusion_status_message"> hat sich von seiner Verwirrung befreit!</string>
+    <string name="prev_paralyzed_status_message"> ist paralysiert! Es kann sich nicht bewegen!</string>
+    <string name="prev_frozen_status_message"> ist eingefroren!</string>
+    <string name="free_frozen_status_message"> ist aufgetaut!</string>
+    <string name="feel_asleep_status_message"> schläft!</string>
+    <string name="free_asleep_status_message"> ist aufgewacht!</string>
+    <string name="hurt_burn_status_message"> is hurt by its burn!</string>
+    <string name="hurt_poison_status_message"> is hurt by poison!</string>
+
+    <string name="end_hail_weather">The hail subsided!</string>
+    <string name="hurt_hail_weather"> is buffeted by the hail!</string>
+    <string name="continue_hail_weather">Hail continues to fall!</string>
+    <string name="end_sandstorm_weather">The sandstorm subsided!</string>
+    <string name="hurt_sandstorm_weather"> is buffeted by the sandstorm!</string>
+    <string name="continue_sandstorm_weather">The sandstorm rages!</string>
+    <string name="end_sunny_weather">The sunlight faded!</string>
+    <string name="continue_sunny_weather">The sunlight is strong!</string>
+    <string name="end_rain_weather">The rain stopped!</string>
+    <string name="continue_rain_weather">Rain continues to fall!</string>
+    <string name="end_heavysun_weather">The intense sunlight faded!</string>
+    <string name="continue_heavysun_weather">The intense sunlight continues to shine!</string>
+    <string name="end_heavyrain_weather">The heavy downpour stopped!</string>
+    <string name="continue_heavyrain_weather">The heavy downpour continues!</string>
+    <string name="end_delta_weather">The mysterious air current has dissipated!</string>
+    <string name="continue_delta_weather">A mysterious air current is protecting Flying-type Pokémon.</string>
+
+    <string name="no_effect_message">\nEs hat keine Wirkung!</string>
+    <string name="not_very_effective_message">Es ist nicht sehr effektiv…</string>
+    <string name="super_effective_message">Es ist sehr effektiv!</string>
+
+    <string name="disconnected_no_timeout"> got disconnected!</string>
+    <string name="disconnected_timeout"> got disconnected! You can wait for their time to run out if you want the win.</string>
+    <string name="logged_back_in"> logged back in and is ready to resume the battle!</string>
+
+    <string name="asset_localization"></string>
+    <string name="localize_assets_title">Namen übersetzen</string>
+    <string name="localize_assets_summary">Nicht alle Sprachen werden unterstützt</string>
+    <string name="language_settings">Spracheinsettlungen</string>
 
 </resources>
