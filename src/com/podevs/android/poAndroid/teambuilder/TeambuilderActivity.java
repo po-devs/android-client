@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.podevs.android.poAndroid.R;
+import com.podevs.android.poAndroid.Themes;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.*;
 
@@ -92,12 +95,22 @@ public class TeambuilderActivity extends FragmentActivity {
 			} else {
 				return null;
 			}
-		}
+			}
 	}
 	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+		String selection = PreferenceManager.getDefaultSharedPreferences(this).getString("theme_list", "-1");
+		Integer ii = Integer.parseInt(selection);
+		TypedArray ar = getResources().obtainTypedArray(R.array.themeentriesid);
+		int len = ar.length();
+		int[] resIds = new int[len];
+		for (int i = 0; i < len; i++)
+			resIds[i] = ar.getResourceId(i, 0);
+		ar.recycle();
+		Themes.themeTeambuilder = resIds[ii];
+		setTheme(Themes.themeTeambuilder);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.teambuilder);

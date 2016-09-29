@@ -104,6 +104,9 @@
     <string name="change_happiness">Cambiar Felicidad</string>
     <string name="change_level">Cambiar Nivel</string>
     <string name="switch_place">Cambiar Posición</string>
+    <string name="hackmon_enabled">Hackmon Habilitado</string>
+    <string name="hackmon_disabled">Hackmon Deshabilitado</string>
+    <string name ="manual_iv">VI Manual</string>
 
     <string name="chat_title">Opciones de Chat</string>
     <string name="chat_summary">Opciones de Chat</string>

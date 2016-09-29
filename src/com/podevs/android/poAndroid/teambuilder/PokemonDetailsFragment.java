@@ -201,7 +201,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 								if (i > 100) i = 100;
                                 if (i < 1) i = 1;
 								poke().level = (byte) i;
-								levelChooser.setText(" Lvl: " + i);
+								String s = getString(R.string.level_short) + " " + i;
+								levelChooser.setText(s);
 								updateStats();
 							}
 						}).show();
@@ -230,7 +231,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 								if (i > 255) i = 255;
 								if (i < 0) i = 0;
 								poke().happiness = (byte) i;
-								happinessChooser.setText("Happy: " + i);
+								String s = getString(R.string.happiness_short) + " " + i;
+								happinessChooser.setText(s);
 							}
 						}).show();
 			}
@@ -474,7 +476,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				}
 			}
 			shinyChooser.setChecked(tempPoke.shiny);
-			String s = getString(R.string.happiness_short) + (tempPoke.happiness & 0xFF);
+			String s = getString(R.string.happiness_short) + " " + (tempPoke.happiness & 0xFF);
 			happinessChooser.setText(s);
 
 			shinyChooser.setVisibility(View.VISIBLE);

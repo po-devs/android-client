@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import com.podevs.android.poAndroid.R;
+import com.podevs.android.poAndroid.Themes;
 import com.podevs.android.poAndroid.poke.TeamPoke;
 
 /**
@@ -20,6 +21,7 @@ public class EditPokemonActivity extends FragmentActivity {
 	private String tier = "";
 
 	public void onCreate(Bundle savedInstanceState) {
+		setTheme(Themes.themeTeambuilder);
         if (savedInstanceState != null) {
             slot = savedInstanceState.getInt("slot", 0);
             poke = savedInstanceState.getParcelable("pokemon");

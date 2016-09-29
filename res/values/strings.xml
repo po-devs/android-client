@@ -104,6 +104,9 @@
     <string name="change_happiness">Change Happiness</string>
     <string name="change_level">Change Level</string>
     <string name="switch_place">Switch place</string>
+    <string name="hackmon_enabled">Hackmon Enabled</string>
+    <string name="hackmon_disabled">Hackmon Disabled</string>
+    <string name ="manual_iv">Manual IV</string>
 
     <string name="chat_title">Chat Settings</string>
     <string name="chat_summary">Chat Settings</string>
