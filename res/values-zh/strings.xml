@@ -90,6 +90,8 @@
     <string name="formes">形态:</string>
     <string name="settings">设置</string>
     <string name="shiny">闪光</string>
+    <string name="happiness_short">亲密度</string>
+    <string name="level_short">等级</string>
     <string name="force_rated">强制计分</string>
     <string name="force_same_tier">强制相同分级</string>
     <string name="only_within_range">只挑战积分范围内的对手</string>
@@ -100,6 +102,10 @@
     <string name="change_happiness">更改亲密度</string>
     <string name="change_level">更改等级</string>
     <string name="switch_place">选择 place</string>
+    <string name="hackmon_enabled">无限制模式</string>
+    <string name="hackmon_disabled">正常模式</string>
+    <string name ="manual_iv">更改个体值</string>
+
     <string name="chat_title">聊天设置</string>
     <string name="chat_summary">聊天设置</string>
     <string name="flash_title">字体</string>
@@ -195,4 +201,7 @@
     <string name="logged_back_in"> 重新上线并且准备继续战斗！</string>
 
     <string name="asset_localization">translation-zh/</string>
+    <string name="localize_assets_title">中译名</string>
+    <string name="localize_assets_summary">不支持所有语言</string>
+    <string name="language_settings">语言设置</string>
 </resources>

@@ -187,16 +187,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Manual IV"
+                    android:text="@string/manual_iv"
                     android:id="@+id/manualiv">
             </Button>
 
             <ToggleButton android:layout_width="0dp"
                           android:layout_weight="1"
                           android:layout_height="wrap_content"
-                          android:textOff="Hackmon Disabled"
-                          android:textOn="Hackmon Enabled"
-                    android:id="@+id/hackmon">
+                          android:textOff="@string/hackmon_disabled"
+                          android:textOn="@string/hackmon_enabled"
+                          android:id="@+id/hackmon" android:checked="false">
             </ToggleButton>
         </LinearLayout>
 

@@ -28,11 +28,11 @@
     <dimen name="default_line_indicator_gap_width">4dp</dimen>
     <dimen name="default_line_indicator_stroke_width">1dp</dimen>
     <color name="default_line_indicator_selected_color">#FF33B5E5</color>
-    <color name="default_line_indicator_unselected_color">#FFBBBBBB</color>
+    <color name="default_line_indicator_unselected_color">#bbbbbb</color>
     <bool name="default_line_indicator_centered">true</bool>
 
     <dimen name="default_title_indicator_clip_padding">4dp</dimen>
-    <color name="default_title_indicator_footer_color">#FF33B5E5</color>
+    <color name="default_title_indicator_footer_color">#33b5e5</color>
     <dimen name="default_title_indicator_footer_line_height">2dp</dimen>
     <integer name="default_title_indicator_footer_indicator_style">2</integer>
     <dimen name="default_title_indicator_footer_indicator_height">4dp</dimen>

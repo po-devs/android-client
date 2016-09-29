@@ -514,7 +514,7 @@ public class SpectatingBattle {
                 int id = msg.readInt();
                 String name = msg.readString();
                 if (conf != null && conf.isInBattle(id)) {
-                    onOpponentDisconnect(come);
+                    onPlayerDisconnect(come, players[me].id == id);
                 } else {
                     if (come) {
                         addSpectator(id, name);
@@ -887,15 +887,15 @@ public class SpectatingBattle {
         }
     }
 
-    private void onOpponentDisconnect(boolean come) {
+    private void onPlayerDisconnect(boolean come, boolean player) {
         if (!come) {
             if (containsClause(Clauses.NoTimeOut.ordinal())) {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.disconnected_no_timeout) + "</font>"));
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[player ? me : opp].nick() + getString(R.string.disconnected_no_timeout) + "</font>"));
             } else {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.disconnected_timeout) + "</font>"));
+                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[player ? me : opp].nick() + getString(R.string.disconnected_timeout) + "</font>"));
             }
         } else {
-            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + getString(R.string.logged_back_in) + "</font>"));
+            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[player ? me : opp].nick() + getString(R.string.logged_back_in) + "</font>"));
         }
     }
 

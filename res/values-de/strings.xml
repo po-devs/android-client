@@ -191,7 +191,7 @@
     <string name="disconnected_timeout"> got disconnected! You can wait for their time to run out if you want the win.</string>
     <string name="logged_back_in"> logged back in and is ready to resume the battle!</string>
 
-    <string name="asset_localization"></string>
+    <string name="asset_localization">translation-de/</string>
     <string name="localize_assets_title">Namen übersetzen</string>
     <string name="localize_assets_summary">Nicht alle Sprachen werden unterstützt</string>
     <string name="language_settings">Spracheinsettlungen</string>
