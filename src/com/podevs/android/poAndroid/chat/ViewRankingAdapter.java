@@ -1,6 +1,7 @@
 package com.podevs.android.poAndroid.chat;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.podevs.android.poAndroid.R;
 
 public class ViewRankingAdapter extends ArrayAdapter<ViewRankingAdapter.Ranking> {
+    String searchName = "";
 
     public class Ranking {
         int rank;
@@ -26,8 +28,9 @@ public class ViewRankingAdapter extends ArrayAdapter<ViewRankingAdapter.Ranking>
         }
     }
 
-    public ViewRankingAdapter(Context context, int resource) {
+    public ViewRankingAdapter(Context context, int resource, String searchName) {
         super(context, resource);
+        this.searchName = searchName;
     }
 
     public void addRanking(int rank, String name, int points) {
@@ -49,10 +52,21 @@ public class ViewRankingAdapter extends ArrayAdapter<ViewRankingAdapter.Ranking>
             rank.setText(String.valueOf(ranking.rank));
 
             TextView name = (TextView) view.findViewById(R.id.name);
-            name.setText(ranking.name);
+            String s = ranking.name;
+            name.setText(s);
 
             TextView points = (TextView) view.findViewById(R.id.points);
             points.setText(String.valueOf(ranking.points));
+
+            if (ranking.name.equals(searchName)) {
+                rank.setTypeface(null, Typeface.BOLD);
+                name.setTypeface(null, Typeface.BOLD);
+                points.setTypeface(null, Typeface.BOLD);
+            } else {
+                rank.setTypeface(null, Typeface.NORMAL);
+                name.setTypeface(null, Typeface.NORMAL);
+                points.setTypeface(null, Typeface.NORMAL);
+            }
         }
         return view;
     }

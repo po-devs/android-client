@@ -563,7 +563,7 @@ public class ChatActivity extends Activity {
 					return null;
 				}
 				final IncomingChallenge challenge = netServ.challenges.poll();
-				View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
+				View challengedLayout = inflater.inflate(R.layout.player_info_dialog, (RelativeLayout)findViewById(R.id.player_info_dialog));
 				PlayerInfo opp = netServ.players.get(challenge.opponent);
 			
 			/* Like when activity resumed after a long time */
@@ -1006,7 +1006,7 @@ public class ChatActivity extends Activity {
 				View layout = inflater.inflate(R.layout.ranking_layout, (LinearLayout) findViewById(R.id.ranking_layout));
 
 				ListView list = (ListView) layout.findViewById(R.id.ranking_list);
-				ViewRankingAdapter adapter = new ViewRankingAdapter(this, R.layout.row_rank);
+				ViewRankingAdapter adapter = new ViewRankingAdapter(this, R.layout.row_rank, lastClickedPlayer.nick());
 				list.setAdapter(adapter);
 
 				EditText editRankerName = (EditText) layout.findViewById(R.id.editRankerName);
@@ -1022,6 +1022,7 @@ public class ChatActivity extends Activity {
 				editRankerName.setText(lastClickedPlayer.nick());
 				editRankerTier.setText(lastClickedPlayer.tierStandings.get(0).tier);
 
+				activeViewRanking.setupButton(netServ);
 				netServ.requestRanking(editRankerTier.getText().toString(), editRankerName.getText().toString());
 
 				builder.setOnCancelListener(new OnCancelListener() {
