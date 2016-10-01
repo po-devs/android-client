@@ -49,7 +49,7 @@ public class MessageListAdapter extends BaseAdapter {
         if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
 
 		//Linkify.addLinks(toAdd, Linkify.WEB_URLS);
-		Linkify.addLinks(toAdd, NetworkService.urlPattern , "http://");
+		Linkify.addLinks(toAdd, NetworkService.urlPattern, "");
 
         messageViews.add(toAdd);
         if (getCount() > Channel.HIST_LIMIT)

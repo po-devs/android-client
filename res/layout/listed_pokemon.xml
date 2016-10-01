@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/battle_border_button" >
+    style="?battleBorderButton" >
 
     <ImageView
         android:id="@+id/pokeViewIcon"
@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:background="@drawable/battle_border_transparent"
+        style="?battleBorderButtonTransparent"
         android:contentDescription="@string/team_poke_icon"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
@@ -29,7 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textColor="@color/poke_text_color"
             android:textIsSelectable="true"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -39,7 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/pokename"
-            android:textColor="@color/poke_text_color"
             android:textIsSelectable="false"
             android:textSize="14sp" />
 
@@ -48,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/hp"
-            android:textColor="@color/poke_text_color"
             android:textIsSelectable="true"
             android:textSize="10sp" />
 
@@ -57,7 +54,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item"
-            android:textColor="@color/poke_text_color"
             android:textIsSelectable="true"
             android:textSize="10sp" />
 

@@ -10,23 +10,17 @@
     </declare-styleable>
 
     <string-array name="themenames">
-        <item>App Theme</item>
+        <item>Light Theme</item>
         <item>Dark Theme</item>
-        <item>Holo Theme</item>
-        <item>Holo Light Theme</item>
     </string-array>
 
     <string-array name="themeentries">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
-        <item>3</item>
     </string-array>
 
     <array name="themeentriesid">
         <item>@style/AppTheme</item>
         <item>@style/DarkAppTheme</item>
-        <item>@android:style/Theme.Holo</item>
-        <item>@android:style/Theme.Holo.Light</item>
     </array>
 </resources>

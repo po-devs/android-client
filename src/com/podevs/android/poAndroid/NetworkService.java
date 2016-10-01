@@ -270,6 +270,17 @@ public class NetworkService extends Service {
 		}
 		return info.nick();
 	}
+
+
+	public int getChannelID(String name) {
+		Set<Integer> keys = channels.keySet();
+		for (Integer id : keys) {
+			if (channels.get(id).name().equals(name)) {
+				return id;
+			}
+		}
+		return -1;
+	}
 	
 	public boolean hasChannel(int cid) {
 		return channels.containsKey(cid);
@@ -805,13 +816,15 @@ public class NetworkService extends Service {
 				boolean starting = msg.readBool();
 				if (starting) {
 					int startingPage = msg.readInt();
-					int staringRank = msg.readInt();
+					int startingRank = msg.readInt();
 					int total = msg.readInt();
 					// Add Ranking window
+					chatActivity.updateViewRanking(startingPage, startingRank, total);
 				} else {
 					String name = msg.readString();
 					int points = msg.readInt();
 					// Add ranking
+					chatActivity.updateViewRanking(name, points);
 				}
 				break;
 			}

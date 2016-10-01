@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_height="?android:attr/listPreferredItemHeight"
+              android:layout_width="match_parent">
+
+    <TextView
+            android:layout_weight="3"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:singleLine="true"
+            android:paddingLeft="5dp"
+            android:id="@+id/rank"/>
+    <TextView
+            android:layout_weight="10"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:singleLine="true"
+            android:id="@+id/name"/>
+    <TextView
+            android:layout_weight="3"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/points"/>
+</LinearLayout>
