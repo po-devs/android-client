@@ -58,7 +58,8 @@ public class ChatActivity extends Activity {
 		AskForName,
 		AskForServerPass,
 		LoadTeam,
-		ControlPanel
+		ControlPanel,
+		ViewRanking
 	}
 
 	// public final static int SWIPE_TIME_THRESHOLD = 100;
@@ -1001,6 +1002,37 @@ public class ChatActivity extends Activity {
 
 				builder.setView(layout);
 				return builder.create();
+			}case ViewRanking: {
+				View layout = inflater.inflate(R.layout.ranking_layout, (LinearLayout) findViewById(R.id.ranking_layout));
+
+				ListView list = (ListView) layout.findViewById(R.id.ranking_list);
+				ViewRankingAdapter adapter = new ViewRankingAdapter(this, R.layout.row_rank);
+				list.setAdapter(adapter);
+
+				EditText editRankerName = (EditText) layout.findViewById(R.id.editRankerName);
+				EditText editRankerTier = (EditText) layout.findViewById(R.id.editRankerTier);
+
+				Button buttonLeft = (Button) layout.findViewById(R.id.buttonLeft);
+				Button buttonRight = (Button) layout.findViewById(R.id.buttonRight);
+				TextView currentPage = (TextView) layout.findViewById(R.id.current_page);
+				Button searchButton = (Button) layout.findViewById(R.id.rank_search_button);
+
+				activeViewRanking = new ViewRankingGroup(editRankerName, editRankerTier, buttonLeft, buttonRight, currentPage, searchButton, list, adapter);
+
+				editRankerName.setText(lastClickedPlayer.nick());
+				editRankerTier.setText(lastClickedPlayer.tierStandings.get(0).tier);
+
+				netServ.requestRanking(editRankerTier.getText().toString(), editRankerName.getText().toString());
+
+				builder.setOnCancelListener(new OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						removeDialog(id);
+					}
+				});
+
+				builder.setView(layout);
+				return builder.create();
 			}
 			default: {
 				return new Dialog(this);
@@ -1020,7 +1052,7 @@ public class ChatActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem findbattle = menu.findItem(R.id.findbattle);
 		if (netServ != null && netServ.findingBattle) {
-			findbattle.setTitle("Cancel Find Battle");
+			findbattle.setTitle(R.string.cancel_find_battle);
 		}
 		else {
 			findbattle.setTitle(R.string.find_a_battle);
@@ -1295,6 +1327,9 @@ public class ChatActivity extends Activity {
 				controlUser = lastClickedPlayer.nick();
 				showDialog(ChatDialog.ControlPanel.ordinal());
 				break;
+			case ViewRanking:
+				showDialog(ChatDialog.ViewRanking.ordinal());
+				break;
 		}
 		return true;
 	}
@@ -1435,6 +1470,16 @@ public class ChatActivity extends Activity {
 		super.onDestroy();
 	}
 
+	public void chatAppend(final String message) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				String newString = chatInput.getText().toString() + message;
+				chatInput.setText(newString);
+			}
+		});
+	}
+
 	public void updateControlPanel(final UserInfo info) {
 		runOnUiThread(new Runnable() {
 			@Override
@@ -1453,6 +1498,25 @@ public class ChatActivity extends Activity {
 		});
 	}
 
+	public void updateViewRanking(final int startingPage, final int startingRank, final int total) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activeViewRanking.updateViewRanking(startingPage, startingRank, total);
+			}
+		});
+	}
+
+	public void updateViewRanking(final String name, final int points) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activeViewRanking.updateViewRanking(name, points);
+			}
+		});
+	}
+
+	private ViewRankingGroup activeViewRanking;
 	private ControlPanelGroup activeControlPanel;
 	private String controlUser = "";
 }

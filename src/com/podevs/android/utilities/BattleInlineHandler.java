@@ -31,7 +31,7 @@ public class BattleInlineHandler implements Html.TagHandler {
                 // Opening Tag
                 attributes.clear();
                 try {
-                    getAtrributes(xmlReader);
+                    getAttributes(xmlReader);
 
                     String stringid = attributes.get("id");
                     if (stringid != null) {
@@ -67,7 +67,7 @@ public class BattleInlineHandler implements Html.TagHandler {
                 if (opening) {
                     attributes.clear();
 
-                    getAtrributes(xmlReader);
+                    getAttributes(xmlReader);
 
                     String stringcolor = attributes.get("color");
                     if (stringcolor != null) {
@@ -105,27 +105,59 @@ public class BattleInlineHandler implements Html.TagHandler {
             } else {
                 end((SpannableStringBuilder) output, StrikethroughSpan.class, new StrikethroughSpan());
             }
-        } else if (tag.equalsIgnoreCase("po")) {
-                if (opening) {
-                    attributes.clear();
+        } else if (tag.equalsIgnoreCase("posend")) {
+            if (opening) {
+                attributes.clear();
 
-                    getAtrributes(xmlReader);
+                getAttributes(xmlReader);
 
-                    String message = attributes.get("m");
-                    if (message != null) {
-                        start((SpannableStringBuilder) output, poSend(message));
-                    }
-                } else {
-                    String message = attributes.get("m");
-                    if (message != null) {
-                        end((SpannableStringBuilder) output, ClickableSpan.class, poSend(message));
-                    }
+                String message = attributes.get("m");
+                if (message != null) {
+                    start((SpannableStringBuilder) output, poSend(message));
                 }
+            } else {
+                String message = attributes.get("m");
+                if (message != null) {
+                    end((SpannableStringBuilder) output, ClickableSpan.class, poSend(message));
+                }
+            }
+        } else if (tag.equalsIgnoreCase("pojoin")) {
+            if (opening) {
+                attributes.clear();
+
+                getAttributes(xmlReader);
+
+                String message = attributes.get("c");
+                if (message != null) {
+                    start((SpannableStringBuilder) output, poJoin(message));
+                }
+            } else {
+                String message = attributes.get("c");
+                if (message != null) {
+                    end((SpannableStringBuilder) output, ClickableSpan.class, poJoin(message));
+                }
+            }
+        } else if (tag.equalsIgnoreCase("poappend")) {
+            if (opening) {
+                attributes.clear();
+
+                getAttributes(xmlReader);
+
+                String message = attributes.get("m");
+                if (message != null) {
+                    start((SpannableStringBuilder) output, poAppend(message));
+                }
+            } else {
+                String message = attributes.get("m");
+                if (message != null) {
+                    end((SpannableStringBuilder) output, ClickableSpan.class, poAppend(message));
+                }
+            }
         }
         //Log.e("TagHandler", "Unhandled " + tag);
     }
 
-    private void getAtrributes(XMLReader xmlReader) {
+    private void getAttributes(XMLReader xmlReader) {
         try {
             Field elementField = xmlReader.getClass().getDeclaredField("theNewElement");
             elementField.setAccessible(true);
@@ -163,6 +195,29 @@ public class BattleInlineHandler implements Html.TagHandler {
                 b.putInt(id);
                 b.putString(message);
                 netServ.socket.sendMessage(b, Command.SendMessage);
+            }
+        };
+    }
+
+    private ClickableSpan poJoin(final String channel) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Baos join = new Baos();
+                join.putString(channel);
+                if (netServ != null && netServ.socket != null && netServ.socket.isConnected())
+                    netServ.socket.sendMessage(join, Command.JoinChannel);
+            }
+        };
+    }
+
+    private ClickableSpan poAppend(final String message) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                if (netServ != null && netServ.chatActivity != null) {
+                    netServ.chatActivity.chatAppend(message);
+                }
             }
         };
     }

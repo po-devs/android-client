@@ -25,7 +25,7 @@
         <!-- Whether or not the indicators should be centered. -->
         <attr name="centered" />
         <!-- Color of the filled circle that represents the current page. -->
-        <attr name="fillColor" format="color" />
+        <!--<attr name="fillColor" format="color" /> -->
         <!-- Color of the filled circles that represents pages. -->
         <attr name="pageColor" format="color" />
         <!-- Orientation of the indicator. -->
