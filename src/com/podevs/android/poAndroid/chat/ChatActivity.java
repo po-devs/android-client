@@ -35,10 +35,7 @@ import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.StringUtilities;
 import com.podevs.android.utilities.TwoViewsArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -1010,7 +1007,7 @@ public class ChatActivity extends Activity {
 				list.setAdapter(adapter);
 
 				EditText editRankerName = (EditText) layout.findViewById(R.id.editRankerName);
-				EditText editRankerTier = (EditText) layout.findViewById(R.id.editRankerTier);
+				AutoCompleteTextView editRankerTier = (AutoCompleteTextView) layout.findViewById(R.id.editRankerTier);
 
 				Button buttonLeft = (Button) layout.findViewById(R.id.buttonLeft);
 				Button buttonRight = (Button) layout.findViewById(R.id.buttonRight);
@@ -1024,6 +1021,12 @@ public class ChatActivity extends Activity {
 
 				activeViewRanking.setupButton(netServ);
 				netServ.requestRanking(editRankerTier.getText().toString(), editRankerName.getText().toString());
+
+				Set<String> set = getSharedPreferences("tiers", Context.MODE_PRIVATE).getStringSet("list", null);
+
+				if (set != null) {
+					editRankerTier.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, set.toArray(new String[set.size()])));
+				}
 
 				builder.setOnCancelListener(new OnCancelListener() {
 					@Override
