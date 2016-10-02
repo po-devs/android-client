@@ -4,7 +4,10 @@
     <item
         android:id="@+id/megavolve"
         android:checkable="true"
-        android:title="@string/megavolve">
+        android:title="@string/megavolve"
+        android:icon="@drawable/ic_mega"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/close"

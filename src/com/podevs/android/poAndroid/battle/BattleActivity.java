@@ -708,6 +708,47 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     RelativeLayout whole = (RelativeLayout)teamLayout.findViewById(resources.getIdentifier("pokeViewLayout" + (i+1), "id", InfoConfig.pkgName));
                     pokeList[i] = new ListedPokemon(whole);
                     whole.setOnClickListener(battleListener);
+                    whole.setOnLongClickListener(new OnLongClickListener() {
+                        public boolean onLongClick(View v) {
+                            int id = v.getId();
+                            for(int i = 0; i < 6; i++) {
+                                if(id == pokeList[i].whole.getId()) {
+                                    BattlePoke poke = activeBattle.myTeam.pokes[i];
+                                    final Dialog simpleDialog = new Dialog(BattleActivity.this);
+                                    simpleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    simpleDialog.setContentView(R.layout.dynamic_info_layout);
+
+                                    TextView t = (TextView)simpleDialog.findViewById(R.id.nameTypeView);
+                                    t.setText(poke.nameAndType());
+                                    t = (TextView)simpleDialog.findViewById(R.id.statNamesView);
+                                    t.setText(battle.dynamicInfo[me].stats());
+                                    t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
+                                    t.setText(poke.printStats());
+                                    t = (TextView)simpleDialog.findViewById(R.id.statBoostView);
+//                                    String s = battle.dynamicInfo[me].boosts();
+//                                    if (!"\n\n\n\n".equals(s)) {
+//                                        t.setText(s);
+//                                    } else {
+//                                        t.setVisibility(View.GONE);
+//                                    }
+                                    simpleDialog.setCanceledOnTouchOutside(true);
+                                    simpleDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        public void onCancel(DialogInterface dialog) {
+                                            simpleDialog.dismiss();
+                                        }
+                                    });
+                                    simpleDialog.findViewById(R.id.dynamic_info_layout).setOnClickListener(new OnClickListener() {
+                                        public void onClick(View v) {
+                                            simpleDialog.dismiss();
+                                        }
+                                    });
+                                    simpleDialog.show();
+                                    String test = "";
+                                }
+                            }
+                            return true;
+                        }
+                    });
                 }
 
                 /* Well it helps you keep track what your opponent has seen!
@@ -1008,6 +1049,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             }
             menu.findItem(R.id.megavolve).setVisible(activeBattle.allowMega);
             menu.findItem(R.id.megavolve).setChecked(megaClicked);
+
+            if (megaClicked) {
+                menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            } else {
+                menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            }
         }
         return true;
     }
@@ -1018,6 +1065,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             case R.id.megavolve:
                 item.setChecked(!item.isChecked());
                 megaClicked = item.isChecked();
+                if (megaClicked) {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                } else {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                }
                 break;
             case R.id.cancel:
                 netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);
