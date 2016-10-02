@@ -374,6 +374,7 @@ public class ChatActivity extends Activity {
 					netServ.loadJoinedChannelSettings();
 				}
 			}, 5, TimeUnit.SECONDS);
+			ChatActivity.this.invalidateOptionsMenu();
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -797,7 +798,7 @@ public class ChatActivity extends Activity {
 				}
 				return new TierAlertDialog(this, netServ.superTier);
 			} case PlayerInfo: {
-				View layout = inflater.inflate(R.layout.player_info_dialog, (LinearLayout)findViewById(R.id.player_info_dialog));
+				View layout = inflater.inflate(R.layout.player_info_dialog, (RelativeLayout)findViewById(R.id.player_info_dialog));
 				// ImageView[] pPokeIcons = new ImageView[6];
 				TextView pInfo, pName;
 				ListView ratings;
@@ -1049,6 +1050,9 @@ public class ChatActivity extends Activity {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.chatoptions, menu);
+		if (netServ != null) {
+			menu.findItem(R.id.openPM).setVisible(!(netServ.pms.count() == 0));
+		}
 		return true;
 	}
 

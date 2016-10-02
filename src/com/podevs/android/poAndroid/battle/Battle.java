@@ -249,8 +249,10 @@ public class Battle extends SpectatingBattle {
 
 			clicked = false;
 
-			if (activity != null)
+			if (activity != null) {
 				activity.updateButtons();
+				activity.invalidateOptionsMenu();
+			}
 			break;
 		} case CancelMove: {
 			clicked = false;

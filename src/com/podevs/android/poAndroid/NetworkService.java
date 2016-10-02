@@ -281,6 +281,19 @@ public class NetworkService extends Service {
 		}
 		return -1;
 	}
+
+	public int inChannelIndex(String name) {
+		ListIterator<Channel> iterator = joinedChannels.listIterator();
+		int i = 0;
+		while (iterator.hasNext()) {
+			Channel c = iterator.next();
+			if (c.name().equalsIgnoreCase(name)) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
 	
 	public boolean hasChannel(int cid) {
 		return channels.containsKey(cid);
@@ -1383,10 +1396,18 @@ public class NetworkService extends Service {
 	}
 
 	public void joinChannel(String channelName) {
-		Baos join = new Baos();
-		join.putString(channelName);
-		if (socket.isConnected())
-			socket.sendMessage(join, Command.JoinChannel);
+		int i = inChannelIndex(channelName);
+		if (i == -1) {
+			Baos join = new Baos();
+			join.putString(channelName);
+			if (socket.isConnected())
+				socket.sendMessage(join, Command.JoinChannel);
+		} else {
+			Channel c = joinedChannels.get(i);
+			joinedChannels.remove(c);
+			joinedChannels.addFirst(c);
+			updateJoinedChannels();
+		}
 	}
 
 	public boolean channelNameTagger(String channelName) {
