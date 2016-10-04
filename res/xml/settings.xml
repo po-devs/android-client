@@ -80,6 +80,7 @@
         <ListPreference
                 android:key="theme_list"
                 android:title="Teambuilder theme"
+                android:defaultValue="@style/AppTheme"
                 android:entries="@array/themenames"
                 android:entryValues="@array/themeentries">
         </ListPreference>

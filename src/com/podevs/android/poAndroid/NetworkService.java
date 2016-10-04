@@ -1178,7 +1178,9 @@ public class NetworkService extends Service {
 				}
 				if (flags.readBool()) {
 					ArrayList<String> tiers = msg.readQStringList();
-					chatActivity.makeToast("Loaded " + tiers.get(0), "short");
+					if (tiers != null) {
+						chatActivity.makeToast("Loaded " + tiers.get(0), "short");
+					}
 				}
 			break;
 
