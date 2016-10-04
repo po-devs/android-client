@@ -65,6 +65,10 @@ public class ListedPokemon {
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
 		      		"drawable", InfoConfig.pkgName));
+			if (poke.move(j) instanceof BattleMove) {
+				if (((BattleMove) poke.move(j)).currentPP <= 0){}
+					// Grey out
+			}
 		}
 	}
 	
