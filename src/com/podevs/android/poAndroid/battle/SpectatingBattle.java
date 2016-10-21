@@ -411,7 +411,7 @@ public class SpectatingBattle {
                     // Print nothing
                 } else if (status > Status.Fine.poValue() && status <= Status.Poisoned.poValue()) {
                     writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(status) + tu(
-                            pokes[player][slot].nick + statusChangeMessages[status - 1 +
+                            pokes[player][slot].nick + " " + statusChangeMessages[status - 1 +
                                     (status == Status.Poisoned.poValue() && multipleTurns ? 1 : 0)] + "</font>")));
                 } else if (status == Status.Confused.poValue()) {
 				/* The reason we need to handle confusion separately is because
@@ -419,7 +419,7 @@ public class SpectatingBattle {
 				 * enum, so confusion does not correspond to the same value in the above
 				 * string array as its enum value. */
                     writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(status) + tu(
-                            pokes[player][slot].nick + statusChangeMessages[status] + "</font>")));
+                            pokes[player][slot].nick + " " + statusChangeMessages[status] + "</font>")));
                 }
                 break;
             }
@@ -484,7 +484,7 @@ public class SpectatingBattle {
                         break;
                     case PrevFrozen:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Frozen.poValue()) + tu(
-                                pokes[player][slot].nick + getString(R.string.prev_frozen_status_message) + "</font>")));
+                                pokes[player][slot].nick + " " + getString(R.string.prev_frozen_status_message) + "</font>")));
                         break;
                     case FreeFrozen:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Frozen.poValue()) + tu(

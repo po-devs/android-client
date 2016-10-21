@@ -1488,6 +1488,15 @@ public class ChatActivity extends Activity {
 		});
 	}
 
+	public void chatSetMsg(final String message) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				chatInput.setText(message);
+			}
+		});
+	}
+
 	public void updateControlPanel(final UserInfo info) {
 		runOnUiThread(new Runnable() {
 			@Override

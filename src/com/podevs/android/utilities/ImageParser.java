@@ -3,11 +3,15 @@ package com.podevs.android.utilities;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Base64;
+import org.xml.sax.Attributes;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -21,7 +25,7 @@ import java.util.regex.Pattern;
  * Custom Html.ImageGetter
  */
 
-public class ImageParser implements Html.ImageGetter {
+public class ImageParser implements MyHtml.ImageGetter {
     Context context;
     final static Pattern urlPattern =  Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
 
@@ -31,7 +35,7 @@ public class ImageParser implements Html.ImageGetter {
     }
 
     @Override
-    public Drawable getDrawable(String src) {
+    public Drawable getDrawable(String src, Attributes attributes) {
         Draw drawable = new Draw();
         // Handle external resources
         if (urlPattern.matcher(src).matches()) {
@@ -46,6 +50,24 @@ public class ImageParser implements Html.ImageGetter {
         } else {
             // Handle local resources
             drawable = (new ResourceParser(context)).parseText(src);
+        }
+        if (drawable != null) {
+            try {
+                String width = attributes.getValue("width");
+                String height = attributes.getValue("height");
+                if (width != null && height != null) {
+                    int iWidth = Integer.parseInt(width);
+                    int iHeight = Integer.parseInt(height);
+//                    drawable.drawable = new ScaleDrawable(drawable, 0, iWidth, iHeight).getDrawable();
+                    drawable.drawable.setBounds(0, 0, iWidth, iHeight);
+                    String background = attributes.getValue("background");
+                    if (background != null) {
+                        drawable.drawable.setColorFilter(Color.parseColor(background), PorterDuff.Mode.DST_OVER);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return drawable;
     }

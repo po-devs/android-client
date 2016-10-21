@@ -26,3 +26,7 @@ tests/.settings/
 tests/build.xml
 tests/ant.properties
 *.iml
+proguard_logs/dump.txt
+proguard_logs/usage.txt
+proguard_logs/mapping.txt
+proguard_logs/seeds.txt
