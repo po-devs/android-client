@@ -21,6 +21,7 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	// byte statusCount = 0;
 	// byte originalStatusCount = 0;
 	byte nature = 0;
+	byte hiddenPower = 0;
 	byte happiness = 0;
 	public byte teamNum;
 	Gen gen;
@@ -41,6 +42,8 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		level = msg.readByte();
 		item = msg.readShort();
 		ability = msg.readShort();
+		nature = msg.readByte();
+		hiddenPower = msg.readByte();
 		happiness = msg.readByte();
 		pokeName = PokemonInfo.name(uID);
 		types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
@@ -77,6 +80,8 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		b.write(level);
 		b.putShort(item);
 		b.putShort(ability);
+		b.write(nature);
+		b.write(hiddenPower);
 		b.write(happiness);
 		for(int i = 0; i < 5; i++)
 			b.putShort(stats[i]);
@@ -160,4 +165,5 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public int gender() {
 		return gender;
 	}
+
 }

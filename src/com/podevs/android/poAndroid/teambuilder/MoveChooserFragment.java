@@ -15,6 +15,7 @@ import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.poAndroid.pokeinfo.GenInfo;
 
 import java.util.ArrayList;
 
@@ -112,8 +113,12 @@ public class MoveChooserFragment extends Fragment {
 					int type = lw.getCheckedItemPosition() + 1;
 					
 					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
-					
-					if (config != null) {
+
+					if (poke().gen().num >= 7 && poke().level() == 100) {
+						builder.create().show();
+						return;
+					}
+					else if (config != null) {
 							poke().DVs = config;
 						if (listener != null) {
 							listener.onMovesetChanged(true);

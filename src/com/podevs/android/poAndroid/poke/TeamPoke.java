@@ -161,7 +161,9 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 			if (id.pokeNum == 487) {
 				item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
 			} else if (id.pokeNum == 493) { /* Arceus */
-				item =  id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
+				item = id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
+			} else if (id.pokeNum == 773) { /* Silvally */
+				item = id.subNum != 0 ? ItemInfo.memoryChipForType(id.subNum) : 15;
 			}
 
 			if (fullReset) {
@@ -371,6 +373,9 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 		} else if (uID.pokeNum == 493 && !isHackmon) {
 			/* Arceus */
 			setNum(new UniqueID(uID.pokeNum, ItemInfo.plateType(item)));
+		} else if (uID.pokeNum == 773 && !isHackmon) {
+			/* Silvally */
+			setNum(new UniqueID(uID.pokeNum, ItemInfo.memoryType(item)));
 		}
 	}
 
