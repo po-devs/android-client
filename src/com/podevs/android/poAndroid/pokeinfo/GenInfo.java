@@ -87,7 +87,7 @@ public class GenInfo {
 			path = "db/gens/versions.txt";
 		}
 
-		InfoFiller.uIDfill(path, new InfoFiller.Filler() {
+		InfoFiller.uIDfill(path, new InfoFiller.Filler(){
 			@Override
 			public void fill(int i, String s) {
 				int gen = i % 65536;
