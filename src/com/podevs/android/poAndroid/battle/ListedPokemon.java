@@ -45,12 +45,16 @@ public class ListedPokemon {
 	
 	public void update(Poke poke, boolean canSwitch) {
 		icon.setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID()));
-		gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
+		if (poke.gen().num >= 2) {
+			gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
+		}
 		itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
 		name.setText(poke.nick());
 		hp.setText(poke.currentHP() + "/" + poke.totalHP());
 		item.setText(ItemInfo.name(poke.item()));
-		ability.setText(AbilityInfo.name(poke.ability()));
+		if (poke.gen().num >= 3) {
+			ability.setText(AbilityInfo.name(poke.ability()));
+		}
 		for (int j = 0; j < 4; j++) {
 			moves[j].setText(poke.move(j).toString());
 			moves[j].setShadowLayer((float)1, 1, 1, InfoConfig.resources.getColor(
