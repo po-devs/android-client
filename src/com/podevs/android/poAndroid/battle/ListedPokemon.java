@@ -47,11 +47,11 @@ public class ListedPokemon {
 		icon.setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID()));
 		if (poke.gen().num >= 2) {
 			gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
+			item.setText(ItemInfo.name(poke.item()));
+			itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
 		}
-		itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
 		name.setText(poke.nick());
 		hp.setText(poke.currentHP() + "/" + poke.totalHP());
-		item.setText(ItemInfo.name(poke.item()));
 		if (poke.gen().num >= 3) {
 			ability.setText(AbilityInfo.name(poke.ability()));
 		}
