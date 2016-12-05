@@ -58,6 +58,7 @@ public class PokemonInfo {
 		short moves[] = null;
 		String moveString = null;
 		byte stats[] = null;
+		boolean isReleased = false;
 	}
 
 	/**
@@ -200,7 +201,7 @@ public class PokemonInfo {
 	 */
 
 	public static int type1(UniqueID uID, int gen) {
-		testLoad(gen);
+		loadTypes(gen);
 
 		int type = -1;
 		try {
@@ -224,7 +225,7 @@ public class PokemonInfo {
 	 */
 
 	public static int type2(UniqueID uID, int gen) {
-		testLoad(gen);
+		loadTypes(gen);
 
 		int type = -1;
 		try {
@@ -266,6 +267,12 @@ public class PokemonInfo {
 	 * @param sub sub generation
 	 * @return short[] of moves for uID
 	 */
+
+	public static boolean isReleased(UniqueID uId, int gen, int sub) {
+		loadReleased(gen);
+
+		return pokemons[gen].get(uId.hashCode()).isReleased;
+	}
 
 	public static short[] moves(UniqueID uId, int gen, int sub) {
 		testLoadMoves(gen, sub);
@@ -406,7 +413,12 @@ public class PokemonInfo {
 					curIndex = nextIndex+1;
 				}
 
-				pokemons[gen].get(i).stats = stats;
+				try {
+					pokemons[gen].get(i).stats = stats;
+				} catch (Exception e) {
+					int q = i;
+					int r = q;
+				}
 			}
 		});
 	}
@@ -618,13 +630,40 @@ public class PokemonInfo {
 			pokeCountg = new int[GenInfo.genMax()+1];
 		}
 		if (pokemons[gen].indexOfKey(1) == (byte)-1) {
-			loadTypes(gen);
+			initialLoad(gen);
 		}
 	}
 
 	/**
 	 * Fill SparseArrays involving names
 	 */
+
+	private static void initialLoad(int gen) {
+		InfoFiller.uIDfill("db/pokes/" + gen  + "G/released.txt", new Filler() {
+			public void fill(int i, String s) {
+				if (i < 16000 && i > pokeCountg[gen]) {
+					pokeCountg[gen] = i;
+				}
+			}
+		}, true);
+		/* Load all the pokemon and prepare the "data containers" */
+		/* Need to use pokemons.txt instead of released.txt to handle unreleased pokes later */
+		InfoFiller.uIDfill("db/pokes/pokemons.txt", new InfoFiller.OptionsFiller() {
+			public void fill(int i, String s, String options) {
+				if ((i % 65536) <= pokeCountg[gen]) {
+					pokemons[gen].put(i, new PokeGenData());
+				}
+			}
+		});
+	}
+
+	private static void loadReleased(int gen) {
+		InfoFiller.uIDfill("db/pokes/" + gen  + "G/released.txt", new Filler() {
+			public void fill(int i, String s) {
+				pokemons[gen].get(i).isReleased = true;
+			}
+		}, true);
+	}
 
 	private static void loadPokeNames() {
 		if (pokeNames != null) {
@@ -675,16 +714,6 @@ public class PokemonInfo {
 	 */
 
 	private static void loadTypes(final int gen) {
-		pokeCountg[gen] = 0;
-		/* First load all the released pokemon and prepare the "data containers" */
-		InfoFiller.uIDfill("db/pokes/" + gen  + "G/released.txt", new Filler() {
-			public void fill(int i, String s) {
-				pokemons[gen].put(i, new PokeGenData());
-				if (i < 16000 && i > pokeCountg[gen]) {
-					pokeCountg[gen] = i;
-				}
-			}
-		}, true);
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
