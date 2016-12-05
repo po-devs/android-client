@@ -104,7 +104,7 @@ public class MoveChooserFragment extends Fragment {
 	}
 
 	protected void buildHiddenPowerDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.hiddenpower_choice)
 			.setSingleChoiceItems(R.array.hp_array, poke().hiddenPowerType()-1, null)
 			.setPositiveButton(R.string.ok, new OnClickListener() {
