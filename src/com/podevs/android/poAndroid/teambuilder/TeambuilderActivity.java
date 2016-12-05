@@ -109,7 +109,11 @@ public class TeambuilderActivity extends FragmentActivity {
 		for (int i = 0; i < len; i++)
 			resIds[i] = ar.getResourceId(i, 0);
 		ar.recycle();
-		Themes.themeTeambuilder = resIds[ii];
+		try {
+			Themes.themeTeambuilder = resIds[ii];
+		} catch (Exception e) {
+			Themes.themeTeambuilder = R.style.AppTheme;
+		}
 		setTheme(Themes.themeTeambuilder);
         super.onCreate(savedInstanceState);
 
