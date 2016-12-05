@@ -413,12 +413,7 @@ public class PokemonInfo {
 					curIndex = nextIndex+1;
 				}
 
-				try {
-					pokemons[gen].get(i).stats = stats;
-				} catch (Exception e) {
-					int q = i;
-					int r = q;
-				}
+				pokemons[gen].get(i).stats = stats;
 			}
 		});
 	}
