@@ -336,13 +336,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     return;
                 synchronized (battle.histDelta) {
                     infoView.append(battle.histDelta);
-                    if (battle.histDelta.length() != 0 || true) {
                         infoScroll.post(new Runnable() {
                             public void run() {
                                 infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
                             }
                         });
-                    }
                     infoScroll.invalidate();
                     battle.hist.append(battle.histDelta);
                     battle.histDelta.clear();
@@ -684,9 +682,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 			/* Is it a spectating battle or not? */
             try {
                 activeBattle = (Battle) battle;
-            } catch (ClassCastException ex) {
-
-            }
+            } catch (ClassCastException ex) {}
 
             if (isSpectating()) {
 				/* If it's a spectating battle, we remove the info view's bottom margin */
@@ -724,7 +720,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                                     t.setText(battle.dynamicInfo[me].stats());
                                     t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
                                     t.setText(poke.printStats());
-                                    t = (TextView)simpleDialog.findViewById(R.id.statBoostView);
+//                                    t = (TextView)simpleDialog.findViewById(R.id.statBoostView);
 //                                    String s = battle.dynamicInfo[me].boosts();
 //                                    if (!"\n\n\n\n".equals(s)) {
 //                                        t.setText(s);
@@ -743,7 +739,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                                         }
                                     });
                                     simpleDialog.show();
-                                    String test = "";
                                 }
                             }
                             return true;
@@ -1111,9 +1106,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         if (netServ != null && netServ.isBattling() && battle.shouldShowPreview) {
             try {
                 Thread.sleep(200);
-            } catch (Exception e) {
-
-            }
+            } catch (Exception e) {}
             showDialog(BattleDialog.RearrangeTeam.ordinal());
         }
     }

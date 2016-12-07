@@ -39,10 +39,7 @@ public class ImageParser implements Html.ImageGetter {
             task.execute(src);
             try {
                 drawable = task.get(15L, TimeUnit.SECONDS); // Wait 15 Seconds for call.
-            } catch (InterruptedException e) {
-            } catch (TimeoutException e) {
-            } catch (ExecutionException e) {
-            }
+            } catch (InterruptedException|TimeoutException|ExecutionException e) {}
         } else {
             // Handle local resources
             drawable = (new ResourceParser(context)).parseText(src);
@@ -124,8 +121,7 @@ public class ImageParser implements Html.ImageGetter {
                     src = src.replace("data:image/" , "").replace("x-png;base64,", "").replace("gif;base64,", "").replace("png;base64,", "");
                     src = "base64:" + src;
                 }
-            } catch (StringIndexOutOfBoundsException e) {
-            }
+            } catch (StringIndexOutOfBoundsException e) {}
             return src;
         }
     }
