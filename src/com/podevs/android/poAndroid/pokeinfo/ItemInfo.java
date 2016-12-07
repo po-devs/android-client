@@ -180,7 +180,7 @@
         private static void loadUsefulItems() {
             final ArrayList<Integer> items = new ArrayList<Integer>();
 
-            InfoFiller.fill("db/items/item_useful.txt", new Filler() {
+            InfoFiller.plainFill("db/items/item_useful.txt", new Filler() {
                 public void fill(int i, String s) {
                     items.add(Integer.valueOf(i));
                 }
@@ -195,7 +195,7 @@
 
             final ArrayList<Integer> berries = new ArrayList<Integer>();
 
-            InfoFiller.fill("db/items/berries.txt", new Filler() {
+            InfoFiller.plainFill("db/items/berry_useful.txt", new Filler() {
                 public void fill(int i, String s) {
                     berries.add(8000+Integer.valueOf(i));
                 }
