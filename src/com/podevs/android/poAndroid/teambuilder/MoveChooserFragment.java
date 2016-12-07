@@ -111,17 +111,15 @@ public class MoveChooserFragment extends Fragment {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
-					
+
 					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 
-					if (poke().gen().num >= 7 && poke().level() == 100) {
-						builder.create().show();
-						return;
-					}
-					else if (config != null) {
+					if (poke().gen().num < 7) {
+						if (config != null) {
 							poke().DVs = config;
-						if (listener != null) {
-							listener.onMovesetChanged(true);
+							if (listener != null) {
+								listener.onMovesetChanged(true);
+							}
 						}
 					}
 				}
