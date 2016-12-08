@@ -2,10 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/zmove"
+        android:checkable="true"
+        android:title="@string/zmove"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText">
+        <!--android:icon="@drawable/ic_zmove"-->
+    </item>
+    <item
         android:id="@+id/megavolve"
         android:checkable="true"
         android:title="@string/megavolve"
-        android:icon="@drawable/ic_mega"
+        android:icon="@drawable/ic_mega_grey"
         android:visible="false"
         android:showAsAction="ifRoom|withText">
     </item>

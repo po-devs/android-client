@@ -135,6 +135,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     boolean useAnimSprites = true;
     boolean megaClicked = false;
+    boolean zmoveClicked = false;
     BattleMove lastClickedMove;
 
     Resources resources;
@@ -287,7 +288,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
         struggleLayout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked), Command.BattleMessage); // This is how you struggle
+                netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage); // This is how you struggle
             }
         });
 
@@ -585,7 +586,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 if (!checkStruggle()) {
                     for (int i = 0; i < 4; i++) {
                         if (activeBattle.allowAttack && !activeBattle.clicked) {
-                            setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
+                            if (zmoveClicked) {
+                                setAttackButtonEnabled(i, activeBattle.allowZMoves[i]);
+                            }
+                            else {
+                                setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
+                            }
                         }
                         else {
                             setAttackButtonEnabled(i, false);
@@ -945,7 +951,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             // Check to see if click was on attack button
             for(int i = 0; i < 4; i++)
                 if(id == attackLayouts[i].getId())
-                    netServ.socket.sendMessage(activeBattle.constructAttack((byte)i, megaClicked), Command.BattleMessage);
+                    netServ.socket.sendMessage(activeBattle.constructAttack((byte)i, megaClicked, zmoveClicked), Command.BattleMessage);
             // Check to see if click was on pokelist button
             for(int i = 0; i < 6; i++) {
                 if(id == pokeList[i].whole.getId()) {
@@ -1046,6 +1052,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
+            menu.findItem(R.id.zmove).setVisible(activeBattle.allowZMove);
+            menu.findItem(R.id.zmove).setChecked(zmoveClicked);
+            if (zmoveClicked) {
+                menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            } else {
+                menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            }
         }
         return true;
     }
@@ -1053,13 +1066,20 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.zmove:
+                item.setChecked(!item.isChecked());
+                zmoveClicked = item.isChecked();
+                // call function to change attack button here
+                break;
             case R.id.megavolve:
                 item.setChecked(!item.isChecked());
                 megaClicked = item.isChecked();
                 if (megaClicked) {
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                    //item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                    item.setIcon(R.drawable.ic_mega);
                 } else {
-                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                    //item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                    item.setIcon(R.drawable.ic_mega_grey);
                 }
                 break;
             case R.id.cancel:
