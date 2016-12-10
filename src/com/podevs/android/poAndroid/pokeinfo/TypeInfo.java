@@ -53,13 +53,48 @@ public class TypeInfo {
 		}
 	}
 
-	public byte getEffectiveness(byte gen, byte type1, byte type2) {
+	public int getEffectiveness(int in, byte gen, byte type1, byte type2) {
 		loadTypeEffectiveness();
-		return effectiveness[gen-1][type1][type2];
+		/*
+		 * 0 = No effect
+		 * 1 = Half Damage
+		 * 2 = Normal Damage
+		 * 4 = Double Damage
+		 */
+		switch (effectiveness[gen-1][type1][type2]) {
+			case 0: return 0;
+			case 1: return in/2;
+			case 2: return in;
+			case 4: return in*2;
+		}
+		return -1;
 	}
 
-	public byte getEffectiveness(byte gen, byte type1, byte type2, byte type3) {
+	public int getEffectiveness(int in, byte gen, byte type1, byte type2, byte type3) {
 		loadTypeEffectiveness();
-		return (byte) (effectiveness[gen-1][type1][type2] * effectiveness[gen-1][type1][type3]);
+		/*
+		 * 0 * 0 = 0 No effect
+		 * 0 * 1 = 0 No effect
+		 * 0 * 2 = 0 No effect
+		 * 0 * 4 = 0 No effect
+		 *
+		 * 1 * 1 = 1 1/4x Damage
+		 * 1 * 2 = 2 1/2x Damage
+		 * 1 * 4 = 4 Normal Damage
+		 *
+		 * 2 * 2 = 4 Normal Damage
+		 * 2 * 4 = 8 2x damage
+		 *
+		 * 4 * 4 = 16 4x damage
+		 */
+		switch (effectiveness[gen-1][type1][type2] * effectiveness[gen-1][type1][type3]) {
+			case 0: return 0;
+			case 1: return in/4;
+			case 2: return in/2;
+			case 4: return in;
+			case 8: return in*2;
+			case 16: return in*4;
+		}
+		return -1;
 	}
 }

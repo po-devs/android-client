@@ -70,7 +70,6 @@ public class NetworkService extends Service {
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
 	private ImageParser imageParser;
-	private BattleInlineHandler tagHandler;
 	private static Pattern hashTagPattern;
 	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
 	private Matcher hashTagMatcher;
@@ -178,7 +177,7 @@ public class NetworkService extends Service {
 					if (chan.players.contains(players.get(desc.p1)) || chan.players.contains(players.get(desc.p2))) {
 						// needs better method.
 						// Maybe create an array of channels to check?
-						CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
+						CharSequence message = MyHtml.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
 						chan.writeToHistSmall(message);
 					}
 				}
@@ -390,7 +389,6 @@ public class NetworkService extends Service {
 		loadSettings();
 		hashTagPattern = Pattern.compile("(#\\S*\\s??)");
 		imageParser = new ImageParser(this);
-		tagHandler = new BattleInlineHandler(this);
 	}
 
 	public static SharedPreferences POPreferences = null;
@@ -777,7 +775,7 @@ public class NetworkService extends Service {
 						for (Channel chan : channels.values()) {
 							if (chan.joined && chan.channelEvents) {
 								if (chan.players.contains(p) || chan.players.contains(oldPlayer)) {
-									CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
+									CharSequence message = MyHtml.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
 									chan.writeToHistSmall(message);
 								}
 							}
@@ -853,28 +851,11 @@ public class NetworkService extends Service {
 			int pId = 0;
 			if (hasChannel) {
 				chan = channels.get(msg.readInt());
-				tagHandler.currentChannel = chan;
 			}
 			if (hasId) {
 				player = players.get(pId = msg.readInt());
 			}
 			CharSequence message = msg.readString();
-			if (isHtml) {
-				while (message.toString().contains("<a href='po:watch/")) {
-					// THIS IS TEMPORARY //
-					String stringified = message.toString();
-					int openingtag = stringified.indexOf("<a href='po:watch/");
-					int closingtag = stringified.indexOf("</a>", openingtag);
-					String part1 = stringified.substring(0, openingtag);
-					String part2 = "<watch id='";
-					String part3 = stringified.substring(openingtag + "<a href='po:watch/".length(), closingtag);
-					String part4 = "</watch>";
-					String part5 = stringified.substring(closingtag + "</a>".length());
-					stringified = part1 + part2 + part3 + part4 + part5;
-					message = stringified;
-					// THIS IS TEMPORARY //
-				}
-			}
 			if (hasId) {
 				if (ignoreList.contains(pId)) {
 					break;
@@ -894,7 +875,7 @@ public class NetworkService extends Service {
 					beg += name + ": </b></font>";
 				}
 				if (isHtml) {
-					message = Html.fromHtml(beg + message);
+					message = MyHtml.fromHtml(beg + message);
 				} else {
 					if (chatSettings.flashing) {
 						if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
@@ -902,7 +883,7 @@ public class NetworkService extends Service {
 							Pattern myName = Pattern.compile("(?<!\\S)(" + this.me.nick.toLowerCase() + ")(?!\\w)");
 							Matcher myMatcher = myName.matcher(message.toString().toLowerCase());
 							if (myMatcher.find()) {
-								message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+								message = MyHtml.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 								int left = (String.valueOf(message)).toLowerCase().indexOf(this.me.nick.toLowerCase());
 								int right = this.me.nick.length() + left;
 								if (!hasChannel) {
@@ -913,7 +894,6 @@ public class NetworkService extends Service {
 										Iterator<Channel> it = joinedChannels.iterator();
 										while (it.hasNext()) {
 											Channel next = it.next();
-											tagHandler.currentChannel = next;
 											next.writeToHist(message, left, right, chatSettings.color, false, null);
 										}
 									}
@@ -946,17 +926,17 @@ public class NetworkService extends Service {
 							}
 						}
 					}
-					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+					message = MyHtml.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 				}
 			} else {
 				if (isHtml) {
-					message = Html.fromHtml((String)message, imageParser, tagHandler);
+					message = MyHtml.fromHtml((String)message, imageParser, null, chan, this);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');
 					
 					if (str.startsWith("*** ")) {
-						message = Html.fromHtml("<font color='#FF00FF'>" + str + "</font>");
+						message = MyHtml.fromHtml("<font color='#FF00FF'>" + str + "</font>");
 					} else if (index != -1) {
 						String firstPart = str.substring(0, index);
 						String secondPart;
@@ -974,7 +954,7 @@ public class NetworkService extends Service {
 							color = "orange";
 						}
 						
-						message = Html.fromHtml("<font color='" + color + "'><b>" + firstPart +
+						message = MyHtml.fromHtml("<font color='" + color + "'><b>" + firstPart +
 								": </b></font>" + secondPart);
 					}
 				}
@@ -988,7 +968,6 @@ public class NetworkService extends Service {
 					Iterator<Channel> it = joinedChannels.iterator();
 					while (it.hasNext()) {
 						Channel next = it.next();
-						tagHandler.currentChannel = next;
 						next.writeToHist(message, false, null);
 					}
 				}
@@ -1150,7 +1129,7 @@ public class NetworkService extends Service {
 				}
 
 				if (battleDesc < 2) {
-					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
+					joinedChannels.peek().writeToHist(MyHtml.fromHtml("<b><i>" +
 							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
 							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"), false, null);
 				}
@@ -1313,8 +1292,7 @@ public class NetworkService extends Service {
 				Iterator<Channel> it = joinedChannels.iterator();
 				while (it.hasNext()) {
 					Channel next = it.next();
-					tagHandler.currentChannel = next;
-					next.writeToHist(Html.fromHtml(message), false, null);
+					next.writeToHist(MyHtml.fromHtml(message), false, null);
 				}
 				break;
 		}case PlayerBan: {
@@ -1330,8 +1308,7 @@ public class NetworkService extends Service {
 				Iterator<Channel> it = joinedChannels.iterator();
 				while (it.hasNext()) {
 					Channel next = it.next();
-					tagHandler.currentChannel = next;
-					next.writeToHist(Html.fromHtml(message), false, null);
+					next.writeToHist(MyHtml.fromHtml(message), false, null);
 				}
 				break;
 		}/*  case AndroidID: {
@@ -1781,6 +1758,47 @@ public class NetworkService extends Service {
 		Baos b = new Baos();
 		b.putString(name);
 		socket.sendMessage(b, Command.CPUnban);
+	}
+
+	public void poIgnore(String idOrName) {
+		if (StringUtilities.isNumeric(idOrName)) {
+			Integer id = Integer.parseInt(idOrName);
+			ignoreList.add(id);
+		} else {
+			Integer id = getID(idOrName);
+			ignoreList.add(id);
+		}
+	}
+
+	public void poWatchPlayer(String idOrName) {
+		int id = 0;
+		if (StringUtilities.isNumeric(idOrName)) {
+			id = Integer.parseInt(idOrName);
+		} else {
+			id = getID(idOrName);
+		}
+		Set<Integer> keys = activeBattles.keySet();
+		for (Integer battleID : keys) {
+			Battle battle = activeBattle(battleID);
+			if (battle.players[0].id == id || battle.players[1].id == id) {
+				startWatching(battleID);
+				break;
+			}
+		}
+	}
+
+	public void poPM(String idOrName) {
+		int id = 0;
+		if (StringUtilities.isNumeric(idOrName)) {
+			id = Integer.parseInt(idOrName);
+		} else {
+			id = getID(idOrName);
+		}
+		createPM(id);
+
+		Intent intent = new Intent(chatActivity, PrivateMessageActivity.class);
+		intent.putExtra("playerId", id);
+		startActivity(intent);
 	}
 
     public void loadJoinedChannelSettings() {

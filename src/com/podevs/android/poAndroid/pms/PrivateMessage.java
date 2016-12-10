@@ -22,7 +22,7 @@ public class PrivateMessage {
 	}
 
 	public void addMessage(PlayerInfo info, String message, Boolean timeStamp) {
-		if (info.id == this.id() && info.nick() != "???") {
+		if (info.id == this.id() && !info.nick().equals("???")) {
 			this.other = info;
 		}
 
@@ -30,7 +30,18 @@ public class PrivateMessage {
 			if (timeStamp) {
 				message = "(" + StringUtilities.timeStamp() + ") " + message;
 			}
-			messages.add(new Message(info, message));
+
+			if (!messages.isEmpty()) {
+				Message lastMessage = messages.getLast();
+				if (lastMessage != null && lastMessage.sender == info) {
+					lastMessage.append(message);
+				} else {
+					messages.add(new Message(info, message));
+				}
+			} else {
+				messages.add(new Message(info, message));
+			}
+
 			if (listener != null) {
 				listener.onNewMessage(messages.getLast());
 			}
@@ -53,6 +64,10 @@ public class PrivateMessage {
 		}
 		PlayerInfo sender;
 		String message;
+
+		void append(String s) {
+			message = message + "\n" + s;
+		}
 	}
 
 	interface PrivateMessageListener {
