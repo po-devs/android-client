@@ -404,7 +404,11 @@ class HtmlToSpannedConverter implements ContentHandler {
             } else if (color.equals("pink")) {
                 c = 0xFFFFC0CB;
             } else {
-                c = Color.parseColor(color);
+                try {
+                    c = Color.parseColor(color);
+                } catch (IllegalArgumentException e) {
+                    c = Color.BLACK;
+                }
             }
         }
         int len = text.length();
