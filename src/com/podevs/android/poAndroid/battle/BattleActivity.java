@@ -592,6 +592,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                             else {
                                 setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
                             }
+                            //change attack names and power
                         }
                         else {
                             setAttackButtonEnabled(i, false);
@@ -1069,7 +1070,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             case R.id.zmove:
                 item.setChecked(!item.isChecked());
                 zmoveClicked = item.isChecked();
-                // call function to change attack button here
+                if (zmoveClicked) {
+                    item.setIcon(R.drawable.ic_zmove);
+                } else {
+                    item.setIcon(R.drawable.ic_zmove_grey);
+                }
+                updateButtons();
                 break;
             case R.id.megavolve:
                 item.setChecked(!item.isChecked());

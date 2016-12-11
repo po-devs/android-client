@@ -19,6 +19,7 @@ public class MoveInfo extends GenInfo {
 		byte accuracy = 0;
 		byte power = 0;
 		String effect = null;
+		String zeffect = null;
 
 		Move(String name) {
 			this.name = name;
@@ -53,6 +54,18 @@ public class MoveInfo extends GenInfo {
 
 	public static String name(int num) {
 		return moveNames.get(num).name;
+	}
+
+	public static String zname(int num, boolean zmove) {
+		String ret = moveNames.get(num).name;
+
+		//382 = Me First
+		//693 = Extreme Evoboost
+		if (zmove && num != 0 && (power(num) == 0 || num == 693 || num == 382)) {
+			ret = "Z-" + ret;
+		}
+
+		return ret;
 	}
 
 	public static int indexOf(String s) {
@@ -123,6 +136,13 @@ public class MoveInfo extends GenInfo {
 		return effect == null ? "" : effect;
 	}
 
+	public static String zDescription(int num) {
+		loadZEffects();
+
+		String zeffect = moveNames.get(num).zeffect;
+		return zeffect == null ? "" : zeffect;
+	}
+
 	public static String message(int num, int part) {
 		if (moveMessages == null) {
 			loadMoveMessages();
@@ -148,6 +168,19 @@ public class MoveInfo extends GenInfo {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
 			}
+		});
+	}
+
+	static boolean zeffectsloaded = false;
+	private static void loadZEffects() {
+		if (zeffectsloaded) {
+			return;
+		}
+		testLoad();
+		zeffectsloaded = true;
+		String path = "db/moves/" + thisGen + "G/zeffect.txt";
+		InfoFiller.fill(path, new Filler() {
+			public void fill(int i, String s) { moveNames.get(i).zeffect = s; }
 		});
 	}
 

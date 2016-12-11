@@ -65,11 +65,15 @@ public class BattleMove implements SerializeBytes, Move {
 	
 	public String descAndEffects() {
 		String s = "";
+		String zeffect = MoveInfo.zDescription(num);
 		s += "Power: " + MoveInfo.powerString(num);
 		s += "\nAccuracy: " + MoveInfo.accuracyString(num);
 		s += "\nClass: " + DamageClassInfo.name(MoveInfo.damageClass(num));
 		s += "\n";
 		s += "\nEffect: " + MoveInfo.effect(num);
+		if (zeffect.length() > 0) {
+			s += "\nZ-Effect: " + zeffect;
+		}
 		return s;
 	}
 

@@ -5,9 +5,9 @@
         android:id="@+id/zmove"
         android:checkable="true"
         android:title="@string/zmove"
+        android:icon="@drawable/ic_zmove_grey"
         android:visible="false"
         android:showAsAction="ifRoom|withText">
-        <!--android:icon="@drawable/ic_zmove"-->
     </item>
     <item
         android:id="@+id/megavolve"
