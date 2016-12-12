@@ -207,10 +207,6 @@ class HtmlToSpannedConverter implements ContentHandler {
                 String timestamp = "(" + StringUtilities.timeStamp() + ") ";
                 mSpannableStringBuilder.append(timestamp);
             }
-        } else if (tag.equalsIgnoreCase("ping")) {
-            if (mNetServ != null && mChan != null) {
-                mNetServ.tryFlashChannel(mChan);
-            }
         } else if (tag.equalsIgnoreCase("strike")) {
             start(mSpannableStringBuilder, new Strikethrough());
         } else if (mTagHandler != null) {
