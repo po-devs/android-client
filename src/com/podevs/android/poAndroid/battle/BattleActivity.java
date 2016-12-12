@@ -586,13 +586,25 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 if (!checkStruggle()) {
                     for (int i = 0; i < 4; i++) {
                         if (activeBattle.allowAttack && !activeBattle.clicked) {
+                            BattleMove newMove = new BattleMove(activeBattle.myTeam.pokes[0].move(i).num());
                             if (zmoveClicked) {
                                 setAttackButtonEnabled(i, activeBattle.allowZMoves[i]);
+                                if(newMove.power > 0 && activeBattle.allowZMoves[i]) {
+                                    newMove.power = MoveInfo.zPower(newMove.num());
+                                    newMove.accuracy = 101;
+                                    if (MoveInfo.name(newMove.num()) == "Hidden Power") {
+                                        newMove.type = 0;
+                                    }
+                                    newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[0].item);
+                                }
                             }
                             else {
                                 setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
                             }
-                            //change attack names and power
+                            byte currentPP = activeBattle.displayedMoves[i].currentPP;
+                            activeBattle.displayedMoves[i] = new BattleMove(newMove);
+                            activeBattle.displayedMoves[i].currentPP = currentPP;
+                            attackNames[i].setText(MoveInfo.zName(activeBattle.displayedMoves[i].num(), zmoveClicked));
                         }
                         else {
                             setAttackButtonEnabled(i, false);

@@ -116,6 +116,18 @@
             return memoryChips[type];
         }
 
+        private static short zMoves[] = new short[] {
+            673, 674, 675, 676, 677, 678, 679, 680, 681, 682, 683, 684, 685, 686, 687,
+                688, 689, 690, 691, 692, 693, 694, 695, 696, 697, 698, 699, 700, 701
+        };
+
+        public static short zCrystalMove(short item) {
+            if (item < 3000 || item > 3028) {
+                return 0;
+            }
+            return zMoves[item - 3000];
+        }
+
         private static void loadItemNames() {
             String path;
             if (RegistryActivity.localize_assets) {
