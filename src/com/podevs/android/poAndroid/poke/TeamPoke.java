@@ -6,7 +6,10 @@ import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
-import com.podevs.android.utilities.*;
+import com.podevs.android.utilities.ArrayUtilities;
+import com.podevs.android.utilities.Bais;
+import com.podevs.android.utilities.Baos;
+import com.podevs.android.utilities.SerializeBytes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
