@@ -54,7 +54,11 @@ public class MoveListAdapter implements ListAdapter {
 
 		ImageView type = (ImageView)view.findViewById(R.id.type);
 		if (move == 237) {
-			type.setImageResource(TypeInfo.typeRes(HiddenPowerInfo.Type(poke)));
+			if (poke.gen().num < 7) {
+				type.setImageResource(TypeInfo.typeRes(HiddenPowerInfo.Type(poke)));
+			} else {
+				type.setImageResource(TypeInfo.typeRes(poke.hiddenPowerType()));
+			}
 		} else {
 			type.setImageResource(TypeInfo.typeRes(MoveInfo.type(move)));
 		}

@@ -303,6 +303,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                                     }
                                     poke().DVs[i] = (byte) temp;
                                 }
+								if (!poke().validHiddenPowerType(poke().hiddenPowerType())) {
+									poke().hiddenPowerType = (byte)HiddenPowerInfo.Type(poke());
+								}
                                 updateStats();
                             }
                         })
@@ -312,9 +315,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                                 dialog.dismiss();
                                 dialog.cancel();
                             }
-                        })
-
-                ;
+                        });
                 builder.create().show();
             }
         });
