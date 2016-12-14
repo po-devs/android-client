@@ -269,9 +269,6 @@
                 }
             });
 
-            // Add (No Item)
-            released_items.add(0, 0);
-
             usefulThisGeneration = new int[released_items.size() + released_berries.size()];
 
             for (int i = 0; i < released_items.size(); i++) {
