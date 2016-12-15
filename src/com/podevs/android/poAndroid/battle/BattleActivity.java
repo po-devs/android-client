@@ -583,6 +583,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         }
         runOnUiThread(new Runnable() {
             public void run() {
+                if (activeBattle.allowZMove) {
+                    zmoveClicked = false;
+                }
                 if (!checkStruggle()) {
                     for (int i = 0; i < 4; i++) {
                         if (activeBattle.allowAttack && !activeBattle.clicked) {
