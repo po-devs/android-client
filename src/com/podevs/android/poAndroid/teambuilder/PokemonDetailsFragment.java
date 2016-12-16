@@ -303,9 +303,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                                     }
                                     poke().DVs[i] = (byte) temp;
                                 }
-								if (!poke().validHiddenPowerType(poke().hiddenPowerType())) {
-									poke().hiddenPowerType = (byte)HiddenPowerInfo.Type(poke());
-								}
+                                if (!poke().validHiddenPowerType(poke().hiddenPowerType())) {
+                                	poke().hiddenPowerType = (byte)HiddenPowerInfo.Type(poke());
+                                }
                                 updateStats();
                             }
                         })

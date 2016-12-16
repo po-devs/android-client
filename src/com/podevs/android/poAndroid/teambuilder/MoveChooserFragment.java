@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,7 @@ import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.GenInfo;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MoveChooserFragment extends Fragment {
 	public interface MoveChooserListener {
@@ -108,7 +105,6 @@ public class MoveChooserFragment extends Fragment {
 
 	protected void buildHiddenPowerDialog(MoveListAdapter moveButton, View view) {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
 		builder.setTitle(R.string.hiddenpower_choice)
 			.setSingleChoiceItems(R.array.hp_array, poke().hiddenPowerType()-1, null)
 			.setPositiveButton(R.string.ok, new OnClickListener() {
@@ -118,7 +114,6 @@ public class MoveChooserFragment extends Fragment {
 					if (poke().validHiddenPowerType(type)) {
 						poke().hiddenPowerType = (byte)type;
 					}
-
 					if (poke().gen().num < 7) {
 						byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 						if (config != null) {
@@ -131,7 +126,6 @@ public class MoveChooserFragment extends Fragment {
 					moveButton.reloadImage(type, view);
 				}
 			});
-
 		builder.create().show();
 	}
 
