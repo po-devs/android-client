@@ -963,8 +963,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             int id = v.getId();
             // Check to see if click was on attack button
             for(int i = 0; i < 4; i++)
-                if(id == attackLayouts[i].getId())
-                    netServ.socket.sendMessage(activeBattle.constructAttack((byte)i, megaClicked, zmoveClicked), Command.BattleMessage);
+                if(id == attackLayouts[i].getId()) {
+                    netServ.socket.sendMessage(activeBattle.constructAttack((byte) i, megaClicked, zmoveClicked), Command.BattleMessage);
+                    if (zmoveClicked) {
+                        zmoveClicked = false;
+                        updateButtons();
+                    }
+                }
             // Check to see if click was on pokelist button
             for(int i = 0; i < 6; i++) {
                 if(id == pokeList[i].whole.getId()) {

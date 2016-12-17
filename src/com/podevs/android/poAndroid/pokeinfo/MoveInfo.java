@@ -268,7 +268,7 @@ public class MoveInfo extends GenInfo {
 		if (zpowerloaded) {
 			return;
 		}
-		testLoad();;
+		testLoad();
 		zpowerloaded = true;
 		String path = "db/moves/" + thisGen + "G/zpower.txt";
 		InfoFiller.fill(path, new FillerByte() {
