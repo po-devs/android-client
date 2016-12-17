@@ -85,7 +85,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 				nature = b.readByte();
 			}
 			if (gen.num > 6) {
-				hiddenPowerType = b.readByte();
+				//hiddenPowerType = b.readByte();
 			}
 
 			gender = b.readByte();
@@ -265,7 +265,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 				b.write(nature);
 			}
 			if (gen.num > 6) {
-				b.write(hiddenPowerType);
+				//b.write(hiddenPowerType);
 			}
 
 			b.write(gender);
