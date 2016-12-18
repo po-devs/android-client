@@ -1,4 +1,4 @@
-﻿0 (Keine Beschreibung)
+0 (Keine Beschreibung)
 1 Verursacht Schaden ohne zusätzliche Effekte.
 2 Hat eine erhöhte Volltrefferquote.
 3 Trifft 2-5 mal. 38,5%-Chance für 2 und 3 Treffer, 12,5% für 4 und 5 Treffer.
