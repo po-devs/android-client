@@ -11,7 +11,8 @@ public class InfoFiller {
 	private static BufferedReader buf = null;
 
 	static void fill(String file, Filler filler) {
-		loadInputStreamAndBufferedReader(file);
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
 		try {
 			while (buf.ready()) {
@@ -41,7 +42,8 @@ public class InfoFiller {
 	}
 
     static void plainFill(String file, Filler filler) {
-		loadInputStreamAndBufferedReader(file);
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
         try {
             while (buf.ready()) {
@@ -66,7 +68,8 @@ public class InfoFiller {
 
 
 	static void uIDfill(String file, Filler filler, boolean readAll) {
-		loadInputStreamAndBufferedReader(file);
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
 		try {
 			while (buf.ready()) {
@@ -102,7 +105,8 @@ public class InfoFiller {
 	}
 
 	static void uIDfill(String file, OptionsFiller filler) {
-		loadInputStreamAndBufferedReader(file);
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
 		try {
 			while (buf.ready()) {
@@ -137,7 +141,7 @@ public class InfoFiller {
 		closeInputStream();
 	}
 
-	private static void loadInputStreamAndBufferedReader(String file) {
+	private static boolean loadInputStreamAndBufferedReader(String file) {
 		assetsDB = null;
 		buf = null;
 
@@ -145,7 +149,7 @@ public class InfoFiller {
 			assetsDB = getContext().getAssets().open(file);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+			return false;
 		}
 
 		try {
@@ -153,6 +157,7 @@ public class InfoFiller {
 		} catch (UnsupportedEncodingException e2) {
 			e2.printStackTrace();
 		}
+		return true;
 
 	}
 
