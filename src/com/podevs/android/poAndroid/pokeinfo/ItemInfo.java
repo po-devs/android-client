@@ -122,7 +122,7 @@
         };
 
         public static short zCrystalMove(short item) {
-            if (item < 3000 || item > 3028) {
+            if (item < 3000 || item > 4000) {
                 return 0;
             }
             return zMoves[item - 3000];
