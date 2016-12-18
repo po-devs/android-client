@@ -11,8 +11,7 @@ public class InfoFiller {
 	private static BufferedReader buf = null;
 
 	static void fill(String file, Filler filler) {
-		loadInputStream(file);
-		loadBufferedReader(assetsDB);
+		loadInputStreamAndBufferedReader(file);
 
 		try {
 			while (buf.ready()) {
@@ -42,8 +41,7 @@ public class InfoFiller {
 	}
 
     static void plainFill(String file, Filler filler) {
-		loadInputStream(file);
-		loadBufferedReader(assetsDB);
+		loadInputStreamAndBufferedReader(file);
 
         try {
             while (buf.ready()) {
@@ -68,8 +66,7 @@ public class InfoFiller {
 
 
 	static void uIDfill(String file, Filler filler, boolean readAll) {
-		loadInputStream(file);
-		loadBufferedReader(assetsDB);
+		loadInputStreamAndBufferedReader(file);
 
 		try {
 			while (buf.ready()) {
@@ -105,8 +102,7 @@ public class InfoFiller {
 	}
 
 	static void uIDfill(String file, OptionsFiller filler) {
-		loadInputStream(file);
-		loadBufferedReader(assetsDB);
+		loadInputStreamAndBufferedReader(file);
 
 		try {
 			while (buf.ready()) {
@@ -141,24 +137,23 @@ public class InfoFiller {
 		closeInputStream();
 	}
 
-	private static InputStream loadInputStream(String file) {
+	private static void loadInputStreamAndBufferedReader(String file) {
 		assetsDB = null;
+		buf = null;
+
 		try {
 			assetsDB = getContext().getAssets().open(file);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
-		return assetsDB;
-	}
 
-	private static BufferedReader loadBufferedReader(InputStream assetsDB) {
-		buf = null;
 		try {
 			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
 		} catch (UnsupportedEncodingException e2) {
 			e2.printStackTrace();
 		}
-		return buf;
+
 	}
 
 	private static void closeInputStream() {
