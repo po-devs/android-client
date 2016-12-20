@@ -111,17 +111,20 @@ public class MoveChooserFragment extends Fragment {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
-					if (poke().validHiddenPowerType(type)) {
-						poke().hiddenPowerType = (byte)type;
-					}
 					if (poke().gen().num < 7) {
 						byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 						if (config != null) {
 							poke().DVs = config;
-							if (listener != null) {
-								listener.onMovesetChanged(true);
-							}
 						}
+					}
+					else if (poke().validHiddenPowerType(type)) {
+						poke().hiddenPowerType = (byte)type;
+					} else {
+						type = poke().hiddenPowerType();
+					}
+
+					if (listener != null) {
+						listener.onMovesetChanged(true);
 					}
 					moveButton.reloadImage(type, view);
 				}

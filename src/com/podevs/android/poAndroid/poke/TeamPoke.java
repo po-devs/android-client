@@ -21,7 +21,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 	public short pokeball;
 	public short ability;
 	public byte nature;
-	public byte hiddenPowerType;
+	public byte hiddenPowerType = 16;
 	public byte gender;
 	public Gen gen;
 	public boolean shiny;
@@ -84,17 +84,18 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 				ability = b.readShort();
 				nature = b.readByte();
 			}
-			if (gen.num > 6) {
-				//hiddenPowerType = b.readByte();
-			}
 
 			gender = b.readByte();
 			if (gen.num > 2 && network.readBool()) { //happiness flag
 				happiness = b.readByte();
 			}
+			if (gen.num > 6) {
+				hiddenPowerType = b.readByte();
+			}
 		}
 
 		boolean ppups = network.readBool(); //ppup flags
+
 		for (int i = 0; i < 4; i++) {
 			if (ppups) {
 				b.readByte(); // read the pp up for the move, but ignore it
@@ -182,6 +183,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 			if (fullReset) {
 				happiness = 0;
+				hiddenPowerType = 16;
 				level = 100;
 				moves[0] = new TeamMove(0);
 				moves[1] = new TeamMove(0);
@@ -264,14 +266,15 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 				b.putShort(ability);
 				b.write(nature);
 			}
-			if (gen.num > 6) {
-				//b.write(hiddenPowerType);
-			}
 
 			b.write(gender);
 
 			if (gen.num > 2 && happiness != 0) {
 				b.write(happiness);
+			}
+
+			if (gen.num > 6 && hiddenPowerType() != 16) {
+				b.write(hiddenPowerType);
 			}
 		}
 

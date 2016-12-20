@@ -21,7 +21,7 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	// byte statusCount = 0;
 	// byte originalStatusCount = 0;
 	byte nature = 0;
-	byte hiddenPower = 0;
+	byte hiddenPower = 16;
 	byte happiness = 0;
 	public byte teamNum;
 	Gen gen;
@@ -139,6 +139,9 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	}
 
 	public int hiddenPowerType() {
+		if (this.gen().num > 6) {
+			return this.hiddenPower;
+		}
 		return HiddenPowerInfo.Type(this);
 	}
 	
