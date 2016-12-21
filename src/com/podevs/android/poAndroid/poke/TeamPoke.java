@@ -51,7 +51,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 		Bais network = b.readFlags();
 
-//		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
+//		hasGen, hasNickname, hasPokeball, hasHappiness, hasHiddenPower, hasPPups, hasIVs,
 //      isShiny=0
 		if (network.readBool()) { // gen flag
 			gen = new Gen(b);
@@ -89,7 +89,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 			if (gen.num > 2 && network.readBool()) { //happiness flag
 				happiness = b.readByte();
 			}
-			if (gen.num > 6) {
+			if (gen.num > 6 && network.readBool()) { //hidden power flag
 				hiddenPowerType = b.readByte();
 			}
 		}
