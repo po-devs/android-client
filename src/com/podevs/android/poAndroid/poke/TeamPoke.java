@@ -245,8 +245,8 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
-//								hasGen, hasNickname, 	hasPokeball, hasHappiness, hasPPups,  hasIVs,
-		b.putFlags(new boolean[]{true, nick.length() > 0, false, 	happiness != 0, false, 	true});
+//								hasGen, hasNickname, hasPokeball, hasHappiness, hasHiddenPower, 	hasPPups, hasIVs,
+		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0,hiddenPowerType != 16, false, true});
 
 		b.putBaos(gen);
 		b.putBaos(uID);
