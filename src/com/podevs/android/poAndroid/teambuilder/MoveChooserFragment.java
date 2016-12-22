@@ -62,7 +62,7 @@ public class MoveChooserFragment extends Fragment {
 
 					/* Hidden Power */
 					if (move == 237) {
-						buildHiddenPowerDialog(moveAdapter, arg1);
+						buildHiddenPowerDialog();
 					} else if (move == 216) { /* return */
 						poke().happiness = (byte) 255;
 					}
@@ -103,7 +103,7 @@ public class MoveChooserFragment extends Fragment {
 		return v;
 	}
 
-	protected void buildHiddenPowerDialog(MoveListAdapter moveButton, View view) {
+	protected void buildHiddenPowerDialog() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.hiddenpower_choice)
 			.setSingleChoiceItems(R.array.hp_array, poke().hiddenPowerType()-1, null)
@@ -126,7 +126,7 @@ public class MoveChooserFragment extends Fragment {
 					if (listener != null) {
 						listener.onMovesetChanged(true);
 					}
-					moveButton.reloadImage(type, view);
+					moveAdapter.notifyDataSetChanged();
 				}
 			});
 		builder.create().show();
