@@ -19,7 +19,11 @@ public class PlayerProfile implements SerializeBytes {
 		
 		public TrainerInfo(Bais msg) {
 			/* Version control! */
+
+			
 			Bais b = new Bais(msg.readVersionControlData());
+			byte version = b.readByte();
+			
 			Bais network = b.readFlags();
 
 			avatar = b.readShort();
