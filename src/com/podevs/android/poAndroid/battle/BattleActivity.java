@@ -722,13 +722,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                                     t.setText(battle.dynamicInfo[me].stats());
                                     t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
                                     t.setText(poke.printStats());
-//                                    t = (TextView)simpleDialog.findViewById(R.id.statBoostView);
-//                                    String s = battle.dynamicInfo[me].boosts();
-//                                    if (!"\n\n\n\n".equals(s)) {
-//                                        t.setText(s);
-//                                    } else {
-//                                        t.setVisibility(View.GONE);
-//                                    }
+
                                     simpleDialog.setCanceledOnTouchOutside(true);
                                     simpleDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                         public void onCancel(DialogInterface dialog) {
