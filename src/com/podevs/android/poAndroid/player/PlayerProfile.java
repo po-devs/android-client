@@ -22,10 +22,6 @@ public class PlayerProfile implements SerializeBytes {
 			Bais b = new Bais(msg.readVersionControlData());
 			byte version = b.readByte();
 			
-			if (version != 0) {
-				
-			}
-			
 			Bais network = b.readFlags();
 
 			avatar = b.readShort();

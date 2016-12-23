@@ -54,7 +54,7 @@
                  loadItemMessages();
             }
 
-            String parts [] = ((String)itemMessages.get(num, "")).split("\\|");
+            String parts [] = (itemMessages.get(num, "")).split("\\|");
             try {
                 return parts[part];
             } catch (ArrayIndexOutOfBoundsException ex) {
@@ -197,7 +197,7 @@
 
             InfoFiller.plainFill("db/items/berry_useful.txt", new Filler() {
                 public void fill(int i, String s) {
-                    berries.add(8000+Integer.valueOf(i));
+                    berries.add(8000 + i);
                 }
             });
 
@@ -211,11 +211,11 @@
             usefulItems = new int[items.size()+berries.size()];
 
             for (int i = 0; i < items.size(); i++) {
-                usefulItems[i] = items.get(i).intValue();
+                usefulItems[i] = items.get(i);
             }
 
             for (int i = 0; i < berries.size(); i++) {
-                usefulItems[i+items.size()] = berries.get(i).intValue();
+                usefulItems[i+items.size()] = berries.get(i);
             }
         }
 
@@ -233,7 +233,7 @@
 
             InfoFiller.plainFill("db/items/" + Generation + "G/released_items.txt", new Filler() {
                 public void fill(int i, String s) {
-                    released_items.add(Integer.valueOf(i));
+                    released_items.add(i);
                 }
             });
 

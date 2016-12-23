@@ -46,11 +46,8 @@ public class Settings extends PreferenceFragment {
                 return dealWithVolume(newValue.toString());
             }
             if (key.equals("shouldWrite")) {
-                if ((Boolean) newValue) {
-                    CustomExceptionHandler.shouldWrite = true;
-                } else {
-                    CustomExceptionHandler.shouldWrite = false;
-                }
+                CustomExceptionHandler.shouldWrite = (Boolean)newValue;
+
                 return true;
             }
             if (key.equals("copyandpaste")) {

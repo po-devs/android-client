@@ -845,8 +845,7 @@ public class SpectatingBattle {
                             if (!baked) wait(5000);
                             else wait(change * 43);
                         }
-                    } catch (InterruptedException e) {
-                    }
+                    } catch (InterruptedException e) {}
                 }
                 break;
             }

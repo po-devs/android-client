@@ -67,7 +67,7 @@ public class ChallengeEnums {
 			//String clausesID = Integer.toBinaryString(clauses);
 			//Log.e("Clauses", "" + clauseNumber);
 			//Log.e("Clauses", "" + clausesID);
-			if ((clauses & (1 << i)) > 0 ? true : false) {
+			if ((clauses & (1 << i)) > 0) {
 				//Log.e("Clauses", "true");
 				s += "<br />" + Clauses.values()[i].toString();
 			}
