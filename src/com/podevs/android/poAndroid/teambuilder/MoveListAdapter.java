@@ -78,11 +78,6 @@ public class MoveListAdapter implements ListAdapter {
 		return view;
 	}
 
-	public void reloadImage (int type, View view) {
-		ImageView image = (ImageView)view.findViewById(R.id.type);
-		image.setImageResource(TypeInfo.typeRes(type));
-	}
-
 	public int getCount() {
         if (poke.isHackmon) {
             return MoveInfo.getAllMoves().length;

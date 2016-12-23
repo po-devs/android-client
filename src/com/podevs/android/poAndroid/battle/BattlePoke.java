@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
@@ -21,7 +22,7 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	// byte statusCount = 0;
 	// byte originalStatusCount = 0;
 	byte nature = 0;
-	byte hiddenPower = 16;
+	byte hiddenPower = (byte) TypeInfo.Type.Dark.ordinal();
 	byte happiness = 0;
 	public byte teamNum;
 	Gen gen;

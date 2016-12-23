@@ -6,6 +6,7 @@ import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 import com.podevs.android.utilities.ArrayUtilities;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
@@ -21,7 +22,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 	public short pokeball;
 	public short ability;
 	public byte nature;
-	public byte hiddenPowerType = 16;
+	public byte hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 	public byte gender;
 	public Gen gen;
 	public boolean shiny;
@@ -51,9 +52,15 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 		Bais network = b.readFlags();
 
-//		hasGen, hasNickname, hasPokeball, hasHappiness, hasHiddenPower, hasPPups, hasIVs,
-//      isShiny=0
-		if (network.readBool()) { // gen flag
+		boolean hasGen = network.readBool();
+		boolean hasNickname = network.readBool();
+		boolean hasPokeball = network.readBool();
+		boolean hasHappiness = network.readBool();
+		boolean hasPPups = network.readBool();
+		boolean hasIVs = network.readBool();
+		boolean hasHiddenPower = network.readBool();
+
+		if (hasGen) {
 			gen = new Gen(b);
 		} else if (gen == null) {
 			gen = new Gen();
@@ -63,16 +70,15 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 		Bais data = b.readFlags();
 		shiny = data.readBool();
-
         isHackmon = data.readBool();
 
-		if (network.readBool()) { //nickname flag
+		if (hasNickname) {
 			nick = b.readString();
 		} else {
 			nick = PokemonInfo.name(uID);
 		}
 
-		if (network.readBool()) { //pokeball flag
+		if (hasPokeball) {
 			pokeball = b.readShort();
 		} else {
 			pokeball = 0;
@@ -86,18 +92,16 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 			}
 
 			gender = b.readByte();
-			if (gen.num > 2 && network.readBool()) { //happiness flag
+			if (gen.num > 2 && hasHappiness) {
 				happiness = b.readByte();
 			}
-			if (gen.num > 6 && network.readBool()) { //hidden power flag
+			if (gen.num > 6 && hasHiddenPower) {
 				hiddenPowerType = b.readByte();
 			}
 		}
 
-		boolean ppups = network.readBool(); //ppup flags
-
 		for (int i = 0; i < 4; i++) {
-			if (ppups) {
+			if (hasPPups) {
 				b.readByte(); // read the pp up for the move, but ignore it
 			}
 			moves[i] = new TeamMove(b.readShort());
@@ -106,8 +110,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 		for(int i = 0; i < 6; i++)
 			EVs[i] = b.readByte();
 
-		boolean hasIVs = network.readBool();
-		if (hasIVs || gen.num == 2) { //Ivs flags
+		if (hasIVs || gen.num == 2) {
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
 		} else {
@@ -129,7 +132,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 		item = 0;
 		ability = 0;
 		nature = 0;
-		hiddenPowerType = 16;
+		hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 		gender = 1;
 		gen = new Gen();
 		shiny = false;
@@ -183,7 +186,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 			if (fullReset) {
 				happiness = 0;
-				hiddenPowerType = 16;
+				hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 				level = 100;
 				moves[0] = new TeamMove(0);
 				moves[1] = new TeamMove(0);
@@ -245,8 +248,8 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
-//								hasGen, hasNickname, hasPokeball, hasHappiness, hasHiddenPower, 	hasPPups, hasIVs,
-		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0,hiddenPowerType != 16, false, true});
+//								hasGen, hasNickname, hasPokeball, hasHappiness,	hasPPups, hasIVs, hasHiddenPower
+		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0,false,	true,	hiddenPowerType != (byte)TypeInfo.Type.Dark.ordinal()});
 
 		b.putBaos(gen);
 		b.putBaos(uID);
@@ -273,7 +276,7 @@ public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 				b.write(happiness);
 			}
 
-			if (gen.num > 6 && hiddenPowerType() != 16) {
+			if (gen.num > 6 && hiddenPowerType() != (byte)TypeInfo.Type.Dark.ordinal()) {
 				b.write(hiddenPowerType);
 			}
 		}

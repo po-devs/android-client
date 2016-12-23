@@ -119,8 +119,6 @@ public class MoveChooserFragment extends Fragment {
 					}
 					else if (poke().validHiddenPowerType(type)) {
 						poke().hiddenPowerType = (byte)type;
-					} else {
-						type = poke().hiddenPowerType();
 					}
 
 					if (listener != null) {
