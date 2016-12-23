@@ -336,13 +336,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     return;
                 synchronized (battle.histDelta) {
                     infoView.append(battle.histDelta);
-		    if (battle.histDelta != null) {
+                if (battle.histDelta != null) {
                         infoScroll.post(new Runnable() {
                             public void run() {
                                 infoScroll.smoothScrollTo(0, infoView.getMeasuredHeight());
-                            }
-		    }
+                            }   
                         });
+		}
                     infoScroll.invalidate();
                     battle.hist.append(battle.histDelta);
                     battle.histDelta.clear();
