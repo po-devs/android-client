@@ -77,7 +77,7 @@ public class Bais extends ByteArrayInputStream {
 		do {
 			readByte = readByte();
 			for (int i = 0; i < 7; i++) {
-				bools.putBool(((readByte & 0x1) == 1 ? true : false));
+				bools.putBool(((readByte & 0x1) == 1));
 				readByte = (byte)(((int)readByte & 0xff) >>> 1); // Silly java I just want to left shift one
 			}
 		} while (readByte == 1); // While MSB == 1

@@ -42,9 +42,7 @@ public class PokeParser
 			SAXParser sp = null;
 			try {
 				sp = spf.newSAXParser();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
+			} catch (ParserConfigurationException|SAXException e) {
 				e.printStackTrace();
 			}
 
@@ -77,9 +75,7 @@ public class PokeParser
 			SAXParser sp = null;
 			try {
 				sp = spf.newSAXParser();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
+			} catch (ParserConfigurationException|SAXException e) {
 				e.printStackTrace();
 			}
 

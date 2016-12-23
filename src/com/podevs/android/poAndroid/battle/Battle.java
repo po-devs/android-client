@@ -242,10 +242,7 @@ public class Battle extends SpectatingBattle {
 
 			allowMega = msg.readBool();
 
-			if (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3])
-				shouldStruggle = true;
-			else
-				shouldStruggle = false;
+			shouldStruggle = (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3]);
 
 			clicked = false;
 
