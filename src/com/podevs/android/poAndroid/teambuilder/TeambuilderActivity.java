@@ -269,10 +269,13 @@ public class TeambuilderActivity extends FragmentActivity {
 											break;
 										}
 									}
-									byte[] IVs = HiddenPowerInfo.configurationForType(Type, newPoke.gen);
-									if (IVs != null) {
-										newPoke.DVs = IVs;
+									if (newPoke.gen.num < 7) {
+										byte[] IVs = HiddenPowerInfo.configurationForType(Type, newPoke.gen);
+										if (IVs != null) {
+											newPoke.DVs = IVs;
+										}
 									}
+									newPoke.hiddenPowerType = (byte)Type;
 								}
 							}
 						}
