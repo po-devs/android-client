@@ -74,7 +74,7 @@ public class MoveChooserFragment extends Fragment {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
 
 					/* Hidden Power */
-					if (move == 237) {
+					if (move == 237 && poke().gen().num < 7) {
 						for (int i = 0; i < 6; i++) {
 							poke().DVs[i] = 31;
 						}
@@ -111,17 +111,20 @@ public class MoveChooserFragment extends Fragment {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
-
-					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
-
 					if (poke().gen().num < 7) {
+						byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
 						if (config != null) {
 							poke().DVs = config;
-							if (listener != null) {
-								listener.onMovesetChanged(true);
-							}
 						}
 					}
+					else if (poke().validHiddenPowerType(type)) {
+						poke().hiddenPowerType = (byte)type;
+					}
+
+					if (listener != null) {
+						listener.onMovesetChanged(true);
+					}
+					moveAdapter.notifyDataSetChanged();
 				}
 			});
 		builder.create().show();

@@ -61,7 +61,11 @@ public class ListedPokemon {
 					canSwitch ? R.color.poke_text_shadow_enabled : R.color.poke_text_shadow_disabled));
         	String type;
         	if (poke.move(j).num() == 237)
-        		type = TypeInfo.name(poke.hiddenPowerType());
+        		if (poke.gen().num > 6) {
+					type = TypeInfo.name(poke.hiddenPowerType());
+				} else {
+					type = TypeInfo.name(HiddenPowerInfo.Type(poke));
+				}
         	else if (poke.move(j).num() == 449) // Judgment
 				type = TypeInfo.name(PokemonInfo.type1(poke.uID(), poke.gen().num));
 			else
