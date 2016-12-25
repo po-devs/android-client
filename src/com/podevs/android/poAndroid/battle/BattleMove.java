@@ -14,6 +14,9 @@ public class BattleMove implements SerializeBytes, Move {
 	public byte currentPP = 0;
 	public byte totalPP = 0;
 	public short num = 0;
+	public byte power = 0;
+	public byte accuracy = 0;
+	public byte damageClass = 0;
 	public byte type = (byte) Type.Curse.ordinal();
 	
 	public String toString() {
@@ -40,6 +43,9 @@ public class BattleMove implements SerializeBytes, Move {
 	
 	public BattleMove(int n) {
 		num = (short) n;
+		power = MoveInfo.power(n);
+		accuracy = MoveInfo.accuracy(n);
+		damageClass = MoveInfo.damageClass(n);
 		type = MoveInfo.type(n);
 		totalPP = (byte) (MoveInfo.pp(n)*8/5);
 	}
@@ -48,6 +54,9 @@ public class BattleMove implements SerializeBytes, Move {
 		currentPP = bm.currentPP;
 		totalPP = bm.totalPP;
 		num = bm.num;
+		power = bm.power;
+		accuracy = bm.accuracy;
+		damageClass = bm.damageClass;
 		type = bm.type;
 	}
 	
@@ -65,11 +74,15 @@ public class BattleMove implements SerializeBytes, Move {
 	
 	public String descAndEffects() {
 		String s = "";
-		s += "Power: " + MoveInfo.powerString(num);
-		s += "\nAccuracy: " + MoveInfo.accuracyString(num);
-		s += "\nClass: " + DamageClassInfo.name(MoveInfo.damageClass(num));
+		String zeffect = MoveInfo.zDescription(num);
+		s += "Power: " + MoveInfo.powerToString(power);
+		s += "\nAccuracy: " + MoveInfo.accuracyToString(accuracy);
+		s += "\nClass: " + DamageClassInfo.name(damageClass);
 		s += "\n";
 		s += "\nEffect: " + MoveInfo.effect(num);
+		if (zeffect.length() > 0) {
+			s += "\nZ-Effect: " + zeffect;
+		}
 		return s;
 	}
 

@@ -135,6 +135,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     boolean useAnimSprites = true;
     boolean megaClicked = false;
+    boolean zmoveClicked = false;
     BattleMove lastClickedMove;
 
     Resources resources;
@@ -287,7 +288,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
         struggleLayout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked), Command.BattleMessage); // This is how you struggle
+                netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage); // This is how you struggle
             }
         });
 
@@ -585,7 +586,25 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 if (!checkStruggle()) {
                     for (int i = 0; i < 4; i++) {
                         if (activeBattle.allowAttack && !activeBattle.clicked) {
-                            setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
+                            BattleMove newMove = new BattleMove(activeBattle.myTeam.pokes[0].move(i).num());
+                            if (zmoveClicked) {
+                                setAttackButtonEnabled(i, activeBattle.allowZMoves[i]);
+                                if(newMove.power > 0 && activeBattle.allowZMoves[i]) {
+                                    newMove.power = MoveInfo.zPower(newMove.num());
+                                    newMove.accuracy = 101;
+                                    if (newMove.num == 237) { //Hidden Power
+                                        newMove.type = 0;
+                                    }
+                                    newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[0].item);
+                                }
+                            }
+                            else {
+                                setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
+                            }
+                            byte currentPP = activeBattle.displayedMoves[i].currentPP;
+                            activeBattle.displayedMoves[i] = new BattleMove(newMove);
+                            activeBattle.displayedMoves[i].currentPP = currentPP;
+                            attackNames[i].setText(MoveInfo.zName(activeBattle.displayedMoves[i].num(), zmoveClicked));
                         }
                         else {
                             setAttackButtonEnabled(i, false);
@@ -944,8 +963,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             int id = v.getId();
             // Check to see if click was on attack button
             for(int i = 0; i < 4; i++)
-                if(id == attackLayouts[i].getId())
-                    netServ.socket.sendMessage(activeBattle.constructAttack((byte)i, megaClicked), Command.BattleMessage);
+                if(id == attackLayouts[i].getId()) {
+                    netServ.socket.sendMessage(activeBattle.constructAttack((byte) i, megaClicked, zmoveClicked), Command.BattleMessage);
+                    if (zmoveClicked) {
+                        zmoveClicked = false;
+                        updateButtons();
+                    }
+                }
             // Check to see if click was on pokelist button
             for(int i = 0; i < 6; i++) {
                 if(id == pokeList[i].whole.getId()) {
@@ -1046,6 +1070,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
+            menu.findItem(R.id.zmove).setVisible(activeBattle.allowZMove);
+            menu.findItem(R.id.zmove).setChecked(zmoveClicked);
+            if (zmoveClicked) {
+                menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            } else {
+                menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            }
         }
         return true;
     }
@@ -1053,6 +1084,16 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.zmove:
+                item.setChecked(!item.isChecked());
+                zmoveClicked = item.isChecked();
+                if (zmoveClicked) {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                } else {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                }
+                updateButtons();
+                break;
             case R.id.megavolve:
                 item.setChecked(!item.isChecked());
                 megaClicked = item.isChecked();
