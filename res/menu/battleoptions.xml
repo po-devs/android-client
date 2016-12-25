@@ -5,7 +5,7 @@
         android:id="@+id/zmove"
         android:checkable="true"
         android:title="@string/zmove"
-        android:icon="@drawable/ic_zmove_grey"
+        android:icon="@drawable/ic_zmove"
         android:visible="false"
         android:showAsAction="ifRoom|withText">
     </item>
@@ -13,7 +13,7 @@
         android:id="@+id/megavolve"
         android:checkable="true"
         android:title="@string/megavolve"
-        android:icon="@drawable/ic_mega_grey"
+        android:icon="@drawable/ic_mega"
         android:visible="false"
         android:showAsAction="ifRoom|withText">
     </item>

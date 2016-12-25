@@ -60,7 +60,7 @@ public class MoveInfo extends GenInfo {
 	public static String zName(int num, boolean zmove) {
 		String ret = moveNames.get(num).name;
 
-		if (zmove && num != 0 && (power(num) == 0 || name(num) == "Extreme Evoboost" || name(num) == "Me First")) {
+		if (zmove && num != 0 && (power(num) == 0 || num == 693 || num == 382)) { //Extreme Evoboost and Me First
 			ret = "Z-" + ret;
 		}
 

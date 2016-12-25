@@ -592,7 +592,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                                 if(newMove.power > 0 && activeBattle.allowZMoves[i]) {
                                     newMove.power = MoveInfo.zPower(newMove.num());
                                     newMove.accuracy = 101;
-                                    if (MoveInfo.name(newMove.num()) == "Hidden Power") {
+                                    if (newMove.num == 237) { //Hidden Power
                                         newMove.type = 0;
                                     }
                                     newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[0].item);
@@ -1088,9 +1088,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 item.setChecked(!item.isChecked());
                 zmoveClicked = item.isChecked();
                 if (zmoveClicked) {
-                    item.setIcon(R.drawable.ic_zmove);
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 } else {
-                    item.setIcon(R.drawable.ic_zmove_grey);
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
                 }
                 updateButtons();
                 break;
@@ -1098,11 +1098,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 item.setChecked(!item.isChecked());
                 megaClicked = item.isChecked();
                 if (megaClicked) {
-                    //item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                    item.setIcon(R.drawable.ic_mega);
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 } else {
-                    //item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-                    item.setIcon(R.drawable.ic_mega_grey);
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
                 }
                 break;
             case R.id.cancel:
