@@ -22,23 +22,27 @@ class AttackChoice extends Choice {
 	byte attackSlot;
 	byte attackTarget;
 	boolean mega;
+	boolean zmove;
 	
-	public AttackChoice(byte as, byte at, boolean mega) {
+	public AttackChoice(byte as, byte at, boolean mega, boolean zmove) {
 		attackSlot = as;
 		attackTarget = at;
-		this.mega= mega;  
+		this.mega= mega;
+		this.zmove = zmove;
 	}
 	
 	public AttackChoice(Bais msg) {
 		attackSlot = msg.readByte();
 		attackTarget = msg.readByte();
 		mega = msg.readBool();
+		zmove = msg.readBool();
 	}
 	
 	public void serializeBytes(Baos b) {
 		b.write(attackSlot);
 		b.write(attackTarget);
 		b.putBool(mega);
+		b.putBool(zmove);
 	}
 }
 

@@ -21,8 +21,9 @@ public class Battle extends SpectatingBattle {
 	public BattleTeam myTeam;
 	public ShallowShownTeam oppTeam;
 
-	public boolean allowSwitch, allowAttack, clicked, allowMega = false;
+	public boolean allowSwitch, allowAttack, clicked, allowMega, allowZMove = false;
 	public boolean[] allowAttacks = new boolean[4];
+	public boolean[] allowZMoves = new boolean[4];
 	public boolean shouldStruggle = false;
 	public BattleMove[] displayedMoves = new BattleMove[4];
 
@@ -58,10 +59,10 @@ public class Battle extends SpectatingBattle {
 		return b;
 	}
 
-	public Baos constructAttack(byte attack, boolean mega) {
+	public Baos constructAttack(byte attack, boolean mega, boolean zmove) {
 		Baos b = new Baos();
 		b.putInt(bID);
-		AttackChoice ac = new AttackChoice(attack, opp, mega);
+		AttackChoice ac = new AttackChoice(attack, opp, mega, zmove);
 		b.putBaos(new BattleChoice(me, ac, ChoiceType.AttackType));
 		return b;
 	}
@@ -241,6 +242,13 @@ public class Battle extends SpectatingBattle {
 			}
 
 			allowMega = msg.readBool();
+			allowZMove = msg.readBool();
+
+			if (allowZMove) {
+				for (int i = 0; i < 4; i++) {
+					allowZMoves[i] = msg.readBool();
+				}
+			}
 
 			shouldStruggle = (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3]);
 
