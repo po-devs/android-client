@@ -116,7 +116,7 @@ public class PokemonInfo {
 		PokeData data = pokemonsg.get(num);
 
 		//Check the pokemon has formes, and that they are not hidden
-		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
+		return data.maxForme > 0 && (data.options == null || !data.options.contains("H"));
 	}
 
     public static boolean hasHackmonFormes(UniqueID uID) {
@@ -633,39 +633,30 @@ public class PokemonInfo {
 		pokeNames = new SparseArray<String>();
 		pokemonsg = new SparseArray<PokemonInfo.PokeData>();
 		namesToIds = new HashMap<String, UniqueID>();
-		InfoFiller.uIDfill("db/pokes/pokemons.txt", new InfoFiller.OptionsFiller() {
-			public void fill(int i, String s, String options) {
-				pokeNames.put(i, s);
-				pokemonsg.put(i, new PokeData());
 
-				if (i > 16000) {
-					pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
-				} else if (i > pokeCount) {
-					pokeCount = i;
-				}
-				pokemonsg.get(i).options = options;
-				namesToIds.put(s, new UniqueID(i));
-			}
-		});
+		String path;
 		if (RegistryActivity.localize_assets) {
-			String path = "db/pokes/" + InfoConfig.resources.getString(R.string.asset_localization) + "pokemons.txt";
-			if (InfoConfig.fileExists(path)) {
-				InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
-					public void fill(int i, String s, String options) {
-						pokeNames.put(i, s);
-						pokemonsg.put(i, new PokeData());
-
-						if (i > 16000) {
-							pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
-						} else if (i > pokeCount) {
-							pokeCount = i;
-						}
-						pokemonsg.get(i).options = options;
-						namesToIds.put(s, new UniqueID(i));
-					}
-				});
+			path = "db/pokes/" + InfoConfig.resources.getString(R.string.asset_localization) + "pokemons.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/pokes/pokemons.txt";
 			}
+		} else {
+			path = "db/pokes/pokemons.txt";
 		}
+
+		InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
+				public void fill(int i, String s, String options) {
+					pokeNames.put(i, s);
+					pokemonsg.put(i, new PokeData());
+						if (i > 16000) {
+						pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+					} else if (i > pokeCount) {
+						pokeCount = i;
+					}
+					pokemonsg.get(i).options = options;
+					namesToIds.put(s, new UniqueID(i));
+				}
+		});
 	}
 
 	/**
@@ -830,7 +821,8 @@ public class PokemonInfo {
 			InfoFiller.uIDfill("db/pokes/gender.txt", new FillerByte() {
 				@Override
 				void fillByte(int i, byte b) {
-					pokemonsg.get(i).gender = b;
+					try {pokemonsg.get(i).gender = b;}
+					catch (NullPointerException e){}
 				}
 			});
 		}
