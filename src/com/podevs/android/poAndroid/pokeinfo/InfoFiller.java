@@ -6,21 +6,13 @@ import com.podevs.android.poAndroid.poke.UniqueID;
 import java.io.*;
 
 public class InfoFiller {
-	static void fill(String file, Filler filler) {
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
 
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
+	private static InputStream assetsDB = null;
+	private static BufferedReader buf = null;
+
+	static void fill(String file, Filler filler) {
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
 		try {
 			while (buf.ready()) {
@@ -46,29 +38,12 @@ public class InfoFiller {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		try {
-			assetsDB.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		closeInputStream();
 	}
 
     static void plainFill(String file, Filler filler) {
-        InputStream assetsDB = null;
-        try {
-            assetsDB = getContext().getAssets().open(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        BufferedReader buf = null;
-        try {
-            buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-        } catch (UnsupportedEncodingException e2) {
-            e2.printStackTrace();
-        }
+		if (!loadInputStreamAndBufferedReader(file))
+			return;
 
         try {
             while (buf.ready()) {
@@ -88,31 +63,13 @@ public class InfoFiller {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-
-        try {
-            assetsDB.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        closeInputStream();
     }
 
 
 	static void uIDfill(String file, Filler filler, boolean readAll) {
-
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open(file);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!loadInputStreamAndBufferedReader(file))
 			return;
-		}
-
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
 
 		try {
 			while (buf.ready()) {
@@ -144,30 +101,12 @@ public class InfoFiller {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		try {
-			assetsDB.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		closeInputStream();
 	}
 
 	static void uIDfill(String file, OptionsFiller filler) {
-
-		InputStream assetsDB = null;
-		try {
-			assetsDB = getContext().getAssets().open(file);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (!loadInputStreamAndBufferedReader(file))
 			return;
-		}
-
-		BufferedReader buf = null;
-		try {
-			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
 
 		try {
 			while (buf.ready()) {
@@ -199,7 +138,30 @@ public class InfoFiller {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		closeInputStream();
+	}
 
+	private static boolean loadInputStreamAndBufferedReader(String file) {
+		assetsDB = null;
+		buf = null;
+
+		try {
+			assetsDB = getContext().getAssets().open(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		try {
+			buf = new BufferedReader(new InputStreamReader(assetsDB, "UTF-8"));
+		} catch (UnsupportedEncodingException e2) {
+			e2.printStackTrace();
+		}
+		return true;
+
+	}
+
+	private static void closeInputStream() {
 		try {
 			assetsDB.close();
 		} catch (IOException e) {
@@ -215,11 +177,11 @@ public class InfoFiller {
 		return InfoConfig.context;
 	}
 
-	public static interface Filler {
+	public interface Filler {
 		void fill(int i, String s);
 	}
 
-	public static interface OptionsFiller {
+	public interface OptionsFiller {
 		void fill(int i, String s, String options);
 	}
 
