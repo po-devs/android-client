@@ -103,7 +103,6 @@ public class TeambuilderActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 		String selection = PreferenceManager.getDefaultSharedPreferences(this).getString("theme_list", "-1");
-		Integer ii = Integer.parseInt(selection);
 		TypedArray ar = getResources().obtainTypedArray(R.array.themeentriesid);
 		int len = ar.length();
 		int[] resIds = new int[len];
@@ -111,6 +110,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			resIds[i] = ar.getResourceId(i, 0);
 		ar.recycle();
 		try {
+			Integer ii = Integer.parseInt(selection);
 			Themes.themeTeambuilder = resIds[ii];
 		} catch (Exception e) {
 			Themes.themeTeambuilder = R.style.AppTheme;
