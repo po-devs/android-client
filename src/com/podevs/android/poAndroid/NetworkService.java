@@ -1404,6 +1404,7 @@ public class NetworkService extends Service {
 	 */
 	public void createPM(int playerId) {
 		pms.createPM(players.get(playerId));
+		chatActivity.invalidateOptionsMenu();
 	}
 	
 	private void dealWithPM(int playerId, String message) {
