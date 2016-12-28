@@ -279,6 +279,21 @@ public class PokemonInfo {
 
 		if (ret == null) {
 			return new short[0];
+		} else if (gen == 7) {
+			// allmoves.txt for Gen 7 currently has duplicate entries.
+			// The following code removes the duplicate entries from the array.
+
+			Set<Short> set = new LinkedHashSet<>();
+			for (int i = 0; i < ret.length; i++) {
+				set.add(ret[i]);
+			}
+
+			short[] hashMoves = new short[set.size()];
+			int i = 0;
+			for (Iterator<Short> it = set.iterator(); it.hasNext(); ) {
+				hashMoves[i++] = it.next();
+			}
+			return hashMoves;
 		} else {
 			return ret;
 		}
