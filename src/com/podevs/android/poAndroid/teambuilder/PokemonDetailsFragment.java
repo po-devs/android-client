@@ -372,7 +372,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		TeamPoke tempPoke = poke();
 
-		if ((tempPoke.gen().num == 6 && tempPoke.gen().subNum == 1) || tier().equals("All Gen Hackmons")) {
+		if ((tempPoke.gen().num == 6 && tempPoke.gen().subNum == 1 || tempPoke.gen().num >= 7) || tier().equals("All Gen Hackmons")) {
 			hackmonButton.setEnabled(true);
 			hackmonButton.setChecked(tempPoke.isHackmon);
 		} else {

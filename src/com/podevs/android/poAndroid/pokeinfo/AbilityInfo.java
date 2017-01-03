@@ -81,17 +81,18 @@ public class AbilityInfo {
 	}
 
     private static void loadAllArray() {
-		allAbilities = new Short[4][];
-        allAbilities[3] = new Short[abilityNames.size() - 1];
-        for (int i = 0; i <= allAbilities[3].length - 1; i++) {
-            allAbilities[3][i] = (short) (i + 1);
+		allAbilities = new Short[5][];
+        allAbilities[4] = new Short[abilityNames.size() - 1];
+        for (int i = 0; i <= allAbilities[4].length - 1; i++) {
+            allAbilities[4][i] = (short) (i + 1);
         }
 
+        allAbilities[3] = Arrays.copyOf(allAbilities[4], 191);
 		allAbilities[2] = Arrays.copyOf(allAbilities[3], 164);
 		allAbilities[1] = Arrays.copyOf(allAbilities[2], 123);
 		allAbilities[0] = Arrays.copyOf(allAbilities[1], 76);
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 5; i++) {
 			java.util.Arrays.sort(allAbilities[i], new Comparator<Short>() {
 				@Override
 				public int compare(Short lhs, Short rhs) {
