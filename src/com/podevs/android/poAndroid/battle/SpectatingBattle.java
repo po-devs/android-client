@@ -452,7 +452,7 @@ public class SpectatingBattle {
                 switch (StatusFeeling.values()[status]) {
                     case FeelConfusion:
                         writeToHist(Html.fromHtml("<br><font color=" + TypeColor.Ghost + tu(
-                                pokes[player][slot].nick + getString(R.string.hurt_confusion_status_message) + "</font>")));
+                                pokes[player][slot].nick + " " + getString(R.string.feel_confusion_status_message) + "</font>")));
                         break;
                     case HurtConfusion:
                         writeToHist(Html.fromHtml("<br><font color=" + TypeColor.Ghost + tu(
