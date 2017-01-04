@@ -727,9 +727,9 @@ public class PokemonInfo {
 	public static String[] nameArray(Gen gen) {
 		String ret[] = new String[numberOfPokemons(gen) + 1]; //+1 for missingno
 
-		for (HashMap.Entry<String, UniqueID> entry : namesToIds.entrySet()) {
-			if (entry.getValue().subNum == 0 && entry.getValue().pokeNum < ret.length) {
-				ret[entry.getValue().pokeNum] = entry.getKey();
+		for (UniqueID id : namesToIds.values()) {
+			if (id.subNum == 0 && id.pokeNum < ret.length) {
+				ret[id.pokeNum] = name(id);
 			}
 		}
 		return ret;
