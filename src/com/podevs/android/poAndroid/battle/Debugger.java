@@ -295,10 +295,24 @@ public class Debugger {
                 SpectatingBattle.TempPokeChange change = SpectatingBattle.TempPokeChange.values()[id];
                 readable += sp + change.toString();
                 switch (change) {
-                    case TempSprite:
+                    case TempMove:
+                    case DefMove: {
+                        byte moveslot = msg.readByte();
+                        short move = msg.readShort();
+                        readable += sp + "{s:" + moveslot + " m:" + move + "}";
+                        break;
+                    }
+                    case TempPP: {
+                        byte moveslot = msg.readByte();
+                        byte PP = msg.readByte();
+                        readable += sp + "{s:" + moveslot + " p:" + PP + "}";
+                        break;
+                    }
+                    case TempSprite: {
                         UniqueID sprite = new UniqueID(msg);
                         readable += sp + playerSlot(player, slot) + sp + sprite.toString();
                         break;
+                    }
                     case DefiniteForme: {
                         //byte poke = msg.readByte();
                         UniqueID newForm = new UniqueID(msg);
