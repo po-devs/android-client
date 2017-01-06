@@ -200,6 +200,8 @@ class HtmlToSpannedConverter implements ContentHandler {
             startImg(mSpannableStringBuilder, attributes, mImageGetter);
         } else if (tag.equalsIgnoreCase("ping")) {
             startPing(mChan, mNetServ);
+        } else if (tag.equalsIgnoreCase("background")) {
+            startBackground(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("timestamp")) {
             if (mNetServ != null && mNetServ.getSettings().timeStamp) {
                 String timestamp = "(" + StringUtilities.timeStamp() + ") ";
@@ -258,6 +260,8 @@ class HtmlToSpannedConverter implements ContentHandler {
             endHeader(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("tr")) {
             mSpannableStringBuilder.append("\n");
+        } else if (tag.equalsIgnoreCase("background")) {
+            endBackground(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("strike")) {
             end(mSpannableStringBuilder, Strikethrough.class, new StrikethroughSpan());
         } else if (mTagHandler != null) {
@@ -489,6 +493,25 @@ class HtmlToSpannedConverter implements ContentHandler {
                 }
             }
         }
+    }
+
+    private static void startBackground(SpannableStringBuilder text, Attributes attributes) {
+        String color = attributes.getValue("","color");
+        int c = -1;
+        if (color != null && !color.equals("")) {
+            color = color.substring(6);
+            try {
+                c = MyColor.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                c = MyColor.BLACK;
+            }
+        }
+        start(text, new BackgroundColorSpan(c));
+    }
+
+    private static void endBackground(SpannableStringBuilder text) {
+        Object last = getLast(text, BackgroundColorSpan.class);
+        end(text, BackgroundColorSpan.class, last);
     }
 
     private static ClickableSpan poIgnore(final String idOrName, final NetworkService netServ) {
