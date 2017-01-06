@@ -2,7 +2,6 @@ package com.podevs.android.utilities;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.*;
@@ -17,7 +16,6 @@ import org.xml.sax.*;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 
 // Custom implementation of android.text.html
 
@@ -367,13 +365,7 @@ class HtmlToSpannedConverter implements ContentHandler {
                     }
                 } else {
                     int color = 0;
-                    try {
-                        Class c = Class.forName("android.graphics.Color");
-                        Method m = c.getMethod("getHtmlColor", String.class);
-                        color = (Integer) m.invoke(null, f.mColor);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    color = MyColor.getHtmlColor(f.mColor);
                     if (color != -1) {
                         text.setSpan(new ForegroundColorSpan(color | 0xFF000000),
                                 where, len,
@@ -395,16 +387,10 @@ class HtmlToSpannedConverter implements ContentHandler {
         int c = -1;
         if (color != null && !color.equals("")) {
             color = color.substring(6);
-            if (color.equals("orange")) {
-                c = 0xFFFFA500;
-            } else if (color.equals("pink")) {
-                c = 0xFFFFC0CB;
-            } else {
-                try {
-                    c = Color.parseColor(color);
-                } catch (IllegalArgumentException e) {
-                    c = Color.BLACK;
-                }
+            try {
+                c = MyColor.parseColor(color);
+            } catch (IllegalArgumentException e) {
+                c = MyColor.BLACK;
             }
         }
         int len = text.length();
