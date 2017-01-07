@@ -48,6 +48,7 @@ public class Settings extends PreferenceFragment {
             }
             if (key.equals("shouldWrite")) {
                 CustomExceptionHandler.shouldWrite = (Boolean)newValue;
+                if ((Boolean) newValue) makeToast(Environment.getExternalStorageDirectory().getAbsolutePath());
                 return true;
             }
             if (key.equals("copyandpaste")) {
