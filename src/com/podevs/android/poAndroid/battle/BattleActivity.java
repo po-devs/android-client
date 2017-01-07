@@ -975,6 +975,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 if(id == pokeList[i].whole.getId()) {
                     netServ.socket.sendMessage(activeBattle.constructSwitch((byte)i), Command.BattleMessage);
                     realViewSwitcher.setCurrentItem(0, true);
+                    zmoveClicked = false;
                 }
             }
             activeBattle.clicked = true;
