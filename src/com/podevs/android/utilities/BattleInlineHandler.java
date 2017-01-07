@@ -15,6 +15,7 @@ import org.xml.sax.XMLReader;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
+@Deprecated
 public class BattleInlineHandler implements Html.TagHandler {
     private NetworkService netServ;
     private HashMap<String, String> attributes = new HashMap<String, String>();
