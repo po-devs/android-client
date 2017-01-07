@@ -1,6 +1,7 @@
 package com.podevs.android.poAndroid.settings;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -47,7 +48,6 @@ public class Settings extends PreferenceFragment {
             }
             if (key.equals("shouldWrite")) {
                 CustomExceptionHandler.shouldWrite = (Boolean)newValue;
-
                 return true;
             }
             if (key.equals("copyandpaste")) {

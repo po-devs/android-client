@@ -1,16 +1,19 @@
 package com.podevs.android.poAndroid.registry;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -147,6 +150,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
 
+        checkPermissions();
     }
 
     private OnClickListener registryListener = new OnClickListener() {
@@ -299,4 +303,17 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     	}
     	super.onDestroy();
     }
+
+	@Override
+	protected void onResume() {
+    	checkPermissions();
+	}
+
+	private void checkPermissions() {
+		if (Build.VERSION.SDK_INT >= 23 && CustomExceptionHandler.shouldWrite) {
+			if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+			}
+		}
+	}
 }
