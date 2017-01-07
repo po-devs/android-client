@@ -468,11 +468,11 @@ public class SpectatingBattle {
                         break;
                     case FeelAsleep:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Asleep.poValue()) + tu(
-                                pokes[player][slot].nick + getString(R.string.feel_asleep_status_message) + "</font>")));
+                                pokes[player][slot].nick + " " + getString(R.string.feel_asleep_status_message) + "</font>")));
                         break;
                     case FreeAsleep:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Asleep.poValue()) + tu(
-                                pokes[player][slot].nick + getString(R.string.free_asleep_status_message) + "</font>")));
+                                pokes[player][slot].nick + " " + getString(R.string.free_asleep_status_message) + "</font>")));
                         break;
                     case HurtBurn:
                         writeToHist(Html.fromHtml("<br><font color=" + new StatusColor(Status.Burnt.poValue()) + tu(
