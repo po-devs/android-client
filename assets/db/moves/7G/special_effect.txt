@@ -388,6 +388,7 @@
 627 130-2#Nature's Madness
 628 221#Revelation Dance
 629 220#Shell Trap
+630 104-7#Solar Blade
 631 231#sunsteel strike
 633 240-4|1000-3_1#PsychicTerrain
 634 223#throat chop
@@ -417,6 +418,6 @@
 669 11#Prismatic Laser
 670 230#Spectral Thief
 671 1000-2_1#TearfulLook
-693 1000-8_2#Extreme evo boost
+693 1009#Extreme evo boost
 695 1007#genesis supernova
 696 1008#guardian of alola
