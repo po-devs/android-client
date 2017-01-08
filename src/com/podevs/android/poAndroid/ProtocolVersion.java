@@ -23,7 +23,7 @@ public class ProtocolVersion implements SerializeBytes {
 	 * Initiates a protocol version object to the latest version
 	 */
 	public ProtocolVersion() {
-		version = 2;
+		version = 4;
 		minorVersion = 0;
 	}
 	
