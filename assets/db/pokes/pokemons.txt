@@ -129,7 +129,7 @@
 92:0 Gastly
 93:0 Haunter
 94:0:H Gengar
-94:1:M Mega Gengar
+94:1:M Mega Gengar 
 95:0 Onix
 96:0 Drowzee
 97:0 Hypno
@@ -820,7 +820,7 @@
 656:0 Froakie
 657:0 Frogadier
 658:0 Greninja
-658:1:AD Greninja-Unbonded
+658:1:D Greninja-Unbonded
 658:2:A Ash Greninja
 659:0 Bunnelby
 660:0 Diggersby
@@ -1023,8 +1023,8 @@
 775:0 Komala
 776:0 Turtonator
 777:0 Togedemaru
-778:0:H Mimikyu
-778:1:M Mimikyu-Busted
+778:0 Mimikyu
+778:1:A Mimikyu-Busted
 779:0 Bruxish
 780:0 Drampa
 781:0 Dhelmise
