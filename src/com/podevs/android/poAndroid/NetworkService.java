@@ -1,7 +1,6 @@
 package com.podevs.android.poAndroid;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -16,7 +15,6 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.Html;
 import android.util.Log;
 import com.podevs.android.poAndroid.battle.*;
 import com.podevs.android.poAndroid.chat.Channel;
@@ -1171,37 +1169,51 @@ public class NetworkService extends Service {
 			}
 			break;
 		} case EngageBattle: {
-			int battleId = msg.readInt();
-			Bais flags = msg.readFlags();
-			byte mode = msg.readByte();
-			int p1 = msg.readInt();
-			int p2 = msg.readInt();
+				int battleId;// = msg.readInt();
+				Bais flags;// = msg.readFlags();
+				BattleDesc info = new BattleDesc();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
+				if (ProtocolVersion.lessThan(serverVersion, 2, 0)) {
+					battleId = msg.readInt();
+					flags = msg.readFlags();
+					info.mode = msg.readByte();
+					info.readOld(msg);
+				} else {
+					flags = msg.readFlags();
+					battleId = msg.readInt();
+					info.read(msg);
+				}
 
-			if(flags.readBool()) { // This is us!
-				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
-				// Start the battle
-				Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)),
-						getNonNullPlayer(conf.id(1)), myid, battleId, this);
-				activeBattles.put(battleId, battle);
+				boolean isOurBattle = flags.readBool();
 
-				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
-						" and " + playerName(p2) + " started!", false, null);
-				Intent intent = new Intent(this, BattleActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				intent.putExtra("battleId", battleId);
-				startActivity(intent);
-				findingBattle = false;
-				
-				showBattleNotification("Battle", battleId, conf);
-			}
-			
-			if (chatActivity != null) {
-				chatActivity.updatePlayer(players.get(p1), players.get(p1));
-				chatActivity.updatePlayer(players.get(p2), players.get(p2));
-			}
-			break;
+				if (isOurBattle) {
+					String test = "";
+				}
+
+				addBattle(battleId, info, true);
+
+				if(isOurBattle) { // This is us!
+					BattleConf conf = new BattleConf(msg, ProtocolVersion.lessThan(serverVersion, 1, 0));
+					// Start the battle
+					Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)), getNonNullPlayer(conf.id(1)), myid, battleId, this);
+					activeBattles.put(battleId, battle);
+
+					joinedChannels.peek().writeToHist("Battle between " + playerName(info.p1) +
+							" and " + playerName(info.p2) + " started!", false, null);
+					Intent intent = new Intent(this, BattleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra("battleId", battleId);
+					startActivity(intent);
+					findingBattle = false;
+
+					showBattleNotification("Battle", battleId, conf);
+				}
+
+				if (chatActivity != null) {
+					chatActivity.updatePlayer(players.get(info.p1), players.get(info.p1));
+					chatActivity.updatePlayer(players.get(info.p2), players.get(info.p2));
+				}
+				break;
 		} 
 		case SpectateBattle: {
 			Bais flags = msg.readFlags();
