@@ -306,6 +306,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
 	@Override
 	protected void onResume() {
+    	super.onResume();
     	checkPermissions();
 	}
 
