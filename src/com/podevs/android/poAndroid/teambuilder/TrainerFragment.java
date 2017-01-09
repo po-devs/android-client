@@ -167,7 +167,7 @@ public class TrainerFragment extends Fragment {
 
 		@Override
 		public int getCount() {
-			return 729;
+			return 844;
 		}
 
 		@Override
