@@ -406,7 +406,10 @@ public class PokemonInfo {
 					curIndex = nextIndex+1;
 				}
 
-				pokemons[gen].get(i).stats = stats;
+				PokeGenData data = pokemons[gen].get(i);
+				if (data != null) {
+					data.stats = stats;
+				}
 			}
 		});
 	}

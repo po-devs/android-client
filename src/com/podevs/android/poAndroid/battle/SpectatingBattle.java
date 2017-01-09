@@ -796,6 +796,7 @@ public class SpectatingBattle {
                         byte poke = msg.readByte();
                         UniqueID newForm = new UniqueID(msg);
                         pokes[player][slot].uID = newForm;
+                        pokes[player][slot].setStats(conf.gen.num);
                         if (isOut(slot)) {
                             pokes[player][slot].uID = newForm;
                             if (activity != null) {
