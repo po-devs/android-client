@@ -1023,7 +1023,7 @@
 775:0 Komala
 776:0 Turtonator
 777:0 Togedemaru
-778:0 Mimikyu
+778:0:H Mimikyu
 778:1:A Mimikyu-Busted
 779:0 Bruxish
 780:0 Drampa

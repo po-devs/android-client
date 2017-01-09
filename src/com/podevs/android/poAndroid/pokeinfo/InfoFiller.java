@@ -175,6 +175,8 @@ public class InfoFiller {
 				/*
 				 * Test for BOM
 				 */
+				if (str == null) throw new IllegalArgumentException("On file " + file);
+
 				if (str.length() > 0 && (int)str.charAt(0) == 65279) {
 					str = str.substring(1);
 				}
