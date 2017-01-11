@@ -7,13 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.annotation.NonNull;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.*;
@@ -30,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +77,8 @@ public class TeambuilderActivity extends FragmentActivity {
 	public static final int PICKCOLOR_RESULT_CODE = 2;
 	public static final int COLORPICKER_RESULT_CODE = 3;
 	public static final int POKEEDIT_RESULT_CODE = 605;
+	public static final int EXPORT_PERMISSION_CODE = 10;
+	public static final int IMPORT_PERMISSION_CODE = 11;
 	
 	private class MyAdapter extends FragmentPagerAdapter
 	{
@@ -136,7 +140,7 @@ public class TeambuilderActivity extends FragmentActivity {
     }
 
 	// This function will allow you do download txt from web.
-	private void downloadTiers(final URL Link) {
+	private void downloadTeam(final URL Link) {
 		new Thread() {
 			@Override
 			public void run() {
@@ -499,6 +503,18 @@ public class TeambuilderActivity extends FragmentActivity {
 	    	    }).show();
     		break;
     	}
+    	case R.id.export_team : {
+			if (Build.VERSION.SDK_INT >= 23) {
+				if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+					ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXPORT_PERMISSION_CODE);
+				} else {
+					handleExportTeam();
+				}
+			} else {
+				handleExportTeam();
+			}
+			break;
+		}
             case R.id.switch_place: {
                 final View view = LayoutInflater.from(this).inflate(R.layout.switch_place, null);
                 final EditText[] inputs = new EditText[2];
@@ -534,30 +550,6 @@ public class TeambuilderActivity extends FragmentActivity {
                         }).show();
                 break;
             }
-        /*
-			case R.id.download_team: {
-				final EditText input = new EditText(this);
-
-				new AlertDialog.Builder(this)
-						.setTitle(R.string.download_team)
-						.setMessage("Enter link of raw team: ")
-						.setView(input)
-						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								String link = input.getText().toString();
-
-								try {
-									URL Link = new URL(link);
-									progressDialog = ProgressDialog.show(TeambuilderActivity.this, "", "Downloading. Please wait...", true);
-									downloadTiers(Link);
-								} catch (MalformedURLException e) {
-									Toast.makeText(TeambuilderActivity.this, "Entire Valid Link.", Toast.LENGTH_SHORT).show();
-								}
-							}
-						}).show();
-
-			}
-			*/
         }
         return true;
     }
@@ -588,7 +580,7 @@ public class TeambuilderActivity extends FragmentActivity {
 		if (requestCode == PICKFILE_RESULT_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
 				String path = intent.getData().getPath();
-			    
+
 				try {
 					{
 						// Copy imported file to default team location
@@ -640,18 +632,133 @@ public class TeambuilderActivity extends FragmentActivity {
     	updateTeam();
     }
 
-    /*
     void onImportClicked() {
-		new SelectImportMethodDialogFragment().show(getSupportFragmentManager(), "select-import-method");
-    }
-    */
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.load_team)
+				.setSingleChoiceItems(R.array.import_array, -1, null)
+				.setPositiveButton(R.string.ok, new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						ListView lw = ((AlertDialog)dialog).getListView();
+						int w = lw.getCheckedItemPosition();
 
-    void buildDownloadDialog() {
+						switch (w) {
+							case 0: {
+								if (Build.VERSION.SDK_INT >= 23) {
+									if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+										ActivityCompat.requestPermissions(TeambuilderActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, IMPORT_PERMISSION_CODE);
+									} else {
+										buildFileImportDialog();
+									}
+								} else {
+									buildFileImportDialog();
+								}
+								break;
+							}
+							case 1: buildDownloadDialog(); break;
+						}
+					}
+				});
+		builder.create().show();
+    }
+
+    private void buildFileImportDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setTitle(R.string.importteam)
+				.setSingleChoiceItems(R.array.import_file_array, -1, null)
+				.setPositiveButton(R.string.ok, new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						int option = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+						if (option == 0) { // From file
+							Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+
+							intent.setType("file/*.xml");
+							intent = Intent.createChooser(intent, "File explorer");
+							startActivityForResult(intent, TeambuilderActivity.PICKFILE_RESULT_CODE);
+						} else if (option == 1) { // From File 2
+							buildFile2ImportDialog();
+						}
+					}
+				})
+				.setNegativeButton(R.string.cancel, null);
+		builder.show();
+	}
+
+	private void buildFile2ImportDialog() {
+		File poFolder = new File(Environment.getExternalStorageDirectory() + "/PokemonOnline");
+		boolean success = true;
+		if (!poFolder.exists()) {
+			success = poFolder.mkdirs();
+		}
+		if (success) {
+			final ArrayList<File> importFiles = new ArrayList<>();
+			File[] files = poFolder.listFiles();
+			if (files != null && files.length > 0) {
+				for (File file : files) {
+					String filename = file.getName();
+					String extension = filename.substring(filename.lastIndexOf(".") + 1);
+					if (extension.equals("xml")) {
+						importFiles.add(file);
+					}
+				}
+				if (importFiles.size() > 0) {
+					CharSequence[] names = new CharSequence[importFiles.size()];
+					for (int i = 0; i < importFiles.size(); i++) {
+						names[i] = importFiles.get(i).getName();
+					}
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+					builder.setTitle("Select File")
+							.setSingleChoiceItems(names, -1, null)
+							.setPositiveButton(R.string.ok, new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									int option = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+									File selected = importFiles.get(option);
+									String path = selected.getPath();
+									try {
+										{
+											// Copy imported file to default team location
+											FileInputStream team = new FileInputStream(path);
+											FileOutputStream saveTeam = openFileOutput("import.xml", Context.MODE_PRIVATE);
+
+											byte[] buffer = new byte[2048];
+											int length;
+											while ((length = team.read(buffer)) > 0)
+												saveTeam.write(buffer, 0, length);
+											saveTeam.flush();
+											saveTeam.close();
+											team.close();
+										}
+
+										try {
+											team = (new PokeParser(TeambuilderActivity.this, "import.xml", true)).getTeam();
+											Toast.makeText(TeambuilderActivity.this, "Team successfully imported from " + path, Toast.LENGTH_SHORT).show();
+
+											onTeamImported();
+										} catch (NumberFormatException e) {
+											Toast.makeText(TeambuilderActivity.this, "Team from " + path + " could not be parsed successfully. Is the file a valid team?", Toast.LENGTH_LONG).show();
+										}
+									} catch (IOException e) {
+										System.out.println("Team not found");
+										Toast.makeText(TeambuilderActivity.this, path + " could not be opened. Does the file exist?", Toast.LENGTH_LONG).show();
+									}
+								}
+							})
+							.setNegativeButton(R.string.cancel, null);
+					builder.show();
+				}
+			}
+		}
+	}
+
+	private void buildDownloadDialog() {
         final EditText input = new EditText(this);
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.download_team)
-                .setMessage("Enter link of raw team: ")
+                .setMessage(R.string.raw_link)
                 .setView(input)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -660,42 +767,14 @@ public class TeambuilderActivity extends FragmentActivity {
                         try {
                             URL Link = new URL(link);
                             progressDialog = ProgressDialog.show(TeambuilderActivity.this, "", "Downloading. Please wait...", true);
-                            downloadTiers(Link);
+                            downloadTeam(Link);
                         } catch (MalformedURLException e) {
-                            Toast.makeText(TeambuilderActivity.this, "Entire Valid Link.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(TeambuilderActivity.this, R.string.valid_link, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).show();
 
     }
-
-    /*
-    private void buildImportDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder
-                .setTitle(R.string.hiddenpower_choice)
-                .setNegativeButton(R.string.cancel, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        builder.show().cancel();
-                    }
-                })
-                .setItems(new CharSequence[]{"From link"}, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            buildDownloadDialog();
-                            builder.show().cancel();
-                        }
-                        if (which == 1) {
-                            // Import from file
-                        }
-                    }
-                });
-        builder.create().show();
-    }
-    */
 
     public void editPoke(int pos) {
     	Intent intent = new Intent(this, EditPokemonActivity.class);
@@ -713,5 +792,53 @@ public class TeambuilderActivity extends FragmentActivity {
 		updateTeam();
 		PokemonInfo.resetGen6();
        // Runtime.getRuntime().gc();
+	}
+
+	private void handleExportTeam() {
+		final CharSequence [] files = getTeamFiles();
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.export_team)
+				.setSingleChoiceItems(files, Arrays.asList(files).indexOf(defaultFile()), null)
+				.setPositiveButton(R.string.ok, new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						ListView lw = ((AlertDialog)dialog).getListView();
+						int w = lw.getCheckedItemPosition();
+
+						String file = lw.getItemAtPosition(w).toString();
+						File poFolder = new File(Environment.getExternalStorageDirectory() + "/PokemonOnline");
+						boolean success = true;
+						if (!poFolder.exists()) {
+							success = poFolder.mkdirs();
+						}
+						if (success) {
+							File newFile = new File(Environment.getExternalStorageDirectory() + "/PokemonOnline/" + file);
+							try {
+								FileOutputStream fw = new FileOutputStream(newFile);
+								FileInputStream fis = openFileInput(file);
+								final byte[] b = new byte[4096];
+								for (int r; (r = fis.read(b)) != -1;) {
+									fw.write(b, 0, r);
+								}
+								fw.close();
+								fis.close();
+								Toast.makeText(TeambuilderActivity.this, R.string.export_success, Toast.LENGTH_LONG).show();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				});
+		builder.create().show();
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			switch(requestCode) {
+				case EXPORT_PERMISSION_CODE: handleExportTeam(); break;
+				case IMPORT_PERMISSION_CODE: buildFileImportDialog(); break;
+			}
+		}
 	}
 }

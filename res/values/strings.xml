@@ -108,7 +108,14 @@
     <string name="switch_place">Switch place</string>
     <string name="hackmon_enabled">Hackmon Enabled</string>
     <string name="hackmon_disabled">Hackmon Disabled</string>
-    <string name ="manual_iv">Manual IV</string>
+    <string name="manual_iv">Manual IV</string>
+    <string name="switch_places">Switch Places</string>
+    <string name="from_slot">From slot:</string>
+    <string name="to_slot">To slot:</string>
+    <string name="export_team">Export Team</string>
+    <string name="export_success">Export successful</string>
+    <string name="raw_link">Enter link of raw  text team:</string>
+    <string name="valid_link">Entire Valid Link.</string>
 
     <string name="chat_title">Chat Settings</string>
     <string name="chat_summary">Chat Settings</string>
@@ -167,6 +174,16 @@
         <item> was poisoned!</item>
         <item> was badly poisoned!</item>
         <item> became confused!</item>
+    </string-array>
+
+    <string-array name="import_array">
+        <item>@string/importteam</item>
+        <item>@string/download_team</item>
+    </string-array>
+
+    <string-array name="import_file_array">
+        <item>From File</item>
+        <item>From File 2</item>
     </string-array>
 
     <string name="feel_confusion_status_message"> is confused!</string>
