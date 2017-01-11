@@ -135,6 +135,14 @@
     <string name="copypaste_title">复制和粘贴</string>
     <string name="copypaste_summary">可能不支持所有的设备</string>
     <string name="IV">IV</string>
+    <string name="switch_places">改变顺序</string>
+    <string name="from_slot">原有位置:</string>
+    <string name="to_slot">目标位置:</string>
+    <string name="export_team">导出队伍</string>
+    <string name="export_success">导出成功</string>
+    <string name="raw_link">不完整的链接:</string>
+    <string name="valid_link">完整的链接.</string>
+    <string name="cancel_find_battle">取消寻找对战</string>
 
     <string-array name="hp_array">
         <item>格斗</item>
@@ -163,6 +171,11 @@
         <item> 中毒了！</item>
         <item> 中了剧毒！</item>
         <item> 混乱了！</item>
+    </string-array>
+
+    <string-array name="import_file_array">
+        <item>来自文件</item>
+        <item>来自文件2</item>
     </string-array>
 
     <string name="feel_confusion_status_message"> 混乱了！</string>
