@@ -16,7 +16,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="From slot:"/>
+                android:text="@string/from_slot"/>
         <EditText
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="47px"
                 android:paddingRight="15px"
-                android:text="To slot:"/>
+                android:text="@string/to_slot"/>
         <EditText
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
