@@ -12,10 +12,8 @@ public class DamageClassInfo {
     public static String name(int num) {
         return damageClass.values()[num].toString();
     }
-/*
-    Could load images if any where placed in db/res/drawable
+
     public static int damageClassRes(int num) {
-        return InfoConfig.context.getResources().getIdentifier("damageclass" + num, "drawable", InfoConfig.pkgName);
+        return InfoConfig.context.getResources().getIdentifier("cat_" + num, "drawable", InfoConfig.pkgName);
     }
-*/
 }
