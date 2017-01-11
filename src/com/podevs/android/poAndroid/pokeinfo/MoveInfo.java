@@ -185,7 +185,16 @@ public class MoveInfo extends GenInfo {
 		}
 		testLoad();
 		effectsloaded = true;
-		String path = "db/moves/" + thisGen + "G/effect.txt";
+		String path;
+
+		if (RegistryActivity.localize_assets) {
+			path = "db/moves/" + InfoConfig.resources.getString(R.string.asset_localization) + thisGen + "G/effect.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/moves/" + thisGen + "G/effect.txt";
+			}
+		} else {
+			path = "db/moves/" + thisGen + "G/effect.txt";
+		}
 		InfoFiller.fill(path, new Filler() {
 			public void fill(int i, String s) {
 				moveNames.get(i).effect = s;
