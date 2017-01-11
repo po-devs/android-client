@@ -26,14 +26,15 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	}
 
 	private EVSlider sliders[] = null;
-	private TextView labels[] = null, levelChooser = null, happinessChooser = null;
+	private TextView levelChooser = null, happinessChooser = null;
 	private Spinner formesChooser = null, itemChooser = null, abilityChooser = null, natureChooser = null, genderChooser = null;
 	private CheckBox shinyChooser = null;
 	private LinearLayout formesLayout;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter, formesChooserAdapter;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter;
 	public PokemonDetailsListener listener = null;
     private Button manualIVButton = null;
     private ToggleButton hackmonButton = null;
+    private FormListAdapter formListAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +49,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				new EVSlider(v.findViewById(R.id.spdefev), 4),
 				new EVSlider(v.findViewById(R.id.speedev), 5)
 		};
+
+		/*
 		labels = new TextView[]{
 			(TextView)v.findViewById(R.id.hplabel),
 			(TextView)v.findViewById(R.id.attlabel),
@@ -56,6 +59,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			(TextView)v.findViewById(R.id.spdeflabel),
 			(TextView)v.findViewById(R.id.speedlabel)
 		};
+		*/
 		
 		for (EVSlider slider: sliders) {
 			slider.listener = this;
@@ -91,8 +95,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		genderChooser.setAdapter(genderChooserAdapter);
 
-		formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-		formesChooser.setAdapter(formesChooserAdapter);
+		//formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		formesChooser.setAdapter(formListAdapter = new FormListAdapter(getActivity(), R.layout.forminlist_item, poke().gen()));
 		
 		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		for (int i = 0; i < NatureInfo.count(); i++) {
@@ -116,9 +120,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		});
 
 		formesChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-			                           int arg2, long arg3) {
-				poke().setNum(PokemonInfo.number(arg0.getItemAtPosition(arg2).toString()));
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				poke().setNum((UniqueID) arg0.getItemAtPosition(arg2));
 				notifyUpdated(true);
 			}
 
@@ -382,12 +385,12 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		if (PokemonInfo.hasVisibleFormes(tempPoke.uID()) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
 			formesLayout.setVisibility(View.VISIBLE);
-			formesChooserAdapter.clear();
+			formListAdapter.clear();
 
 			for (UniqueID uID : PokemonInfo.formes(tempPoke.uID(), tempPoke.gen)) {
-				formesChooserAdapter.add(PokemonInfo.name(uID));
+				formListAdapter.add(uID);
 				if (uID.equals(tempPoke.uID())) {
-					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
+					formesChooser.setSelection(formListAdapter.getCount()-1);
 				}
 			}
 		} else {
@@ -500,7 +503,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public void updateStats() {
 		TeamPoke tempPoke = poke();
 		for (int i = 0; i < 6; i++) {
-			labels[i].setText(StatsInfo.Shortcut(i) + ": " + tempPoke.stat(i));
+			sliders[i].setTotal(tempPoke.stat(i));
 		}
 	}
 
@@ -518,7 +521,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		
 		poke().EVs[stat] = (byte)ev;
 
-		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
+		//labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
+		sliders[stat].setTotal(tempPoke.stat(stat));
 
 		notifyUpdated();
 	}
@@ -527,7 +531,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
         for (int i = 0; i < 6; i++) {
             sliders[i].setNum(0);
             poke().EVs[i] = 0;
-            labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+            //labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+			sliders[i].setTotal(poke().stat(i));
         }
     }
 }
