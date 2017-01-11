@@ -47,9 +47,10 @@ public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
         return getCustomView(position, convertView, parent);
     }
 
-    public View getCustomView(int position, View convertView, ViewGroup parent) {
-
-        View row = inflater.inflate(R.layout.row_item, parent, false);
+    public View getCustomView(int position, View row, ViewGroup parent) {
+        if (row == null) {
+            row = inflater.inflate(R.layout.row_item, parent, false);
+        }
 
         SpinnerData value = data.get(position);
 
@@ -62,6 +63,4 @@ public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
 
         return row;
     }
-
-
 }
