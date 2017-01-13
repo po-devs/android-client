@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,6 +30,7 @@ import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.poAndroid.registry.RegistryConnectionService.RegistryCommandListener;
 import com.podevs.android.poAndroid.registry.ServerListAdapter.Server;
+import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.poAndroid.teambuilder.TeambuilderActivity;
 import com.podevs.android.utilities.Baos;
 
@@ -197,7 +199,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			else if (v == findViewById(R.id.importteambutton)) {
     			startActivityForResult(new Intent(RegistryActivity.this, TeambuilderActivity.class), TEAMBUILDER_CODE);
     		} else if (v == findViewById(R.id.settings)) {
-    			checkForUpdates();
+				startActivity(new Intent(RegistryActivity.this, SetPreferenceActivity.class));
     		}
     	}
     };
@@ -334,35 +336,41 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 						runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								final EditText input = new EditText(getBaseContext());
-
-								new AlertDialog.Builder(getBaseContext())
+								new AlertDialog.Builder(RegistryActivity.this)
 										.setTitle("Update available")
-										.setView(input)
 										.setPositiveButton("Download", new DialogInterface.OnClickListener() {
 											public void onClick(DialogInterface dialog, int whichButton) {
-												try {
-													String path = Environment.getExternalStorageDirectory() + "/download/";
-													File file = new File(path);
-													file.mkdirs();
-													File outputFile = new File(file, "pokemon-online.apk");
-													FileOutputStream fos = new FileOutputStream(outputFile);
+												new Thread(new Runnable() {
+													@Override
+													public void run() {
+														try {
+															String path = Environment.getExternalStorageDirectory() + "/download/";
+															File file = new File(path);
+															file.mkdirs();
+															File outputFile = new File(file, "pokemon-online.apk");
+															FileOutputStream fos = new FileOutputStream(outputFile);
 
-													URL url = new URL(newCheck.getLink());
+															URL url = new URL(newCheck.getLink());
 
-													InputStream is = url.openStream();
+															InputStream is = url.openStream();
 
-													byte[] buffer = new byte[2048];
-													int len1 = 0;
-													while ((len1 = is.read(buffer)) != -1) {
-														fos.write(buffer, 0, len1);
+															byte[] buffer = new byte[2024];
+															int len1;
+															while ((len1 = is.read(buffer)) != -1) {
+																fos.write(buffer, 0, len1);
+															}
+															fos.close();
+															is.close();
+
+															Intent intent = new Intent(Intent.ACTION_VIEW);
+															intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/download/" + "pokemon-online.apk")), "application/vnd.android.package-archive");
+															intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+															startActivity(intent);
+														} catch (IOException e) {
+															e.printStackTrace();
+														}
 													}
-													fos.close();
-													is.close();
-
-												} catch (IOException e) {
-													e.printStackTrace();
-												}
+												}).start();
 											}
 										}).show();
 							}
