@@ -287,7 +287,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                 }
                 */
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.IV + "s")
+                builder.setTitle(R.string.manual_iv)
                         .setView(view)
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
@@ -515,13 +515,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
             if (totalEVs > 510 && tempPoke.gen().num > 2) {
                 ev = (510 - (tempPoke.totalEVs() - tempPoke.ev(stat)));
                 ev = ev / 4 * 4;
-                sliders[stat].setNum(ev);
             }
         }
-		
+
+        if (ev > 252) ev = 252;
 		poke().EVs[stat] = (byte)ev;
 
-		//labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
+		sliders[stat].setNum(ev);
 		sliders[stat].setTotal(tempPoke.stat(stat));
 
 		notifyUpdated();
