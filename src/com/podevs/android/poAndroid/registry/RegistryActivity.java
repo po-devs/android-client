@@ -3,14 +3,14 @@ package com.podevs.android.poAndroid.registry;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -33,6 +33,9 @@ import com.podevs.android.poAndroid.registry.ServerListAdapter.Server;
 import com.podevs.android.poAndroid.settings.SetPreferenceActivity;
 import com.podevs.android.poAndroid.teambuilder.TeambuilderActivity;
 import com.podevs.android.utilities.Baos;
+
+import java.io.*;
+import java.net.URL;
 
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
 	
@@ -316,5 +319,67 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 			}
 		}
+	}
+
+	private void checkForUpdates() {
+    	new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					URL url = new URL(UpdateCheck.GITHUB_LINK);
+					BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+					String input = in.readLine();
+					in.close();
+					final UpdateCheck newCheck = new UpdateCheck(input);
+					UpdateCheck oldCheck = new UpdateCheck();
+					if (newCheck.getVersion() > oldCheck.getVersion()) {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								new AlertDialog.Builder(RegistryActivity.this)
+										.setTitle("Update available")
+										.setPositiveButton("Download", new DialogInterface.OnClickListener() {
+											public void onClick(DialogInterface dialog, int whichButton) {
+												new Thread(new Runnable() {
+													@Override
+													public void run() {
+														try {
+															String path = Environment.getExternalStorageDirectory() + "/download/";
+															File file = new File(path);
+															file.mkdirs();
+															File outputFile = new File(file, "pokemon-online.apk");
+															FileOutputStream fos = new FileOutputStream(outputFile);
+
+															URL url = new URL(newCheck.getLink());
+
+															InputStream is = url.openStream();
+
+															byte[] buffer = new byte[2024];
+															int len1;
+															while ((len1 = is.read(buffer)) != -1) {
+																fos.write(buffer, 0, len1);
+															}
+															fos.close();
+															is.close();
+
+															Intent intent = new Intent(Intent.ACTION_VIEW);
+															intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/download/" + "pokemon-online.apk")), "application/vnd.android.package-archive");
+															intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+															startActivity(intent);
+														} catch (IOException e) {
+															e.printStackTrace();
+														}
+													}
+												}).start();
+											}
+										}).show();
+							}
+						});
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 }
