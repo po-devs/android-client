@@ -1,25 +1,23 @@
 package com.podevs.android.poAndroid.registry;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
 public class UpdateCheck {
-    private String version = "270";
+    public static String GITHUB_LINK= "https://raw.githubusercontent.com/MidwayMarshall/android-client/master/updatecheck";
+    private int version = 270;
     private String link = "www.test.com";
 
     public UpdateCheck() {}
 
-    public UpdateCheck(String input) {
-        try {
-            JSONObject o = new JSONObject(input);
-            version = o.getString("v");
-            link = o.getString("l");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public UpdateCheck(String input) throws JSONException {
+        JSONObject o = new JSONObject(input);
+        version = o.getInt("v");
+        link = o.getString("l");
     }
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
