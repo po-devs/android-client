@@ -12,4 +12,12 @@ public class ArraysLegacy {
         }
         return copyOfRange(original, 0, newLength);
     }
+
+    public static byte[] copyOf(byte[] original, int newLength) {
+        if (newLength < 0) {
+            throw new NegativeArraySizeException(Integer.toString(newLength));
+        }
+        return copyOfRange(original, 0, newLength);
+    }
+
 }
