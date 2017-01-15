@@ -52,5 +52,7 @@ public enum BattleCommand {
     UseItem, // 48
     ItemCountChange, // 49
     CappedStat, // 50
-    UsePP // 51
+    UsePP, // 51
+    Notice, // 52
+    HtmlMessage // 53
 }

@@ -45,19 +45,27 @@ public class ListedPokemon {
 	
 	public void update(Poke poke, boolean canSwitch) {
 		icon.setImageDrawable(PokemonInfo.iconDrawableCache(poke.uID()));
-		gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
-		itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
+		if (poke.gen().num >= 2) {
+			gender.setImageDrawable(PokemonInfo.genderDrawableCache(poke.gender()));
+			item.setText(ItemInfo.name(poke.item()));
+			itemIcon.setImageDrawable(PokemonInfo.itemDrawableCache(poke.item()));
+		}
 		name.setText(poke.nick());
 		hp.setText(poke.currentHP() + "/" + poke.totalHP());
-		item.setText(ItemInfo.name(poke.item()));
-		ability.setText(AbilityInfo.name(poke.ability()));
+		if (poke.gen().num >= 3) {
+			ability.setText(AbilityInfo.name(poke.ability()));
+		}
 		for (int j = 0; j < 4; j++) {
 			moves[j].setText(poke.move(j).toString());
 			moves[j].setShadowLayer((float)1, 1, 1, InfoConfig.resources.getColor(
 					canSwitch ? R.color.poke_text_shadow_enabled : R.color.poke_text_shadow_disabled));
         	String type;
         	if (poke.move(j).num() == 237)
-        		type = TypeInfo.name(poke.hiddenPowerType());
+        		if (poke.gen().num > 6) {
+					type = TypeInfo.name(poke.hiddenPowerType());
+				} else {
+					type = TypeInfo.name(HiddenPowerInfo.Type(poke));
+				}
         	else if (poke.move(j).num() == 449) // Judgment
 				type = TypeInfo.name(PokemonInfo.type1(poke.uID(), poke.gen().num));
 			else
@@ -65,6 +73,10 @@ public class ListedPokemon {
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
 		      		"drawable", InfoConfig.pkgName));
+			if (poke.move(j) instanceof BattleMove) {
+				if (((BattleMove) poke.move(j)).currentPP <= 0){}
+					// Grey out
+			}
 		}
 	}
 	

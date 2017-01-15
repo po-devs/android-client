@@ -8,9 +8,9 @@ import com.podevs.android.utilities.SerializeBytes;
 public class ShallowShownTeam implements SerializeBytes {
 	public ShallowShownPoke[] pokes = new ShallowShownPoke[6];
 	
-	public ShallowShownTeam(Bais msg) {
+	public ShallowShownTeam(Bais msg, byte gen) {
 		for (int i = 0; i < 6; i++)
-			pokes[i] = new ShallowShownPoke(msg);
+			pokes[i] = new ShallowShownPoke(msg, gen);
 	}
 	
 	public ShallowShownPoke poke(int index) {

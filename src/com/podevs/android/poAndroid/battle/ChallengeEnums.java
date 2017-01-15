@@ -1,7 +1,5 @@
 package com.podevs.android.poAndroid.battle;
 
-import android.util.Log;
-
 public class ChallengeEnums {
 	public enum ChallengeDesc
 	{
@@ -62,18 +60,18 @@ public class ChallengeEnums {
 			Rotation,
 		};
 
-		public static String clausesToStringHtml(int clauses) {
-			String s = "";
-			for (int i = 0; i < Clauses.values().length; i++) {
-				//String clauseNumber = Integer.toBinaryString(1 << i);
-				//String clausesID = Integer.toBinaryString(clauses);
-				//Log.e("Clauses", "" + clauseNumber);
-				//Log.e("Clauses", "" + clausesID);
-				if ((clauses & (1 << i)) > 0 ? true : false) {
-					//Log.e("Clauses", "true");
-					s += "<br />" + Clauses.values()[i].toString();
-				}
+	public static String clausesToStringHtml(int clauses) {
+		String s = "";
+		for (int i = 0; i < Clauses.values().length; i++) {
+			//String clauseNumber = Integer.toBinaryString(1 << i);
+			//String clausesID = Integer.toBinaryString(clauses);
+			//Log.e("Clauses", "" + clauseNumber);
+			//Log.e("Clauses", "" + clausesID);
+			if ((clauses & (1 << i)) > 0) {
+				//Log.e("Clauses", "true");
+				s += "<br />" + Clauses.values()[i].toString();
 			}
-			return s;
 		}
+		return s;
 	}
+}

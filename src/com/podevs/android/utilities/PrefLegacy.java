@@ -11,13 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PrefLegacy {
-
-    public static void putStringCollection(final Context context, final int prefKeyResId, final Collection<String> newValue) {
-        final SharedPreferences.Editor editor= PreferenceManager.getDefaultSharedPreferences(context).edit();
-        final String key=context.getString(prefKeyResId);
-        if(newValue==null)
-            editor.remove(key).commit();
-        else editor.putString(key,new JSONArray(newValue).toString()).commit();
+    public static void putStringSet(SharedPreferences prefs, String key, final Collection<String> newVal) {
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(key, new JSONArray(newVal).toString()).commit();
     }
 
     public static Set<String> getStringSet(SharedPreferences prefs, String key) {

@@ -1819,7 +1819,7 @@ public class NetworkService extends Service {
 
         String key = this.ip + ":" + this.port;
 
-        Set<String> hasSettings = prefs.getStringSet(key, null);
+        Set<String> hasSettings = PrefLegacy.getStringSet(prefs, key);
 
         if (hasSettings != null) {
             for (Channel chan : joinedChannels) {
@@ -1846,7 +1846,7 @@ public class NetworkService extends Service {
             }
         }
 
-        edit.putStringSet(key, settings).apply();
+        PrefLegacy.putStringSet(prefs, key, settings);
     }
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

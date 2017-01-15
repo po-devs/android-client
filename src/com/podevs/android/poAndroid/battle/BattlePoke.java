@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder;
 import com.podevs.android.poAndroid.poke.*;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo.Type;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
@@ -21,6 +22,7 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	// byte statusCount = 0;
 	// byte originalStatusCount = 0;
 	byte nature = 0;
+	byte hiddenPower = (byte) TypeInfo.Type.Dark.ordinal();
 	byte happiness = 0;
 	public byte teamNum;
 	Gen gen;
@@ -41,6 +43,8 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		level = msg.readByte();
 		item = msg.readShort();
 		ability = msg.readShort();
+		nature = msg.readByte();
+		hiddenPower = msg.readByte();
 		happiness = msg.readByte();
 		pokeName = PokemonInfo.name(uID);
 		types[0] = Type.values()[PokemonInfo.type1(uID, gen.num)];
@@ -77,6 +81,8 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		b.write(level);
 		b.putShort(item);
 		b.putShort(ability);
+		b.write(nature);
+		b.write(hiddenPower);
 		b.write(happiness);
 		for(int i = 0; i < 5; i++)
 			b.putShort(stats[i]);
@@ -96,18 +102,18 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 		return s;
 	}
 
-	public SpannableStringBuilder movesString() {
-		SpannableStringBuilder s = new SpannableStringBuilder();
-		for (int i = 0; i < 4; i++) {
-			s.append(i == 0 ? "" : "\n");
-			if (this.moves[i] == null) {
-				s.append("????" + "     " + "??");
-			} else {
-				s.append(Html.fromHtml("<font color=\"" + moves[i].getHexColor() + "\">" + moves[i].toString() + "    " + moves[i].totalPP + "</font>"));
-			}
-		}
-		return s;
-	}
+    public SpannableStringBuilder movesString() {
+        SpannableStringBuilder s = new SpannableStringBuilder();
+        for (int i = 0; i < 4; i++) {
+            s.append(i == 0 ? "" : "\n");
+            if (this.moves[i] == null) {
+                s.append("????" + "    " +"??");
+            } else {
+                s.append(Html.fromHtml("<font color=\"" + moves[i].getHexColor() + "\">" + moves[i].toString() + "    " + moves[i].totalPP + "</font>"));
+            }
+        }
+        return s;
+    }
 
 	public int ability() {
 		return ability;
@@ -138,6 +144,9 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	}
 
 	public int hiddenPowerType() {
+		if (this.gen().num > 6) {
+			return this.hiddenPower;
+		}
 		return HiddenPowerInfo.Type(this);
 	}
 	
@@ -160,4 +169,5 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public int gender() {
 		return gender;
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.podevs.android.poAndroid.battle;
 
+import com.podevs.android.utilities.ArrayUtilities;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -45,6 +46,16 @@ public class BattleDynamicInfo implements SerializeBytes {
 		if((flags & STICKYWEB) != 0) s += "\nSticky Web";
 		return s;
 	}
+
+	public String stats() {
+		String s = "HP:";
+		s += "\nAttack:";
+		s += "\nDefense:";
+		s += "\nSp. Att:";
+		s += "\nSp. Def:";
+		s += "\nSpeed:";
+		return s;
+	}
 	
 	public String boosts() {
 		String s = "";
@@ -53,5 +64,10 @@ public class BattleDynamicInfo implements SerializeBytes {
 		for (int i = 5; i < 7; i++)
 			if (boosts[i] != 0) s += "\n" + (boosts[i] < 0 ? "" : "+") + boosts[i]; 
 		return s;
+	}
+
+	@Override
+	public String toString() {
+		return "{flags:" + flags + ",boosts:" + ArrayUtilities.join(boosts, ",") + "}";
 	}
 }

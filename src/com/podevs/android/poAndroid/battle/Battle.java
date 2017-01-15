@@ -21,8 +21,9 @@ public class Battle extends SpectatingBattle {
 	public BattleTeam myTeam;
 	public ShallowShownTeam oppTeam;
 
-	public boolean allowSwitch, allowAttack, clicked, allowMega = false;
+	public boolean allowSwitch, allowAttack, clicked, allowMega, allowZMove = false;
 	public boolean[] allowAttacks = new boolean[4];
+	public boolean[] allowZMoves = new boolean[4];
 	public boolean shouldStruggle = false;
 	public BattleMove[] displayedMoves = new BattleMove[4];
 
@@ -46,6 +47,8 @@ public class Battle extends SpectatingBattle {
 
 		for (int i = 0; i < 4; i++)
 			displayedMoves[i] = new BattleMove();
+
+        startTime = System.currentTimeMillis();
 	}
 
 
@@ -56,10 +59,10 @@ public class Battle extends SpectatingBattle {
 		return b;
 	}
 
-	public Baos constructAttack(byte attack, boolean mega) {
+	public Baos constructAttack(byte attack, boolean mega, boolean zmove) {
 		Baos b = new Baos();
 		b.putInt(bID);
-		AttackChoice ac = new AttackChoice(attack, opp, mega);
+		AttackChoice ac = new AttackChoice(attack, opp, mega, zmove);
 		b.putBaos(new BattleChoice(me, ac, ChoiceType.AttackType));
 		return b;
 	}
@@ -88,31 +91,35 @@ public class Battle extends SpectatingBattle {
 	}
 
 	@Override
-	public void dealWithCommand(BattleCommand bc, byte player, Bais msg)  {
+	public void dealWithCommand(BattleCommand bc, byte num, Bais msg)  {
+        //Log.e(TAG, "Received bc: " + bc.toString() + " at state time: " + (System.currentTimeMillis() - startTime));
+		byte player = player(num);
+		byte slot = slot(num, player);
 		switch(bc) {
 		case SendOut: {
 			if (player != me) {
 				super.dealWithCommand(bc, player, msg);
 				return;
 			}
+
 			boolean silent = msg.readBool();
 			byte fromSpot = msg.readByte();
 
-			BattlePoke temp = myTeam.pokes[0];
+			BattlePoke temp = myTeam.pokes[slot];
 
-			myTeam.pokes[0] = myTeam.pokes[fromSpot];
+			myTeam.pokes[slot] = myTeam.pokes[fromSpot];
 			myTeam.pokes[fromSpot] = temp;
 
 			for (int i=0; i < 4; i++) {
-				displayedMoves[i] = new BattleMove(myTeam.pokes[0].moves[i]);
+				displayedMoves[i] = new BattleMove(myTeam.pokes[slot].moves[i]);
 			}
 
-			ShallowBattlePoke tempPoke = pokes[player][0];
-			pokes[player][0] = pokes[player][fromSpot];
+			ShallowBattlePoke tempPoke = pokes[player][slot];
+			pokes[player][slot] = pokes[player][fromSpot];
 			pokes[player][fromSpot] = tempPoke;
 
 			if (msg.available() > 0) // this is the first time you've seen it
-				pokes[player][0] = new ShallowBattlePoke(msg, (player == me), conf.gen);
+				pokes[player][slot] = new ShallowBattlePoke(msg, (player == me), conf.gen);
 
 			if(activity != null) {
 				activity.samePokes[player] = false;
@@ -125,7 +132,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						wait(4000);
+						if (!baked) wait(3000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -133,6 +140,7 @@ public class Battle extends SpectatingBattle {
 			if(!silent)
 				writeToHist("\n" + tu((players[player].nick() + " sent out " + 
 						currentPoke(player).rnick + "!")));
+
 			break;
 		} case AbsStatusChange: {
 			byte poke = msg.readByte();
@@ -157,26 +165,26 @@ public class Battle extends SpectatingBattle {
 
 			switch(TempPokeChange.values()[id]) {
 			case TempMove:
-			case DefMove:
-				byte slot = msg.readByte();
+			case DefMove: {
+				byte moveslot = msg.readByte();
 				BattleMove newMove = new BattleMove(msg.readShort());
-				displayedMoves[slot] = newMove;
+				displayedMoves[moveslot] = newMove;
 				if (id == TempPokeChange.DefMove.ordinal()) {
-					myTeam.pokes[0].moves[slot] = newMove;
+					myTeam.pokes[0].moves[moveslot] = newMove;
 				}
 				if (activity != null) {
 					activity.updatePokes(player);
 				}
 				break;
-			case TempPP:
-				slot = msg.readByte();
+			} case TempPP: {
+				byte moveslot = msg.readByte();
 				byte PP = msg.readByte();
-				displayedMoves[slot].currentPP = PP;
-				if (activity !=null) {
-					activity.updateMovePP(slot);
+				displayedMoves[moveslot].currentPP = PP;
+				if (activity != null) {
+					activity.updateMovePP(moveslot);
 				}
 				break;
-			case TempSprite:
+			} case TempSprite:
 				UniqueID sprite = new UniqueID(msg);
 				if (sprite.pokeNum != 0)
 					currentPoke(player).specialSprites.addFirst(sprite);
@@ -185,6 +193,7 @@ public class Battle extends SpectatingBattle {
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player);
+					activity.updatePokeBall(player, 0);
 				}
 				break;
 			case DefiniteForme:
@@ -192,14 +201,15 @@ public class Battle extends SpectatingBattle {
 				UniqueID uID = new UniqueID(msg);
 				pokes[player][poke].uID = uID;
 				if (isOut(poke)) {
-					currentPoke(slot(player, poke)).uID = uID;
+					pokes[player][poke].uID = uID;
 					if (player == opp) {
-						currentPoke(slot(player, poke)).setStats(conf.gen.num);
-						currentPoke(slot(player, poke)).setTypes(conf.gen.num);
+						pokes[player][poke].setStats(conf.gen.num);
+						pokes[player][poke].setTypes(conf.gen.num);
 					}
 					if (activity !=null) {
 						activity.samePokes[player] = false;
 						activity.updatePokes(player);
+						activity.updatePokeBall(player, poke);
 					}
 				}
 				break;
@@ -209,6 +219,7 @@ public class Battle extends SpectatingBattle {
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player);
+					activity.updatePokeBall(player, 0);
 				}
 			default: break;
 			}
@@ -231,30 +242,35 @@ public class Battle extends SpectatingBattle {
 			}
 
 			allowMega = msg.readBool();
+			allowZMove = msg.readBool();
 
-			if (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3])
-				shouldStruggle = true;
-			else
-				shouldStruggle = false;
+			if (allowZMove) {
+				for (int i = 0; i < 4; i++) {
+					allowZMoves[i] = msg.readBool();
+				}
+			}
+
+			shouldStruggle = (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3]);
 
 			clicked = false;
 
-			if (activity != null)
+			if (activity != null) {
 				activity.updateButtons();
+				activity.supportInvalidateOptionsMenu();
+			}
 			break;
 		} case CancelMove: {
 			clicked = false;
 			if (activity != null)
 				activity.updateButtons();
-			break;
+				break;
 		} case ChangeHp: {
 			short newHP = msg.readShort();
 			if(player == me) {
-				myTeam.pokes[0].currentHP = newHP;
+				myTeam.pokes[slot].currentHP = newHP;
 				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
-				currentPoke(player).lifePercent = (byte)(newHP * 100 / myTeam.pokes[0].totalHP);
-			}
-			else {
+				currentPoke(player).lifePercent = (byte)(newHP * 100 / myTeam.pokes[slot].totalHP);
+			} else {
 				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
 				currentPoke(player).lifePercent = (byte)newHP;
 			}
@@ -263,8 +279,12 @@ public class Battle extends SpectatingBattle {
 				// Timeout after 10s
 				try {
 					synchronized (this) {
-						activity.animateHpBarTo(player, currentPoke(player).lifePercent);
-						wait(7000);
+						int change = currentPoke(player).lastKnownPercent - currentPoke(player).lifePercent;
+						activity.animateHpBarTo(player, currentPoke(player).lifePercent, change);
+                        //Log.e(TAG, "change " + change);
+                        if (change < 0) change = -change;
+                        if (change > 100) change = 100;
+						if (!baked) wait(5000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 				activity.updateCurrentPokeListEntry();
@@ -282,7 +302,7 @@ public class Battle extends SpectatingBattle {
 			// TODO
 			break;
 		} case RearrangeTeam: {
-			oppTeam = new ShallowShownTeam(msg);
+			oppTeam = new ShallowShownTeam(msg, conf.gen.num);
 			shouldShowPreview = true;
 			if(activity != null)
 				activity.notifyRearrangeTeamDialog();
@@ -296,13 +316,13 @@ public class Battle extends SpectatingBattle {
 		} case ChangePP: {
 			byte moveNum = msg.readByte();
 			byte newPP = msg.readByte();
-			displayedMoves[moveNum].currentPP = myTeam.pokes[0].moves[moveNum].currentPP = newPP;
+			displayedMoves[moveNum].currentPP = myTeam.pokes[slot].moves[moveNum].currentPP = newPP;
 			if(activity != null)
 				activity.updateMovePP(moveNum);
 			break;
 		} case DynamicStats: {
 			for (int i = 0; i < 5; i++)
-				myTeam.pokes[player / 2].stats[i] = msg.readShort();
+				myTeam.pokes[slot].stats[i] = msg.readShort();
 			break;
 		} case UseItem: {
 			byte item = msg.readByte();

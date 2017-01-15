@@ -53,7 +53,7 @@ public class BattleConf implements SerializeBytes {
 		b.putInt(clauses);
 	}
 
-	public boolean isInBattle(int id) {
-		return ids[0] == id || ids[1] == id;
-	}
+    public boolean isInBattle(int id) {
+        return ids[0] == id || ids[1] == id;
+    }
 }
