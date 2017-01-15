@@ -10,8 +10,4 @@
         android:checkable="true"
         android:title="@string/ignorePlayer">
     </item>
-    <item
-        android:id="@id/settings"
-        android:title="@string/settings" >
-    </item>
 </menu>

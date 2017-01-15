@@ -11,11 +11,17 @@ import android.os.IBinder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
@@ -31,56 +37,57 @@ public class PrivateMessageActivity extends Activity {
 
 	private static PMPrefs PMSettings = new PMPrefs();
 	private static boolean isViewed = false;
+	private static int lastPosition = 0;
 	protected PrivateMessageList pms;
 	protected MyAdapter adapter = new MyAdapter();
 	protected NetworkService netServ;
 	protected ViewPager vp;
 
 	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		bindService(new Intent(this, NetworkService.class), connection,
-				Context.BIND_AUTO_CREATE);
-
-		setContentView(R.layout.pm_activity);
-		vp = (ViewPager) findViewById(R.id.viewPager);
-		vp.setAdapter(adapter);
-
-		TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-		titleIndicator.setViewPager(vp);
-
+        bindService(new Intent(this, NetworkService.class), connection,
+        		Context.BIND_AUTO_CREATE);
+        
+        setContentView(R.layout.pm_activity);
+        vp = (ViewPager) findViewById(R.id.viewPager);
+        vp.setAdapter(adapter);
+        
+        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        titleIndicator.setViewPager(vp);
+        
 		updateSettings();
 
 		isViewed = true;
 
-		final EditText send = (EditText) findViewById(R.id.pmInput);
-		send.setOnKeyListener(new OnKeyListener() {
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				// If the event is a key-down event on the "enter" button
-				// and the socket is connected
-				if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-						(keyCode == KeyEvent.KEYCODE_ENTER) && netServ != null) {
-					PrivateMessage pm = adapter.getItemAt(vp.getCurrentItem());
-					int id = pm.other.id;
-
-					if (netServ.players.get(id) == null) {
-						Toast.makeText(PrivateMessageActivity.this, "This player is offline", Toast.LENGTH_SHORT).show();
-						return true;
-					}
+        final EditText send = (EditText) findViewById(R.id.pmInput);
+        send.setOnKeyListener(new OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+            	// and the socket is connected
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER) && netServ != null) {
+                	PrivateMessage pm = adapter.getItemAt(vp.getCurrentItem()); 
+                	int id = pm.other.id;
+                	
+                	if (netServ.players.get(id) == null) {
+                		Toast.makeText(PrivateMessageActivity.this, "This player is offline", Toast.LENGTH_SHORT).show();
+                		return true;
+                	}
 
 					// Perform action on key press
-					netServ.sendPM(id, send.getText().toString());
-					pm.addMessage(pm.me, send.getText().toString(), PMSettings.timeStampPM);
-					send.getText().clear();
-					return true;
-				}
-				return false;
-			}
+                	netServ.sendPM(id, send.getText().toString());
+                	pm.addMessage(pm.me, send.getText().toString(), PMSettings.timeStampPM);
+                	send.getText().clear();
+                  return true;
+                }
+                return false;
+            }
 		});
-	}
-
+    }
+    
 	public static void updateSettings() {
 		PMSettings.timeStampPM = NetworkService.getPMSettings();
 	}
@@ -88,44 +95,43 @@ public class PrivateMessageActivity extends Activity {
 		return PMSettings.timeStampPM;
 	}
 
-	@Override
+    @Override
 	protected void onResume() {
-		super.onResume();
-
+    	super.onResume();
+    	
 		updateSettings();
 
     	/* Removes the PM notification */
-		((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel("pm", 0);
+    	((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel("pm", 0);
     	
     	/* Switches to the appropriate page */
-		int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
-
-		if (position != PagerAdapter.POSITION_NONE) {
-			vp.setCurrentItem(position, true);
-		}
+    	int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
+    	
+    	if (position != PagerAdapter.POSITION_NONE) {
+    		vp.setCurrentItem(position, true);
+    	}
 
 		isViewed = true;
 	}
-
-	@Override
+    
+    @Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-
+		
 		setIntent(intent);
 	}
-
-	@Override
+    
+    @Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-
+		
 		if (item.getItemId() == R.id.closePM) {
 			try {
 				int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
 				pms.removePM(id);
-			} catch (NullPointerException ex) {
-
-			}
-
+				netServ.chatActivity.invalidateOptionsMenu();
+			} catch (NullPointerException ex) {}
+			
 			if (pms.count() == 0) {
 				finish();
 			}
@@ -140,23 +146,24 @@ public class PrivateMessageActivity extends Activity {
 				netServ.ignoreList.add(id);
 				Toast.makeText(PrivateMessageActivity.this, "Ignored " + netServ.playerName(id) + ".", Toast.LENGTH_LONG).show();
 			}
-			return true;
+            return true;
 		}
 		return true;
 	}
 
 	@Override
 	public void onPause() {
+		lastPosition = vp.getCurrentItem();
 		isViewed = false;
 		super.onPause();
 
-		try {
-			if (connection != null) {
-				unbindService(connection);
-			}
-		} catch (IllegalArgumentException e) {
-			Log.e("PM", "Illegal Argument Exception");
-		}
+        try {
+            if (connection != null) {
+                unbindService(connection);
+            }
+        } catch (IllegalArgumentException e) {
+           Log.e("PM", "Illegal Argument Exception");
+        }
 	}
 
 	@Override
@@ -168,17 +175,17 @@ public class PrivateMessageActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-
+		
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.pmoptions, menu);
-
+        inflater.inflate(R.menu.pmoptions, menu);
+        
 		return true;
 	}
-
+	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
-
+		
 		if (adapter.getCount() <= 0) {
 			menu.removeItem(R.id.closePM);
 		}
@@ -202,14 +209,15 @@ public class PrivateMessageActivity extends Activity {
 			adapter.notifyDataSetChanged();
 			
 			/* Switches to the appropriate page */
-			int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
-
-			if (position != PagerAdapter.POSITION_NONE) {
-				vp.setCurrentItem(position, true);
-
+	    	int position = adapter.getIdPosition(getIntent().getIntExtra("playerId", PagerAdapter.POSITION_NONE));
+	    	
+	    	if (position != PagerAdapter.POSITION_NONE) {
+	    		vp.setCurrentItem(position, true);
+	    	} else {
+				vp.setCurrentItem(lastPosition);
 			}
 		}
-
+		
 		public void onServiceDisconnected(ComponentName className) {
 			netServ = null;
 		}
@@ -218,7 +226,7 @@ public class PrivateMessageActivity extends Activity {
 	public static boolean onTop() {
 		return isViewed;
 	}
-
+	
 	private class MyAdapter extends PagerAdapter implements PrivateMessageListListener
 	{
 		@Override
@@ -234,12 +242,12 @@ public class PrivateMessageActivity extends Activity {
 				return pms.count();
 			}
 		}
-
+		
 		public PrivateMessage getItemAt(int position) {
 			if (pms == null) {
 				return null;
 			}
-
+			
 			try {
 				Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
 				for (int i = 0; i < position; i++) {
@@ -250,36 +258,36 @@ public class PrivateMessageActivity extends Activity {
 				return null;
 			}
 		}
-
+		
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			PrivateMessage pm = getItemAt(position);
-
+			
 			if (pm == null) {
 				return null;
 			}
 
-			ListView lv;
+            ListView lv;
 
 			if (pm.privateList == null) {
-				lv = new ListView(PrivateMessageActivity.this);
-				lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
-				lv.setTag(R.id.associated_pm, pm);
-				lv.setTag(R.id.position, position);
-				pm.privateList = lv;
-			} else {
-				lv = pm.privateList;
-				ViewGroup parent = (ViewGroup) lv.getParent();
-				if (parent != null) {
-					parent.removeView(lv);
-				}
-			}
+                lv = new ListView(PrivateMessageActivity.this);
+                lv.setAdapter(new PrivateMessageAdapter(PrivateMessageActivity.this, pm));
+                lv.setTag(R.id.associated_pm, pm);
+                lv.setTag(R.id.position, position);
+                pm.privateList = lv;
+            } else {
+                lv = pm.privateList;
+                ViewGroup parent = (ViewGroup) lv.getParent();
+                if (parent != null) {
+                    parent.removeView(lv);
+                }
+            }
 
-			container.addView(lv);
-			lv.setSelection(lv.getAdapter().getCount());
+            container.addView(lv);
+            lv.setSelection(lv.getAdapter().getCount());
 			return lv;
 		}
-
+		
 		@Override
 		public int getItemPosition(Object object) {
 			if (pms == null) {
@@ -289,7 +297,7 @@ public class PrivateMessageActivity extends Activity {
 			View v = (View) object;
 			PrivateMessage pm = (PrivateMessage) v.getTag(R.id.associated_pm);
 			int lastPos = (Integer) v.getTag(R.id.position);
-
+			
 			Iterator<PrivateMessage> it = pms.privateMessages.values().iterator();
 			for (int i = 0; i < pms.count(); i++) {
 				if (it.next() == pm) {
@@ -302,7 +310,7 @@ public class PrivateMessageActivity extends Activity {
 			}
 			return POSITION_NONE;
 		}
-
+		
 		public int getIdPosition(int id) {
 			if (pms == null) {
 				return POSITION_NONE;

@@ -15,7 +15,7 @@ public class PrivateMessageList {
 	
 	/**
 	 * Creates a PM window with the other guy
-	 * @param playerId the other guy's id
+	 * @param info the other guy's id
 	 */
 	public void createPM(PlayerInfo info) {
 		if (!privateMessages.containsKey(info.id)) {
