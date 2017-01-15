@@ -53,6 +53,7 @@ public class XMLHandler extends DefaultHandler {
 			
 			poke.ability = (short) Integer.parseInt(StringUtilities.def(atts.getValue("Ability"), "0"));
 			poke.nature = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Nature"), "0"));
+			poke.hiddenPowerType = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("HiddenPower"), "16"));
 			poke.gender = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Gender"), "0"));
 			poke.shiny = Integer.parseInt(StringUtilities.def(atts.getValue("Shiny"), "0")) != 0;
 			poke.happiness = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Happiness"), "0"));

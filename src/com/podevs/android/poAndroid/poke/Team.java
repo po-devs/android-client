@@ -87,7 +87,9 @@ public class Team implements SerializeBytes {
 	}
 
 	public boolean isValid() {
-		return (poke(0).uID().pokeNum != 0);
+		boolean ret = poke(0).uID().pokeNum != 0;
+		
+		return ret;
 	}
 
 	public void save(Context c) {
@@ -131,7 +133,7 @@ public class Team implements SerializeBytes {
   //      StringWriter writer = new StringWriter();
    //     StreamResult result1 = new StreamResult(writer);
 		try {
-			result = new StreamResult(c.openFileOutput(c.getSharedPreferences("team", 0).getString("file", "team.xml"), Context.MODE_WORLD_READABLE));
+			result = new StreamResult(c.openFileOutput(c.getSharedPreferences("team", 0).getString("file", "team.xml"), Context.MODE_PRIVATE));
         } catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return;

@@ -3,11 +3,6 @@ package com.podevs.android.poAndroid.poke;
 import com.podevs.android.poAndroid.R;
 
 public class PokeEnums {
-	public enum Gender {
-		Neutral,
-		Male,
-		Female
-	}
 
 	public enum Status { // XXX this is a monster
 		Fine { public final int poValue() { return 0; } },
@@ -70,34 +65,6 @@ public class PokeEnums {
 		MaleAvail,
 		FemaleAvail,
 		MaleAndFemaleAvail
-	}
-
-	public enum Nature {
-		Hardy,
-		Lonely,
-		Brave,
-		Adamant,
-		Naughty,
-		Bold,
-		Docile,
-		Relaxed,
-		Impish,
-		Lax,
-		Timid,
-		Hasty,
-		Serious,
-		Jolly,
-		Naive,
-		Modest,
-		Mild,
-		Quiet,
-		Bashful,
-		Rash,
-		Calm,
-		Gentle,
-		Sassy,
-		Careful,
-		Quirky
 	}
 	
 	public enum Stat {

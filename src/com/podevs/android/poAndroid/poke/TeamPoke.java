@@ -1,9 +1,12 @@
 package com.podevs.android.poAndroid.poke;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.ItemInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
 import com.podevs.android.utilities.ArrayUtilities;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
@@ -12,13 +15,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 // This class is how a poke is represented in the teambuilder.
-public class TeamPoke implements SerializeBytes, Poke {
+public class TeamPoke implements SerializeBytes, Poke, Parcelable {
 	public UniqueID uID;
 	public String nick;
 	public short item;
 	public short pokeball;
 	public short ability;
 	public byte nature;
+	public byte hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 	public byte gender;
 	public Gen gen;
 	public boolean shiny;
@@ -48,9 +52,15 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 		Bais network = b.readFlags();
 
-//		hasGen, hasNickname, hasPokeball, hasHappiness, hasPPups, hasIVs,
-//      isShiny=0
-		if (network.readBool()) { // gen flag
+		boolean hasGen = network.readBool();
+		boolean hasNickname = network.readBool();
+		boolean hasPokeball = network.readBool();
+		boolean hasHappiness = network.readBool();
+		boolean hasPPups = network.readBool();
+		boolean hasIVs = network.readBool();
+		boolean hasHiddenPower = network.readBool();
+
+		if (hasGen) {
 			gen = new Gen(b);
 		} else if (gen == null) {
 			gen = new Gen();
@@ -60,16 +70,15 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 		Bais data = b.readFlags();
 		shiny = data.readBool();
-
         isHackmon = data.readBool();
 
-		if (network.readBool()) { //nickname flag
+		if (hasNickname) {
 			nick = b.readString();
 		} else {
 			nick = PokemonInfo.name(uID);
 		}
 
-		if (network.readBool()) { //pokeball flag
+		if (hasPokeball) {
 			pokeball = b.readShort();
 		} else {
 			pokeball = 0;
@@ -83,14 +92,16 @@ public class TeamPoke implements SerializeBytes, Poke {
 			}
 
 			gender = b.readByte();
-			if (gen.num > 2 && network.readBool()) { //happiness flag
+			if (gen.num > 2 && hasHappiness) {
 				happiness = b.readByte();
+			}
+			if (gen.num > 6 && hasHiddenPower) {
+				hiddenPowerType = b.readByte();
 			}
 		}
 
-		boolean ppups = network.readBool(); //ppup flags
 		for (int i = 0; i < 4; i++) {
-			if (ppups) {
+			if (hasPPups) {
 				b.readByte(); // read the pp up for the move, but ignore it
 			}
 			moves[i] = new TeamMove(b.readShort());
@@ -99,8 +110,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		for(int i = 0; i < 6; i++)
 			EVs[i] = b.readByte();
 
-		boolean hasIVs = network.readBool();
-		if (hasIVs || gen.num == 2) { //Ivs flags
+		if (hasIVs || gen.num == 2) {
 			for(int i = 0; i < 6; i++)
 				DVs[i] = b.readByte();
 		} else {
@@ -122,6 +132,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		item = 0;
 		ability = 0;
 		nature = 0;
+		hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 		gender = 1;
 		gen = new Gen();
 		shiny = false;
@@ -159,7 +170,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 			if (id.pokeNum == 487) {
 				item =  (short) (id.subNum == 1 ? 213 : 15); // griseous orb
 			} else if (id.pokeNum == 493) { /* Arceus */
-				item =  id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
+				item = id.subNum != 0 ? ItemInfo.plateForType(id.subNum) : 15;
+			} else if (id.pokeNum == 773) { /* Silvally */
+				item = id.subNum != 0 ? ItemInfo.memoryChipForType(id.subNum) : 15;
 			}
 
 			if (fullReset) {
@@ -173,6 +186,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 			if (fullReset) {
 				happiness = 0;
+				hiddenPowerType = (byte)TypeInfo.Type.Dark.ordinal();
 				level = 100;
 				moves[0] = new TeamMove(0);
 				moves[1] = new TeamMove(0);
@@ -234,8 +248,8 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 	public void serializeBytes(Baos bytes) {
 		Baos b = new Baos();
-//								hasGen, hasNickname, 	hasPokeball, hasHappiness, hasPPups,  hasIVs,
-		b.putFlags(new boolean[]{true, nick.length() > 0, false, 	happiness != 0, false, 	true});
+//								hasGen, hasNickname, hasPokeball, hasHappiness,	hasPPups, hasIVs, hasHiddenPower
+		b.putFlags(new boolean[]{true, nick.length() > 0, false, happiness != 0,false,	true,	hiddenPowerType != (byte)TypeInfo.Type.Dark.ordinal()});
 
 		b.putBaos(gen);
 		b.putBaos(uID);
@@ -260,6 +274,10 @@ public class TeamPoke implements SerializeBytes, Poke {
 
 			if (gen.num > 2 && happiness != 0) {
 				b.write(happiness);
+			}
+
+			if (gen.num > 6 && hiddenPowerType() != (byte)TypeInfo.Type.Dark.ordinal()) {
+				b.write(hiddenPowerType);
 			}
 		}
 
@@ -306,7 +324,30 @@ public class TeamPoke implements SerializeBytes, Poke {
 	}
 
 	public int hiddenPowerType() {
+		if (gen.num > 6) {
+			return  hiddenPowerType;
+		}
 		return HiddenPowerInfo.Type(this);
+	}
+
+	public boolean validHiddenPowerType(int type) {
+		if (this.gen.num > 6) {
+			int minPossible = 0;
+			int maxPossible = 0;
+			for (int i = 0; i < 6; i++) {
+				//Speed comes before sp.atk and sp.def
+				int b = i == 5 ? 3 : (i > 2 ? i+1 : i);
+
+				minPossible += DVs[i] == 31 ? 0 : (DVs[i] % 2) << b;
+				maxPossible += DVs[i] == 31 ? 1 << b : (DVs[i] % 2) << b;
+			}
+			minPossible = (minPossible*15)/63 + 1;
+			maxPossible = (maxPossible*15)/63 + 1;
+			if (maxPossible < type || type < minPossible) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public int dv(int i) {
@@ -334,6 +375,7 @@ public class TeamPoke implements SerializeBytes, Poke {
 		poke.setAttribute("Lvl", String.valueOf(level));
 		poke.setAttribute("Shiny", String.valueOf(shiny ? 1 : 0));
 		poke.setAttribute("Nature", String.valueOf(nature));
+		poke.setAttribute("HiddenPower", String.valueOf(hiddenPowerType));
 		poke.setAttribute("Happiness", String.valueOf(happiness));
         poke.setAttribute("Hackmon", String.valueOf(isHackmon ? 1 : 0));
 
@@ -369,6 +411,9 @@ public class TeamPoke implements SerializeBytes, Poke {
 		} else if (uID.pokeNum == 493 && !isHackmon) {
 			/* Arceus */
 			setNum(new UniqueID(uID.pokeNum, ItemInfo.plateType(item)));
+		} else if (uID.pokeNum == 773 && !isHackmon) {
+			/* Silvally */
+			setNum(new UniqueID(uID.pokeNum, ItemInfo.memoryType(item)));
 		}
 	}
 
@@ -419,4 +464,72 @@ public class TeamPoke implements SerializeBytes, Poke {
 	public int gender() {
 		return gender;
 	}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uID.pokeNum);dest.writeByte(uID.subNum);
+        dest.writeString(nick);
+        dest.writeValue(item);
+        dest.writeValue(pokeball);
+        dest.writeValue(ability);
+        dest.writeByte(nature);
+        dest.writeByte(hiddenPowerType);
+        dest.writeByte(gender);
+        dest.writeByte(gen.num);dest.writeByte(gen.subNum);
+        dest.writeByte((byte) (shiny ? 0x01 : 0x00));
+        dest.writeByte(happiness);
+        dest.writeByte(level);
+        for (int i = 0; i < 4; i++) {
+            dest.writeInt(moves[i].num());
+        }
+        for (int i = 0; i < 6; i++) {
+            dest.writeByte(DVs[i]);
+        }
+        for (int i = 0; i < 6; i++) {
+            dest.writeByte(EVs[i]);
+        }
+        dest.writeByte((byte) (isHackmon ? 0x01 : 0x00));
+    }
+
+    protected TeamPoke(Parcel in) {
+        uID = new UniqueID(in.readInt(), in.readByte());
+        nick = in.readString();
+        item = (Short) in.readValue(short.class.getClassLoader());
+        pokeball = (Short) in.readValue(short.class.getClassLoader());
+        ability = (Short) in.readValue(short.class.getClassLoader());
+        nature = in.readByte();
+        hiddenPowerType = in.readByte();
+        gender = in.readByte();
+        gen = new Gen(in.readByte(), in.readByte());
+        shiny = in.readByte() != 0x00;
+        happiness = in.readByte();
+        level = in.readByte();
+        for (int i = 0; i < 4; i++) {
+            moves[i] = new TeamMove(in.readInt());
+        }
+        for (int i = 0; i < 6; i++) {
+            DVs[i] = in.readByte();
+        }
+        for (int i = 0; i < 6; i++) {
+            EVs[i] = in.readByte();
+        }
+        isHackmon = in.readByte() != 0x00;
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public TeamPoke createFromParcel(Parcel source) {
+            return new TeamPoke(source);
+        }
+
+        @Override
+        public TeamPoke[] newArray(int size) {
+            return new TeamPoke[size];
+        }
+    };
 }
