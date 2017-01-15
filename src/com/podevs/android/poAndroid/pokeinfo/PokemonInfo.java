@@ -3,15 +3,17 @@ package com.podevs.android.poAndroid.pokeinfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.LruCache;
 import android.util.SparseArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.FillerByte;
 import com.podevs.android.poAndroid.pokeinfo.StatsInfo.Stats;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 import java.util.*;
 
@@ -43,7 +45,7 @@ public class PokemonInfo {
 	/**
 	 *  Cache of images
 	 */
-	private static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(40);
+	private final static LruCache<String, Drawable> ImageCache = new LruCache<String, Drawable>(22);
 
 	/**
 	 * Pokemon Data object
@@ -117,14 +119,14 @@ public class PokemonInfo {
 		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
 	}
 
-    public static boolean hasHackmonFormes(UniqueID uID) {
-        loadPokeNames();
+	public static boolean hasHackmonFormes(UniqueID uID) {
+		loadPokeNames();
 
-        int num = uID.originalHashCode();
-        PokeData data = pokemonsg.get(num);
+		int num = uID.originalHashCode();
+		PokeData data = pokemonsg.get(num);
 
-        return data.maxForme > 0;
-    }
+		return data.maxForme > 0;
+	}
 
 	/**
 	 * Loads formes into list by uID
@@ -317,7 +319,7 @@ public class PokemonInfo {
 		String test;
 		if (gen == 6 && sub == 1) {
 			test = "db/pokes/6G/Subgen 1/all_moves.txt";
-			} else {
+		} else {
 			test = "db/pokes/" + gen + "G/all_moves.txt";
 		}
 		/*
@@ -353,7 +355,7 @@ public class PokemonInfo {
 
 	public static int calcStat(Poke poke, int stat, int gen) {
 		if (stat == Stats.Hp.ordinal()) {
-			return ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5 + 5 + poke.level();
+			return (stat(poke.uID(), stat, gen) == 1 ? 1 : ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5 + 5 + poke.level());
 		} else {
 			int base = ((2*stat(poke.uID(), stat, gen) + poke.dv(stat) * (1 + (gen <= 2 ? 1 : 0) ) + poke.ev(stat)/4)*poke.level())/100 + 5;
 
@@ -404,7 +406,10 @@ public class PokemonInfo {
 					curIndex = nextIndex+1;
 				}
 
-				pokemons[gen].get(i).stats = stats;
+				PokeGenData data = pokemons[gen].get(i);
+				if (data != null) {
+					data.stats = stats;
+				}
 			}
 		});
 	}
@@ -501,7 +506,7 @@ public class PokemonInfo {
 	 * @return Drawable from cache or directly from local.
 	 */
 
-    public static Drawable itemDrawableCache(Integer itemId) {
+	public static Drawable itemDrawableCache(Integer itemId) {
 		String itemKey = "i" + itemId.toString();
 		Drawable drawable =  ImageCache.get(itemKey);
 		if (drawable == null) {
@@ -565,8 +570,8 @@ public class PokemonInfo {
 		} else {
 			res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
 					(front ? "_front" : "_back");
-			if (poke.gender == Gender.Female.ordinal()) {
-				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
+			if (poke.gender == GenderInfo.Gender.Female.ordinal()) {
+				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == GenderInfo.Gender.Female.ordinal())
 					// Special female sprite
 					res = res + "f";
 			}
@@ -645,6 +650,25 @@ public class PokemonInfo {
 				namesToIds.put(s, new UniqueID(i));
 			}
 		});
+		if (RegistryActivity.localize_assets) {
+			String path = "db/pokes/" + InfoConfig.resources.getString(R.string.asset_localization) + "pokemons.txt";
+			if (InfoConfig.fileExists(path)) {
+				InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
+					public void fill(int i, String s, String options) {
+						pokeNames.put(i, s);
+						pokemonsg.put(i, new PokeData());
+
+						if (i > 16000) {
+							pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+						} else if (i > pokeCount) {
+							pokeCount = i;
+						}
+						pokemonsg.get(i).options = options;
+						namesToIds.put(s, new UniqueID(i));
+					}
+				});
+			}
+		}
 	}
 
 	/**
@@ -667,12 +691,12 @@ public class PokemonInfo {
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type1.txt", new FillerByte() {
 			@Override
 			void fillByte(int i, byte b) {
-                try {
-                    pokemons[gen].get(i).type1 = b;
-                } catch (Exception e) {
-                    Log.e("PokemonInfo", "Impossible to load type 1 for gen " + gen + ", poke: " + i);
-                }
-            }
+				try {
+					pokemons[gen].get(i).type1 = b;
+				} catch (Exception e) {
+					Log.e("PokemonInfo", "Impossible to load type 1 for gen " + gen + ", poke: " + i);
+				}
+			}
 		});
 		InfoFiller.uIDfill("db/pokes/" + gen  + "G/type2.txt", new FillerByte() {
 			@Override
@@ -706,9 +730,9 @@ public class PokemonInfo {
 	public static String[] nameArray(Gen gen) {
 		String ret[] = new String[numberOfPokemons(gen) + 1]; //+1 for missingno
 
-		for (HashMap.Entry<String, UniqueID> entry : namesToIds.entrySet()) {
-			if (entry.getValue().subNum == 0 && entry.getValue().pokeNum < ret.length) {
-				ret[entry.getValue().pokeNum] = entry.getKey();
+		for (UniqueID id : namesToIds.values()) {
+			if (id.subNum == 0 && id.pokeNum < ret.length) {
+				ret[id.pokeNum] = name(id);
 			}
 		}
 		return ret;
@@ -787,10 +811,10 @@ public class PokemonInfo {
 	public static int gender(UniqueID uID) {
 		testLoadGenders();
 
-        byte gender = pokemonsg.get(uID.hashCode()).gender;
-        if (gender == -1) {
-            gender = pokemonsg.get(uID.originalHashCode()).gender;
-        }
+		byte gender = pokemonsg.get(uID.hashCode()).gender;
+		if (gender == -1) {
+			gender = pokemonsg.get(uID.originalHashCode()).gender;
+		}
 
 		return gender == -1 ? 0 : gender;
 	}
@@ -815,73 +839,73 @@ public class PokemonInfo {
 		}
 	}
 
-    private static class LruCache<K, V> {
-        // ONLY USE STRING KEYS PLEASE
-        private final LinkedHashMap<K, V> map;
-        private final ArrayList<String> history;
+	private static class LruCache<K, V> {
+		// ONLY USE STRING KEYS PLEASE
+		private final LinkedHashMap<K, V> map;
+		private final ArrayList<String> history;
 
-        /** Size of this cache in units. Not necessarily the number of elements. */
-        private int size;
-        private int maxSize;
+		/** Size of this cache in units. Not necessarily the number of elements. */
+		private int size;
+		private int maxSize;
 
-        private int putCount;
-        private int createCount;
-        private int evictionCount;
-        private int hitCount;
-        private int missCount;
+		private int putCount;
+		private int createCount;
+		private int evictionCount;
+		private int hitCount;
+		private int missCount;
 
-        /**
-         * @param maxSize for caches that do not override {@link #sizeOf}, this is
-         *     the maximum number of entries in the cache. For all other caches,
-         *     this is the maximum sum of the sizes of the entries in this cache.
-         */
-        public LruCache(int maxSize) {
-            if (maxSize <= 0) {
-                throw new IllegalArgumentException("maxSize <= 0");
-            }
-            this.maxSize = maxSize;
-            this.map = new LinkedHashMap<K, V>(0, 0.75f, true);
-            this.history = new ArrayList<String>(maxSize);
-        }
+		/**
+		 * @param maxSize for caches that do not override {@link #sizeOf}, this is
+		 *     the maximum number of entries in the cache. For all other caches,
+		 *     this is the maximum sum of the sizes of the entries in this cache.
+		 */
+		public LruCache(int maxSize) {
+			if (maxSize <= 0) {
+				throw new IllegalArgumentException("maxSize <= 0");
+			}
+			this.maxSize = maxSize;
+			this.map = new LinkedHashMap<K, V>(0, 0.75f, true);
+			this.history = new ArrayList<String>(maxSize);
+		}
 
-        /**
-         * Sets the size of the cache.
-         * @param maxSize The new maximum size.
-         *
-         * @hide
-         */
-        public void resize(int maxSize) {
-            if (maxSize <= 0) {
-                throw new IllegalArgumentException("maxSize <= 0");
-            }
+		/**
+		 * Sets the size of the cache.
+		 * @param maxSize The new maximum size.
+		 *
+		 * @hide
+		 */
+		public void resize(int maxSize) {
+			if (maxSize <= 0) {
+				throw new IllegalArgumentException("maxSize <= 0");
+			}
 
-            synchronized (this) {
-                this.maxSize = maxSize;
-            }
-            trimToSize(maxSize);
-        }
+			synchronized (this) {
+				this.maxSize = maxSize;
+			}
+			trimToSize(maxSize);
+		}
 
-        /**
-         * Returns the value for {@code key} if it exists in the cache or can be
-         * created by {@code #create}. If a value was returned, it is moved to the
-         * head of the queue. This returns null if a value is not cached and cannot
-         * be created.
-         */
-        public final V get(K key) {
+		/**
+		 * Returns the value for {@code key} if it exists in the cache or can be
+		 * created by {@code #create}. If a value was returned, it is moved to the
+		 * head of the queue. This returns null if a value is not cached and cannot
+		 * be created.
+		 */
+		public final V get(K key) {
 
-            if (key == null) {
-                throw new NullPointerException("key == null");
-            }
+			if (key == null) {
+				throw new NullPointerException("key == null");
+			}
 
-            V mapValue;
-            synchronized (this) {
-                mapValue = map.get(key);
-                if (mapValue != null) {
-                    hitCount++;
-                    return mapValue;
-                }
-                missCount++;
-            }
+			V mapValue;
+			synchronized (this) {
+				mapValue = map.get(key);
+				if (mapValue != null) {
+					hitCount++;
+					return mapValue;
+				}
+				missCount++;
+			}
 
         /*
          * Attempt to create a value. This may take a long time, and the map
@@ -890,265 +914,264 @@ public class PokemonInfo {
          * the map and release the created value.
          */
 
-            addHistory((String) key);
+			addHistory((String) key);
 
-            V createdValue = create(key);
-            if (createdValue == null) {
-                return null;
-            }
+			V createdValue = create(key);
+			if (createdValue == null) {
+				return null;
+			}
 
-            synchronized (this) {
-                createCount++;
-                mapValue = map.put(key, createdValue);
+			synchronized (this) {
+				createCount++;
+				mapValue = map.put(key, createdValue);
 
-                if (mapValue != null) {
-                    // There was a conflict so undo that last put
-                    map.put(key, mapValue);
-                } else {
-                    size += safeSizeOf(key, createdValue);
-                }
-            }
+				if (mapValue != null) {
+					// There was a conflict so undo that last put
+					map.put(key, mapValue);
+				} else {
+					size += safeSizeOf(key, createdValue);
+				}
+			}
 
-            if (mapValue != null) {
-                entryRemoved(false, key, createdValue, mapValue);
-                return mapValue;
-            } else {
-                trimToSize(maxSize);
-                return createdValue;
-            }
-        }
+			if (mapValue != null) {
+				entryRemoved(false, key, createdValue, mapValue);
+				return mapValue;
+			} else {
+				trimToSize(maxSize);
+				return createdValue;
+			}
+		}
 
-        private void addHistory(String key) {
-            if (!history.contains(key)) {
-                history.add((String) key);
-            }
-        }
+		private void addHistory(String key) {
+			if (!history.contains(key)) {
+				history.add((String) key);
+			}
+		}
 
-        /**
-         * Caches {@code value} for {@code key}. The value is moved to the head of
-         * the queue.
-         *
-         * @return the previous value mapped by {@code key}.
-         */
-        public final V put(K key, V value) {
-            if (key == null || value == null) {
-                throw new NullPointerException("key == null || value == null");
-            }
+		/**
+		 * Caches {@code value} for {@code key}. The value is moved to the head of
+		 * the queue.
+		 *
+		 * @return the previous value mapped by {@code key}.
+		 */
+		public final V put(K key, V value) {
+			if (key == null || value == null) {
+				throw new NullPointerException("key == null || value == null");
+			}
 
-            addHistory((String) key);
+			addHistory((String) key);
 
-            V previous;
-            synchronized (this) {
-                putCount++;
-                size += safeSizeOf(key, value);
-                previous = map.put(key, value);
-                if (previous != null) {
-                    size -= safeSizeOf(key, previous);
-                }
-            }
+			V previous;
+			synchronized (this) {
+				putCount++;
+				size += safeSizeOf(key, value);
+				previous = map.put(key, value);
+				if (previous != null) {
+					size -= safeSizeOf(key, previous);
+				}
+			}
 
-            if (previous != null) {
-                entryRemoved(false, key, previous, value);
-            }
+			if (previous != null) {
+				entryRemoved(false, key, previous, value);
+			}
 
-            trimToSize(maxSize);
-            return previous;
-        }
+			trimToSize(maxSize);
+			return previous;
+		}
 
-        /**
-         * Remove the eldest entries until the total of remaining entries is at or
-         * below the requested size.
-         *
-         * @param maxSize the maximum size of the cache before returning. May be -1
-         *            to evict even 0-sized elements.
-         */
-        public void trimToSize(int maxSize) {
-            while (true) {
-                K key;
-                V value;
-                synchronized (this) {
-                    if (size < 0 || (map.isEmpty() && size != 0)) {
-                        throw new IllegalStateException(getClass().getName()
-                                + ".sizeOf() is reporting inconsistent results!");
-                    }
+		/**
+		 * Remove the eldest entries until the total of remaining entries is at or
+		 * below the requested size.
+		 *
+		 * @param maxSize the maximum size of the cache before returning. May be -1
+		 *            to evict even 0-sized elements.
+		 */
+		public void trimToSize(int maxSize) {
+			while (true) {
+				K key;
+				V value;
+				synchronized (this) {
+					if (size < 0 || (map.isEmpty() && size != 0)) {
+						throw new IllegalStateException(getClass().getName()
+								+ ".sizeOf() is reporting inconsistent results!");
+					}
 
-                    if (size <= maxSize) {
-                        break;
-                    }
+					if (size <= maxSize) {
+						break;
+					}
 
-                    map.remove(history.get(0));
-                    history.remove(0);
+					map.remove(history.get(0));
+					history.remove(0);
 
-                    map.remove(history.get(0));
-                    history.remove(0);
+					map.remove(history.get(0));
+					history.remove(0);
 
-                    map.remove(history.get(0));
-                    history.remove(0);
+					map.remove(history.get(0));
+					history.remove(0);
 
 
-                    size -= 3;
+					size -= 3;
 
-                    evictionCount += 3;
-                }
-            }
-        }
+					evictionCount += 3;
+				}
+			}
+		}
 
-        /**
-         * Removes the entry for {@code key} if it exists.
-         *
-         * @return the previous value mapped by {@code key}.
-         */
-        public final V remove(K key) {
-            if (key == null) {
-                throw new NullPointerException("key == null");
-            }
+		/**
+		 * Removes the entry for {@code key} if it exists.
+		 *
+		 * @return the previous value mapped by {@code key}.
+		 */
+		public final V remove(K key) {
+			if (key == null) {
+				throw new NullPointerException("key == null");
+			}
 
-            V previous;
-            synchronized (this) {
-                previous = map.remove(key);
-                if (previous != null) {
-                    size -= safeSizeOf(key, previous);
-                }
-            }
+			V previous;
+			synchronized (this) {
+				previous = map.remove(key);
+				if (previous != null) {
+					size -= safeSizeOf(key, previous);
+				}
+			}
 
-            if (previous != null) {
-                entryRemoved(false, key, previous, null);
-            }
+			if (previous != null) {
+				entryRemoved(false, key, previous, null);
+			}
 
-            return previous;
-        }
+			return previous;
+		}
 
-        /**
-         * Called for entries that have been evicted or removed. This method is
-         * invoked when a value is evicted to make space, removed by a call to
-         * {@link #remove}, or replaced by a call to {@link #put}. The default
-         * implementation does nothing.
-         *
-         * <p>The method is called without synchronization: other threads may
-         * access the cache while this method is executing.
-         *
-         * @param evicted true if the entry is being removed to make space, false
-         *     if the removal was caused by a {@link #put} or {@link #remove}.
-         * @param newValue the new value for {@code key}, if it exists. If non-null,
-         *     this removal was caused by a {@link #put}. Otherwise it was caused by
-         *     an eviction or a {@link #remove}.
-         */
-        protected void entryRemoved(boolean evicted, K key, V oldValue, V newValue) {}
+		/**
+		 * Called for entries that have been evicted or removed. This method is
+		 * invoked when a value is evicted to make space, removed by a call to
+		 * {@link #remove}, or replaced by a call to {@link #put}. The default
+		 * implementation does nothing.
+		 *
+		 * <p>The method is called without synchronization: other threads may
+		 * access the cache while this method is executing.
+		 *
+		 * @param evicted true if the entry is being removed to make space, false
+		 *     if the removal was caused by a {@link #put} or {@link #remove}.
+		 * @param newValue the new value for {@code key}, if it exists. If non-null,
+		 *     this removal was caused by a {@link #put}. Otherwise it was caused by
+		 *     an eviction or a {@link #remove}.
+		 */
+		protected void entryRemoved(boolean evicted, K key, V oldValue, V newValue) {}
 
-        /**
-         * Called after a cache miss to compute a value for the corresponding key.
-         * Returns the computed value or null if no value can be computed. The
-         * default implementation returns null.
-         *
-         * <p>The method is called without synchronization: other threads may
-         * access the cache while this method is executing.
-         *
-         * <p>If a value for {@code key} exists in the cache when this method
-         * returns, the created value will be released with {@link #entryRemoved}
-         * and discarded. This can occur when multiple threads request the same key
-         * at the same time (causing multiple values to be created), or when one
-         * thread calls {@link #put} while another is creating a value for the same
-         * key.
-         */
-        protected V create(K key) {
-            return null;
-        }
+		/**
+		 * Called after a cache miss to compute a value for the corresponding key.
+		 * Returns the computed value or null if no value can be computed. The
+		 * default implementation returns null.
+		 *
+		 * <p>The method is called without synchronization: other threads may
+		 * access the cache while this method is executing.
+		 *
+		 * <p>If a value for {@code key} exists in the cache when this method
+		 * returns, the created value will be released with {@link #entryRemoved}
+		 * and discarded. This can occur when multiple threads request the same key
+		 * at the same time (causing multiple values to be created), or when one
+		 * thread calls {@link #put} while another is creating a value for the same
+		 * key.
+		 */
+		protected V create(K key) {
+			return null;
+		}
 
-        private int safeSizeOf(K key, V value) {
-            int result = sizeOf(key, value);
-            if (result < 0) {
-                throw new IllegalStateException("Negative size: " + key + "=" + value);
-            }
-            return result;
-        }
+		private int safeSizeOf(K key, V value) {
+			int result = sizeOf(key, value);
+			if (result < 0) {
+				throw new IllegalStateException("Negative size: " + key + "=" + value);
+			}
+			return result;
+		}
 
-        /**
-         * Returns the size of the entry for {@code key} and {@code value} in
-         * user-defined units.  The default implementation returns 1 so that size
-         * is the number of entries and max size is the maximum number of entries.
-         *
-         * <p>An entry's size must not change while it is in the cache.
-         */
-        protected int sizeOf(K key, V value) {
-            return 1;
-        }
+		/**
+		 * Returns the size of the entry for {@code key} and {@code value} in
+		 * user-defined units.  The default implementation returns 1 so that size
+		 * is the number of entries and max size is the maximum number of entries.
+		 *
+		 * <p>An entry's size must not change while it is in the cache.
+		 */
+		protected int sizeOf(K key, V value) {
+			return 1;
+		}
 
-        /**
-         * Clear the cache, calling {@link #entryRemoved} on each removed entry.
-         */
-        public final void evictAll() {
-            trimToSize(-1); // -1 will evict 0-sized elements
-        }
+		/**
+		 * Clear the cache, calling {@link #entryRemoved} on each removed entry.
+		 */
+		public final void evictAll() {
+			trimToSize(-1); // -1 will evict 0-sized elements
+		}
 
-        /**
-         * For caches that do not override {@link #sizeOf}, this returns the number
-         * of entries in the cache. For all other caches, this returns the sum of
-         * the sizes of the entries in this cache.
-         */
-        public synchronized final int size() {
-            return size;
-        }
+		/**
+		 * For caches that do not override {@link #sizeOf}, this returns the number
+		 * of entries in the cache. For all other caches, this returns the sum of
+		 * the sizes of the entries in this cache.
+		 */
+		public synchronized final int size() {
+			return size;
+		}
 
-        /**
-         * For caches that do not override {@link #sizeOf}, this returns the maximum
-         * number of entries in the cache. For all other caches, this returns the
-         * maximum sum of the sizes of the entries in this cache.
-         */
-        public synchronized final int maxSize() {
-            return maxSize;
-        }
+		/**
+		 * For caches that do not override {@link #sizeOf}, this returns the maximum
+		 * number of entries in the cache. For all other caches, this returns the
+		 * maximum sum of the sizes of the entries in this cache.
+		 */
+		public synchronized final int maxSize() {
+			return maxSize;
+		}
 
-        /**
-         * Returns the number of times {@link #get} returned a value that was
-         * already present in the cache.
-         */
-        public synchronized final int hitCount() {
-            return hitCount;
-        }
+		/**
+		 * Returns the number of times {@link #get} returned a value that was
+		 * already present in the cache.
+		 */
+		public synchronized final int hitCount() {
+			return hitCount;
+		}
 
-        /**
-         * Returns the number of times {@link #get} returned null or required a new
-         * value to be created.
-         */
-        public synchronized final int missCount() {
-            return missCount;
-        }
+		/**
+		 * Returns the number of times {@link #get} returned null or required a new
+		 * value to be created.
+		 */
+		public synchronized final int missCount() {
+			return missCount;
+		}
 
-        /**
-         * Returns the number of times {@link #create(Object)} returned a value.
-         */
-        public synchronized final int createCount() {
-            return createCount;
-        }
+		/**
+		 * Returns the number of times {@link #create(Object)} returned a value.
+		 */
+		public synchronized final int createCount() {
+			return createCount;
+		}
 
-        /**
-         * Returns the number of times {@link #put} was called.
-         */
-        public synchronized final int putCount() {
-            return putCount;
-        }
+		/**
+		 * Returns the number of times {@link #put} was called.
+		 */
+		public synchronized final int putCount() {
+			return putCount;
+		}
 
-        /**
-         * Returns the number of values that have been evicted.
-         */
-        public synchronized final int evictionCount() {
-            return evictionCount;
-        }
+		/**
+		 * Returns the number of values that have been evicted.
+		 */
+		public synchronized final int evictionCount() {
+			return evictionCount;
+		}
 
-        /**
-         * Returns a copy of the current contents of the cache, ordered from least
-         * recently accessed to most recently accessed.
-         */
-        public synchronized final Map<K, V> snapshot() {
-            return new LinkedHashMap<K, V>(map);
-        }
+		/**
+		 * Returns a copy of the current contents of the cache, ordered from least
+		 * recently accessed to most recently accessed.
+		 */
+		public synchronized final Map<K, V> snapshot() {
+			return new LinkedHashMap<K, V>(map);
+		}
 
-        @Override public synchronized final String toString() {
-            int accesses = hitCount + missCount;
-            int hitPercent = accesses != 0 ? (100 * hitCount / accesses) : 0;
-            return String.format("LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]",
-                    maxSize, hitCount, missCount, hitPercent);
-        }
-    }
-
+		@Override public synchronized final String toString() {
+			int accesses = hitCount + missCount;
+			int hitPercent = accesses != 0 ? (100 * hitCount / accesses) : 0;
+			return String.format("LruCache[maxSize=%d,hits=%d,misses=%d,hitRate=%d%%]",
+					maxSize, hitCount, missCount, hitPercent);
+		}
+	}
 }

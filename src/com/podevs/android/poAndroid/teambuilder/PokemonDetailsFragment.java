@@ -26,14 +26,15 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 	}
 
 	private EVSlider sliders[] = null;
-	private TextView labels[] = null, levelChooser = null, happinessChooser = null;
+	private TextView levelChooser = null, happinessChooser = null;
 	private Spinner formesChooser = null, itemChooser = null, abilityChooser = null, natureChooser = null, genderChooser = null;
 	private CheckBox shinyChooser = null;
 	private LinearLayout formesLayout;
-	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter, formesChooserAdapter;
+	private ArrayAdapter<CharSequence> abilityChooserAdapter, genderChooserAdapter;
 	public PokemonDetailsListener listener = null;
     private Button manualIVButton = null;
     private ToggleButton hackmonButton = null;
+    private FormListAdapter formListAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +49,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				new EVSlider(v.findViewById(R.id.spdefev), 4),
 				new EVSlider(v.findViewById(R.id.speedev), 5)
 		};
+
+		/*
 		labels = new TextView[]{
 			(TextView)v.findViewById(R.id.hplabel),
 			(TextView)v.findViewById(R.id.attlabel),
@@ -56,6 +59,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			(TextView)v.findViewById(R.id.spdeflabel),
 			(TextView)v.findViewById(R.id.speedlabel)
 		};
+		*/
 		
 		for (EVSlider slider: sliders) {
 			slider.listener = this;
@@ -72,8 +76,6 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		happinessChooser = (TextView)v.findViewById(R.id.happiness);
         manualIVButton = (Button) v.findViewById(R.id.manualiv);
         hackmonButton = (ToggleButton) v.findViewById(R.id.hackmon);
-
-        manualIVButton.setEnabled(false);
 
 		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
 		int usefulItems[] = ItemInfo.getUsefulThisGeneration();
@@ -93,8 +95,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		genderChooser.setAdapter(genderChooserAdapter);
 
-		formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
-		formesChooser.setAdapter(formesChooserAdapter);
+		//formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		formesChooser.setAdapter(formListAdapter = new FormListAdapter(getActivity(), R.layout.forminlist_item, poke().gen()));
 		
 		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		for (int i = 0; i < NatureInfo.count(); i++) {
@@ -106,7 +108,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		
 		natureChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
-									   int arg2, long arg3) {
+			                           int arg2, long arg3) {
 				poke().nature = (byte) arg2;
 
 				updateStats();
@@ -118,9 +120,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		});
 
 		formesChooser.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-			                           int arg2, long arg3) {
-				poke().setNum(PokemonInfo.number(arg0.getItemAtPosition(arg2).toString()));
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				poke().setNum((UniqueID) arg0.getItemAtPosition(arg2));
 				notifyUpdated(true);
 			}
 
@@ -154,7 +155,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                         }
                     }
                 } else {
-                    Short[] abilities = AbilityInfo.allAbility();
+                    Short[] abilities = AbilityInfo.getAllAbilities(poke().gen().num);
                     for (Short ability : abilities) {
                         if (AbilityInfo.name(ability) == abilityChooserAdapter.getItem(arg2)) {
                             poke().ability = ability;
@@ -173,7 +174,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				poke().gender = (byte) genderNames.indexOf((String) genderChooserAdapter.getItem(arg2));
+				poke().gender = (byte) GenderInfo.indexOf((String) genderChooserAdapter.getItem(arg2));
 				notifyUpdated();
 			}
 
@@ -187,23 +188,24 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				final EditText input = new EditText((getActivity()));
 
 				new AlertDialog.Builder((getActivity()))
-						.setTitle("Change Level")
+						.setTitle(R.string.change_level)
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = 1;
-								if (link.length() != 0) {
-									try {
-										i = Integer.parseInt(link);
-									} catch (Exception e) {
-										makeToast("Enter valid number");
-									}
-								}
+                                int i = 1;
+                                if (link.length() != 0) {
+                                    try {
+                                        i = Integer.parseInt(link);
+                                    } catch (Exception e) {
+                                        makeToast("Enter valid number");
+                                    }
+                                }
 								if (i > 100) i = 100;
-								if (i < 1) i = 1;
+                                if (i < 1) i = 1;
 								poke().level = (byte) i;
-								levelChooser.setText(" Lvl: " + i);
+								String s = getString(R.string.level_short) + " " + i;
+								levelChooser.setText(s);
 								updateStats();
 							}
 						}).show();
@@ -216,22 +218,24 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				final EditText input = new EditText((getActivity()));
 
 				new AlertDialog.Builder((getActivity()))
-						.setTitle("Change Happiness")
+						.setTitle(R.string.change_happiness)
 						.setView(input)
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = 0;
+                                int i = 0;
 								if (link.length() != 0) {
-									try {
-										i = Integer.parseInt(link);
-									} catch (Exception e) {
-										makeToast("Enter valid number between 0 and 255");
-									}
-								}
+                                    try {
+                                        i = Integer.parseInt(link);
+                                    } catch (Exception e) {
+                                        makeToast("Enter valid number between 0 and 255");
+                                    }
+                                }
 								if (i > 255) i = 255;
+								if (i < 0) i = 0;
 								poke().happiness = (byte) i;
-								happinessChooser.setText("Happy: " + i);
+								String s = getString(R.string.happiness_short) + " " + i;
+								happinessChooser.setText(s);
 							}
 						}).show();
 			}
@@ -239,64 +243,85 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		shinyChooser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					poke().shiny = true;
-				} else {
-					poke().shiny = false;
-				}
-			}
-		});
+                if (isChecked) {
+                    poke().shiny = true;
+                } else {
+                    poke().shiny = false;
+                }
+            }
+        });
 
-		manualIVButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				final View view = LayoutInflater.from(getActivity()).inflate(R.layout.iv_changer, null);
-				final EditText[] inputs = new EditText[6];
-				inputs[0] =  (EditText) view.findViewById(R.id.iv1);
-				inputs[1] = (EditText) view.findViewById(R.id.iv2);
-				inputs[2] = (EditText) view.findViewById(R.id.iv3);
-				inputs[3] = (EditText) view.findViewById(R.id.iv4);
-				inputs[4] = (EditText) view.findViewById(R.id.iv5);
-				inputs[5] = (EditText) view.findViewById(R.id.iv6);
-				final byte gen = poke().gen().num;
-				for (int i = 0; i < 6; i++) {
-					inputs[i].setText(String.valueOf(poke().dv(i)));
-				}
-				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-				builder.setTitle("IVs")
-						.setView(view)
-						.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								for (int i = 0; i < 6; i++) {
-									int temp;
-									if (inputs[i].getText().toString().length() == 0) {
-										temp = 0;
-									} else {
-										temp = Integer.decode(inputs[i].getText().toString());
-										if (gen > 2) {
-											if (temp > 31) temp = 31;
-										} else {
-											if (temp > 15) temp = 15;
-										}
-									}
-									poke().DVs[i] = (byte) temp;
-								}
-								updateStats();
-							}
-						})
-						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.dismiss();
-								dialog.cancel();
-							}
-						})
+        manualIVButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View view = LayoutInflater.from(getActivity()).inflate(R.layout.iv_changer, null);
+                final EditText[] inputs = new EditText[6];
+                inputs[0] =  (EditText) view.findViewById(R.id.iv1);
+                inputs[1] = (EditText) view.findViewById(R.id.iv2);
+                inputs[2] = (EditText) view.findViewById(R.id.iv3);
+                inputs[3] = (EditText) view.findViewById(R.id.iv4);
+                inputs[4] = (EditText) view.findViewById(R.id.iv5);
+                inputs[5] = (EditText) view.findViewById(R.id.iv6);
+                final byte gen = poke().gen().num;
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].setText(String.valueOf(poke().dv(i)));
+                }
+                /*
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            String test = "";
+                        }
 
-				;
-				builder.create().show();
-			}
-		});
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            String test = "";
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            String test = "";
+                        }
+                    });
+                }
+                */
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.manual_iv)
+                        .setView(view)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (int i = 0; i < 6; i++) {
+                                    int temp;
+                                    if (inputs[i].getText().toString().length() == 0) {
+                                        temp = 0;
+                                    } else {
+                                        temp = Integer.decode(inputs[i].getText().toString());
+                                        if (gen > 2) {
+                                            if (temp > 31) temp = 31;
+                                        } else {
+                                            if (temp > 15) temp = 15;
+                                        }
+                                    }
+                                    poke().DVs[i] = (byte) temp;
+                                }
+                                if (!poke().validHiddenPowerType(poke().hiddenPowerType())) {
+                                	poke().hiddenPowerType = (byte)HiddenPowerInfo.Type(poke());
+                                }
+                                updateStats();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        });
+                builder.create().show();
+            }
+        });
 
         hackmonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,27 +332,21 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                     poke().isHackmon = false;
                     resetEVs();
                 }
-				notifyMoveFragment();
+                notifyMoveFragment();
                 updatePoke();
             }
         });
 
-		return v;
-	}
+        return v;
+    }
 
-	public void notifyMoveFragment() {
-		((MoveChooserFragment) getFragmentManager().getFragments().get(3)).updatePoke();
-	}
+    public void notifyMoveFragment() {
+        ((MoveChooserFragment) getFragmentManager().getFragments().get(3)).updatePoke();
+    }
 
-	private void makeToast(String text) {
-		Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-	}
-
-    private ArrayList<String> genderNames = new ArrayList<String>() {{
-        add("Neutral");
-        add("Male");
-        add("Female");
-    }};
+    private void makeToast(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+    }
 	
 	public void notifyUpdated() {
 		if (listener != null) {
@@ -345,6 +364,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		return ((EditPokemonActivity) getActivity()).getPoke();
 	}
 
+	private String tier() {
+		return ((EditPokemonActivity) getActivity()).getTier();
+	}
+
 	public void updatePoke() {
 		if (poke() == null) {
 			return;
@@ -352,21 +375,22 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		TeamPoke tempPoke = poke();
 
-        if (tempPoke.gen().num != 6 && tempPoke.gen().subNum != 1) {
-            hackmonButton.setEnabled(false);
-        } else {
-            hackmonButton.setEnabled(true);
-            hackmonButton.setChecked(tempPoke.isHackmon);
-        }
+		if ((tempPoke.gen().num == 6 && tempPoke.gen().subNum == 1 || tempPoke.gen().num >= 7) || tier().equals("All Gen Hackmons")) {
+			hackmonButton.setEnabled(true);
+			hackmonButton.setChecked(tempPoke.isHackmon);
+		} else {
+			hackmonButton.setEnabled(false);
+			hackmonButton.setChecked(false);
+		}
 
 		if (PokemonInfo.hasVisibleFormes(tempPoke.uID()) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
 			formesLayout.setVisibility(View.VISIBLE);
-			formesChooserAdapter.clear();
+			formListAdapter.clear();
 
 			for (UniqueID uID : PokemonInfo.formes(tempPoke.uID(), tempPoke.gen)) {
-				formesChooserAdapter.add(PokemonInfo.name(uID));
+				formListAdapter.add(uID);
 				if (uID.equals(tempPoke.uID())) {
-					formesChooser.setSelection(formesChooserAdapter.getCount()-1);
+					formesChooser.setSelection(formListAdapter.getCount()-1);
 				}
 			}
 		} else {
@@ -402,7 +426,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                     }
                 }
             } else {
-                Short[] abilities = AbilityInfo.allAbility();
+                Short[] abilities = AbilityInfo.getAllAbilities(poke().gen().num);
 
                 for (int i = 0; i <= abilities.length - 1; i++) {
                     abilityChooserAdapter.add(AbilityInfo.name(abilities[i]));
@@ -426,22 +450,22 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		if (tempPoke.gen.num >= 2) {
 			genderChooserAdapter.clear();
             if (poke().isHackmon) {
-                genderChooserAdapter.add("Neutral");
-                genderChooserAdapter.add("Male");
-                genderChooserAdapter.add("Female");
+                genderChooserAdapter.add(GenderInfo.name(0));
+                genderChooserAdapter.add(GenderInfo.name(1));
+                genderChooserAdapter.add(GenderInfo.name(2));
                 genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
             } else {
                 int genderChoice = PokemonInfo.gender(tempPoke.uID());
                 if (genderChoice == 0) {
                     tempPoke.gender = 0;
-                    genderChooserAdapter.add("Neutral");
+                    genderChooserAdapter.add(GenderInfo.name(0));
                 } else if (genderChoice == 1) {
-                    genderChooserAdapter.add("Male");
+                    genderChooserAdapter.add(GenderInfo.name(1));
                 } else if (genderChoice == 2) {
-                    genderChooserAdapter.add("Female");
+                    genderChooserAdapter.add(GenderInfo.name(2));
                 } else {
-                    genderChooserAdapter.add("Male");
-                    genderChooserAdapter.add("Female");
+                    genderChooserAdapter.add(GenderInfo.name(1));
+                    genderChooserAdapter.add(GenderInfo.name(2));
 
                     genderChooser.setSelection(tempPoke.gender == 1 ? 0 : 1);
                 }
@@ -456,28 +480,30 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 				}
 			}
 			shinyChooser.setChecked(tempPoke.shiny);
-			happinessChooser.setText("Happy: " + (tempPoke.happiness & 0xFF));
+			String s = getString(R.string.happiness_short) + " " + (tempPoke.happiness & 0xFF);
+			happinessChooser.setText(s);
 
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
 			happinessChooser.setVisibility(View.VISIBLE);
-			manualIVButton.setEnabled(true);
+            manualIVButton.setEnabled(true);
 		} else {
 			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);
 			happinessChooser.setVisibility(View.GONE);
-			manualIVButton.setEnabled(false);
+            manualIVButton.setEnabled(false);
 		}
 
-		levelChooser.setText(" Lvl: " + tempPoke.level());
+		String s = getString(R.string.level_short) + " " + tempPoke.level();
+		levelChooser.setText(s);
 	}
 	
 	public void updateStats() {
 		TeamPoke tempPoke = poke();
 		for (int i = 0; i < 6; i++) {
-			labels[i].setText(StatsInfo.Shortcut(i) + ": " + tempPoke.stat(i));
+			sliders[i].setTotal(tempPoke.stat(i));
 		}
 	}
 
@@ -489,13 +515,14 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
             if (totalEVs > 510 && tempPoke.gen().num > 2) {
                 ev = (510 - (tempPoke.totalEVs() - tempPoke.ev(stat)));
                 ev = ev / 4 * 4;
-                sliders[stat].setNum(ev);
             }
         }
-		
+
+        if (ev > 252) ev = 252;
 		poke().EVs[stat] = (byte)ev;
 
-		labels[stat].setText(StatsInfo.Shortcut(stat) + ": " + tempPoke.stat(stat));
+		sliders[stat].setNum(ev);
+		sliders[stat].setTotal(tempPoke.stat(stat));
 
 		notifyUpdated();
 	}
@@ -504,7 +531,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
         for (int i = 0; i < 6; i++) {
             sliders[i].setNum(0);
             poke().EVs[i] = 0;
-            labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+            //labels[i].setText(StatsInfo.Shortcut(i) + ": " + poke().stat(i));
+			sliders[i].setTotal(poke().stat(i));
         }
     }
 }

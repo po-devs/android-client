@@ -6,21 +6,15 @@ import android.os.Environment;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Custom Unhandled exception handler.
@@ -105,7 +99,9 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
                 @Override
                 public void run() {
                     Looper.prepare();
-                    Toast.makeText(mContext, Log.getStackTraceString(e), Toast.LENGTH_LONG).show();
+                    Toast toast = Toast.makeText(mContext, e.getClass().getName() + "\n" + Log.getStackTraceString(e), Toast.LENGTH_LONG);
+                    ((TextView) ((ViewGroup) toast.getView()).getChildAt(0)).setTextSize(10);
+                    toast.show();
                     Looper.loop();
                 }
             }.start();
@@ -165,7 +161,9 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
                 String[] info = new String[7];
                 info[0] = timestamp;
                 info[1] = e.getClass().getName();
-                info[2] = (e.getCause().getClass().getName() != null ? e.getCause().getClass().getName() : "N/A");
+                if (e.getCause() != null && e.getCause().getClass() != null) {
+                    info[2] = (e.getCause().getClass().getName() != null ? e.getCause().getClass().getName() : "N/A");
+                } else info[2] = "N/A";
                 info[3] = stackTrace;
                 info[4] = finalLogcat;
                 info[5] = versionCode.toString();
@@ -195,6 +193,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
      * @param info Array of info
      */
 
+    /*
     private void upload(final String[] info) {
         final List<NameValuePair> list = new ArrayList<NameValuePair>();
         list.add(new BasicNameValuePair("time", info[0]));
@@ -222,6 +221,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
             }
         }.start();
     }
+    */
 
     /**
      * Writes info to file. Filename = POError" +info[0].replace(" ", "@").replace(":", ".") + ".txt"

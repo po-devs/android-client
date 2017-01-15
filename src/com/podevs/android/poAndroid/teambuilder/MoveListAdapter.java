@@ -33,7 +33,6 @@ public class MoveListAdapter implements ListAdapter {
         if (poke.isHackmon) {
             move = MoveInfo.getAllMoves()[position];
         } else {
-
             move = PokemonInfo.moves(poke.uID(), poke.gen.num, poke.gen.subNum)[position];
         }
 
@@ -55,13 +54,21 @@ public class MoveListAdapter implements ListAdapter {
 
 		ImageView type = (ImageView)view.findViewById(R.id.type);
 		if (move == 237) {
-			type.setImageResource(TypeInfo.typeRes(HiddenPowerInfo.Type(poke)));
+			if (poke.gen().num < 7) {
+				type.setImageResource(TypeInfo.typeRes(HiddenPowerInfo.Type(poke)));
+			} else {
+				type.setImageResource(TypeInfo.typeRes(poke.hiddenPowerType()));
+			}
 		} else {
 			type.setImageResource(TypeInfo.typeRes(MoveInfo.type(move)));
 		}
 
 		TextView damageClass = (TextView)view.findViewById(R.id.damageClass);
 		damageClass.setText(DamageClassInfo.name(MoveInfo.damageClass(move)));
+/*
+		ImageView type = (ImageView)view.findViewById(R.id.type);
+		type.setImageResource(DamageClassInfo.damageClassRes(MoveInfo.damageClass(move)));
+*/
 
 		if (poke != null) {
 			CheckBox check = (CheckBox)view.findViewById(R.id.check);

@@ -15,6 +15,7 @@ import com.podevs.android.poAndroid.poke.TeamPoke;
 import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
 import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
+import com.podevs.android.poAndroid.pokeinfo.GenInfo;
 
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class MoveChooserFragment extends Fragment {
 					((CheckBox)arg1.findViewById(R.id.check)).setChecked(false);
 
 					/* Hidden Power */
-					if (move == 237) {
+					if (move == 237 && poke().gen().num < 7) {
 						for (int i = 0; i < 6; i++) {
 							poke().DVs[i] = 31;
 						}
@@ -103,22 +104,27 @@ public class MoveChooserFragment extends Fragment {
 	}
 
 	protected void buildHiddenPowerDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setTitle(R.string.hiddenpower_choice)
 			.setSingleChoiceItems(R.array.hp_array, poke().hiddenPowerType()-1, null)
 			.setPositiveButton(R.string.ok, new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
-					
-					byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
-					
-					if (config != null) {
+					if (poke().gen().num < 7) {
+						byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
+						if (config != null) {
 							poke().DVs = config;
-						if (listener != null) {
-							listener.onMovesetChanged(true);
 						}
 					}
+					else if (poke().validHiddenPowerType(type)) {
+						poke().hiddenPowerType = (byte)type;
+					}
+
+					if (listener != null) {
+						listener.onMovesetChanged(true);
+					}
+					moveAdapter.notifyDataSetChanged();
 				}
 			});
 		builder.create().show();
@@ -142,9 +148,7 @@ public class MoveChooserFragment extends Fragment {
         }
         if (moveChoiceAdapter != null) {
             moveChoiceAdapter.clear();
-            for (String s : names) {
-                moveChoiceAdapter.add(s);
-            }
+            moveChoiceAdapter.addAll(names);
         }
     }
 

@@ -2,11 +2,13 @@ package com.podevs.android.poAndroid.teambuilder;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ConfigurationInfo;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
@@ -57,7 +59,7 @@ public class TrainerFragment extends Fragment {
 		//Register onClick listener
 		importbutton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				((TeambuilderActivity)getActivity()).buildDownloadDialog();
+				((TeambuilderActivity)getActivity()).onImportClicked();
 			}
 		});
 
@@ -126,14 +128,26 @@ public class TrainerFragment extends Fragment {
 
 		Button colorButton = (Button)v.findViewById(R.id.color);
 		colorButton.setOnClickListener(new OnClickListener() {
+			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent("org.openintents.action.PICK_COLOR");
-				intent.putExtra("org.openintents.extra.COLOR", p.color.colorInt);
+				final ActivityManager activityManager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+				final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+				final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
-				try {
-					startActivityForResult(intent, TeambuilderActivity.PICKCOLOR_RESULT_CODE);
-				} catch (ActivityNotFoundException e) {
-					showDownloadDialog();
+				if (supportsEs2) {
+					Intent intent = new Intent(getActivity(), ColorPickerActivity.class);
+					intent.putExtra("color", p.color.colorInt);
+
+					startActivityForResult(intent, TeambuilderActivity.COLORPICKER_RESULT_CODE);
+				} else {
+					Intent intent = new Intent("org.openintents.action.PICK_COLOR");
+					intent.putExtra("org.openintents.extra.COLOR", p.color.colorInt);
+
+					try {
+						startActivityForResult(intent, TeambuilderActivity.PICKCOLOR_RESULT_CODE);
+					} catch (ActivityNotFoundException e) {
+						showDownloadDialog();
+					}
 				}
 			}
 		});
@@ -152,7 +166,7 @@ public class TrainerFragment extends Fragment {
 
 		@Override
 		public int getCount() {
-			return 729;
+			return 844;
 		}
 
 		@Override
@@ -236,6 +250,10 @@ public class TrainerFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == TeambuilderActivity.PICKCOLOR_RESULT_CODE && resultCode == Activity.RESULT_OK) {
 			int colorInt = data.getIntExtra("org.openintents.extra.COLOR", p.color.colorInt);
+			p.color = new QColor(colorInt);
+			profileChanged = true;
+		} else if (requestCode == TeambuilderActivity.COLORPICKER_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+			int colorInt = data.getIntExtra("color", p.color.colorInt);
 			p.color = new QColor(colorInt);
 			profileChanged = true;
 		}

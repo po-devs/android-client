@@ -1,14 +1,16 @@
 package com.podevs.android.poAndroid.registry;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
+import android.content.*;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -28,6 +30,9 @@ import com.podevs.android.poAndroid.registry.ServerListAdapter.Server;
 import com.podevs.android.poAndroid.teambuilder.TeambuilderActivity;
 import com.podevs.android.utilities.Baos;
 
+import java.io.*;
+import java.net.URL;
+
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
 	
 	static final String TAG = "RegistryActivity";
@@ -43,6 +48,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	private FullPlayerInfo meLoginPlayer = null;
 	private SharedPreferences prefs;
 
+	public static boolean localize_assets = false;
+
 	/*
 	enum RegistryDialog {
 		SelectImportMethod,
@@ -54,13 +61,14 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if (InfoConfig.context == null) {
-    		InfoConfig.context = this;
+    		InfoConfig.setContext(this);
     	}
 
-        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler))
-            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
+        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(this));
 
         super.onCreate(savedInstanceState);
+
+		localize_assets = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("localize", false);
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -76,7 +84,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         if (getIntent().hasExtra("failedConnect")) {
         	Toast.makeText(this, "Server connection failed", Toast.LENGTH_LONG).show();
         }
-        
+
         this.stopService(new Intent(RegistryActivity.this, NetworkService.class));
         
         setContentView(R.layout.main);
@@ -138,19 +146,9 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
+
+        checkPermissions();
     }
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
-	}
 
     private OnClickListener registryListener = new OnClickListener() {
 		public void onClick(View v) {
@@ -234,6 +232,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			        servers.setAdapter(oldadapter);
 			        viewToggle = true;
 				}
+				printToast("ONCONFIGURATION CHANGED", Toast.LENGTH_SHORT);
 			}
 		});
 	}
@@ -299,4 +298,18 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     	}
     	super.onDestroy();
     }
+
+	@Override
+	protected void onResume() {
+    	super.onResume();
+    	checkPermissions();
+	}
+
+	private void checkPermissions() {
+		if (Build.VERSION.SDK_INT >= 23 && CustomExceptionHandler.shouldWrite) {
+			if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+			}
+		}
+	}
 }

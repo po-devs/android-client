@@ -1,6 +1,8 @@
 package com.podevs.android.poAndroid.teambuilder;
 
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -12,7 +14,8 @@ public class EVSlider {
 	public interface EVListener {
 		public void onEVChanged(int stat, int ev);
 	}
-	
+
+	private TextView total;
 	private SeekBar slider;
 	private TextView label;
 	private EditText edit;
@@ -20,9 +23,11 @@ public class EVSlider {
 	
 	
 	EVSlider(View lay, final int stat) {
+		total = (TextView)lay.findViewById(R.id.total);
 		slider = (SeekBar)lay.findViewById(R.id.slider);
 		label = (TextView)lay.findViewById(R.id.label);
 		edit = (EditText)lay.findViewById(R.id.edit);
+		edit.setImeOptions(EditorInfo.IME_ACTION_DONE);
 		label.setText(StatsInfo.Shortcut(stat));
 		
 		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -49,10 +54,27 @@ public class EVSlider {
 				}
 			}
 		});
+
+		edit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					if (listener != null) {
+						listener.onEVChanged(stat, Integer.parseInt(edit.getText().toString()));
+					}
+					return true;
+				}
+				return false;
+			}
+		});
 	}
 	
 	void setNum(int num) {
 		slider.setProgress(num);
-		edit.setText("" + num);
+		edit.setText(Integer.toString(num));
+	}
+
+	void setTotal(int num) {
+		total.setText(Integer.toString(num));
 	}
 }

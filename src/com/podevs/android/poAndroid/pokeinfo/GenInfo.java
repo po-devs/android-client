@@ -2,7 +2,9 @@ package com.podevs.android.poAndroid.pokeinfo;
 
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Gen;
+import com.podevs.android.poAndroid.registry.RegistryActivity;
 
 public class GenInfo {
 	private static int genMin = 0;
@@ -32,7 +34,7 @@ public class GenInfo {
 
 	public static String name(int gen) {
 		loadGenNames();
-		return genNames.get(gen);
+		return genNames.get(gen, "");
 	}
 
 	public static Gen version(String name) {
@@ -41,7 +43,7 @@ public class GenInfo {
 
 	public static String name(Gen gen) {
 		loadGenNames();
-		return versionNames.get(gen.hashCode());
+		return versionNames.get(gen.hashCode(), "");
 	}
 
 	private static void loadGenNames() {
@@ -52,7 +54,17 @@ public class GenInfo {
 		versionNames = new SparseArray<String>();
 		maxSubgen = new SparseIntArray();
 
-		InfoFiller.fill("db/gens/gens.txt", new InfoFiller.Filler() {
+		String path;
+		if (RegistryActivity.localize_assets) {
+			path = "db/gens/" + InfoConfig.resources.getString(R.string.asset_localization) + "gens.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/gens/gens.txt";
+			}
+		} else {
+			path = "db/gens/gens.txt";
+		}
+
+		InfoFiller.fill(path, new InfoFiller.Filler() {
 			@Override
 			public void fill(int i, String s) {
 				genNames.put(i, s);
@@ -66,7 +78,16 @@ public class GenInfo {
 			}
 		});
 
-		InfoFiller.uIDfill("db/gens/versions.txt", new InfoFiller.Filler() {
+		if (RegistryActivity.localize_assets) {
+			path = "db/gens/" + InfoConfig.resources.getString(R.string.asset_localization) + "versions.txt";
+			if (!InfoConfig.fileExists(path)) {
+				path = "db/gens/versions.txt";
+			}
+		} else {
+			path = "db/gens/versions.txt";
+		}
+
+		InfoFiller.uIDfill(path, new InfoFiller.Filler(){
 			@Override
 			public void fill(int i, String s) {
 				int gen = i % 65536;
