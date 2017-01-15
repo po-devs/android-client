@@ -30,6 +30,7 @@ public class Channel {
 	// protected boolean isReadyToQuit = false;
 	public boolean joined = false;
 	public boolean flashed = false;
+	public boolean newmessage = false;
 	public final static int HIST_LIMIT = 700;
 	public static final String TAG = "Pokemon Online Channel";
 	public boolean channelEvents = false;
@@ -92,12 +93,21 @@ public class Channel {
 	 * @param right Right index to color.
 	 * @param color Hex color to apply to left-right range.
 	 */
-	public void writeToHist(CharSequence text, int left, int right, String color) {
+	public void writeToHist(CharSequence text, int left, int right, String color, boolean clickable, final String command) {
 		SpannableStringBuilder spannable;
 		if (text.getClass() != SpannableStringBuilder.class) {
 			spannable = new SpannableStringBuilder(text);
 		}
-		else {spannable = (SpannableStringBuilder)text;}
+		else
+			spannable = (SpannableStringBuilder)text;
+		if (clickable) {
+			spannable.setSpan(new ClickableSpan() {
+				@Override
+				public void onClick(View widget) {
+					netServ.joinChannel(command.replace("#", ""));
+				}
+			}, text.toString().indexOf(command), text.toString().indexOf(command) + command.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
 		try {
 			Integer i = 0;
 			try {
@@ -106,19 +116,18 @@ public class Channel {
 				i = Color.YELLOW;
 			} finally {}
 			spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		} finally {
+		} finally {}
 
-		}
 		write(spannable);
 	}
 	private NetworkService netServ;
-	
+
 	public String name(){ return name; }
-	
+
 	public String toString() {
 		return name;
 	}
-	
+
 	public Channel(int i, String n, NetworkService net) {
 		id = i;
 		name = n;

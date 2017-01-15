@@ -2,6 +2,7 @@ package com.podevs.android.poAndroid.pms;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Handler;
 import android.text.SpannableStringBuilder;
 import android.text.util.Linkify;
@@ -50,7 +51,9 @@ public class PrivateMessageAdapter extends ArrayAdapter<PrivateMessage.Message> 
 		Message message = getItem(position);
 		textView.setText(new SpannableStringBuilder(message.message));
 		Linkify.addLinks(textView, Linkify.WEB_URLS);
-        textView.setTextIsSelectable(true);
+		if(Build.VERSION.SDK_INT >= 11) {
+			textView.setTextIsSelectable(true);
+		}
 		
 		int left = 0, right = 0;
 		Resources resources = getContext().getResources();

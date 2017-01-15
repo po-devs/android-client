@@ -129,7 +129,7 @@ public class PrivateMessageActivity extends Activity {
 			try {
 				int id = adapter.getItemAt(vp.getCurrentItem()).other.id;
 				pms.removePM(id);
-				netServ.chatActivity.invalidateOptionsMenu();
+				netServ.chatActivity.supportInvalidateOptionsMenu();
 			} catch (NullPointerException ex) {}
 			
 			if (pms.count() == 0) {
