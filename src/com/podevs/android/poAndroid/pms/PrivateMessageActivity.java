@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.pms.PrivateMessageList.PrivateMessageListListener;
-import com.viewpagerindicator.TitlePageIndicator;
+import com.podevs.android.utilities.TitlePageIndicator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

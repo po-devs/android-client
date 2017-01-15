@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="themenames">
+        <item>Light Theme</item>
+        <item>Dark Theme</item>
+        <item>Material Light</item>
+        <item>Material Dark</item>
+    </string-array>
+
+    <string-array name="themeentries">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <array name="themeentriesid">
+        <item>@style/AppTheme</item>
+        <item>@style/DarkAppTheme</item>
+        <item>@android:style/Theme.Material.Light</item>
+        <item>@android:style/Theme.Material</item>
+    </array>
+</resources>

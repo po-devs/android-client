@@ -3,6 +3,14 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
+        android:title="@string/language_settings">
+        <CheckBoxPreference
+            android:key="localize"
+            android:summary="@string/localize_assets_summary"
+            android:title="@string/localize_assets_title">
+        </CheckBoxPreference>
+    </PreferenceCategory>
+    <PreferenceCategory
             android:summary="@string/chat_summary"
             android:title="@string/chat_title" >
         <CheckBoxPreference
@@ -62,8 +70,29 @@
         android:title="Miscellaneous" >
         <CheckBoxPreference
             android:key="shouldWrite"
-            android:summary="Dump crash data to file"
-            android:title="Save crash log"
+            android:summary="@string/crashlog_summary"
+            android:title="@string/crashlog_title"
             android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:summary="In testing"
+            android:title="Experimental" >
+        <ListPreference
+                android:key="theme_list"
+                android:title="Teambuilder theme"
+                android:defaultValue="@style/AppTheme"
+                android:entries="@array/themenames"
+                android:entryValues="@array/themeentries">
+        </ListPreference>
+        <CheckBoxPreference
+                android:key="copyandpaste"
+                android:summary="@string/copypaste_summary"
+                android:title="@string/copypaste_title"
+                android:defaultValue="false" />
+        <CheckBoxPreference
+                android:key="shouldTryTapMenu"
+                android:summary="Requires restart"
+                android:title="Tap menu in chat"
+                android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

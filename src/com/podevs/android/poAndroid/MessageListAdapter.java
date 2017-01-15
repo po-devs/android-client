@@ -14,10 +14,11 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class MessageListAdapter extends BaseAdapter {
-	LinkedList<TextView> messageViews = new LinkedList<TextView>();
+	final LinkedList<TextView> messageViews = new LinkedList<TextView>();
 	public Channel channel;
 	Context context;
     public int lastSeen = 0;
+	public static boolean copyandpaste = false;
 	
 	public MessageListAdapter(Channel ch, Context ctxt) {
 		super();
@@ -30,25 +31,30 @@ public class MessageListAdapter extends BaseAdapter {
 			lastSeen = channel.lastSeen;
 		}
 	}
-	
-	public void add(SpannableStringBuilder span) {
-		TextView toAdd = new TextView(context);
-		toAdd.setText(span);
 
-        try {
+    public void add(SpannableStringBuilder span) {
+        TextView toAdd = new TextView(context);
+        toAdd.setText(span);
 
-            if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
-
-            Linkify.addLinks(toAdd, Linkify.WEB_URLS);
-
-        }  catch (RuntimeException e) {
-            toAdd.setText("THERE WAS AN ERROR WITH THIS MESSAGE" + span);
+        //Too buggy. Needs custom gesture
+        if (copyandpaste) {
+            try {
+                toAdd.setTextIsSelectable(true);
+            } catch (RuntimeException e) {
+				e.printStackTrace();
+				return;
+            }
         }
 
-		messageViews.add(toAdd);
-		if (getCount() > Channel.HIST_LIMIT)
-			messageViews.remove();
-	}
+        if (toAdd.getLinksClickable()) toAdd.setMovementMethod(LinkMovementMethod.getInstance());
+
+		//Linkify.addLinks(toAdd, Linkify.WEB_URLS);
+		Linkify.addLinks(toAdd, NetworkService.urlPattern, "");
+
+        messageViews.add(toAdd);
+        if (getCount() > Channel.HIST_LIMIT)
+            messageViews.remove();
+    }
 
 	public int getCount() {
 		return messageViews.size();

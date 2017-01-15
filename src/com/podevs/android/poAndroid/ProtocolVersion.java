@@ -23,8 +23,8 @@ public class ProtocolVersion implements SerializeBytes {
 	 * Initiates a protocol version object to the latest version
 	 */
 	public ProtocolVersion() {
-		version = 1;
-		minorVersion = 3;
+		version = 4;
+		minorVersion = 0;
 	}
 	
 	/**
@@ -58,6 +58,10 @@ public class ProtocolVersion implements SerializeBytes {
 	 */
 	public int toInt() {
 		return version << 16 + minorVersion;
+	}
+
+	public static boolean lessThan(ProtocolVersion v, int ver, int min) {
+		return v.version < ver || (v.version == ver && v.minorVersion < min);
 	}
 
 	public void serializeBytes(Baos b) {

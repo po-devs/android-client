@@ -4,7 +4,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -16,7 +16,7 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="DarkAppBaseTheme" parent="android:Theme">
+    <style name="DarkAppBaseTheme" parent="android:Theme.Holo">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -26,12 +26,34 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
+        <item name="battleBorderButton">@style/ThemeB</item>
+        <item name="battleBorderButtonTransparent">@style/ThemeBB</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     
     <!-- Application theme. -->
     <style name="DarkAppTheme" parent="DarkAppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="battleBorderButton">@style/ThemeA</item>
+        <item name="battleBorderButtonTransparent">@style/ThemeAA</item>
+    </style>
+
+
+
+
+    <style name="ThemeA">
+        <item name="android:background">@drawable/battle_border_button_dark</item>
+    </style>
+
+    <style name="ThemeAA">
+        <item name="android:background">@drawable/battle_border_transparent_white</item>
+    </style>
+
+    <style name="ThemeB">
+        <item name="android:background">@drawable/battle_border_button</item>
+    </style>
+    <style name="ThemeBB">
+        <item name="android:background">@drawable/battle_border_transparent</item>
     </style>
 
 </resources>

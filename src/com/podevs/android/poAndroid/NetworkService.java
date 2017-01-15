@@ -1,7 +1,6 @@
 package com.podevs.android.poAndroid;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -16,16 +15,18 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.Html;
 import android.util.Log;
 import com.podevs.android.poAndroid.battle.*;
 import com.podevs.android.poAndroid.chat.Channel;
 import com.podevs.android.poAndroid.chat.ChatActivity;
 import com.podevs.android.poAndroid.player.FullPlayerInfo;
 import com.podevs.android.poAndroid.player.PlayerInfo;
+import com.podevs.android.poAndroid.player.UserInfo;
 import com.podevs.android.poAndroid.pms.PrivateMessageActivity;
 import com.podevs.android.poAndroid.pms.PrivateMessageList;
+import com.podevs.android.poAndroid.poke.PokeParser;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
+import com.podevs.android.poAndroid.poke.Team;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.utilities.*;
 
@@ -67,13 +68,14 @@ public class NetworkService extends Service {
 	private byte reconnectSecret[] = null;
 	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
 	private ImageParser imageParser;
-	private Pattern hashTagPattern;
+	private static Pattern hashTagPattern;
+	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
 	private Matcher hashTagMatcher;
 
-	private static class chatPrefs {
+	public static class chatPrefs {
 		// Chat
 		boolean flashing = true;
-		boolean timeStamp = false;
+		public boolean timeStamp = false;
 		String color = "#FFFF00";
 		boolean notificationsFlash = false;
 		// PM
@@ -173,7 +175,7 @@ public class NetworkService extends Service {
 					if (chan.players.contains(players.get(desc.p1)) || chan.players.contains(players.get(desc.p2))) {
 						// needs better method.
 						// Maybe create an array of channels to check?
-						CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
+						CharSequence message = MyHtml.fromHtml("<i><font color=\"#A0A0A0\">Battle started between " + n1 + " and " + n2 + ".</font></i>");
 						chan.writeToHistSmall(message);
 					}
 				}
@@ -246,6 +248,48 @@ public class NetworkService extends Service {
 	 */
 	public boolean hasPlayer(int pid) {
 		return players.containsKey(pid);
+	}
+
+	public int getID(String name) {
+		Set<Integer> keys = players.keySet();
+		for (Integer id : keys) {
+			if (players.get(id).nick().equals(name)) {
+				return id;
+			}
+		}
+		return -1;
+	}
+
+	public String getName(int id) {
+		PlayerInfo info = players.get(id);
+		if (info == null) {
+			return "~Unknown~";
+		}
+		return info.nick();
+	}
+
+
+	public int getChannelID(String name) {
+		Set<Integer> keys = channels.keySet();
+		for (Integer id : keys) {
+			if (channels.get(id).name().equals(name)) {
+				return id;
+			}
+		}
+		return -1;
+	}
+
+	public int inChannelIndex(String name) {
+		ListIterator<Channel> iterator = joinedChannels.listIterator();
+		int i = 0;
+		while (iterator.hasNext()) {
+			Channel c = iterator.next();
+			if (c.name().equalsIgnoreCase(name)) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
 	}
 	
 	public boolean hasChannel(int cid) {
@@ -357,10 +401,12 @@ public class NetworkService extends Service {
 		chatSettings.cry = POPreferences.getBoolean("crySound", false);
 		chatSettings.pokeNumber = Integer.parseInt(POPreferences.getString("pokemonNumber", "648"));
 		chatSettings.soundVolume = Integer.parseInt(POPreferences.getString("soundVolume", "10"));
+		MessageListAdapter.copyandpaste = POPreferences.getBoolean("copyandpaste",false);
 	}
 
 	private static void loadPOPreferences(Context context) {
 		POPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		MessageListAdapter.copyandpaste = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("copyandpaste", false);
 	}
 
 	public static boolean getPMSettings() {
@@ -486,8 +532,26 @@ public class NetworkService extends Service {
 	public void changeConnect(String newNick) {
 		registered = false;
 		Baos b = new Baos();
-		b.write(1); // Why do this? 'Cause magic - MM
+		b.putFlags(new boolean[] {true});
 		b.putString(newNick);
+		socket.sendMessage(b, Command.SendTeam);
+	}
+
+	public void changeTeam(String path) {
+		Team team = new PokeParser(NetworkService.this, path, true).getTeam();
+		Baos b = new Baos();
+		b.putFlags(new boolean[] {true, meLoginPlayer.color().isValid(), true, true});
+		b.putString(meLoginPlayer.nick());
+		if (meLoginPlayer.color().isValid()) {
+			b.putBaos(meLoginPlayer.color());
+		}
+
+		b.putBaos(meLoginPlayer.profile.trainerInfo);
+
+		b.write(0);
+		b.write(1);
+		b.putBaos(team);
+
 		socket.sendMessage(b, Command.SendTeam);
 	}
 
@@ -709,7 +773,7 @@ public class NetworkService extends Service {
 						for (Channel chan : channels.values()) {
 							if (chan.joined && chan.channelEvents) {
 								if (chan.players.contains(p) || chan.players.contains(oldPlayer)) {
-									CharSequence message = Html.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
+									CharSequence message = MyHtml.fromHtml("<i><font color=\"#A0A0A0\">" + oldPlayer.nick() + " changed names to " + p.nick() + "</font></i>");
 									chan.writeToHistSmall(message);
 								}
 							}
@@ -745,7 +809,35 @@ public class NetworkService extends Service {
                 chatActivity.updatePlayer(p, p2);
 			}
 			break;
-		}	case SendMessage: {
+		}	case GetUserInfo: {
+				UserInfo info = new UserInfo(msg);
+				if (!(getID(info.name) == -1)) {
+					info.flags |= UserInfo.FLAG_ONLINE;
+				}
+				chatActivity.updateControlPanel(info);
+				break;
+			}
+			case GetUserAlias: {
+				chatActivity.updateControlPanel(msg.readString());
+				break;
+			}
+			case ShowRankings: {
+				boolean starting = msg.readBool();
+				if (starting) {
+					int startingPage = msg.readInt();
+					int startingRank = msg.readInt();
+					int total = msg.readInt();
+					// Add Ranking window
+					chatActivity.updateViewRanking(startingPage, startingRank, total);
+				} else {
+					String name = msg.readString();
+					int points = msg.readInt();
+					// Add ranking
+					chatActivity.updateViewRanking(name, points);
+				}
+				break;
+			}
+			case SendMessage: {
 			Bais netFlags = msg.readFlags();
 			boolean hasChannel = netFlags.readBool();
 			boolean hasId = netFlags.readBool();
@@ -781,54 +873,68 @@ public class NetworkService extends Service {
 					beg += name + ": </b></font>";
 				}
 				if (isHtml) {
-					message = Html.fromHtml(beg + message);
+					message = MyHtml.fromHtml(beg + message);
 				} else {
 					if (chatSettings.flashing) {
 						if (message.toString().toLowerCase().contains(this.me.nick.toLowerCase())) {
-							int left = ((String) message).toLowerCase().indexOf(this.me.nick.toLowerCase());
-							left = left + name.length() + (chatSettings.timeStamp ? 13 : 2);
-							if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
-								left = left + 1;
-							}
-							int right = this.me.nick.length() + left;
-							message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
-							if (!hasChannel) {
-								// Broadcast message
-								if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
-									chatActivity.makeToast(message.toString(), "long");
-								else {
-									Iterator<Channel> it = joinedChannels.iterator();
-									while (it.hasNext()) {
-										it.next().writeToHist(message, left, right, chatSettings.color);
+							// Be certain!
+							Pattern myName = Pattern.compile("(?<!\\S)(" + this.me.nick.toLowerCase() + ")(?!\\w)");
+							Matcher myMatcher = myName.matcher(message.toString().toLowerCase());
+							if (myMatcher.find()) {
+								message = MyHtml.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+								int left = (String.valueOf(message)).toLowerCase().indexOf(this.me.nick.toLowerCase());
+								int right = this.me.nick.length() + left;
+								if (!hasChannel) {
+									// Broadcast message
+									if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
+										chatActivity.makeToast(message.toString(), "long");
+									else {
+										Iterator<Channel> it = joinedChannels.iterator();
+										while (it.hasNext()) {
+											Channel next = it.next();
+											next.writeToHist(message, left, right, chatSettings.color, false, null);
+										}
 									}
-								}
-							} else {
-								if (chan == null) {
-									Log.e(TAG, "Received message for nonexistent channel");
 								} else {
-									chan.writeToHist(message, left, right, chatSettings.color);
-									if (chan != joinedChannels.getFirst()) {
-										chan.flashed = true;
-										if (chatSettings.notificationsFlash) {
-											chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+									if (chan == null) {
+										Log.e(TAG, "Received message for nonexistent channel");
+									} else {
+										boolean click = false;
+										String command = null;
+										hashTagMatcher = hashTagPattern.matcher(message);
+										if (hashTagMatcher.find()) {
+											command = hashTagMatcher.group(0);
+											if (channelNameTagger(command.toLowerCase().replace("#", ""))) {
+												click = true;
+											} else {
+												command = null;
+											}
+										}
+										chan.writeToHist(message, left, right, chatSettings.color, click, command);
+										if (chan != joinedChannels.getFirst()) {
+											chan.flashed = true;
+											chatActivity.notifyChannelList();
+											if (chatSettings.notificationsFlash) {
+												chatActivity.makeToast(playerName(pId) + " flashed you in " + chan.name() + ".", "long");
+											}
 										}
 									}
 								}
+								break;
 							}
-							break;
 						}
 					}
-					message = Html.fromHtml(beg + StringUtilities.escapeHtml((String) message));
+					message = MyHtml.fromHtml(beg + StringUtilities.escapeHtml((String) message));
 				}
 			} else {
 				if (isHtml) {
-					message = Html.fromHtml((String)message, imageParser, null);
+					message = MyHtml.fromHtml((String)message, imageParser, null, chan, this);
 				} else {
 					String str = StringUtilities.escapeHtml((String)message);
 					int index = str.indexOf(':');
 					
 					if (str.startsWith("*** ")) {
-						message = Html.fromHtml("<font color='#FF00FF'>" + str + "</font>");
+						message = MyHtml.fromHtml("<font color='#FF00FF'>" + str + "</font>");
 					} else if (index != -1) {
 						String firstPart = str.substring(0, index);
 						String secondPart;
@@ -846,7 +952,7 @@ public class NetworkService extends Service {
 							color = "orange";
 						}
 						
-						message = Html.fromHtml("<font color='" + color + "'><b>" + firstPart +
+						message = MyHtml.fromHtml("<font color='" + color + "'><b>" + firstPart +
 								": </b></font>" + secondPart);
 					}
 				}
@@ -859,7 +965,8 @@ public class NetworkService extends Service {
 				else {
 					Iterator<Channel> it = joinedChannels.iterator();
 					while (it.hasNext()) {
-						it.next().writeToHist(message, false, null);
+						Channel next = it.next();
+						next.writeToHist(message, false, null);
 					}
 				}
 			} else {
@@ -878,6 +985,9 @@ public class NetworkService extends Service {
 						}
 					}
 					chan.writeToHist(message, click, command);
+					if (chan != joinedChannels.getFirst()) {
+						chan.newmessage = true;
+					}
 				}
 			}
 			break;
@@ -922,10 +1032,30 @@ public class NetworkService extends Service {
 					if (chatActivity != null && chatActivity.hasWindowFocus()) {
 						chatActivity.notifyChallenge();
 					} else {
-						Notification note = new Notification(R.drawable.icon, "You've been challenged by " + challenge.oppName + "!", System.currentTimeMillis());
-						note.setLatestEventInfo(this, "Pokemon Online", "You've been challenged!", PendingIntent.getActivity(this, 0,
-								new Intent(NetworkService.this, ChatActivity.class), Intent.FLAG_ACTIVITY_NEW_TASK));
-						getNotificationManager().notify(IncomingChallenge.note, note);
+						NotificationCompat.Builder mBuilder =
+								new NotificationCompat.Builder(this)
+										.setSmallIcon(R.drawable.icon)
+										.setContentTitle("Pokemon Online")
+										.setContentText("You've been challenged by " + challenge.oppName + "!");
+
+						// Because clicking the notification opens a new ("special") activity, there's
+						// no need to create an artificial back stack.
+						PendingIntent resultPendingIntent =
+								PendingIntent.getActivity(
+									this,
+									0,
+									new Intent(NetworkService.this, ChatActivity.class),
+									PendingIntent.FLAG_UPDATE_CURRENT
+								);
+
+						mBuilder.setContentIntent(resultPendingIntent);
+
+						// Sets an ID for the notification
+						int mNotificationId = IncomingChallenge.note;
+						// Gets an instance of the NotificationManager service
+						NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+						// Builds the notification and issues it.
+						mNotifyMgr.notify(mNotificationId, mBuilder.build());;
 					}
 				}
 				break;
@@ -997,7 +1127,7 @@ public class NetworkService extends Service {
 				}
 
 				if (battleDesc < 2) {
-					joinedChannels.peek().writeToHist(Html.fromHtml("<b><i>" + 
+					joinedChannels.peek().writeToHist(MyHtml.fromHtml("<b><i>" +
 							StringUtilities.escapeHtml(playerName(id1)) + outcome[battleDesc] + 
 							StringUtilities.escapeHtml(playerName(id2)) + ".</b></i>"), false, null);
 				}
@@ -1018,22 +1148,20 @@ public class NetworkService extends Service {
 			
 			dealWithPM(playerId, message);
 			break;
-		}/* case SendTeam: {
-			PlayerInfo p = new PlayerInfo(msg);
-			if (players.containsKey(p.id)) {
-				PlayerInfo player = players.get(p.id);
-				player.update(p);
-				Enumeration<Channel> e = channels.elements();
-				while (e.hasMoreElements()) {
-					Channel ch = e.nextElement();
-					if (ch.players.containsKey(player.id)) {
-						ch.updatePlayer(player);
+		} case SendTeam: {
+				Bais flags = msg.readFlags();
+				if (flags.readBool()) {
+					String name = msg.readString();
+				}
+				if (flags.readBool()) {
+					ArrayList<String> tiers = msg.readQStringList();
+					if (tiers != null) {
+						chatActivity.makeToast("Loaded " + tiers.get(0), "short");
 					}
 				}
-			}
 			break;
 
-		} */ case BattleMessage: {
+		} case BattleMessage: {
 			int battleId = msg.readInt(); // currently support only one battle, unneeded
 			msg.readInt(); // discard the size, unneeded
 			if (isBattling(battleId)) {
@@ -1041,38 +1169,51 @@ public class NetworkService extends Service {
 			}
 			break;
 		} case EngageBattle: {
-			int battleId = msg.readInt();
-			Bais flags = msg.readFlags();
-			byte mode = msg.readByte();
-			int p1 = msg.readInt();
-			int p2 = msg.readInt();
+				int battleId;// = msg.readInt();
+				Bais flags;// = msg.readFlags();
+				BattleDesc info = new BattleDesc();
 
-			addBattle(battleId, new BattleDesc(p1, p2, mode), true);
+				if (ProtocolVersion.lessThan(serverVersion, 2, 0)) {
+					battleId = msg.readInt();
+					flags = msg.readFlags();
+					info.mode = msg.readByte();
+					info.readOld(msg);
+				} else {
+					flags = msg.readFlags();
+					battleId = msg.readInt();
+					info.read(msg);
+				}
 
-			if(flags.readBool()) { // This is us!
-				BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
-				// Start the battle
-				Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)),
-						getNonNullPlayer(conf.id(1)), myid, battleId, this);
-				activeBattles.put(battleId, battle);
+				boolean isOurBattle = flags.readBool();
 
-				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
-						" and " + playerName(p2) + " started!", false, null);
-				Intent intent;
-				intent = new Intent(this, BattleActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				intent.putExtra("battleId", battleId);
-				startActivity(intent);
-				findingBattle = false;
-				
-				showBattleNotification("Battle", battleId, conf);
-			}
-			
-			if (chatActivity != null) {
-				chatActivity.updatePlayer(players.get(p1), players.get(p1));
-				chatActivity.updatePlayer(players.get(p2), players.get(p2));
-			}
-			break;
+				if (isOurBattle) {
+					String test = "";
+				}
+
+				addBattle(battleId, info, true);
+
+				if(isOurBattle) { // This is us!
+					BattleConf conf = new BattleConf(msg, ProtocolVersion.lessThan(serverVersion, 1, 0));
+					// Start the battle
+					Battle battle = new Battle(conf, msg, getNonNullPlayer(conf.id(0)), getNonNullPlayer(conf.id(1)), myid, battleId, this);
+					activeBattles.put(battleId, battle);
+
+					joinedChannels.peek().writeToHist("Battle between " + playerName(info.p1) +
+							" and " + playerName(info.p2) + " started!", false, null);
+					Intent intent = new Intent(this, BattleActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					intent.putExtra("battleId", battleId);
+					startActivity(intent);
+					findingBattle = false;
+
+					showBattleNotification("Battle", battleId, conf);
+				}
+
+				if (chatActivity != null) {
+					chatActivity.updatePlayer(players.get(info.p1), players.get(info.p1));
+					chatActivity.updatePlayer(players.get(info.p2), players.get(info.p2));
+				}
+				break;
 		} 
 		case SpectateBattle: {
 			Bais flags = msg.readFlags();
@@ -1150,6 +1291,38 @@ public class NetworkService extends Service {
 					chatActivity.notifyAskForServerPass();
 				}
 			break;
+		}case PlayerKick: {
+				int dest = msg.readInt();
+				int src = msg.readInt();
+
+				String message;
+				if (src == 0) {
+					message = "<font color=#ff0000><b> " + getName(dest) + " was kicked by the server!</b></font>";
+				} else {
+					message = "<font color=#ff0000><b> " + getName(src) + " kicked " + getName(dest) + "</b></font>";
+				}
+				Iterator<Channel> it = joinedChannels.iterator();
+				while (it.hasNext()) {
+					Channel next = it.next();
+					next.writeToHist(MyHtml.fromHtml(message), false, null);
+				}
+				break;
+		}case PlayerBan: {
+				int dest = msg.readInt();
+				int src = msg.readInt();
+
+				String message;
+				if (src == 0) {
+					message = "<font color=#ff0000><b> " + getName(dest) + " was banned by the server!</b></font>";
+				} else {
+					message = "<font color=#ff0000><b> " + getName(src) + " banned " + getName(dest) + "</b></font>";
+				}
+				Iterator<Channel> it = joinedChannels.iterator();
+				while (it.hasNext()) {
+					Channel next = it.next();
+					next.writeToHist(MyHtml.fromHtml(message), false, null);
+				}
+				break;
 		}/*  case AndroidID: {
 +			new Thread(new Runnable() {
 +				@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -1195,15 +1368,37 @@ public class NetworkService extends Service {
 			p.nick = "???";
 			p.id = id;
 		}
-		
+
 		return p;
 	}
 
+	public chatPrefs getSettings() {
+		return chatSettings;
+	}
+
+	public void tryFlashChannel(Channel chan) {
+		if (chan != joinedChannels.getFirst()) {
+			chan.flashed = true;
+			chatActivity.notifyChannelList();
+			if (chatSettings.notificationsFlash) {
+				chatActivity.makeToast("You were flashed in " + chan.name() + ".", "short");
+			}
+		}
+	}
+
 	public void joinChannel(String channelName) {
-		Baos join = new Baos();
-		join.putString(channelName);
-		if (socket.isConnected())
-			socket.sendMessage(join, Command.JoinChannel);
+		int i = inChannelIndex(channelName);
+		if (i == -1) {
+			Baos join = new Baos();
+			join.putString(channelName);
+			if (socket.isConnected())
+				socket.sendMessage(join, Command.JoinChannel);
+		} else {
+			Channel c = joinedChannels.get(i);
+			joinedChannels.remove(c);
+			joinedChannels.addFirst(c);
+			updateJoinedChannels();
+		}
 	}
 
 	public boolean channelNameTagger(String channelName) {
@@ -1221,6 +1416,7 @@ public class NetworkService extends Service {
 	 */
 	public void createPM(int playerId) {
 		pms.createPM(players.get(playerId));
+		chatActivity.invalidateOptionsMenu();
 	}
 	
 	private void dealWithPM(int playerId, String message) {
@@ -1493,6 +1689,15 @@ public class NetworkService extends Service {
 		closeBattle(bID);
 	}
 
+	public void startWatching(int bID) {
+		if (bID != 0) {
+			Baos watch = new Baos();
+			watch.putInt(bID);
+			watch.putBool(true); // watch, not leaving
+			socket.sendMessage(watch, Command.SpectateBattle);
+		}
+	}
+
 	/**
 	 * Sends a private message to a user
 	 * @param id Id of the user dest
@@ -1506,6 +1711,143 @@ public class NetworkService extends Service {
 		
 		pmedPlayers.add(id);
 	}
+
+
+	public void requestUserInfo(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.GetUserInfo);
+	}
+
+	public void requestRanking(String tier, String name) {
+		Baos b = new Baos();
+		b.putString(tier);
+		b.putBool(false);
+		b.putString(name);
+		socket.sendMessage(b, Command.ShowRankings);
+	}
+
+	public void requestRanking(String tier, int page) {
+		Baos b = new Baos();
+		b.putString(tier);
+		b.putBool(true);
+		b.putInt(page);
+		socket.sendMessage(b, Command.ShowRankings);
+	}
+
+	public void playerKick(int id) {
+		Baos b = new Baos();
+		b.putInt(id);
+		socket.sendMessage(b, Command.PlayerKick);
+	}
+
+	public void playerBan(int id) {
+		Baos b = new Baos();
+		b.putInt(id);
+		socket.sendMessage(b, Command.PlayerBan);
+	}
+
+	public void playerTBan(int id, int time) {
+		Baos b = new Baos();
+		b.putInt(id);
+		b.putInt(time);
+		socket.sendMessage(b, Command.PlayerTBan);
+	}
+
+	public void playerBan(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.CPBan);
+	}
+
+	public void playerTBan(String name, int time) {
+		Baos b = new Baos();
+		b.putString(name);
+		b.putInt(time);
+		socket.sendMessage(b, Command.CPBan);
+	}
+
+	public void playerUnban(String name) {
+		Baos b = new Baos();
+		b.putString(name);
+		socket.sendMessage(b, Command.CPUnban);
+	}
+
+	public void poIgnore(String idOrName) {
+		if (StringUtilities.isNumeric(idOrName)) {
+			Integer id = Integer.parseInt(idOrName);
+			ignoreList.add(id);
+		} else {
+			Integer id = getID(idOrName);
+			ignoreList.add(id);
+		}
+	}
+
+	public void poWatchPlayer(String idOrName) {
+		int id = 0;
+		if (StringUtilities.isNumeric(idOrName)) {
+			id = Integer.parseInt(idOrName);
+		} else {
+			id = getID(idOrName);
+		}
+		Set<Integer> keys = activeBattles.keySet();
+		for (Integer battleID : keys) {
+			Battle battle = activeBattle(battleID);
+			if (battle.players[0].id == id || battle.players[1].id == id) {
+				startWatching(battleID);
+				break;
+			}
+		}
+	}
+
+	public void poPM(String idOrName) {
+		int id = 0;
+		if (StringUtilities.isNumeric(idOrName)) {
+			id = Integer.parseInt(idOrName);
+		} else {
+			id = getID(idOrName);
+		}
+		createPM(id);
+
+		Intent intent = new Intent(chatActivity, PrivateMessageActivity.class);
+		intent.putExtra("playerId", id);
+		startActivity(intent);
+	}
+
+    public void loadJoinedChannelSettings() {
+        SharedPreferences prefs = getSharedPreferences("autoJoinChannelsSettings", MODE_PRIVATE);
+
+        String key = this.ip + ":" + this.port;
+
+        Set<String> hasSettings = prefs.getStringSet(key, null);
+
+        if (hasSettings != null) {
+            for (Channel chan : joinedChannels) {
+                if (hasSettings.contains(chan.name())) {
+                    joinedChannels.get(joinedChannels.indexOf(chan)).channelEvents = true;
+                }
+            }
+        }
+    }
+
+    public void updateJoinedChannelSettings() {
+        SharedPreferences prefs = getSharedPreferences("autoJoinChannelsSettings", MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+
+        String key = this.ip + ":" + this.port;
+
+        edit.remove(key);
+
+        HashSet<String> settings = new HashSet<String>();
+
+        for (Channel chan : joinedChannels) {
+            if (chan.channelEvents) {
+                settings.add(chan.name());
+            }
+        }
+
+        edit.putStringSet(key, settings).apply();
+    }
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void updateJoinedChannels() {

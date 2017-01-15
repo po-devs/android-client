@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,12 +33,11 @@ public class Tier {
 	public void reset() {
 		subTiers = new ArrayList<Tier>();
 	}
-
-	/*
-	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {;
-		return new ArrayAdapter<Tier>(c, textViewResId, subTiers);
+	
+	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {
+		ArrayAdapter<Tier> aat = new ArrayAdapter<Tier>(c, textViewResId, subTiers);
+		return aat;
 	}
-	*/
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void save(Context ctx) {

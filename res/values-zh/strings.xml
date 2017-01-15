@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty" />
+    <string name="choosename">玩家名称</string>
+    <string name="app_name">安卓PO</string>
+    <string name="connect">连接服务器</string>
+    <string name="inputname">请输入你的玩家名称</string>
+    <string name="inputaddr">电信入口</string>
+    <string name="chooseaddr">吧服联通入口（冒号要半角）</string>
+    <string name="importteam">导入队伍</string>
+    <string name="viewpokemon">查看精灵</string>
+    <string name="tobattlescreen">回到战斗</string>
+    <string name="notinbattle">当前没有战斗</string>
+    <string name="forfeit">放弃当前战斗</string>
+    <string name="ok">好的</string>
+    <string name="cancel">取消</string>
+    <string name="no">不要</string>
+    <string name="disconnect">断开连接</string>
+    <string name="change_name">更改昵称</string>
+    <string name="suggest_draw">建议平手</string>
+    <string name="return_to_chat">回到聊天</string>
+    <string name="player_list">玩家列表</string>
+    <string name="channel_list">频道列表</string>
+    <string name="accept">接受</string>
+    <string name="decline">婉拒</string>
+    <string name="accept_challenge">收到对战，对方是</string>
+    <string name="stat_attack">物攻</string>
+    <string name="stat_defense">物防</string>
+    <string name="stat_spAttack">特攻</string>
+    <string name="stat_spDefense">特防</string>
+    <string name="stat_speed">速度</string>
+    <string name="stat_accuracy">命中</string>
+    <string name="stat_evasion">回避</string>
+    <string name="rearrange_team_description">你可以在战斗前通过拖动来调整精灵的位置。</string>
+    <string name="rearrange_team_title">重排队伍</string>
+    <string name="foes_team">对方的队伍</string>
+    <string name="your_team">你的队伍：</string>
+    <string name="done">好了</string>
+    <string name="find_a_battle">寻找对战</string>
+    <string name="enable_sounds">精灵叫声</string>
+    <string name="stop_watching">离开战斗</string>
+    <string name="crash_toast_text">安卓PO崩溃了！请以邮件方式汇报崩溃报告。</string>
+    <string name="serv_name">服务器名称</string>
+    <string name="players">在线人数</string>
+    <string name="serv_addr">服务器地址</string>
+    <string name="connecttoserver">登录Pokemon Online</string>
+    <string name="major_compat_break_warning">很抱歉，当前的安卓PO版本已过时。</string>
+    <string name="minor_compat_break_warning">很抱歉，当前的安卓PO版本已过时。</string>
+    <string name="new_server_features_warning">服务器不接受你这个版本的PO呢！</string>
+    <string name="send_message">发送消息</string>
+    <string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
+    <string name="struggle_attack">拼命</string>
+    <string name="info_box">信息盒子</string>
+    <string name="hp_bar_description">hp bar</string>
+    <string name="gender_description">gender</string>
+    <string name="status_description">status</string>
+    <string name="sprite_description">sprite</string>
+    <string name="team_poke_icon">team poke icon</string>
+    <string name="no_netserv">服务器连接失败</string>
+    <string name="private_messages">私聊</string>
+    <string name="closePM">关闭私聊</string>
+    <string name="ignorePlayer">忽略玩家</string>
+    <string name="closeBattle">离开战斗</string>
+    <string name="tierSelection">分级选项</string>
+    <string name="idle">离开模式</string>
+    <string name="register">注册你的ID</string>
+    <string name="teambuilder">队伍编辑器</string>
+    <string name="primary_info">基本信息</string>
+    <string name="trainer_name">玩家名称</string>
+    <string name="color">名称颜色</string>
+    <string name="team">队伍</string>
+    <string name="team_tier">队伍分级</string>
+    <string name="edit_team">编辑队伍</string>
+    <string name="optional">可选内容</string>
+    <string name="trainerinfo">训练师信息</string>
+    <string name="winningmessage">胜利感言</string>
+    <string name="losingmessage">战败感言</string>
+    <string name="pokemon">精灵</string>
+    <string name="save_team_q">需要保存队伍的改变吗？</string>
+    <string name="download_team">下载队伍</string>
+    <string name="save">保存</string>
+    <string name="no_save">不保存</string>
+    <string name="hiddenpower_choice">觉醒力量的属性</string>
+    <string name="new_team">清空当前队伍</string>
+    <string name="load_team">载入已存队伍</string>
+    <string name="save_team_as">保存当前队伍</string>
+    <string name="delete_team">删除指定队伍</string>
+    <string name="full_happiness">100% 亲密度</string>
+    <string name="zmove">Ｚ力量</string>
+    <string name="megavolve">Mega进化(╰_╯)</string>
+    <string name="formes">形态:</string>
+    <string name="settings">设置</string>
+    <string name="shiny">闪光</string>
+    <string name="happiness_short">亲密度</string>
+    <string name="level_short">等级</string>
+    <string name="force_rated">强制计分</string>
+    <string name="force_same_tier">强制相同分级</string>
+    <string name="only_within_range">只挑战积分范围内的对手</string>
+    <string name="view_player_info">查看玩家信息</string>
+    <string name="challenge">挑战</string>
+    <string name="pm">私聊</string>
+    <string name="watch_battle">观战</string>
+    <string name="change_happiness">更改亲密度</string>
+    <string name="change_level">更改等级</string>
+    <string name="switch_place">选择 place</string>
+    <string name="hackmon_enabled">无限制模式</string>
+    <string name="hackmon_disabled">正常模式</string>
+    <string name ="manual_iv">更改个体值</string>
+
+    <string name="chat_title">聊天设置</string>
+    <string name="chat_summary">聊天设置</string>
+    <string name="flash_title">字体</string>
+    <string name="flash_summary">开启闪光</string>
+    <string name="flash_color_title">文字颜色</string>
+    <string name="flash_color_summary">输入一个颜色的十六进制数值</string>
+    <string name="timestamp_chat_title">消息日期</string>
+    <string name="timestamp_chat_summary">在聊天中显示消息日期</string>
+    <string name="notifications_chat_title">提示消息</string>
+    <string name="notifications_chat_summary">状态栏消息提示</string>
+    <string name="pm_title">精灵选项</string>
+    <string name="pm_summary">私聊选项</string>
+    <string name="timestamp_pm_title">时间标记</string>
+    <string name="timestamp_pm_summary">时间标记开关</string>
+    <string name="notifications_pm_title">通知</string>
+    <string name="notifications_pm_summary">通知开关</string>
+    <string name="volume_title">容量</string>
+    <string name="volume_summary">输入0–100之间的整数</string>
+    <string name="poke_number_title">精灵叫声</string>
+    <string name="poke_number_summary">精灵编号</string>
+    <string name="sound_notification_title">叫声通知</string>
+    <string name="sound_notification_summary">叫声通知开关</string>
+    <string name="misc_title">Miscellaneous</string>
+    <string name="crashlog_title">存储崩溃日志</string>
+    <string name="crashlog_summary">保存崩溃日志到文件</string>
+    <string name="copypaste_title">复制和粘贴</string>
+    <string name="copypaste_summary">可能不支持所有的设备</string>
+    <string name="IV">IV</string>
+    <string name="switch_places">改变顺序</string>
+    <string name="from_slot">原有位置:</string>
+    <string name="to_slot">目标位置:</string>
+    <string name="export_team">导出队伍</string>
+    <string name="export_success">导出成功</string>
+    <string name="raw_link">不完整的链接:</string>
+    <string name="valid_link">完整的链接.</string>
+    <string name="cancel_find_battle">取消寻找对战</string>
+
+    <string-array name="hp_array">
+        <item>格斗</item>
+        <item>飞行</item>
+        <item>毒</item>
+        <item>地面</item>
+        <item>岩石</item>
+        <item>虫</item>
+        <item>幽灵</item>
+        <item>钢</item>
+        <item>火</item>
+        <item>水</item>
+        <item>草</item>
+        <item>电</item>
+        <item>超能</item>
+        <item>冰</item>
+        <item>龙</item>
+        <item>恶</item>
+    </string-array>
+
+    <string-array name="status_change_array">
+        <item> 麻痹了！它可能无法行动！</item>
+        <item> 睡着了！</item>
+        <item> 冻结了！</item>
+        <item> 烧伤了！</item>
+        <item> 中毒了！</item>
+        <item> 中了剧毒！</item>
+        <item> 混乱了！</item>
+    </string-array>
+
+    <string-array name="import_file_array">
+        <item>来自文件</item>
+        <item>来自文件2</item>
+    </string-array>
+
+    <string name="feel_confusion_status_message"> 混乱了！</string>
+    <string name="hurt_confusion_status_message">在混乱中攻击了自己！</string>
+    <string name="free_confusion_status_message"> 的混乱解除了。</string>
+    <string name="prev_paralyzed_status_message"> 麻痹了！它无法行动！</string>
+    <string name="prev_frozen_status_message"> 因冻结而无法行动。</string>
+    <string name="free_frozen_status_message"> 解冻了！</string>
+    <string name="feel_asleep_status_message"> 正在睡觉。</string>
+    <string name="free_asleep_status_message"> w醒来了！</string>
+    <string name="hurt_burn_status_message"> 因烧伤而受到伤害！</string>
+    <string name="hurt_poison_status_message"> 受到了毒素的伤害！</string>
+
+    <string name="end_hail_weather">冰雹停止了。</string>
+    <string name="hurt_hail_weather"> 被冰雹击中！</string>
+    <string name="continue_hail_weather">冰雹噼里啪啦地落下。</string>
+    <string name="end_sandstorm_weather">沙尘暴停止了。</string>
+    <string name="hurt_sandstorm_weather"> 被沙尘暴击中！</string>
+    <string name="continue_sandstorm_weather">沙尘暴继续刮着。</string>
+    <string name="end_sunny_weather">阳光变弱了。</string>
+    <string name="continue_sunny_weather">阳光很强。</string>
+    <string name="end_rain_weather">雨停了。</string>
+    <string name="continue_rain_weather">雨一直下。</string>
+    <string name="end_heavysun_weather">烈日消逝了！</string>
+    <string name="continue_heavysun_weather">强烈的阳光仍在持续。</string>
+    <string name="end_heavyrain_weather">大雨停止了！</string>
+    <string name="continue_heavyrain_weather">滂沱大雨仍在持续。</string>
+    <string name="end_delta_weather">神秘的气流飞散了！</string>
+    <string name="continue_delta_weather">神秘气流正在保护飞行系。</string>
+
+    <string name="no_effect_message">\n这没有效果</string>
+    <string name="not_very_effective_message">这不是很有效…</string>
+    <string name="super_effective_message">这非常有效！</string>
+
+    <string name="disconnected_no_timeout"> 断线了！!</string>
+    <string name="disconnected_timeout"> 断线了！你可以通过等待对方超时来取得胜利。</string>
+    <string name="logged_back_in"> 重新上线并且准备继续战斗！</string>
+
+    <string name="asset_localization">translation-zh/</string>
+    <string name="localize_assets_title">中译名</string>
+    <string name="localize_assets_summary">不支持所有语言</string>
+    <string name="language_settings">语言设置</string>
+</resources>

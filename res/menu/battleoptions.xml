@@ -2,9 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/zmove"
+        android:checkable="true"
+        android:title="@string/zmove"
+        android:icon="@drawable/ic_zmove"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText">
+    </item>
+    <item
         android:id="@+id/megavolve"
         android:checkable="true"
-        android:title="@string/megavolve">
+        android:title="@string/megavolve"
+        android:icon="@drawable/ic_mega"
+        android:visible="false"
+        android:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/close"
@@ -27,5 +38,9 @@
         android:checkable="true"
         android:title="@string/enable_sounds">
     </item>
-
+    <item
+        android:id="@+id/debug"
+        android:title="Debug"
+        android:enabled="true">
+    </item>
 </menu>

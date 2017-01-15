@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="empty"></string>
+    <string name="empty" translatable="false"></string>
     <string name="choosename">Trainer Name</string>
     <string name="app_name">Pokémon Online</string>
     <string name="connect">Connect!</string>
@@ -38,6 +38,7 @@
     <string name="your_team">Your Team:</string>
     <string name="done">Done</string>
     <string name="find_a_battle">Find Battle</string>
+    <string name="cancel_find_battle">Cancel Find Battle</string>
     <string name="enable_sounds">Pokémon Cries</string>
     <string name="stop_watching">Stop Watching</string>
     <string name="crash_toast_text">Pokémon Online has crashed! Please help by e-mailing the resulting crash report.</string>
@@ -88,10 +89,13 @@
     <string name="save_team_as">Save team as</string>
     <string name="delete_team">Delete team</string>
     <string name="full_happiness">100% Happiness</string>
+    <string name="zmove">Z-Move</string>
     <string name="megavolve">Megaevolve</string>
     <string name="formes">Formes: </string>
     <string name="settings">Settings</string>
     <string name="shiny">Shiny</string>
+    <string name="happiness_short">Happy</string>
+    <string name="level_short">Lvl</string>
     <string name="force_rated">Force Rated</string>
     <string name="force_same_tier">Force Same Tier</string>
     <string name="only_within_range">Only within range</string>
@@ -99,6 +103,19 @@
     <string name="challenge">Challenge</string>
     <string name="pm">Private Message</string>
     <string name="watch_battle">Watch battle against</string>
+    <string name="change_happiness">Change Happiness</string>
+    <string name="change_level">Change Level</string>
+    <string name="switch_place">Switch place</string>
+    <string name="hackmon_enabled">Hackmon Enabled</string>
+    <string name="hackmon_disabled">Hackmon Disabled</string>
+    <string name="manual_iv">Manual IV</string>
+    <string name="switch_places">Switch Places</string>
+    <string name="from_slot">From slot:</string>
+    <string name="to_slot">To slot:</string>
+    <string name="export_team">Export Team</string>
+    <string name="export_success">Export successful</string>
+    <string name="raw_link">Enter link of raw  text team:</string>
+    <string name="valid_link">Entire Valid Link.</string>
 
     <string name="chat_title">Chat Settings</string>
     <string name="chat_summary">Chat Settings</string>
@@ -122,6 +139,12 @@
     <string name="poke_number_summary">Number of the pokemon</string>
     <string name="sound_notification_title">Cry Sound notification</string>
     <string name="sound_notification_summary">Toggle cry sound notification</string>
+    <string name="misc_title">Miscellaneous</string>
+    <string name="crashlog_title">Save crash log</string>
+    <string name="crashlog_summary">Dump crash data to file</string>
+    <string name="copypaste_title">Copy and Paste</string>
+    <string name="copypaste_summary">May not function correctly on all devices</string>
+
     <string name="IV">IV</string>
 
     <string-array name="hp_array">
@@ -142,5 +165,66 @@
         <item>Dragon</item>
         <item>Dark</item>
     </string-array>
+
+    <string-array name="status_change_array">
+        <item> is paralyzed! It may be unable to move!</item>
+        <item> fell asleep!</item>
+        <item> was frozen solid!</item>
+        <item> was burned!</item>
+        <item> was poisoned!</item>
+        <item> was badly poisoned!</item>
+        <item> became confused!</item>
+    </string-array>
+
+    <string-array name="import_array">
+        <item>@string/importteam</item>
+        <item>@string/download_team</item>
+    </string-array>
+
+    <string-array name="import_file_array">
+        <item>From File</item>
+        <item>From File 2</item>
+    </string-array>
+
+    <string name="feel_confusion_status_message"> is confused!</string>
+    <string name="hurt_confusion_status_message">It hurt itself in its confusion!</string>
+    <string name="free_confusion_status_message"> snapped out of its confusion!</string>
+    <string name="prev_paralyzed_status_message"> is paralyzed! It can\'t move!</string>
+    <string name="prev_frozen_status_message"> is frozen solid!</string>
+    <string name="free_frozen_status_message"> thawed out!</string>
+    <string name="feel_asleep_status_message"> is fast asleep!</string>
+    <string name="free_asleep_status_message"> woke up!</string>
+    <string name="hurt_burn_status_message"> is hurt by its burn!</string>
+    <string name="hurt_poison_status_message"> is hurt by poison!</string>
+
+    <string name="end_hail_weather">The hail subsided!</string>
+    <string name="hurt_hail_weather"> is buffeted by the hail!</string>
+    <string name="continue_hail_weather">Hail continues to fall!</string>
+    <string name="end_sandstorm_weather">The sandstorm subsided!</string>
+    <string name="hurt_sandstorm_weather"> is buffeted by the sandstorm!</string>
+    <string name="continue_sandstorm_weather">The sandstorm rages!</string>
+    <string name="end_sunny_weather">The sunlight faded!</string>
+    <string name="continue_sunny_weather">The sunlight is strong!</string>
+    <string name="end_rain_weather">The rain stopped!</string>
+    <string name="continue_rain_weather">Rain continues to fall!</string>
+    <string name="end_heavysun_weather">The intense sunlight faded!</string>
+    <string name="continue_heavysun_weather">The intense sunlight continues to shine!</string>
+    <string name="end_heavyrain_weather">The heavy downpour stopped!</string>
+    <string name="continue_heavyrain_weather">The heavy downpour continues!</string>
+    <string name="end_delta_weather">The mysterious air current has dissipated!</string>
+    <string name="continue_delta_weather">A mysterious air current is protecting Flying-type Pokémon.</string>
+
+    <string name="no_effect_message">\nIt had no effect!</string>
+    <string name="super_effective_message">It\'s super effective!</string>
+
+    <string name="disconnected_no_timeout"> got disconnected!</string>
+    <string name="disconnected_timeout"> got disconnected! You can wait for their time to run out if you want the win.</string>
+    <string name="logged_back_in"> logged back in and is ready to resume the battle!</string>
+
+    <string name="asset_localization"></string>
+    <string name="localize_assets_title">Localize Names</string>
+    <string name="localize_assets_summary">Not all languages are supported</string>
+    <string name="language_settings">Language Settings</string>
+    <string name="not_very_effective_message">It\'s not very effective…</string>
 
 </resources>

@@ -88,6 +88,7 @@
     <string name="save_team_as">Sauvegarder l\'équipe</string>
     <string name="delete_team">Supprimer équipe</string>
     <string name="full_happiness">100% Bonheur</string>
+    <string name="zmove">Force Z</string>
     <string name="megavolve">Méga évoluer</string>
     <string name="formes">Formes: </string>
     <string name="settings">Options</string>
@@ -143,5 +144,19 @@
         <item>Dragon</item>
         <item>Tenèbres</item>
     </string-array>
+
+    <string name="asset_localization">translation-fr/</string>
+    <string name="level_short">Nv</string>
+    <string name="change_happiness">Modifier Bonheur</string>
+    <string name="change_level">Modifier Niveau</string>
+    <string name="copypaste_title">Copier Coller</string>
+    <string name="copypaste_summary">Peut ne pas fonctionner correctement</string>
+    <string name="crashlog_summary">Vider les données du crash à un fichier</string>
+    <string name="crashlog_title">Sauvegarder le registre du crash</string>
+    <string name="switch_place">Changer de position</string>
+    <string name="misc_title">Divers</string>
+    <string name="localize_assets_summary">Pas tout les langages sont supportés</string>
+    <string name="localize_assets_title">Localiser les noms</string>
+    <string name="language_settings">Paramètres de langage</string>
 
 </resources>
