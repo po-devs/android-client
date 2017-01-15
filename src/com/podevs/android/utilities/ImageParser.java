@@ -3,17 +3,19 @@ package com.podevs.android.utilities;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Base64;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.xml.sax.Attributes;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -23,17 +25,17 @@ import java.util.regex.Pattern;
  * Custom Html.ImageGetter
  */
 
-public class ImageParser implements Html.ImageGetter {
+public class ImageParser implements MyHtml.ImageGetter {
     Context context;
-    Pattern urlPattern;
+    final static Pattern urlPattern =  Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
 
     public ImageParser(Context context) {
         // this.view = view;
         this.context = context;
-        urlPattern = Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
     }
 
-    public Drawable getDrawable(String src) {
+    @Override
+    public Drawable getDrawable(String src, Attributes attributes) {
         Draw drawable = new Draw();
         // Handle external resources
         if (urlPattern.matcher(src).matches()) {
@@ -41,16 +43,30 @@ public class ImageParser implements Html.ImageGetter {
             task.execute(src);
             try {
                 drawable = task.get(15L, TimeUnit.SECONDS); // Wait 15 Seconds for call.
-            } catch (InterruptedException e) {
-            } catch (TimeoutException e) {
-            } catch (ExecutionException e) {
-            }
+            } catch (InterruptedException|TimeoutException|ExecutionException e) {}
         } else {
             // Handle local resources
             drawable = (new ResourceParser(context)).parseText(src);
         }
+        if (drawable != null) {
+            try {
+                String width = attributes.getValue("width");
+                String height = attributes.getValue("height");
+                if (width != null && height != null) {
+                    int iWidth = Integer.parseInt(width);
+                    int iHeight = Integer.parseInt(height);
+//                    drawable.drawable = new ScaleDrawable(drawable, 0, iWidth, iHeight).getDrawable();
+                    drawable.drawable.setBounds(0, 0, iWidth, iHeight);
+                    String background = attributes.getValue("background");
+                    if (background != null) {
+                        drawable.drawable.setColorFilter(Color.parseColor(background), PorterDuff.Mode.DST_OVER);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return drawable;
-        // return drawable;
     }
 
     private class ResourceParser {
@@ -100,8 +116,7 @@ public class ImageParser implements Html.ImageGetter {
                             src = src.replace("num=", "");
                             if (src.contains("&")) {
                                 int i = Integer.parseInt(src.substring(0, src.indexOf("&")));
-                                int j = 0;
-                                j = i >> 16;
+                                int j = i >> 16;
                                 i = i - (j << 16);
                                 return "p" + i + (j == 0 ? "" : "_" + j) + "_front" + (src.contains("shiny=true") ? "s" : "");
                             } else {
@@ -115,7 +130,9 @@ public class ImageParser implements Html.ImageGetter {
                     } catch (NumberFormatException e) {}
                 } else if (src.indexOf("icon:") == 0) {
                     int i = Integer.parseInt(src.replace("icon:", ""));
-                    return "pi_" + i;
+                    int j = i >> 16;
+                    i = i - (j << 16);
+                    return "pi_" + i + (j == 0 ? "" : "_" + j);
                 } else if (src.indexOf("trainer:") == 0) {
                     int i = Integer.parseInt(src.replace("trainer:", ""));
                     return "t" + i;
@@ -126,8 +143,7 @@ public class ImageParser implements Html.ImageGetter {
                     src = src.replace("data:image/" , "").replace("x-png;base64,", "").replace("gif;base64,", "").replace("png;base64,", "");
                     src = "base64:" + src;
                 }
-            } catch (StringIndexOutOfBoundsException e) {
-            }
+            } catch (StringIndexOutOfBoundsException e) {}
             return src;
         }
     }
@@ -156,21 +172,29 @@ public class ImageParser implements Html.ImageGetter {
 
         private Drawable getDrawable(String url) {
             try {
-                InputStream is = download(url);
-                Drawable drawable = Drawable.createFromStream(is, "src");
-                drawable.setBounds(0,0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                Drawable drawable = download(url);
+
+                if (drawable != null) {
+                    drawable.setBounds(0,0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                }
                 return drawable;
             } catch (IOException e) {
-                String text = "src";
                 return null;
             }
         }
 
-        private InputStream download(String url) throws IOException{
-            DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(url);
-            HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
-            return httpResponse.getEntity().getContent();
+        private Drawable download(String url) throws IOException{
+            Drawable ret = null;
+
+            URL urlObj = new URL(url);
+            HttpURLConnection urlConnection = (HttpURLConnection) urlObj.openConnection();
+            try {
+                ret = Drawable.createFromStream(urlConnection.getInputStream(), "src");
+            } finally {
+                urlConnection.disconnect();
+            }
+
+            return ret;
         }
 
     }
