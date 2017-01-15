@@ -8,14 +8,14 @@
 12 %s won't flinch because of its Inner Focus!
 13 %s's Download activates!
 14 %s's Snow Warning whipped up a hailstorm!|%s's Drizzle made it rain!|%s's Sand Stream whipped up a sandstorm!|%s's Drought intensified the sun's rays!
-15 %s restored HP using its Dry Skin!|%s's Dry Skin hurts it!
+15 %s restored HP using its Dry Skin!|%s's Dry Skin hurts it!|%s's Dry Skin absorbed the attack!
 16 %s's Effect Spore activates!
 17 %s's Overcoat protects it!
 18 %s's %a activates!
 19 %s's Flash Fire raised the power of its Fire-type moves!|%s's Flash Fire made %m ineffective!
 21 %s changed its type to %t!
 22 %s's Forewarn makes it wary of %m!
-23 %s knows its foe holds %i because of Frisk!
+23 %s frisked %f and found its %i!
 24 %s's Shield Dust blocked the secondary effects!
 29 %s's Hydration heals its status!
 30 %s's %a prevents its stat from being lowered!
@@ -45,6 +45,7 @@
 70 %s's %a absorbs the attack!|%s's %a made the attack useless!
 71 %s's Wonder Guard blocks the attack!
 74 %s lost part of its armor!
+77 %s's Zen Mode ended!|%s's Zen Mode triggered!
 78 %s stole %f's %i!
 80 %a sharply raised %s's Attack!|%a sharply raised %s's Defense!|%a sharply raised %s's Sp. Att.!|%a sharply raised %s's Sp. Def.!|%a sharply raised %s's Speed!
 81 %s transformed into %p!
@@ -64,6 +65,7 @@
 103 %s is radiating a %t aura!
 104 %f's %a prevents %s's stats from being lowered!|%f's %a prevents %s's status from changing!
 107 %s had its type changed to %t!
+110 %f changed to Blade Forme!|%f changed to Shield Forme!
 112 %s surrounded itself with a veil of sweetness!|%s surrounded itself with an aromatic veil!
 115 %s's Gooey slows down %f!
 117 %s reversed all other Pokémon's auras!
@@ -73,3 +75,14 @@
 124 %s gave its %i to %f!
 125 %s's Cheek Pouch provided extra nutrients to restore HP!
 126 %s's Desolate Land turned the sunlight extremely harsh!|%s's Primordial Sea causes a heavy rain to fall!|%s's Delta Stream stirs up a mysterious air current to protect Flying-type Pokémon!|The extremely harsh sunlight was not lessened at all!|There is no relief from this heavy rain!|The strong winds prevent the atmospheric conditions from changing!|The Water-Type attack evaporated in the harsh sunlight.|The Fire-Type attack fizzled out in the heavy rain!
+127 %s is drowsing!
+129 %f cannot use %m!
+138 %s's disguise served it as a decoy and was busted!
+139 %s's Innards Out hurts %f!
+140 %s started to dance too!
+141 %s became fully charged due to its bond with %ts!|%s became Ash-Greninja!
+142 %s's Soul-Heart raises its Special Attack!
+143 %f's %a was taken over by %s!
+147 %s formed a school!|%s stopped schooling!
+148 %s transformed into its Complete Forme!
+149 %s's Shields Down deactivated!|%s's Shields Down activated!
