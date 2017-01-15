@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -38,10 +39,10 @@ import java.io.*;
 import java.net.URL;
 
 public class RegistryActivity extends FragmentActivity implements ServiceConnection, RegistryCommandListener {
-	
+
 	static final String TAG = "RegistryActivity";
 	static final int TEAMBUILDER_CODE = 1;
-	
+
 	private ListView servers;
 	private boolean viewToggle = false;
 	private RelativeLayout registryRoot;
@@ -72,7 +73,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
         super.onCreate(savedInstanceState);
 
-		localize_assets = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("localize", false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		localize_assets = preferences.getBoolean("localize", false);
 
         if (!getIntent().hasExtra("sticky")) {
 	        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
@@ -90,11 +92,11 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         }
 
         this.stopService(new Intent(RegistryActivity.this, NetworkService.class));
-        
+
         setContentView(R.layout.main);
 
         prefs = getPreferences(MODE_PRIVATE);
-        
+
 		editAddr = (EditText)RegistryActivity.this.findViewById(R.id.addredit);
 		editAddr.setText(prefs.getString("lastAddr", ""));
 		editName = (EditText)RegistryActivity.this.findViewById(R.id.nameedit);
@@ -110,7 +112,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
 		meLoginPlayer = new FullPlayerInfo(RegistryActivity.this);
 		editName.setText(meLoginPlayer.nick());
-		
+
 		//Capture out button from layout
         Button conbutton = (Button)findViewById(R.id.connectbutton);
         Button importbutton = (Button)findViewById(R.id.importteambutton);
@@ -133,8 +135,8 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				editAddr.setText(server.ip + ":" + String.valueOf(server.port));
 			}
 		});
-        
-        
+
+
         servers.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -147,13 +149,14 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		        RegistryActivity.this.startActivity(intent); */
 				return true;
 			}
-        	
+
 		});
-        
+
         Intent intent = new Intent(RegistryActivity.this, RegistryConnectionService.class);
         bound = bindService(intent, this, BIND_AUTO_CREATE);
 
         checkPermissions();
+        checkShouldUpdate(preferences);
     }
 
     private OnClickListener registryListener = new OnClickListener() {
@@ -176,15 +179,15 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 					Toast.makeText(RegistryActivity.this, "Invalid value for port", Toast.LENGTH_LONG).show();
         			return;
 				}
-				
+
 				String nick = editName.getText().toString().trim();
 				if (nick.length() == 0) {
 					Toast.makeText(RegistryActivity.this, "Please enter a trainer name.", Toast.LENGTH_LONG).show();
 					return;
 				}
-				
+
 				meLoginPlayer.profile.nick = nick;
-				
+
 				Intent intent = new Intent(RegistryActivity.this, NetworkService.class);
 				intent.putExtra("ip", ipString);
 				intent.putExtra("port", portVal);
@@ -203,7 +206,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
     		}
     	}
     };
-    
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == TEAMBUILDER_CODE) {
 			/* If the teambuilder did something, reload the team */
@@ -213,7 +216,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			//}
 		}
 	}
-    	
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -221,13 +224,13 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
         inflater.inflate(R.menu.mainoptions, menu);
         return true;
     }
-    
+
     @Override
     public boolean onMenuItemSelected(int which, MenuItem item) {
     	// XXX Placeholder
     	return true;
     }
-    
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -244,14 +247,14 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			}
 		});
 	}
-    
+
 	synchronized public void ServerListEnd() {
 		if (!bound) {
 			return;
 		}
 		Log.i(TAG, "Unbinding registry connection service");
 		bound = false;
-		
+
 		try {
 			unbindService(RegistryActivity.this);
 		} catch (IllegalArgumentException ex) {
@@ -267,7 +270,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			}
 		});
 	}
-	
+
 	public void RegistryConnectionClosed() {
 		ServerListEnd();
 	}
@@ -276,7 +279,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 			final String ip, final short maxplayers, final int port) {
 		runOnUiThread(new Runnable() {
 			public void run() {
-            	adapter.addServer(name, desc, ip, port, players, maxplayers);		
+            	adapter.addServer(name, desc, ip, port, players, maxplayers);
 			}
 		});
 	}
@@ -285,7 +288,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		bound = true;
 		((RegistryConnectionService.LocalBinder)binder).connect(this);
 	}
-	
+
 	public void printToast(final String s, final int len) {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -297,7 +300,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 	synchronized public void onServiceDisconnected(ComponentName name) {
 		bound = false;
 	}
-    
+
     @Override
     synchronized public void onDestroy() {
     	if (bound) {
@@ -321,8 +324,18 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 		}
 	}
 
+	private void checkShouldUpdate(SharedPreferences prefs) {
+    	long newTime = System.currentTimeMillis();
+    	long oldTime = prefs.getLong("timecheck", newTime);
+		prefs.edit().putLong("timecheck", newTime).apply();
+		if ((newTime - oldTime) > (3600000 * 12)) { // 12 Hours
+			checkForUpdates();
+		}
+		checkForUpdates();
+	}
+
 	private void checkForUpdates() {
-    	new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -340,6 +353,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 										.setTitle("Update available")
 										.setPositiveButton("Download", new DialogInterface.OnClickListener() {
 											public void onClick(DialogInterface dialog, int whichButton) {
+												final ProgressDialog progressDialog = ProgressDialog.show(RegistryActivity.this, "Downloading...", "", true);
 												new Thread(new Runnable() {
 													@Override
 													public void run() {
@@ -354,7 +368,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 
 															InputStream is = url.openStream();
 
-															byte[] buffer = new byte[2024];
+															byte[] buffer = new byte[2048];
 															int len1;
 															while ((len1 = is.read(buffer)) != -1) {
 																fos.write(buffer, 0, len1);
@@ -362,17 +376,30 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 															fos.close();
 															is.close();
 
+															runOnUiThread(new Runnable() {
+																@Override
+																public void run() {
+																	progressDialog.dismiss();
+																}
+															});
+
 															Intent intent = new Intent(Intent.ACTION_VIEW);
 															intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/download/" + "pokemon-online.apk")), "application/vnd.android.package-archive");
 															intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 															startActivity(intent);
 														} catch (IOException e) {
+															progressDialog.dismiss();
 															e.printStackTrace();
 														}
 													}
 												}).start();
 											}
-										}).show();
+										}).setNegativeButton(R.string.decline, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.dismiss();
+									}
+								}).show();
 							}
 						});
 					}
