@@ -18,6 +18,7 @@ import com.podevs.android.utilities.ImageSpinnerAdapter;
 import com.podevs.android.utilities.SpinnerData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PokemonDetailsFragment extends Fragment implements EVListener {
@@ -383,11 +384,14 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			hackmonButton.setChecked(false);
 		}
 
-		if (PokemonInfo.hasVisibleFormes(tempPoke.uID()) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
+		if (PokemonInfo.hasVisibleFormes(tempPoke.uID(), tempPoke.gen) || (poke().isHackmon && PokemonInfo.hasHackmonFormes(tempPoke.uID()))) {
 			formesLayout.setVisibility(View.VISIBLE);
 			formListAdapter.clear();
 
-			for (UniqueID uID : PokemonInfo.formes(tempPoke.uID(), tempPoke.gen)) {
+			List<UniqueID> list;
+			if (poke().isHackmon) list = PokemonInfo.formesHackmon(tempPoke.uID(), tempPoke.gen);
+			else                  list = PokemonInfo.formes(tempPoke.uID(), tempPoke.gen);
+			for (UniqueID uID : list) {
 				formListAdapter.add(uID);
 				if (uID.equals(tempPoke.uID())) {
 					formesChooser.setSelection(formListAdapter.getCount()-1);
