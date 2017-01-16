@@ -109,14 +109,27 @@ public class PokemonInfo {
 	 * @return true if pokemon has multiple formes in the teambuilder
 	 */
 
-	public static boolean hasVisibleFormes(UniqueID uID) {
+	public static boolean hasVisibleFormes(UniqueID uID, Gen gen) {
 		loadPokeNames();
 
 		int num = uID.originalHashCode();
 		PokeData data = pokemonsg.get(num);
 
 		//Check the pokemon has formes, and that they are not hidden
-		return data.maxForme > 0 && (data.options == null || data.options.indexOf('H') < 0);
+		if (data.maxForme > 0) {
+			if (data.options == null) {
+				return true;
+			} else {
+				if (data.options.contains("H")) {
+					return false;
+				} else {
+					for (UniqueID id : formes(uID, gen)) {
+						if (!isHidden(id, gen)) return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
     public static boolean hasHackmonFormes(UniqueID uID) {
@@ -137,6 +150,25 @@ public class PokemonInfo {
 	 */
 
 	public static List<UniqueID> formes(UniqueID uniqueID, Gen gen) {
+		loadPokeNames();
+		testLoad(gen.num);
+
+		ArrayList<UniqueID> ret = new ArrayList<UniqueID>();
+		PokeData data = pokemonsg.get(uniqueID.originalHashCode());
+
+		for (int i = 0; i <= data.maxForme; i++) {
+			UniqueID generated = new UniqueID(uniqueID.pokeNum, i);
+			if (exists(generated, gen)) {
+				if (!isHidden(generated, gen)) {
+					ret.add(generated);
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	public static List<UniqueID> formesHackmon(UniqueID uniqueID, Gen gen) {
 		loadPokeNames();
 		testLoad(gen.num);
 
@@ -189,6 +221,13 @@ public class PokemonInfo {
 		testLoad(gen.num);
 
 		return exists(uID) && pokemons[gen.num].get(uID.hashCode()) != null;
+	}
+
+	public static boolean isHidden(UniqueID uID, Gen gen) {
+		testLoad(gen.num);
+
+		PokeData data = pokemonsg.get(uID.hashCode());
+		return (data.options != null && data.options.contains("B"));
 	}
 
 	/**
