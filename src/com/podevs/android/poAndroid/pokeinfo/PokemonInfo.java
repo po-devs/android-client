@@ -120,6 +120,8 @@ public class PokemonInfo {
 			if (data.options == null) {
 				return true;
 			} else {
+				if (data.options.contains("H")) {
+					return false;
 				} else {
 					for (UniqueID id : formes(uID, gen)) {
 						if (!isHidden(id, gen)) return true;
