@@ -5,8 +5,8 @@ import org.json.JSONObject;
 
 
 public class UpdateCheck {
-    public static String GITHUB_LINK= "https://raw.githubusercontent.com/MidwayMarshall/android-client/master/updatecheck";
-    private int version = 270;
+    public static String GITHUB_LINK= "https://raw.githubusercontent.com/po-devs/android-client/master/updatecheck";
+    private int version = 271;
     private String link = "www.test.com";
 
     public UpdateCheck() {}
