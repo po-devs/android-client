@@ -5,6 +5,7 @@ import android.content.*;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -471,7 +472,11 @@ public class ChatActivity extends Activity {
 				}
 				chatViewSwitcher.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 					public void onGlobalLayout() {
-						chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+							chatViewSwitcher.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+						} else {
+							chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+						}
 						int heightDiff = chatViewSwitcher.getRootView().getHeight() - chatViewSwitcher.getHeight();
 						if(!cancelScroll) {
 							if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
@@ -1464,7 +1469,11 @@ public class ChatActivity extends Activity {
 		super.onConfigurationChanged(newConfig);
 		chatViewSwitcher.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 			public void onGlobalLayout() {
-				chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+					chatViewSwitcher.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+				} else {
+					chatViewSwitcher.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+				}
 				chatViewSwitcher.setCurrentItem(1);
 				if (messageAdapter != null)
 					chatView.setSelection(messageAdapter.getCount() - 1);
