@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
     <android.opengl.GLSurfaceView
-            android:layout_width="wrap_content"
-            android:layout_height="360dp"
             android:id="@+id/surfaceView"
-            android:layout_gravity="center_horizontal"
-            android:padding="15dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_bar"
+            android:layout_alignParentTop ="true"/>
+
     <LinearLayout
+            android:id="@+id/bottom_bar"
             android:orientation="vertical"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
         <SeekBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,26 +72,26 @@
                     android:ems="10"
                     android:id="@+id/editTextB"/>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:layout_gravity="center_horizontal">
-        <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="0dp"
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accept"
-                android:id="@+id/ok"
-                android:layout_weight="1"/>
-        <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel"
-                android:id="@+id/cancel"
-                android:layout_weight="1"/>
+                android:padding="15dp"
+                android:layout_gravity="center_horizontal">
+            <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accept"
+                    android:id="@+id/ok"
+                    android:layout_weight="1"/>
+            <Button
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:id="@+id/cancel"
+                    android:layout_weight="1"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
