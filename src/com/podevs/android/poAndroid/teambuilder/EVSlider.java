@@ -20,7 +20,7 @@ public class EVSlider {
 	private TextView label;
 	private EditText edit;
 	public EVListener listener;
-	
+	private View parent;
 	
 	EVSlider(View lay, final int stat) {
 		total = (TextView)lay.findViewById(R.id.total);
@@ -28,8 +28,9 @@ public class EVSlider {
 		label = (TextView)lay.findViewById(R.id.label);
 		edit = (EditText)lay.findViewById(R.id.edit);
 		edit.setImeOptions(EditorInfo.IME_ACTION_DONE);
-		label.setText(StatsInfo.Shortcut(stat));
-		
+		label.setText(StatsInfo.ShortcutRes(stat));
+		parent = lay;
+
 		slider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				
@@ -76,5 +77,9 @@ public class EVSlider {
 
 	void setTotal(int num) {
 		total.setText(Integer.toString(num));
+	}
+
+	public void setVisibility(int visibility) {
+		parent.setVisibility(visibility);
 	}
 }
