@@ -487,12 +487,14 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			String s = getString(R.string.happiness_short) + " " + (tempPoke.happiness & 0xFF);
 			happinessChooser.setText(s);
 
+			sliders[4].setVisibility(View.VISIBLE);
 			shinyChooser.setVisibility(View.VISIBLE);
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
 			happinessChooser.setVisibility(View.VISIBLE);
             manualIVButton.setEnabled(true);
 		} else {
+			sliders[4].setVisibility(View.GONE);
 			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);

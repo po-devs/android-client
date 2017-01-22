@@ -1,5 +1,7 @@
 package com.podevs.android.poAndroid.pokeinfo;
 
+import com.podevs.android.poAndroid.R;
+
 public class StatsInfo {
 	public enum Stats {
 		Hp, //0
@@ -18,8 +20,21 @@ public class StatsInfo {
 		"SpD",
 		"Spe"
 	};
+
+	static private int[] resShortcuts = {
+			R.string.stat_hp_short,
+			R.string.stat_attack_short,
+			R.string.stat_defense_short,
+			R.string.stat_spAttack_short,
+			R.string.stat_spDefense_short,
+			R.string.stat_speed_short
+	};
 	
 	static public String Shortcut(int pos) {
 		return shortcuts[pos];
+	}
+
+	static public int ShortcutRes(int pos) {
+		return resShortcuts[pos];
 	}
 }
