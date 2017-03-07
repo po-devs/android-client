@@ -32,6 +32,12 @@
     <string name="stat_speed">Velocidad</string>
     <string name="stat_accuracy">Precisión</string>
     <string name="stat_evasion">Evasión</string>
+    <string name="stat_hp_short">HP</string>
+    <string name="stat_attack_short">Att</string>
+    <string name="stat_defense_short">Def</string>
+    <string name="stat_spAttack_short">SpA</string>
+    <string name="stat_spDefense_short">SpD</string>
+    <string name="stat_speed_short">Spe</string>
     <string name="rearrange_team_description">Puedes reordenar tu equipo arrastrando al pokémon antes de la batalla.</string>
     <string name="rearrange_team_title">Reordenar Equipo</string>
     <string name="foes_team">Equipo del oponente:</string>
@@ -107,8 +113,15 @@
     <string name="switch_place">Cambiar Posición</string>
     <string name="hackmon_enabled">Hackmon Habilitado</string>
     <string name="hackmon_disabled">Hackmon Deshabilitado</string>
-    <string name ="manual_iv">VI Manual</string>
-
+    <string name="manual_iv">FI Manual</string>
+    <string name="switch_places">Cambiar posición</string>
+    <string name="from_slot">De posición:</string>
+    <string name="to_slot">A posición:</string>
+    <string name="export_team">Exportar Equipo</string>
+    <string name="export_success">Exportado con éxito</string>
+    <string name="raw_link">Ingresar enlace de texto sin formato del equipo:</string>
+    <string name="valid_link">Enlace válido entero.</string>
+    
     <string name="chat_title">Opciones de Chat</string>
     <string name="chat_summary">Opciones de Chat</string>
     <string name="flash_title">Efecto Flash</string>
@@ -209,5 +222,6 @@
     <string name="localize_assets_title">Localizar nombres</string>
     <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
     <string name="language_settings">Configuración de Idioma</string>
+    <string name="not_very_effective_message">It\'s not very effective…</string>
 
 </resources>
