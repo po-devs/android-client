@@ -222,6 +222,5 @@
     <string name="localize_assets_title">Localizar nombres</string>
     <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
     <string name="language_settings">Configuración de Idioma</string>
-    <string name="not_very_effective_message">It\'s not very effective…</string>
 
 </resources>
