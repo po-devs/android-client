@@ -499,7 +499,6 @@ class HtmlToSpannedConverter implements ContentHandler {
         String color = attributes.getValue("","color");
         int c = -1;
         if (color != null && !color.equals("")) {
-            color = color.substring(6);
             try {
                 c = MyColor.parseColor(color);
             } catch (IllegalArgumentException e) {
