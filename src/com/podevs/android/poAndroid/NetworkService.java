@@ -1416,7 +1416,6 @@ public class NetworkService extends Service {
 	 */
 	public void createPM(int playerId) {
 		pms.createPM(players.get(playerId));
-		chatActivity.invalidateOptionsMenu();
 	}
 	
 	private void dealWithPM(int playerId, String message) {
@@ -1434,6 +1433,12 @@ public class NetworkService extends Service {
 				}
 			}
 		}
+		chatActivity.runOnUiThread(new Runnable(){
+			@Override
+			public void run(){
+				chatActivity.invalidateOptionsMenu();
+			}
+		});
 	}
 
 	private void showPMNotification(int playerId) {
