@@ -12,10 +12,7 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.poAndroid.pokeinfo.HiddenPowerInfo;
-import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
-import com.podevs.android.poAndroid.pokeinfo.GenInfo;
+import com.podevs.android.poAndroid.pokeinfo.*;
 
 import java.util.ArrayList;
 
@@ -111,8 +108,27 @@ public class MoveChooserFragment extends Fragment {
 				public void onClick(DialogInterface dialog, int which) {
 					ListView lw = ((AlertDialog)dialog).getListView();
 					int type = lw.getCheckedItemPosition() + 1;
-					if (poke().gen().num < 7) {
-						byte[] config = HiddenPowerInfo.configurationForType(type, poke().gen);
+					if (!poke().isHackmon && type == 1 && ((poke().uID().pokeNum >= 716 && poke().uID().pokeNum <= 721) || (poke().uID().pokeNum >= 785 && poke().uID().pokeNum <= 802))) {
+						poke().removeMove(237);
+
+						final AlertDialog.Builder errorMsg = new AlertDialog.Builder(getActivity());
+						errorMsg.setTitle("Invalid hidden power type")
+								.setMessage(PokemonInfo.name(poke().uID) + " cannot have hidden power Fighting.")
+								.setPositiveButton("Okay", new OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+
+									}
+								});
+						errorMsg.create().show();
+					}
+					else if (poke().gen().num < 7) {
+						byte[] config;
+						if (!poke().isHackmon && (type == 2 || type == 3 || type == 5) && ((poke().uID().pokeNum >= 716 && poke().uID().pokeNum <= 721) || (poke().uID().pokeNum >= 785 && poke().uID().pokeNum <= 802))) {
+							config = HiddenPowerInfo.possibilitiesForType(type, poke().gen)[1];
+						}
+						else {
+							config = HiddenPowerInfo.configurationForType(type, poke().gen);
+						}
 						if (config != null) {
 							poke().DVs = config;
 						}
