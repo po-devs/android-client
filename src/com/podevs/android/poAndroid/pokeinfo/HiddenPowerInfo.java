@@ -63,6 +63,26 @@ public class HiddenPowerInfo {
 		return hiddenPowerConfigurations[(gen.num > 2 ? 1 : 0)][type];
 	}
 
+	static public byte [][] possibilitiesForType(final int type, Gen gen) {
+		byte[][] ret = new byte[0][];
+		int size = 0;
+
+		for (int i = 63; i >= 0; i--) {
+			int gt = Type(gen, i & 1, (i & 2)/2, (i & 4)/4, (i & 8)/8, (i & 16)/16, (i & 32)/32);
+			if (gt == type) {
+				byte [][] temp = ret.clone();
+				ret = new byte[size+1][];
+				for (int j = 0; j < temp.length; j++) {
+					ret[j] = temp[j];
+				}
+				ret[size] = new byte[] {(byte)((i&1)+30), (byte)(((i & 2)/2)+30), (byte)(((i & 4)/4)+30), (byte)(((i & 8)/8)+30), (byte)(((i & 16)/16)+30), (byte)(((i & 32)/32)+30)};
+				size++;
+			}
+		}
+
+		return ret;
+	}
+
 	private static int floor(int i) {
 		return (int) Math.floor((double) i);
 	}
