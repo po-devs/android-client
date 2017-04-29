@@ -54,5 +54,6 @@ public enum BattleCommand {
     CappedStat, // 50
     UsePP, // 51
     Notice, // 52
-    HtmlMessage // 53
+    HtmlMessage, // 53
+    TerrainMessage //54
 }

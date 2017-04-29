@@ -2,6 +2,7 @@ package com.podevs.android.poAndroid;
 
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
+import com.podevs.android.poAndroid.poke.PokeEnums.Terrain;
 
 public class ColorEnums {
 	public enum QtColor {
@@ -70,14 +71,30 @@ public class ColorEnums {
 		private static String color;
 		public TypeForWeatherColor(int weather) {
 			switch (Weather.values()[weather]) {
-			case Hail: color = TypeColor.Ice.toString(); break;
-			case Rain: color = TypeColor.Water.toString(); break;
-			case SandStorm: color = TypeColor.Rock.toString(); break;
-			case Sunny: color = TypeColor.Fire.toString(); break;
-            case HeavyRain: color = TypeColor.Water.toString(); break;
-            case HeavySun: color = TypeColor.Fire.toString(); break;
-			case Delta: color = TypeColor.Flying.toString(); break;
-			default: color = TypeColor.Normal.toString(); break;
+				case Hail: color = TypeColor.Ice.toString(); break;
+				case Rain: color = TypeColor.Water.toString(); break;
+				case SandStorm: color = TypeColor.Rock.toString(); break;
+				case Sunny: color = TypeColor.Fire.toString(); break;
+				case HeavyRain: color = TypeColor.Water.toString(); break;
+				case HeavySun: color = TypeColor.Fire.toString(); break;
+				case Delta: color = TypeColor.Flying.toString(); break;
+				default: color = TypeColor.Normal.toString(); break;
+			}
+		}
+		public String toString() {
+			return color;
+		}
+	}
+
+	public static class TypeForTerrainColor {
+		private static String color;
+		public TypeForTerrainColor(int terrain) {
+			switch (Terrain.values()[terrain]) {
+				case Electric: color = TypeColor.Electric.toString(); break;
+				case Grassy: color = TypeColor.Grass.toString(); break;
+				case Misty: color = TypeColor.Fairy.toString(); break;
+				case Psychic: color = TypeColor.Psychic.toString(); break;
+				default: color = TypeColor.Normal.toString(); break;
 			}
 		}
 		public String toString() {

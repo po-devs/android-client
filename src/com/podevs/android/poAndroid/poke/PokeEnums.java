@@ -98,4 +98,16 @@ public class PokeEnums {
 		EndWeather,
 		HurtWeather
 	}
+
+	public enum Terrain {
+		NoTerrain,
+		Electric,
+		Grassy,
+		Misty,
+		Psychic
+	}
+
+	public enum TerrainState {
+		EndTerrain
+	}
 }
