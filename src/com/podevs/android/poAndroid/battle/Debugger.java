@@ -4,6 +4,8 @@ import com.podevs.android.poAndroid.poke.PokeEnums;
 import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
 import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
 import com.podevs.android.poAndroid.poke.PokeEnums.WeatherState;
+import com.podevs.android.poAndroid.poke.PokeEnums.Terrain;
+import com.podevs.android.poAndroid.poke.PokeEnums.TerrainState;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.GenInfo;
@@ -396,6 +398,12 @@ public class Debugger {
             case HtmlMessage: {
                 String message = msg.readString();
                 readable += sp + message;
+                break;
+            }
+            case TerrainMessage: {
+                byte tstatus = msg.readByte(), terrain = msg.readByte();
+                readable += sp + TerrainState.values()[tstatus].toString();
+                readable += sp + Terrain.values()[terrain];
                 break;
             }
             default: {

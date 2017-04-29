@@ -14,15 +14,19 @@ import com.podevs.android.poAndroid.ColorEnums.QtColor;
 import com.podevs.android.poAndroid.ColorEnums.StatusColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeColor;
 import com.podevs.android.poAndroid.ColorEnums.TypeForWeatherColor;
+import com.podevs.android.poAndroid.ColorEnums.TypeForTerrainColor;
 import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
+import com.podevs.android.poAndroid.poke.PokeEnums;
 import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
 import com.podevs.android.poAndroid.poke.PokeEnums.Weather;
 import com.podevs.android.poAndroid.poke.PokeEnums.WeatherState;
+import com.podevs.android.poAndroid.poke.PokeEnums.Terrain;
+import com.podevs.android.poAndroid.poke.PokeEnums.TerrainState;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.AbilityInfo;
@@ -878,6 +882,35 @@ public class SpectatingBattle {
             case HtmlMessage: {
                 String message = msg.readString();
                 writeToHist(Html.fromHtml(message));
+                break;
+            }
+            case TerrainMessage: {
+                byte tstatus = msg.readByte(), terrain = msg.readByte();
+                if (terrain == Terrain.NoTerrain.ordinal())
+                    break;
+                String color = new TypeForTerrainColor(terrain).toString();
+                String message = "";
+                switch (TerrainState.values()[tstatus]) {
+                    case EndTerrain:
+                        switch (Terrain.values()[terrain]) {
+                            case Electric:
+                                message = "The electricity disappeared from the battlefield!";
+                                break;
+                            case Grassy:
+                                message = "The grass disappeared from the battlefield!";
+                                break;
+                            case Misty:
+                                message = "The mist disappeared from the battlefield!";
+                                break;
+                            case Psychic:
+                                message = "The weirdness disappeared from the battlefield!";
+                                break;
+                            default:
+                                message = "";
+                        }
+                        break;
+                }
+                writeToHist(Html.fromHtml("<br><font color=" + color + message + "</font>"));
                 break;
             }
             default: {
