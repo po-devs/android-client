@@ -218,4 +218,10 @@
     <string name="localize_assets_title">中译名</string>
     <string name="localize_assets_summary">不支持所有语言</string>
     <string name="language_settings">语言设置</string>
+    <string name="not_very_effective_message">这不是很有效…</string>
+    
+    <string name="electric_terrain_end">脚下的电光不见了</string>
+    <string name="grassy_terrain_end">脚下的青草不见了</string>
+    <string name="misty_terrain_end">脚下的雾气不见了</string>
+    <string name="psychic_terrain_end">脚下奇妙的感觉消失了</string>
 </resources>
