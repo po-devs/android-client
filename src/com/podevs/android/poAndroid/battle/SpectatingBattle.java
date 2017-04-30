@@ -894,16 +894,16 @@ public class SpectatingBattle {
                     case EndTerrain:
                         switch (Terrain.values()[terrain]) {
                             case Electric:
-                                message = "The electricity disappeared from the battlefield!";
+                                message = getString(R.string.electric_terrain_end);
                                 break;
                             case Grassy:
-                                message = "The grass disappeared from the battlefield!";
+                                message = getString(R.string.grassy_terrain_end);
                                 break;
                             case Misty:
-                                message = "The mist disappeared from the battlefield!";
+                                message = getString(R.string.misty_terrain_end);
                                 break;
                             case Psychic:
-                                message = "The weirdness disappeared from the battlefield!";
+                                message = getString(R.string.psychic_terrain_end);
                                 break;
                             default:
                                 message = "";

@@ -233,4 +233,8 @@
     <string name="language_settings">Language Settings</string>
     <string name="not_very_effective_message">It\'s not very effective…</string>
 
+    <string name="electric_terrain_end">The electricity disappeared from the battlefield!</string>
+    <string name="grassy_terrain_end">The grass disappeared from the battlefield!</string>
+    <string name="misty_terrain_end">The mist disappeared from the battlefield!</string>
+    <string name="psychic_terrain_end">The weirdness disappeared from the battlefield!</string>
 </resources>
