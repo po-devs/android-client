@@ -222,5 +222,9 @@
     <string name="localize_assets_title">Localizar nombres</string>
     <string name="localize_assets_summary">No todos los idiomas son compatibles</string>
     <string name="language_settings">Configuración de Idioma</string>
-
+    
+    <string name="electric_terrain_end">El campo de corriente eléctrica ha desaparecido.</string>
+    <string name="grassy_terrain_end">La hierba ha desaparecido.</string>
+    <string name="misty_terrain_end">La Niebla se ha disipado.</string>
+    <string name="psychic_terrain_end">!La rareza ha desaparecido del campo de batalla!</string>
 </resources>
