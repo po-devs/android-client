@@ -893,13 +893,33 @@ public class ChatActivity extends Activity {
 					clauseNames[i] = clauses[i].toString();
 					checked[i] = prefs.getBoolean("challengeOption" + i, false);
 				}
-				builder.setMultiChoiceItems(clauseNames, checked, new DialogInterface.OnMultiChoiceClickListener() {
-					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-						prefs.edit().putBoolean("challengeOption" + which, isChecked).commit();
+				View layout = inflater.inflate(R.layout.challenge_mode, (LinearLayout)findViewById(R.id.challenge_mode));
+				builder.setView(layout);
+                ((Spinner)layout.findViewById(R.id.battle_modes)).setSelection(prefs.getInt("battleMode", Mode.Singles.ordinal()));
+
+				ListView clausesList;
+				ClausesListAdapter clausesAdapter;
+				clausesList = (ListView)layout.findViewById(R.id.clauses);
+
+				clausesAdapter = new ClausesListAdapter();
+				for (int i = 0; i < clausesAdapter.getCount(); i++)
+				{
+					clausesAdapter.setChecked(i, checked[i]);
+				}
+
+				clausesList.setAdapter(clausesAdapter);
+
+				clausesList.setOnItemClickListener(new OnItemClickListener() {
+					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        CheckBox check = (CheckBox)arg1.findViewById(R.id.clausecheck);
+                        check.toggle();
+						prefs.edit().putBoolean("challengeOption" + arg2, check.isChecked()).commit();
 					}
-				})
-						.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
+				});
+
+				builder.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
+                                prefs.edit().putInt("battleMode", ((Spinner)layout.findViewById(R.id.battle_modes)).getSelectedItemPosition()).commit();
 								int clauses = 0;
 								for (int i = 0; i < numClauses; i++)
 									clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
@@ -911,7 +931,7 @@ public class ChatActivity extends Activity {
 											standings.get(0).tier,
 											challengedTier,
 											clauses,
-											Mode.Singles.ordinal()), Command.ChallengeStuff);
+                                            prefs.getInt("battleMode", Mode.Singles.ordinal())), Command.ChallengeStuff);
 								}
 								removeDialog(id);
 							}
@@ -927,7 +947,11 @@ public class ChatActivity extends Activity {
 							}
 						})
 						.setTitle("Select clauses");
-				return builder.create();
+				final AlertDialog challengeDialog = builder.create();
+
+
+
+				return challengeDialog;
 			}case LoadTeam:{
 				final CharSequence teams[] = getSharedPreferences("team", 0).getString("files", "team.xml").split("\\|");
 				builder.setTitle("Load Team")

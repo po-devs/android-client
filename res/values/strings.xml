@@ -172,6 +172,12 @@
         <item>Dark</item>
     </string-array>
 
+    <string-array name="modes_array">
+        <item>Singles</item>
+        <item>Doubles</item>
+        <item>Triples</item>
+    </string-array>
+
     <string-array name="status_change_array">
         <item> is paralyzed! It may be unable to move!</item>
         <item> fell asleep!</item>
