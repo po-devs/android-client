@@ -113,7 +113,7 @@
                 android:textColor="@color/poke_text_color" >
 
                 <WebView
-                        android:id="@+id/pokeSpriteA"
+                        android:id="@+id/pokeSpriteA1"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_alignParentRight="true"
@@ -123,7 +123,7 @@
                 <RelativeLayout
                         android:layout_width="fill_parent"
                         android:layout_height="38dp"
-                        android:layout_toLeftOf="@id/pokeSpriteA"
+                        android:layout_toLeftOf="@id/pokeSpriteA1"
                         android:background="@drawable/battle_border" >
 
                         <com.podevs.android.poAndroid.TextProgressBar
@@ -175,7 +175,7 @@
                 </RelativeLayout>
 
                 <WebView
-                        android:id="@+id/pokeSpriteB"
+                        android:id="@+id/pokeSpriteB1"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_alignParentBottom="true"
@@ -186,7 +186,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="38dp"
                         android:layout_alignParentBottom="true"
-                        android:layout_toRightOf="@id/pokeSpriteB"
+                        android:layout_toRightOf="@id/pokeSpriteB1"
                         android:background="@drawable/battle_border" >
 
                         <com.podevs.android.poAndroid.TextProgressBar

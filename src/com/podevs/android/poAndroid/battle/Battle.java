@@ -35,8 +35,7 @@ public class Battle extends SpectatingBattle {
 
 		myTeam = new BattleTeam(msg, conf.gen);
 
-		// Only supporting singles for now
-		numberOfSlots = 2;
+		numberOfSlots = (conf.mode() + 1) * 2;
 		players[0] = p1;
 		players[1] = p2;
 		// Figure out who's who
@@ -123,7 +122,7 @@ public class Battle extends SpectatingBattle {
 
 			if(activity != null) {
 				activity.samePokes[player] = false;
-				activity.updatePokes(player);
+				activity.updatePokes(player, slot);
 				activity.updatePokeballs();
 			}
 
@@ -155,7 +154,7 @@ public class Battle extends SpectatingBattle {
 					myTeam.pokes[poke].changeStatus(status);
 				if (activity != null) {
 					if (isOut(poke))
-						activity.updatePokes(player);
+						activity.updatePokes(player, slot);
 					activity.updatePokeballs();
 				}
 			}
@@ -173,7 +172,7 @@ public class Battle extends SpectatingBattle {
 					myTeam.pokes[0].moves[moveslot] = newMove;
 				}
 				if (activity != null) {
-					activity.updatePokes(player);
+					activity.updatePokes(player, slot);
 				}
 				break;
 			} case TempPP: {
@@ -192,7 +191,7 @@ public class Battle extends SpectatingBattle {
 					currentPoke(player).specialSprites.removeFirst();
 				if (activity !=null) {
 					activity.samePokes[player] = false;
-					activity.updatePokes(player);
+					activity.updatePokes(player, slot);
 					activity.updatePokeBall(player, 0);
 				}
 				break;
@@ -208,7 +207,7 @@ public class Battle extends SpectatingBattle {
 					}
 					if (activity !=null) {
 						activity.samePokes[player] = false;
-						activity.updatePokes(player);
+						activity.updatePokes(player, slot);
 						activity.updatePokeBall(player, poke);
 					}
 				}
@@ -218,7 +217,7 @@ public class Battle extends SpectatingBattle {
 				currentPoke(player).uID.subNum = (byte) newForm;
 				if (activity !=null) {
 					activity.samePokes[player] = false;
-					activity.updatePokes(player);
+					activity.updatePokes(player, slot);
 					activity.updatePokeBall(player, 0);
 				}
 			default: break;

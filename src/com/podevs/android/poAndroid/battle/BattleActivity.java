@@ -124,7 +124,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     ScrollView infoScroll;
     TextView[] names = new TextView[2];
     ImageView[][] pokeballs = new ImageView[2][6];
-    WebView[] pokeSprites = new WebView[2];
+    WebView[][] pokeSprites = new WebView[2][3];
 
     RelativeLayout struggleLayout;
     LinearLayout attackRow1;
@@ -352,12 +352,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         });
     }
 
-    public void updatePokes(byte player) {
+    public void updatePokes(byte player, byte slot) {
         Log.e(TAG, PokemonInfo.cacheStatus());
         if (player == me)
-            updateMyPoke();
+            updateMyPoke(slot);
         else
-            updateOppPoke(player);
+            updateOppPoke(player, slot);
     }
 
     public int statusTint(int status) {
@@ -458,9 +458,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             return;
         String path = resultData.getString("path");
         if (resultData.getBoolean("me")) {
-            pokeSprites[me].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[me][0].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[me][1].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[me][2].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
         } else {
-            pokeSprites[opp].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[opp][0].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[opp][1].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
+            pokeSprites[opp][2].loadDataWithBaseURL(path, "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + resultData.getString("sprite") + "');}</style><body></body>", "text/html", "utf-8", null);
         }
     }
 
@@ -468,15 +472,15 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         return activeBattle == null;
     }
 
-    public void updateMyPoke() {
+    public void updateMyPoke(int slot) {
         if (isSpectating()) {
-            updateOppPoke(me);
+            updateOppPoke(me, slot);
             return;
         }
         runOnUiThread(new Runnable() {
 
             public void run() {
-                ShallowBattlePoke poke = battle.currentPoke(me);
+                ShallowBattlePoke poke = battle.currentPoke(me, slot);
                 poke.shiny = activeBattle.myTeam.pokes[0].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
                 // Load correct moveset and name
                 if (poke != null) {
@@ -523,7 +527,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         }
 
                         if (sprite != null) {
-                            pokeSprites[me].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+                            pokeSprites[me][slot].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
                         }
                     } else samePokes[me] = true;
                 }
@@ -534,10 +538,10 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public boolean samePokes[] = new boolean[2];
 
-    public void updateOppPoke(final int opp) {
+    public void updateOppPoke(final int opp, int slot) {
         runOnUiThread(new Runnable() {
             public void run() {
-                ShallowBattlePoke poke = battle.currentPoke(opp);
+                ShallowBattlePoke poke = battle.currentPoke(opp, slot);
                 // Load correct moveset and name
                 if(poke != null) {
                     if (!samePokes[opp]) {
@@ -569,7 +573,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         }
 
                         if (sprite != null) {
-                            pokeSprites[opp].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
+                            pokeSprites[opp][slot].loadDataWithBaseURL("file:///android_res/drawable/", "<head><style type=\"text/css\">body{background-position:center bottom;background-repeat:no-repeat; background-image:url('" + sprite + "');}</style><body></body>", "text/html", "utf-8", null);
                         }
                     } else samePokes[opp] = true;
                 }
@@ -801,12 +805,18 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             currentPokeStatuses[me] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB);
             currentPokeStatuses[opp] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA);
 
-            pokeSprites[me] = (WebView) battleView.findViewById(R.id.pokeSpriteB);
-            pokeSprites[opp] = (WebView) battleView.findViewById(R.id.pokeSpriteA);
+            pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
+            pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
+            pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
+            pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
+            pokeSprites[me][2] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
+            pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
 
             for(int i = 0; i < 2; i++) {
-                pokeSprites[i].setOnLongClickListener(spriteListener);
-                pokeSprites[i].setBackgroundColor(0);
+                for (int j = 0; j < 3; j++) {
+                    pokeSprites[i][j].setOnLongClickListener(spriteListener);
+                    pokeSprites[i][j].setBackgroundColor(0);
+                }
             }
 
 
@@ -851,8 +861,16 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             updateBattleInfo(true);
 
             // Prompt a UI update of the pokemon
-            updateMyPoke();
-            updateOppPoke(opp);
+            updateMyPoke(0);
+            updateOppPoke(opp, 0);
+            if (battle.conf.mode >= ChallengeEnums.Mode.Doubles.ordinal()) {
+                updateMyPoke(1);
+                updateOppPoke(opp, 1);
+            }
+            if (battle.conf.mode >= ChallengeEnums.Mode.Triples.ordinal()) {
+                updateMyPoke(2);
+                updateOppPoke(opp, 2);
+            }
 
             // Enable or disable buttons
             updateButtons();
@@ -1002,7 +1020,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public OnLongClickListener spriteListener = new OnLongClickListener() {
         public boolean onLongClick(View v) {
-            if(v.getId() == pokeSprites[me].getId())
+            if(v.getId() == pokeSprites[me][0].getId() || v.getId() == pokeSprites[me][1].getId() || v.getId() == pokeSprites[me][2].getId())
                 showDialog(BattleDialog.MyDynamicInfo.ordinal());
             else
                 showDialog(BattleDialog.OppDynamicInfo.ordinal());

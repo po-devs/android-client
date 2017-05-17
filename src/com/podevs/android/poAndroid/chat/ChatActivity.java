@@ -625,6 +625,7 @@ public class ChatActivity extends Activity {
 				challInfo.setText(Html.fromHtml(
 						"<b>Their Tier: </b>" + challenge.srcTier + "<br />" +
 								"<b>Your Tier: </b>" + challenge.destTier + "<br />" +
+                                "<b>Mode: </b>" + ChallengeEnums.Mode.values()[challenge.mode].toString() + "<br />" +
 								"<b>Clauses: </b> " + ChallengeEnums.clausesToStringHtml(challenge.clauses)));
 				challInfo.setGravity(Gravity.CENTER_HORIZONTAL);
 

@@ -155,6 +155,10 @@ public class SpectatingBattle {
         return pokes[player][0];
     }
 
+    public ShallowBattlePoke currentPoke(int player, int slot) {
+        return pokes[player][slot];
+    }
+
     public boolean isOut(Byte poke) {
         return poke < numberOfSlots / 2;
     }
@@ -264,7 +268,7 @@ public class SpectatingBattle {
 
                 if (activity != null) {
                     //activity.samePokes[player][slot] = false;
-                    activity.updatePokes(player);
+                    activity.updatePokes(player, slot);
                     activity.updatePokeballs();
                 }
 
@@ -438,7 +442,7 @@ public class SpectatingBattle {
                     pokes[player][poke].changeStatus(status);
                     if (activity != null) {
                         if (isOut(poke))
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         activity.updatePokeballs();
                     }
                 }
@@ -726,7 +730,7 @@ public class SpectatingBattle {
 
                 if (activity != null) {
                     //activity.samePokes[player][slot] = false;
-                    activity.updatePokes(player);
+                    activity.updatePokes(player, slot);
                 }
                 break;
             }
@@ -793,7 +797,7 @@ public class SpectatingBattle {
                             pokes[player][slot].specialSprites.removeFirst();
                         if (activity != null) {
                             //activity.samePokes[player][slot] = false;
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         }
                         break;
                     case DefiniteForme: {
@@ -805,7 +809,7 @@ public class SpectatingBattle {
                             pokes[player][slot].uID = newForm;
                             if (activity != null) {
                                 //activity.samePokes[player][slot] = false;
-                                activity.updatePokes(player);
+                                activity.updatePokes(player, slot);
                             }
                         }
                         break;
@@ -815,7 +819,7 @@ public class SpectatingBattle {
                         pokes[player][slot].uID.subNum = (byte) newForm;
                         if (activity != null) {
                             //activity.samePokes[player][slot] = false;
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         }
                     default:
                         break;
