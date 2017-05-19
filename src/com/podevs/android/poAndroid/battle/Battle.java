@@ -279,7 +279,7 @@ public class Battle extends SpectatingBattle {
 				try {
 					synchronized (this) {
 						int change = currentPoke(player).lastKnownPercent - currentPoke(player).lifePercent;
-						activity.animateHpBarTo(player, currentPoke(player).lifePercent, change);
+						activity.animateHpBarTo(player, slot, currentPoke(player).lifePercent, change);
                         //Log.e(TAG, "change " + change);
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;

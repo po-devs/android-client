@@ -848,7 +848,7 @@ public class SpectatingBattle {
                     try {
                         synchronized (this) {
                             int change = pokes[player][slot].lastKnownPercent - pokes[player][slot].lifePercent;
-                            activity.animateHpBarTo(player, pokes[player][slot].lifePercent, change);
+                            activity.animateHpBarTo(player, slot, pokes[player][slot].lifePercent, change);
                             if (change < 0) change = -change;
                             if (change > 100) change = 100;
                             if (!baked) wait(5000);

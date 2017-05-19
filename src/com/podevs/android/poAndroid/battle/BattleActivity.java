@@ -103,11 +103,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     ViewPager realViewSwitcher;
     RelativeLayout battleView;
-    TextProgressBar[] hpBars = new TextProgressBar[2];
-    TextView[] currentPokeNames = new TextView[2];
-    TextView[] currentPokeLevels = new TextView[2];
-    ImageView[] currentPokeGenders = new ImageView[2];
-    ImageView[] currentPokeStatuses = new ImageView[2];
+    TextProgressBar[][] hpBars = new TextProgressBar[2][3];
+    TextView[][] currentPokeNames = new TextView[2][3];
+    TextView[][] currentPokeLevels = new TextView[2][3];
+    ImageView[][] currentPokeGenders = new ImageView[2][3];
+    ImageView[][] currentPokeStatuses = new ImageView[2][3];
 
     TextView[] attackNames = new TextView[4];
     TextView[] attackPPs = new TextView[4];
@@ -143,21 +143,22 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     int me, opp;
 
     class HpAnimator implements Runnable {
-        int i, goal;
+        int player, slot, goal;
         boolean finished;
 
-        public void setGoal(int i, int goal) {
-            this.i = i;
+        public void setGoal(int player, int slot, int goal) {
+            this.player = player;
+            this.slot = slot;
             this.goal = goal;
             finished = false;
         }
 
         public void run() {
-            while(goal < hpBars[i].getProgress()) {
+            while(goal < hpBars[player][slot].getProgress()) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        hpBars[i].incrementProgressBy(-1);
-                        hpBars[i].setText(hpBars[i].getProgress() + "%");
+                        hpBars[player][slot].incrementProgressBy(-1);
+                        hpBars[player][slot].setText(hpBars[player][slot].getProgress() + "%");
                         checkHpColor();
                     }
                 });
@@ -167,11 +168,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     // TODO Auto-generated catch block
                 }
             }
-            while(goal > hpBars[i].getProgress()) {
+            while(goal > hpBars[player][slot].getProgress()) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        hpBars[i].incrementProgressBy(1);
-                        hpBars[i].setText(hpBars[i].getProgress() + "%");
+                        hpBars[player][slot].incrementProgressBy(1);
+                        hpBars[player][slot].setText(hpBars[player][slot].getProgress() + "%");
                         checkHpColor();
                     }
                 });
@@ -190,8 +191,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         public void setHpBarToGoal() {
             runOnUiThread(new Runnable() {
                 public  void run() {
-                    hpBars[i].setProgress(goal);
-                    hpBars[i].setText(hpBars[i].getProgress() + "%");
+                    hpBars[player][slot].setProgress(goal);
+                    hpBars[player][slot].setText(hpBars[player][slot].getProgress() + "%");
                     checkHpColor();
                 }
             });
@@ -200,20 +201,20 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         void checkHpColor() {
             runOnUiThread(new Runnable() {
                 public void run() {
-                    int progress = hpBars[i].getProgress();
-                    Rect bounds = hpBars[i].getProgressDrawable().getBounds();
+                    int progress = hpBars[player][slot].getProgress();
+                    Rect bounds = hpBars[player][slot].getProgressDrawable().getBounds();
                     if(progress > 50)
-                        hpBars[i].setProgressDrawable(resources.getDrawable(R.drawable.green_progress));
+                        hpBars[player][slot].setProgressDrawable(resources.getDrawable(R.drawable.green_progress));
                     else if(progress <= 50 && progress > 20)
-                        hpBars[i].setProgressDrawable(resources.getDrawable(R.drawable.yellow_progress));
+                        hpBars[player][slot].setProgressDrawable(resources.getDrawable(R.drawable.yellow_progress));
                     else
-                        hpBars[i].setProgressDrawable(resources.getDrawable(R.drawable.red_progress));
-                    hpBars[i].getProgressDrawable().setBounds(bounds);
+                        hpBars[player][slot].setProgressDrawable(resources.getDrawable(R.drawable.red_progress));
+                    hpBars[player][slot].getProgressDrawable().setBounds(bounds);
                     // XXX the hp bars won't display properly unless I do this. Spent many hours trying
                     // to figure out why
-                    int increment = (hpBars[i].getProgress() == 100) ? -1 : 1;
-                    hpBars[i].incrementProgressBy(increment);
-                    hpBars[i].incrementProgressBy(-1 * increment);
+                    int increment = (hpBars[player][slot].getProgress() == 100) ? -1 : 1;
+                    hpBars[player][slot].incrementProgressBy(increment);
+                    hpBars[player][slot].incrementProgressBy(-1 * increment);
                 }
             });
         }
@@ -320,13 +321,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         }
     };
 
-    public void setHpBarTo(final int i, final int goal) {
-        hpAnimator.setGoal(i, goal);
+    public void setHpBarTo(final int player, final int slot, final int goal) {
+        hpAnimator.setGoal(player, slot, goal);
         hpAnimator.setHpBarToGoal();
     }
 
-    public void animateHpBarTo(final int i, final int goal, int change) {
-        hpAnimator.setGoal(i, goal);
+    public void animateHpBarTo(final int player, final int slot, final int goal, int change) {
+        hpAnimator.setGoal(player, slot, goal);
         new Thread(hpAnimator).start();
     }
 
@@ -485,13 +486,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 // Load correct moveset and name
                 if (poke != null) {
                     if (!samePokes[me]) {
-                        currentPokeNames[me].setText(poke.rnick);
-                        currentPokeLevels[me].setText("Lv. " + poke.level);
-                        currentPokeGenders[me].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+                        currentPokeNames[me][slot].setText(poke.rnick);
+                        currentPokeLevels[me][slot].setText("Lv. " + poke.level);
+                        currentPokeGenders[me][slot].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
                     }
 
-                    currentPokeStatuses[me].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
-                    setHpBarTo(me, poke.lifePercent);
+                    currentPokeStatuses[me][slot].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
+                    setHpBarTo(me, slot, poke.lifePercent);
 
                     for (int i = 0; i < 4; i++) {
                         BattleMove move = activeBattle.displayedMoves[i];
@@ -545,13 +546,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 // Load correct moveset and name
                 if(poke != null) {
                     if (!samePokes[opp]) {
-                        currentPokeNames[opp].setText(poke.rnick);
-                        currentPokeLevels[opp].setText("Lv. " + poke.level);
-                        currentPokeGenders[opp].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
+                        currentPokeNames[opp][slot].setText(poke.rnick);
+                        currentPokeLevels[opp][slot].setText("Lv. " + poke.level);
+                        currentPokeGenders[opp][slot].setImageDrawable(PokemonInfo.genderDrawableCache((int) poke.gender));
                     }
 
-                    currentPokeStatuses[opp].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
-                    setHpBarTo(opp, poke.lifePercent);
+                    currentPokeStatuses[opp][slot].setImageResource(resources.getIdentifier("battle_status" + poke.status(), "drawable", InfoConfig.pkgName));
+                    setHpBarTo(opp, slot, poke.lifePercent);
 
                     if (!samePokes[opp]) {
                         String sprite = null;
@@ -790,20 +791,40 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             names[me].setText(battle.players[me].nick());
             names[opp].setText(battle.players[opp].nick());
 
-            hpBars[me] = (TextProgressBar) battleView.findViewById(R.id.hpBarB);
-            hpBars[opp] = (TextProgressBar) battleView.findViewById(R.id.hpBarA);
+            hpBars[me][0] = (TextProgressBar) battleView.findViewById(R.id.hpBarB1);
+            hpBars[opp][0] = (TextProgressBar) battleView.findViewById(R.id.hpBarA1);
+            hpBars[me][1] = (TextProgressBar) battleView.findViewById(R.id.hpBarB2);
+            hpBars[opp][1] = (TextProgressBar) battleView.findViewById(R.id.hpBarA2);
+            hpBars[me][2] = (TextProgressBar) battleView.findViewById(R.id.hpBarB3);
+            hpBars[opp][2] = (TextProgressBar) battleView.findViewById(R.id.hpBarA3);
 
-            currentPokeNames[me] = (TextView) battleView.findViewById(R.id.currentPokeNameB);
-            currentPokeNames[opp] = (TextView) battleView.findViewById(R.id.currentPokeNameA);
+            currentPokeNames[me][0] = (TextView) battleView.findViewById(R.id.currentPokeNameB1);
+            currentPokeNames[opp][0] = (TextView) battleView.findViewById(R.id.currentPokeNameA1);
+            currentPokeNames[me][1] = (TextView) battleView.findViewById(R.id.currentPokeNameB2);
+            currentPokeNames[opp][1] = (TextView) battleView.findViewById(R.id.currentPokeNameA2);
+            currentPokeNames[me][2] = (TextView) battleView.findViewById(R.id.currentPokeNameB3);
+            currentPokeNames[opp][2] = (TextView) battleView.findViewById(R.id.currentPokeNameA3);
 
-            currentPokeLevels[me] = (TextView) battleView.findViewById(R.id.currentPokeLevelB);
-            currentPokeLevels[opp] = (TextView) battleView.findViewById(R.id.currentPokeLevelA);
+            currentPokeLevels[me][0] = (TextView) battleView.findViewById(R.id.currentPokeLevelB1);
+            currentPokeLevels[opp][0] = (TextView) battleView.findViewById(R.id.currentPokeLevelA1);
+            currentPokeLevels[me][1] = (TextView) battleView.findViewById(R.id.currentPokeLevelB2);
+            currentPokeLevels[opp][1] = (TextView) battleView.findViewById(R.id.currentPokeLevelA2);
+            currentPokeLevels[me][2] = (TextView) battleView.findViewById(R.id.currentPokeLevelB3);
+            currentPokeLevels[opp][2] = (TextView) battleView.findViewById(R.id.currentPokeLevelA3);
 
-            currentPokeGenders[me] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB);
-            currentPokeGenders[opp] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA);
+            currentPokeGenders[me][0] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB1);
+            currentPokeGenders[opp][0] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA1);
+            currentPokeGenders[me][1] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB2);
+            currentPokeGenders[opp][1] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA2);
+            currentPokeGenders[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeGenderB3);
+            currentPokeGenders[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeGenderA3);
 
-            currentPokeStatuses[me] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB);
-            currentPokeStatuses[opp] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA);
+            currentPokeStatuses[me][0] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB1);
+            currentPokeStatuses[opp][0] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA1);
+            currentPokeStatuses[me][1] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB2);
+            currentPokeStatuses[opp][1] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA2);
+            currentPokeStatuses[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB3);
+            currentPokeStatuses[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA3);
 
             pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
             pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
@@ -811,6 +832,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
             pokeSprites[me][2] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
             pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
+
+            if (battle.conf.mode == ChallengeEnums.Mode.Doubles.ordinal()) {
+                ((ViewGroup.MarginLayoutParams)pokeSprites[me][0].getLayoutParams()).setMargins(0,0,0,0);
+                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][0].getLayoutParams()).setMargins(0,0,0,0);
+            }
 
             for(int i = 0; i < 2; i++) {
                 for (int j = 0; j < 3; j++) {
