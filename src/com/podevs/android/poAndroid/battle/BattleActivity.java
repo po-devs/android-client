@@ -137,6 +137,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     boolean megaClicked = false;
     boolean zmoveClicked = false;
     BattleMove lastClickedMove;
+    int currentChoiceSlot = 0;
 
     Resources resources;
     public NetworkService netServ = null;
@@ -290,6 +291,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         struggleLayout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage); // This is how you struggle
+                goToNextChoice();
             }
         });
 
@@ -495,12 +497,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     setHpBarTo(me, slot, poke.lifePercent);
 
                     for (int i = 0; i < 4; i++) {
-                        BattleMove move = activeBattle.displayedMoves[i];
+                        BattleMove move = activeBattle.myTeam.pokes[slot].moves[i];
                         updateMovePP(i);
                         attackNames[i].setText(move.toString());
                         String type;
                         if (move.num == 237)
-                            type = TypeInfo.name(activeBattle.myTeam.pokes[0].hiddenPowerType());
+                            type = TypeInfo.name(activeBattle.myTeam.pokes[slot].hiddenPowerType());
                         else
                             type = TypeInfo.name(MoveInfo.type(move.num()));
                         type = type.toLowerCase();
@@ -588,32 +590,47 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         }
         runOnUiThread(new Runnable() {
             public void run() {
-                if (!checkStruggle()) {
+                if (activeBattle.clicked) {
                     for (int i = 0; i < 4; i++) {
-                        if (activeBattle.allowAttack && !activeBattle.clicked) {
-                            BattleMove newMove = new BattleMove(activeBattle.displayedMoves[i]);
-                            if (zmoveClicked) {
-                                if(newMove.power > 0 && activeBattle.allowZMoves[i]) {
-                                    newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[0].item);
+                        setAttackButtonEnabled(i, false);
+                    }
+                    for (int i = 0; i < 4; i++) {
+                        pokeList[i].setEnabled(i, false);
+                    }
+                } else {
+                    if (!checkStruggle()) {
+                        for (int i = 0; i < 4; i++) {
+                            if (activeBattle.allowAttack[currentChoiceSlot]) {
+                                BattleMove newMove = activeBattle.displayedMoves[i] = new BattleMove(activeBattle.myTeam.pokes[currentChoiceSlot].moves[i]);
+                                if (zmoveClicked) {
+                                    if (newMove.power > 0 && activeBattle.allowZMoves[currentChoiceSlot][i]) {
+                                        newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[currentChoiceSlot].item);
+                                    }
+                                    setAttackButtonEnabled(i, activeBattle.allowZMoves[currentChoiceSlot][i]);
+                                } else {
+                                    setAttackButtonEnabled(i, activeBattle.allowAttacks[currentChoiceSlot][i]);
                                 }
-                                setAttackButtonEnabled(i, activeBattle.allowZMoves[i]);
+                                attackNames[i].setText(MoveInfo.zName(newMove.num(), zmoveClicked));
+                                String type;
+                                if (newMove.num == 237)
+                                    type = TypeInfo.name(activeBattle.myTeam.pokes[currentChoiceSlot].hiddenPowerType());
+                                else
+                                    type = TypeInfo.name(MoveInfo.type(newMove.num()));
+                                type = type.toLowerCase();
+                                attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
+                                        "drawable", InfoConfig.pkgName));
+                            } else {
+                                setAttackButtonEnabled(i, false);
                             }
-                            else {
-                                setAttackButtonEnabled(i, activeBattle.allowAttacks[i]);
-                            }
-                            attackNames[i].setText(MoveInfo.zName(newMove.num(), zmoveClicked));
-                        }
-                        else {
-                            setAttackButtonEnabled(i, false);
                         }
                     }
-                }
-                megaClicked = false;
-                for(int i = 0; i < 6; i++) {
-                    if (activeBattle.myTeam.pokes[i].status() != Status.Koed.poValue() && !activeBattle.clicked)
-                        pokeList[i].setEnabled(i, activeBattle.allowSwitch);
-                    else
-                        pokeList[i].setEnabled(i, false);
+                    megaClicked = false;
+                    for (int i = 0; i < 6; i++) {
+                        if (activeBattle.myTeam.pokes[currentChoiceSlot].status() != Status.Koed.poValue() && !activeBattle.clicked)
+                            pokeList[i].setEnabled(i, activeBattle.allowSwitch[currentChoiceSlot]);
+                        else
+                            pokeList[i].setEnabled(i, false);
+                    }
                 }
             }
         });
@@ -621,7 +638,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public boolean checkStruggle() {
         // This method should hide moves, show the button if necessary and return whether it showed the button
-        boolean struggle = activeBattle.shouldStruggle;
+        boolean struggle = activeBattle.shouldStruggle[currentChoiceSlot];
         if(struggle) {
             attackRow1.setVisibility(View.GONE);
             attackRow2.setVisibility(View.GONE);
@@ -640,8 +657,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
             public void run() {
                 for (int i = 0; i < 6; i++) {
-                    BattlePoke poke = activeBattle.myTeam.pokes[i];
-                    pokeList[i].update(poke, activeBattle.allowSwitch && !activeBattle.clicked);
+                    BattlePoke poke = activeBattle.myTeam.pokes[currentChoiceSlot];
+                    pokeList[currentChoiceSlot].update(poke, activeBattle.allowSwitch[currentChoiceSlot] && !activeBattle.clicked);
                 }
             }
         });
@@ -676,6 +693,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     public void onBackPressed() {
         startActivity(new Intent(BattleActivity.this, ChatActivity.class));
         finish();
+    }
+
+    public void goToNextChoice () {
+        currentChoiceSlot++;
+        if (currentChoiceSlot >= activeBattle.numberOfSlots) {
+            activeBattle.clicked = true;
+        }
     }
 
     public ServiceConnection connection = new ServiceConnection() {
@@ -826,16 +850,23 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             currentPokeStatuses[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB3);
             currentPokeStatuses[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA3);
 
-            pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
-            pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
-            pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
-            pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
-            pokeSprites[me][2] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
-            pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
+            if (battle.numberOfSlots < 3) {
+                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
+                pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
+                pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
+                pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
+            } else {
+                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
+                pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
+                pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
+                pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
+                pokeSprites[me][2] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
+                pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
+            }
 
-            if (battle.conf.mode == ChallengeEnums.Mode.Doubles.ordinal()) {
+            if (battle.numberOfSlots == 2) {
                 ((ViewGroup.MarginLayoutParams)pokeSprites[me][0].getLayoutParams()).setMargins(0,0,0,0);
-                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][0].getLayoutParams()).setMargins(0,0,0,0);
+                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][1].getLayoutParams()).setMargins(0,0,0,0);
             }
 
             for(int i = 0; i < 2; i++) {
@@ -1014,7 +1045,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     zmoveClicked = false;
                 }
             }
-            activeBattle.clicked = true;
+            goToNextChoice();
             updateButtons();
         }
     };
@@ -1025,16 +1056,16 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             int id = v.getId();
             for(int i = 0; i < 4; i++)
                 if(id == attackLayouts[i].getId() && !attackNames[i].equals("No Move")) {
-                    lastClickedMove = activeBattle.displayedMoves[i];
+                    lastClickedMove = activeBattle.myTeam.pokes[currentChoiceSlot].moves[i];
                     if (zmoveClicked) {
-                        setAttackButtonEnabled(i, activeBattle.allowZMoves[i]);
-                        if(lastClickedMove.power > 0 && activeBattle.allowZMoves[i]) {
+                        setAttackButtonEnabled(i, activeBattle.allowZMoves[currentChoiceSlot][i]);
+                        if(lastClickedMove.power > 0 && activeBattle.allowZMoves[currentChoiceSlot][i]) {
                             lastClickedMove.power = MoveInfo.zPower(lastClickedMove.num());
                             lastClickedMove.accuracy = 101;
                             if (lastClickedMove.num == 237) { //Hidden Power
                                 lastClickedMove.type = 0;
                             }
-                            lastClickedMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[0].item);
+                            lastClickedMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[currentChoiceSlot].item);
                         }
                     }
                     showDialog(BattleDialog.MoveInfo.ordinal());
@@ -1108,9 +1139,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
     			/* No point in canceling if no action done */
                 menu.findItem(R.id.close).setVisible(false);
-                menu.findItem(R.id.cancel).setVisible(activeBattle.clicked);
+                menu.findItem(R.id.cancel).setVisible(currentChoiceSlot > 0);
             }
-            menu.findItem(R.id.megavolve).setVisible(activeBattle.allowMega);
+            menu.findItem(R.id.megavolve).setVisible(activeBattle.clicked ? false : activeBattle.allowMega[currentChoiceSlot]);
             menu.findItem(R.id.megavolve).setChecked(megaClicked);
 
             if (megaClicked) {
@@ -1118,7 +1149,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
-            menu.findItem(R.id.zmove).setVisible(activeBattle.allowZMove);
+            menu.findItem(R.id.zmove).setVisible(activeBattle.clicked ? false : activeBattle.allowZMove[currentChoiceSlot]);
             menu.findItem(R.id.zmove).setChecked(zmoveClicked);
             if (zmoveClicked) {
                 menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -1153,6 +1184,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 break;
             case R.id.cancel:
                 netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);
+                currentChoiceSlot = 0;
                 break;
             case R.id.forfeit:
                 if (netServ != null && netServ.isBattling() && !battle.gotEnd)
@@ -1294,7 +1326,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     simpleDialog.setContentView(R.layout.dynamic_info_layout);
 
                     TextView t = (TextView)simpleDialog.findViewById(R.id.nameTypeView);
-                    t.setText(( (player == me && !isSpectating()) ? activeBattle.myTeam.pokes[0] : battle.currentPoke(player)).nameAndType());
+                    t.setText(( (player == me && !isSpectating()) ? activeBattle.myTeam.pokes[0] : battle.currentPoke(player, 0)).nameAndType());
                     t = (TextView)simpleDialog.findViewById(R.id.statNamesView);
                     t.setText(battle.dynamicInfo[player].statsAndHazards());
                     t = (TextView)simpleDialog.findViewById(R.id.statNumsView);
@@ -1302,9 +1334,9 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         t.setText(activeBattle.myTeam.pokes[0].printStats());
                     }
                     else if (player != me && !isSpectating()) {
-                        t.setText(activeBattle.currentPoke(player).statString(battle.dynamicInfo[player].boosts));
+                        t.setText(activeBattle.currentPoke(player, 0).statString(battle.dynamicInfo[player].boosts));
                         t = (TextView)simpleDialog.findViewById(R.id.moveString);
-                        t.setText(activeBattle.currentPoke(opp).movesString());
+                        t.setText(activeBattle.currentPoke(opp, 0).movesString());
                     }
                     //	t.setVisibility(View.GONE);
                     t = (TextView)simpleDialog.findViewById(R.id.statBoostView);

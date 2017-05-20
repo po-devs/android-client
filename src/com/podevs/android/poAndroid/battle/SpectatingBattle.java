@@ -151,9 +151,6 @@ public class SpectatingBattle {
         return remainingTime[opp];
     }
     */
-    public ShallowBattlePoke currentPoke(int player) {
-        return pokes[player][0];
-    }
 
     public ShallowBattlePoke currentPoke(int player, int slot) {
         return pokes[player][slot];

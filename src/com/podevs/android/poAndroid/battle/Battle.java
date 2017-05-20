@@ -21,10 +21,14 @@ public class Battle extends SpectatingBattle {
 	public BattleTeam myTeam;
 	public ShallowShownTeam oppTeam;
 
-	public boolean allowSwitch, allowAttack, clicked, allowMega, allowZMove = false;
-	public boolean[] allowAttacks = new boolean[4];
-	public boolean[] allowZMoves = new boolean[4];
-	public boolean shouldStruggle = false;
+	public boolean clicked;
+	public boolean[] allowSwitch = new boolean[3];
+	public boolean[] allowAttack = new boolean[3];
+	public boolean[] allowMega = new boolean[3];
+	public boolean[] allowZMove = new boolean[3];
+	public boolean[][] allowAttacks = new boolean[3][4];
+	public boolean[][] allowZMoves = new boolean[3][4];
+	public boolean[] shouldStruggle = new boolean[3];
 	public BattleMove[] displayedMoves = new BattleMove[4];
 
 	public Battle(BattleConf bc, Bais msg, PlayerInfo p1, PlayerInfo p2, int meID, int bID, NetworkService ns) {
@@ -35,7 +39,7 @@ public class Battle extends SpectatingBattle {
 
 		myTeam = new BattleTeam(msg, conf.gen);
 
-		numberOfSlots = (conf.mode() + 1) * 2;
+		numberOfSlots = ChallengeEnums.Mode.values()[conf.mode].numberOfSlots();
 		players[0] = p1;
 		players[1] = p2;
 		// Figure out who's who
@@ -130,7 +134,7 @@ public class Battle extends SpectatingBattle {
 			if (prefs.getBoolean("pokemon_cries", true)) {
 				try {
 					synchronized (this) {
-						netServ.playCry(this, currentPoke(player));
+						netServ.playCry(this, currentPoke(player, slot));
 						if (!baked) wait(3000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
@@ -138,7 +142,7 @@ public class Battle extends SpectatingBattle {
 
 			if(!silent)
 				writeToHist("\n" + tu((players[player].nick() + " sent out " + 
-						currentPoke(player).rnick + "!")));
+						currentPoke(player, slot).rnick + "!")));
 
 			break;
 		} case AbsStatusChange: {
@@ -178,7 +182,7 @@ public class Battle extends SpectatingBattle {
 			} case TempPP: {
 				byte moveslot = msg.readByte();
 				byte PP = msg.readByte();
-				displayedMoves[moveslot].currentPP = PP;
+				displayedMoves[moveslot].currentPP = myTeam.pokes[slot].moves[moveslot].currentPP = PP;
 				if (activity != null) {
 					activity.updateMovePP(moveslot);
 				}
@@ -186,9 +190,9 @@ public class Battle extends SpectatingBattle {
 			} case TempSprite:
 				UniqueID sprite = new UniqueID(msg);
 				if (sprite.pokeNum != 0)
-					currentPoke(player).specialSprites.addFirst(sprite);
-				else if (currentPoke(player).specialSprites.size() > 0)
-					currentPoke(player).specialSprites.removeFirst();
+					currentPoke(player, slot).specialSprites.addFirst(sprite);
+				else if (currentPoke(player, slot).specialSprites.size() > 0)
+					currentPoke(player, slot).specialSprites.removeFirst();
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player, slot);
@@ -214,7 +218,7 @@ public class Battle extends SpectatingBattle {
 				break;
 			case AestheticForme:
 				short newForm = msg.readShort();
-				currentPoke(player).uID.subNum = (byte) newForm;
+				currentPoke(player, slot).uID.subNum = (byte) newForm;
 				if (activity !=null) {
 					activity.samePokes[player] = false;
 					activity.updatePokes(player, slot);
@@ -226,32 +230,33 @@ public class Battle extends SpectatingBattle {
 		} case MakeYourChoice: {
 			if (activity != null) {
 				activity.updateButtons();
-				if (allowSwitch && !allowAttack)
+				if (allowSwitch[slot] && !allowAttack[slot])
 					activity.switchToPokeViewer();
 			}
 			break;
 		} case OfferChoice: {
 			@SuppressWarnings("unused")
 			byte numSlot = msg.readByte(); //Which poke the choice is for
-			allowSwitch = msg.readBool();
-			allowAttack = msg.readBool();
+			allowSwitch[slot] = msg.readBool();
+			allowAttack[slot] = msg.readBool();
 
 			for (int i = 0; i < 4; i++) {
-				allowAttacks[i] = msg.readBool();
+				allowAttacks[slot][i] = msg.readBool();
 			}
 
-			allowMega = msg.readBool();
-			allowZMove = msg.readBool();
+			allowMega[slot] = msg.readBool();
+			allowZMove[slot] = msg.readBool();
 
-			if (allowZMove) {
+			if (allowZMove[slot]) {
 				for (int i = 0; i < 4; i++) {
-					allowZMoves[i] = msg.readBool();
+					allowZMoves[slot][i] = msg.readBool();
 				}
 			}
 
-			shouldStruggle = (allowAttack && !allowAttacks[0] && !allowAttacks[1] && !allowAttacks[2] && !allowAttacks[3]);
+			shouldStruggle[slot] = (allowAttack[slot] && !allowAttacks[slot][0] && !allowAttacks[slot][1] && !allowAttacks[slot][2] && !allowAttacks[slot][3]);
 
 			clicked = false;
+			activity.currentChoiceSlot = 0;
 
 			if (activity != null) {
 				activity.updateButtons();
@@ -267,19 +272,19 @@ public class Battle extends SpectatingBattle {
 			short newHP = msg.readShort();
 			if(player == me) {
 				myTeam.pokes[slot].currentHP = newHP;
-				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
-				currentPoke(player).lifePercent = (byte)(newHP * 100 / myTeam.pokes[slot].totalHP);
+				currentPoke(player, slot).lastKnownPercent = currentPoke(player, slot).lifePercent;
+				currentPoke(player, slot).lifePercent = (byte)(newHP * 100 / myTeam.pokes[slot].totalHP);
 			} else {
-				currentPoke(player).lastKnownPercent = currentPoke(player).lifePercent;
-				currentPoke(player).lifePercent = (byte)newHP;
+				currentPoke(player, slot).lastKnownPercent = currentPoke(player, slot).lifePercent;
+				currentPoke(player, slot).lifePercent = (byte)newHP;
 			}
 			if(activity != null) {
 				// Block until the hp animation has finished
 				// Timeout after 10s
 				try {
 					synchronized (this) {
-						int change = currentPoke(player).lastKnownPercent - currentPoke(player).lifePercent;
-						activity.animateHpBarTo(player, slot, currentPoke(player).lifePercent, change);
+						int change = currentPoke(player, slot).lastKnownPercent - currentPoke(player, slot).lifePercent;
+						activity.animateHpBarTo(player, slot, currentPoke(player, slot).lifePercent, change);
                         //Log.e(TAG, "change " + change);
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;
@@ -294,7 +299,7 @@ public class Battle extends SpectatingBattle {
 				super.dealWithCommand(bc, player, msg);
 			} else {
 				short damage = msg.readShort();
-				writeToHist("\n" + tu(currentPoke(player).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
+				writeToHist("\n" + tu(currentPoke(player, slot).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
 			}
 			break;
 		} case SpotShifts: {
