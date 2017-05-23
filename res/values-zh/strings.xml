@@ -5,8 +5,8 @@
     <string name="app_name">安卓PO</string>
     <string name="connect">连接服务器</string>
     <string name="inputname">请输入你的玩家名称</string>
-    <string name="inputaddr">电信入口</string>
-    <string name="chooseaddr">吧服联通入口（冒号要半角）</string>
+    <string name="inputaddr">请输入服务器IP地址:端口（冒号半角）</string>
+    <string name="chooseaddr">服务器地址</string>
     <string name="importteam">导入队伍</string>
     <string name="viewpokemon">查看精灵</string>
     <string name="tobattlescreen">回到战斗</string>
@@ -31,10 +31,16 @@
     <string name="stat_speed">速度</string>
     <string name="stat_accuracy">命中</string>
     <string name="stat_evasion">回避</string>
+    <string name="stat_hp_short">HP</string>
+    <string name="stat_attack_short">物攻</string>
+    <string name="stat_defense_short">物防</string>
+    <string name="stat_spAttack_short">特攻</string>
+    <string name="stat_spDefense_short">特防</string>
+    <string name="stat_speed_short">速度</string>
     <string name="rearrange_team_description">你可以在战斗前通过拖动来调整精灵的位置。</string>
     <string name="rearrange_team_title">重排队伍</string>
-    <string name="foes_team">对方的队伍</string>
-    <string name="your_team">你的队伍：</string>
+    <string name="foes_team">对方的队伍:</string>
+    <string name="your_team">你的队伍:</string>
     <string name="done">好了</string>
     <string name="find_a_battle">寻找对战</string>
     <string name="enable_sounds">精灵叫声</string>
@@ -44,18 +50,18 @@
     <string name="players">在线人数</string>
     <string name="serv_addr">服务器地址</string>
     <string name="connecttoserver">登录Pokemon Online</string>
-    <string name="major_compat_break_warning">很抱歉，当前的安卓PO版本已过时。</string>
-    <string name="minor_compat_break_warning">很抱歉，当前的安卓PO版本已过时。</string>
-    <string name="new_server_features_warning">服务器不接受你这个版本的PO呢！</string>
+    <string name="major_compat_break_warning">很抱歉，您当前的安卓PO版本已过时。</string>
+    <string name="minor_compat_break_warning">您当前的安卓PO版本较久，可能与服务器会有兼容问题。</string>
+    <string name="new_server_features_warning">服务器不接受您这个版本的PO</string>
     <string name="send_message">发送消息</string>
-    <string name="battle_opponent_team_poke_icon">opponent team poke icon</string>
+    <string name="battle_opponent_team_poke_icon">对方队伍精灵图标</string>
     <string name="struggle_attack">拼命</string>
-    <string name="info_box">信息盒子</string>
-    <string name="hp_bar_description">hp bar</string>
-    <string name="gender_description">gender</string>
-    <string name="status_description">status</string>
-    <string name="sprite_description">sprite</string>
-    <string name="team_poke_icon">team poke icon</string>
+    <string name="info_box">信息栏</string>
+    <string name="hp_bar_description">HP</string>
+    <string name="gender_description">性别</string>
+    <string name="status_description">状态</string>
+    <string name="sprite_description">图标</string>
+    <string name="team_poke_icon">队伍精灵图标</string>
     <string name="no_netserv">服务器连接失败</string>
     <string name="private_messages">私聊</string>
     <string name="closePM">关闭私聊</string>
@@ -76,7 +82,7 @@
     <string name="winningmessage">胜利感言</string>
     <string name="losingmessage">战败感言</string>
     <string name="pokemon">精灵</string>
-    <string name="save_team_q">需要保存队伍的改变吗？</string>
+    <string name="save_team_q">需要保存对队伍的改变吗？</string>
     <string name="download_team">下载队伍</string>
     <string name="save">保存</string>
     <string name="no_save">不保存</string>
@@ -87,7 +93,7 @@
     <string name="delete_team">删除指定队伍</string>
     <string name="full_happiness">100% 亲密度</string>
     <string name="zmove">Ｚ力量</string>
-    <string name="megavolve">Mega进化(╰_╯)</string>
+    <string name="megavolve">Mega进化</string>
     <string name="formes">形态:</string>
     <string name="settings">设置</string>
     <string name="shiny">闪光</string>
@@ -102,7 +108,7 @@
     <string name="watch_battle">观战</string>
     <string name="change_happiness">更改亲密度</string>
     <string name="change_level">更改等级</string>
-    <string name="switch_place">选择 place</string>
+    <string name="switch_place">交换位置</string>
     <string name="hackmon_enabled">无限制模式</string>
     <string name="hackmon_disabled">正常模式</string>
     <string name ="manual_iv">更改个体值</string>
@@ -140,8 +146,8 @@
     <string name="to_slot">目标位置:</string>
     <string name="export_team">导出队伍</string>
     <string name="export_success">导出成功</string>
-    <string name="raw_link">不完整的链接:</string>
-    <string name="valid_link">完整的链接.</string>
+    <string name="raw_link">纯文本链接:</string>
+    <string name="valid_link">完整的链接:</string>
     <string name="cancel_find_battle">取消寻找对战</string>
 
     <string-array name="hp_array">
@@ -185,7 +191,7 @@
     <string name="prev_frozen_status_message"> 因冻结而无法行动。</string>
     <string name="free_frozen_status_message"> 解冻了！</string>
     <string name="feel_asleep_status_message"> 正在睡觉。</string>
-    <string name="free_asleep_status_message"> w醒来了！</string>
+    <string name="free_asleep_status_message"> 醒来了！</string>
     <string name="hurt_burn_status_message"> 因烧伤而受到伤害！</string>
     <string name="hurt_poison_status_message"> 受到了毒素的伤害！</string>
 
