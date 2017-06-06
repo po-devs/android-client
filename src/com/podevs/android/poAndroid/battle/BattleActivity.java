@@ -113,6 +113,10 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     TextView[] attackPPs = new TextView[4];
     RelativeLayout[] attackLayouts = new RelativeLayout[4];
 
+    ImageView[][] targetIcons = new ImageView[2][3];
+    TextView[][] targetNames = new TextView[2][3];
+    RelativeLayout[][] targetLayouts = new RelativeLayout[2][3];
+
     TextView[] timers = new TextView[2];
 
     PokeDragIcon[] myArrangePokeIcons = new PokeDragIcon[6];
@@ -129,6 +133,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     RelativeLayout struggleLayout;
     LinearLayout attackRow1;
     LinearLayout attackRow2;
+    LinearLayout targetRow1;
+    LinearLayout targetRow2;
 
     SpectatingBattle battle = null;
     public Battle activeBattle = null;
@@ -138,6 +144,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     boolean zmoveClicked = false;
     BattleMove lastClickedMove;
     int currentChoiceSlot = 0;
+    BattleChoice[] myChoices = new BattleChoice[3];
+    boolean isSelectingTarget = false;
 
     Resources resources;
     public NetworkService netServ = null;
@@ -287,11 +295,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         struggleLayout = (RelativeLayout)mainLayout.findViewById(R.id.struggleLayout);
         attackRow1 = (LinearLayout)mainLayout.findViewById(R.id.attackRow1);
         attackRow2 = (LinearLayout)mainLayout.findViewById(R.id.attackRow2);
+        targetRow1 = (LinearLayout)mainLayout.findViewById(R.id.targetRowA);
+        targetRow2 = (LinearLayout)mainLayout.findViewById(R.id.targetRowB);
 
         struggleLayout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage); // This is how you struggle
-                goToNextChoice();
+                attackClicked((byte)-1);
             }
         });
 
@@ -598,29 +607,31 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         pokeList[i].setEnabled(i, false);
                     }
                 } else {
-                    if (!checkStruggle()) {
-                        for (int i = 0; i < 4; i++) {
-                            if (activeBattle.allowAttack[currentChoiceSlot]) {
-                                BattleMove newMove = activeBattle.displayedMoves[i] = new BattleMove(activeBattle.myTeam.pokes[currentChoiceSlot].moves[i]);
-                                if (zmoveClicked) {
-                                    if (newMove.power > 0 && activeBattle.allowZMoves[currentChoiceSlot][i]) {
-                                        newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[currentChoiceSlot].item);
+                    if (!isSelectingTarget) {
+                        if (!checkStruggle()) {
+                            for (int i = 0; i < 4; i++) {
+                                if (activeBattle.allowAttack[currentChoiceSlot]) {
+                                    BattleMove newMove = activeBattle.displayedMoves[i] = new BattleMove(activeBattle.myTeam.pokes[currentChoiceSlot].moves[i]);
+                                    if (zmoveClicked) {
+                                        if (newMove.power > 0 && activeBattle.allowZMoves[currentChoiceSlot][i]) {
+                                            newMove.num = ItemInfo.zCrystalMove(activeBattle.myTeam.pokes[currentChoiceSlot].item);
+                                        }
+                                        setAttackButtonEnabled(i, activeBattle.allowZMoves[currentChoiceSlot][i]);
+                                    } else {
+                                        setAttackButtonEnabled(i, activeBattle.allowAttacks[currentChoiceSlot][i]);
                                     }
-                                    setAttackButtonEnabled(i, activeBattle.allowZMoves[currentChoiceSlot][i]);
+                                    attackNames[i].setText(MoveInfo.zName(newMove.num(), zmoveClicked));
+                                    String type;
+                                    if (newMove.num == 237)
+                                        type = TypeInfo.name(activeBattle.myTeam.pokes[currentChoiceSlot].hiddenPowerType());
+                                    else
+                                        type = TypeInfo.name(MoveInfo.type(newMove.num()));
+                                    type = type.toLowerCase();
+                                    attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
+                                            "drawable", InfoConfig.pkgName));
                                 } else {
-                                    setAttackButtonEnabled(i, activeBattle.allowAttacks[currentChoiceSlot][i]);
+                                    setAttackButtonEnabled(i, false);
                                 }
-                                attackNames[i].setText(MoveInfo.zName(newMove.num(), zmoveClicked));
-                                String type;
-                                if (newMove.num == 237)
-                                    type = TypeInfo.name(activeBattle.myTeam.pokes[currentChoiceSlot].hiddenPowerType());
-                                else
-                                    type = TypeInfo.name(MoveInfo.type(newMove.num()));
-                                type = type.toLowerCase();
-                                attackLayouts[i].setBackgroundResource(resources.getIdentifier(type + "_type_button",
-                                        "drawable", InfoConfig.pkgName));
-                            } else {
-                                setAttackButtonEnabled(i, false);
                             }
                         }
                     }
@@ -695,11 +706,72 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         finish();
     }
 
+    public void attackClicked (byte zone) {
+        //netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage);
+        AttackChoice ac = new AttackChoice(zone, (byte)opp, megaClicked, zmoveClicked);
+        myChoices[currentChoiceSlot] = new BattleChoice((byte)me, ac, ChoiceType.AttackType);
+        if (battle.numberOfSlots == 1) {
+            goToNextChoice();
+        } else {
+            MoveInfo.Target t;
+            if (zone == -1) { //struggle
+                t = MoveInfo.Target.ChosenTarget;
+            } else {
+                t = MoveInfo.target(activeBattle.myTeam.pokes[currentChoiceSlot].moves[zone].num());
+            }
+            if (t == MoveInfo.Target.ChosenTarget || t == MoveInfo.Target.PartnerOrUser || t == MoveInfo.Target.Partner || t == MoveInfo.Target.MeFirstTarget || t == MoveInfo.Target.IndeterminateTarget
+                    || activeBattle.numberOfSlots == 3) {
+                switchToTargetView();
+            } else {
+                goToNextChoice();
+            }
+        }
+    }
+
+    public void targetClicked (byte target) {
+        if (myChoices[currentChoiceSlot].choiceType == ChoiceType.AttackType) {
+            ((AttackChoice) myChoices[currentChoiceSlot].choice).attackTarget = target;
+        }
+        switchToMoveView();
+        goToNextChoice();
+    }
+
+    public void switchToMoveView () {
+        isSelectingTarget = false;
+
+        attackRow1.setVisibility(View.VISIBLE);
+        attackRow2.setVisibility(View.VISIBLE);
+        targetRow1.setVisibility(View.GONE);
+        targetRow2.setVisibility(View.GONE);
+    }
+
+    public void switchToTargetView () {
+        isSelectingTarget = true;
+
+        attackRow1.setVisibility(View.GONE);
+        attackRow2.setVisibility(View.GONE);
+        targetRow1.setVisibility(View.VISIBLE);
+        targetRow2.setVisibility(View.VISIBLE);
+
+        for (int i = 0; i < activeBattle.numberOfSlots; i++) {
+            targetIcons[me][i].setImageDrawable(PokemonInfo.iconDrawable(activeBattle.currentPoke(me, i).uID));
+            targetIcons[opp][i].setImageDrawable(PokemonInfo.iconDrawable(activeBattle.currentPoke(opp, i).uID));
+            targetNames[me][i].setText(PokemonInfo.name(activeBattle.currentPoke(me, i).uID));
+            targetNames[opp][i].setText(PokemonInfo.name(activeBattle.currentPoke(opp, i).uID));
+        }
+    }
+
     public void goToNextChoice () {
+        Baos b = new Baos();
+        b.putInt(BattleActivity.this.battle.bID);
+        b.putBaos(myChoices[currentChoiceSlot]);
+        netServ.socket.sendMessage(b, Command.BattleMessage);
+
         currentChoiceSlot++;
         if (currentChoiceSlot >= activeBattle.numberOfSlots) {
             activeBattle.clicked = true;
         }
+        updateButtons();
     }
 
     public ServiceConnection connection = new ServiceConnection() {
@@ -850,12 +922,57 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             currentPokeStatuses[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB3);
             currentPokeStatuses[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA3);
 
-            if (battle.numberOfSlots < 3) {
+            if (battle.numberOfSlots == 2) {
+                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
+                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB2).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            }
+            if (battle.numberOfSlots == 1) {
+                battleView.findViewById(R.id.pokeInfoA2).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeInfoB2).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
+                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB1).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            }
+
+            for(int i = 0; i < 3; i++) {
+                targetIcons[me][i] = (ImageView) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Icon", "id", InfoConfig.pkgName));
+                targetIcons[me][i].setImageDrawable(PokemonInfo.iconDrawable(new UniqueID(0)));
+                targetNames[me][i] = (TextView) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Name", "id", InfoConfig.pkgName));
+                targetLayouts[me][i] = (RelativeLayout) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Layout", "id", InfoConfig.pkgName));
+                targetLayouts[me][i].setOnClickListener(battleListener);
+            }
+            for(int i = 0; i < 3; i++) {
+                targetIcons[opp][i] = (ImageView) mainLayout.findViewById(resources.getIdentifier("targetA" + (i+1) + "Icon", "id", InfoConfig.pkgName));
+                targetIcons[opp][i].setImageDrawable(PokemonInfo.iconDrawable(new UniqueID(0)));
+                targetNames[opp][i] = (TextView) mainLayout.findViewById(resources.getIdentifier("targetA" + (i+1) + "Name", "id", InfoConfig.pkgName));
+                targetLayouts[opp][i] = (RelativeLayout) mainLayout.findViewById(resources.getIdentifier("targetA" + (i+1) + "Layout", "id", InfoConfig.pkgName));
+                targetLayouts[opp][i].setOnClickListener(battleListener);
+            }
+
+            for (int i = 0; i < battle.numberOfSlots; i++) {
+                targetLayouts[me][i].setVisibility(View.VISIBLE);
+                targetLayouts[opp][i].setVisibility(View.VISIBLE);
+            }
+
+            if (battle.numberOfSlots == 1) {
+                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
+                pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
+                battleView.findViewById(R.id.pokeSpriteA1).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeSpriteB1).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeSpriteA3).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeSpriteB3).setVisibility(View.GONE);
+            }
+            else if (battle.numberOfSlots == 2) {
                 pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
                 pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
                 pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
                 pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
-            } else {
+                battleView.findViewById(R.id.pokeSpriteA3).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeSpriteB1).setVisibility(View.GONE);
+                ((ViewGroup.MarginLayoutParams)pokeSprites[me][0].getLayoutParams()).setMargins(0,0,0,0);
+                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][1].getLayoutParams()).setMargins(0,0,0,0);
+            } else if (battle.numberOfSlots == 3) {
                 pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
                 pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
                 pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
@@ -864,13 +981,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
             }
 
-            if (battle.numberOfSlots == 2) {
-                ((ViewGroup.MarginLayoutParams)pokeSprites[me][0].getLayoutParams()).setMargins(0,0,0,0);
-                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][1].getLayoutParams()).setMargins(0,0,0,0);
-            }
-
             for(int i = 0; i < 2; i++) {
-                for (int j = 0; j < 3; j++) {
+                for (int j = 0; j < battle.numberOfSlots; j++) {
                     pokeSprites[i][j].setOnLongClickListener(spriteListener);
                     pokeSprites[i][j].setBackgroundColor(0);
                 }
@@ -920,11 +1032,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             // Prompt a UI update of the pokemon
             updateMyPoke(0);
             updateOppPoke(opp, 0);
-            if (battle.conf.mode >= ChallengeEnums.Mode.Doubles.ordinal()) {
+            if (ChallengeEnums.Mode.values()[battle.conf.mode].numberOfSlots() >= 2) {
                 updateMyPoke(1);
                 updateOppPoke(opp, 1);
             }
-            if (battle.conf.mode >= ChallengeEnums.Mode.Triples.ordinal()) {
+            if (ChallengeEnums.Mode.values()[battle.conf.mode].numberOfSlots() >= 3) {
                 updateMyPoke(2);
                 updateOppPoke(opp, 2);
             }
@@ -1029,23 +1141,33 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         public void onClick(View v) {
             int id = v.getId();
             // Check to see if click was on attack button
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < 4; i++) {
                 if(id == attackLayouts[i].getId()) {
-                    netServ.socket.sendMessage(activeBattle.constructAttack((byte) i, megaClicked, zmoveClicked), Command.BattleMessage);
+                    attackClicked((byte)i);
                     if (zmoveClicked) {
                         zmoveClicked = false;
                         updateButtons();
                     }
                 }
+            }
             // Check to see if click was on pokelist button
             for(int i = 0; i < 6; i++) {
                 if(id == pokeList[i].whole.getId()) {
-                    netServ.socket.sendMessage(activeBattle.constructSwitch((byte)i), Command.BattleMessage);
+                    SwitchChoice sc = new SwitchChoice((byte)i);
+                    myChoices[currentChoiceSlot] = new BattleChoice((byte)me, sc, ChoiceType.SwitchType);
                     realViewSwitcher.setCurrentItem(0, true);
                     zmoveClicked = false;
+                    goToNextChoice();
                 }
             }
-            goToNextChoice();
+            // Check to see if click was on target button
+            for(int i = 0; i < 2; i++) {
+                for(int j = 0; j < 3; j++) {
+                    if (id == targetLayouts[i][j].getId()) {
+                        targetClicked((byte) battle.slot(i, j));
+                    }
+                }
+            }
             updateButtons();
         }
     };

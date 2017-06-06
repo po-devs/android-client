@@ -11,6 +11,23 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class MoveInfo extends GenInfo {
+	public enum Target {
+		ChosenTarget, //0
+		PartnerOrUser, //1
+		Partner, //2
+		MeFirstTarget, //3
+		AllButSelf, //4
+		Opponents, //5
+		TeamParty, //6
+		User, //7
+		All, //8
+		RandomTarget, //9
+		Field, //10
+		OpposingTeam, //11
+		TeamSide, //12
+		IndeterminateTarget //13
+	}
+
 	public static class Move {
 		public String name;
 		byte damageClass = 0;
@@ -21,6 +38,7 @@ public class MoveInfo extends GenInfo {
 		byte zpower = 0;
 		String effect = null;
 		String zeffect = null;
+		Target range = Target.ChosenTarget;
 
 		Move(String name) {
 			this.name = name;
@@ -163,6 +181,49 @@ public class MoveInfo extends GenInfo {
 
 		String zeffect = moveNames.get(num).zeffect;
 		return zeffect == null ? "" : zeffect;
+	}
+
+	public static Target target(int num) {
+		loadTargets();
+
+		return moveNames.get(num).range;
+	}
+
+	public static String targetToString(int num) {
+		Target t = target(num);
+
+		switch (t) {
+			case ChosenTarget:
+				return "Single Target";
+			case PartnerOrUser:
+				return "Self or Ally";
+			case Partner:
+				return "Single Ally";
+			case MeFirstTarget:
+				return "Single Target";
+			case AllButSelf:
+				return "All But Self";
+			case Opponents:
+				return "Adjacent Foes";
+			case TeamParty:
+				return "User's Team";
+			case User:
+				return "Self";
+			case All:
+				return "All";
+			case RandomTarget:
+				return "Random";
+			case Field:
+				return "Field";
+			case OpposingTeam:
+				return "All Foes";
+			case TeamSide:
+				return "All Allies";
+			case IndeterminateTarget:
+				return "Self";
+			default:
+				return "---";
+		}
 	}
 
 	public static String message(int num, int part) {
@@ -319,6 +380,22 @@ public class MoveInfo extends GenInfo {
                 }
             });
         }
+
+	static boolean targetsloaded = false;
+	private static void loadTargets() {
+		if (targetsloaded) {
+			return;
+		}
+		testLoad();
+		targetsloaded = true;
+		String path = "db/moves/" + thisGen + "G/range.txt";
+		InfoFiller.fill(path, new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).range = Target.values()[b];
+			}
+		});
+	}
 
 	private static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();
