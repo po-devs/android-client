@@ -336,7 +336,7 @@ public class Battle extends SpectatingBattle {
 			byte count = msg.readByte();
 			Log.w("SpectatingBattle", bc.name() + item + ":" + count);
 		} default: {
-			super.dealWithCommand(bc, player, msg);
+			super.dealWithCommand(bc, num, msg);
 			break;
 		}
 		}

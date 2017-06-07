@@ -709,7 +709,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
     public void attackClicked (byte zone) {
         //netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage);
         AttackChoice ac = new AttackChoice(zone, (byte)opp, megaClicked, zmoveClicked);
-        myChoices[currentChoiceSlot] = new BattleChoice((byte)me, ac, ChoiceType.AttackType);
+        myChoices[currentChoiceSlot] = new BattleChoice((byte)battle.slot(me, currentChoiceSlot), ac, ChoiceType.AttackType);
         if (battle.numberOfSlots == 1) {
             goToNextChoice();
         } else {
@@ -1154,7 +1154,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             for(int i = 0; i < 6; i++) {
                 if(id == pokeList[i].whole.getId()) {
                     SwitchChoice sc = new SwitchChoice((byte)i);
-                    myChoices[currentChoiceSlot] = new BattleChoice((byte)me, sc, ChoiceType.SwitchType);
+                    myChoices[currentChoiceSlot] = new BattleChoice((byte)battle.slot(me, currentChoiceSlot), sc, ChoiceType.SwitchType);
                     realViewSwitcher.setCurrentItem(0, true);
                     zmoveClicked = false;
                     goToNextChoice();

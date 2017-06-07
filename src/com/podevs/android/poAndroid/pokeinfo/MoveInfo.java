@@ -189,9 +189,11 @@ public class MoveInfo extends GenInfo {
 		return moveNames.get(num).range;
 	}
 
-	public static String targetToString(int num) {
-		Target t = target(num);
+	public static String targetString(int num) {
+		return targetToString(target(num));
+	}
 
+	public static String targetToString(Target t) {
 		switch (t) {
 			case ChosenTarget:
 				return "Single Target";
