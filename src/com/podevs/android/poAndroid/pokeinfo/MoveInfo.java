@@ -28,6 +28,41 @@ public class MoveInfo extends GenInfo {
 		IndeterminateTarget //13
 	}
 
+	public enum Flags {
+		ContactFlag(1), // Is the move a contact move
+		ChargeFlag(2), // Is the move a charging move? not used by PO yet
+		RechargeFlag(4), // Is the move a recharging move? not used by PO yet
+		ProtectableFlag(8), //Can the move be protected against
+		MagicCoatableFlag(16), //Can the move be magic coated
+		SnatchableFlag(32), //Can the move be snatched
+		MemorableFlag(64), //Can the move be mirror moves
+		PunchFlag(128), //Is the move boosted with Iron Fist
+		SoundFlag(256), //Is the move blocked with SoundProof
+		FlyingFlag(512), //Is the move an invulnerable move (shadow force/...)? not used by PO yet
+		UnthawingFlag(1024), // Does the user of this move unthaw when frozen?
+		FarReachFlag(2048), // Can this move reach targets far across in triples?
+		HealingFlag(4096), //Can this move be blocked with Heal Block
+		MischievousFlag(8192), // Can this move bypass substitute?
+		BiteFlag(16384),//Strong jaw moves
+		PowderFlag(32768), //Powder moves
+		BallFlag(65536), //Ball moves for Bulletproof
+		LaunchFlag(131072), //Moves that get boosted by Mega Launcher
+		DanceFlag(262144) // Dancing moves for ability Dancer
+		;
+
+		int value;
+
+		Flags(int num)
+		{
+			this.value = num;
+		}
+
+		public int getValue()
+		{
+			return value;
+		}
+	}
+
 	public static class Move {
 		public String name;
 		byte damageClass = 0;
@@ -36,6 +71,7 @@ public class MoveInfo extends GenInfo {
 		byte accuracy = 0;
 		byte power = 0;
 		byte zpower = 0;
+		int flags = 0;
 		String effect = null;
 		String zeffect = null;
 		Target range = Target.ChosenTarget;
@@ -62,6 +98,8 @@ public class MoveInfo extends GenInfo {
 		typeloaded = false;
 		accuracyloaded = false;
 		effectsloaded = false;
+		targetsloaded = false;
+		flagsloaded = false;
 		genmovelistloaded = false;
 	}
 
@@ -226,6 +264,13 @@ public class MoveInfo extends GenInfo {
 			default:
 				return "---";
 		}
+	}
+
+	public static int flags(int num)
+	{
+		loadFlags();
+
+		return moveNames.get(num).flags;
 	}
 
 	public static String message(int num, int part) {
@@ -395,6 +440,22 @@ public class MoveInfo extends GenInfo {
 			@Override
 			void fillByte(int i, byte b) {
 				moveNames.get(i).range = Target.values()[b];
+			}
+		});
+	}
+
+	static boolean flagsloaded = false;
+	private static void loadFlags() {
+		if (flagsloaded) {
+			return;
+		}
+		testLoad();
+		flagsloaded = true;
+		String path = "db/moves/" + thisGen + "G/flags.txt";
+		InfoFiller.fill(path, new InfoFiller.FillerInt() {
+			@Override
+			void fillInt(int i, int b) {
+				moveNames.get(i).flags = b;
 			}
 		});
 	}

@@ -721,6 +721,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             }
             if (t == MoveInfo.Target.ChosenTarget || t == MoveInfo.Target.PartnerOrUser || t == MoveInfo.Target.Partner || t == MoveInfo.Target.MeFirstTarget || t == MoveInfo.Target.IndeterminateTarget
                     || activeBattle.numberOfSlots == 3) {
+                updateTargetButtons(activeBattle.myTeam.pokes[currentChoiceSlot].moves[zone].num());
                 switchToTargetView();
             } else {
                 goToNextChoice();
@@ -752,12 +753,122 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         attackRow2.setVisibility(View.GONE);
         targetRow1.setVisibility(View.VISIBLE);
         targetRow2.setVisibility(View.VISIBLE);
+    }
 
+    public boolean areAdjacent(int slot1, int slot2)
+    {
+        return Math.abs(slot1-slot2) <= 1;
+    }
+
+    public void updateTargetButtons(int move) {
         for (int i = 0; i < activeBattle.numberOfSlots; i++) {
             targetIcons[me][i].setImageDrawable(PokemonInfo.iconDrawable(activeBattle.currentPoke(me, i).uID));
             targetIcons[opp][i].setImageDrawable(PokemonInfo.iconDrawable(activeBattle.currentPoke(opp, i).uID));
             targetNames[me][i].setText(PokemonInfo.name(activeBattle.currentPoke(me, i).uID));
             targetNames[opp][i].setText(PokemonInfo.name(activeBattle.currentPoke(opp, i).uID));
+
+            setTargetButtonEnabled(me, i, false);
+            setTargetButtonEnabled(opp, i, false);
+            targetLayouts[me][i].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button));
+            targetLayouts[opp][i].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button));
+        }
+
+        switch (MoveInfo.target(move)) {
+            case All:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                            targetLayouts[i][j].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+                        }
+                    }
+                }
+                break;
+            case AllButSelf:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if ((i != me || j !=currentChoiceSlot) && areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                            targetLayouts[i][j].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+                        }
+                    }
+                }
+                break;
+            case Opponents:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == opp && areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                            targetLayouts[i][j].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+                        }
+                    }
+                }
+                break;
+            case OpposingTeam:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == opp) {
+                            setTargetButtonEnabled(i, j, true);
+                            targetLayouts[i][j].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+                        }
+                    }
+                }
+                break;
+            case TeamParty:
+            case TeamSide:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == me) {
+                            setTargetButtonEnabled(i, j, true);
+                            targetLayouts[i][j].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+                        }
+                    }
+                }
+                break;
+            case IndeterminateTarget:
+            case ChosenTarget:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if ((i != me || j !=currentChoiceSlot) &&
+                                (((MoveInfo.flags(move) & MoveInfo.Flags.FarReachFlag.getValue()) > 0) || areAdjacent(currentChoiceSlot, j)))
+                        setTargetButtonEnabled(i, j, true);
+                    }
+                }
+                break;
+            case PartnerOrUser:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == me && areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                        }
+                    }
+                }
+                break;
+            case MeFirstTarget:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == opp && areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                        }
+                    }
+                }
+                break;
+            case Partner:
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < battle.numberOfSlots; j++) {
+                        if (i == me && (i != me || j !=currentChoiceSlot) && areAdjacent(currentChoiceSlot, j)) {
+                            setTargetButtonEnabled(i, j, true);
+                        }
+                    }
+                }
+                break;
+            case User:
+            case RandomTarget:
+            case Field:
+                setTargetButtonEnabled(me, currentChoiceSlot, true);
+                targetLayouts[me][currentChoiceSlot].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
+            default:
+                return;
         }
     }
 
@@ -1224,6 +1335,13 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         attackNames[num].setShadowLayer((float)1.5, 1, 1, resources.getColor(enabled ? R.color.poke_text_shadow_enabled : R.color.poke_text_shadow_disabled));
         attackPPs[num].setEnabled(enabled);
         attackPPs[num].setShadowLayer((float)1.5, 1, 1, resources.getColor(enabled ? R.color.pp_text_shadow_enabled : R.color.pp_text_shadow_disabled));
+    }
+
+    void setTargetButtonEnabled(int player, int num, boolean enabled) {
+        targetLayouts[player][num].setEnabled(enabled);
+        targetNames[player][num].setEnabled(enabled);
+        targetNames[player][num].setShadowLayer((float)1.5, 1, 1, resources.getColor(enabled ? R.color.poke_text_shadow_enabled : R.color.poke_text_shadow_disabled));
+        targetIcons[player][num].setEnabled(enabled);
     }
 
 	/*

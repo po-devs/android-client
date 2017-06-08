@@ -233,7 +233,6 @@ public class InfoFiller {
 		abstract void fillByte(int i, byte b);
 	}
 
-	/*
 	public static abstract class FillerInt implements Filler {
 		public void fill(int i, String s) {
 			fillInt(i, Integer.parseInt(s));
@@ -241,5 +240,4 @@ public class InfoFiller {
 
 		abstract void fillInt(int i, int b);
 	}
-	*/
 }
