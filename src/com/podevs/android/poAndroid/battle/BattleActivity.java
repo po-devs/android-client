@@ -603,7 +603,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     for (int i = 0; i < 4; i++) {
                         setAttackButtonEnabled(i, false);
                     }
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i < 6; i++) {
                         pokeList[i].setEnabled(i, false);
                     }
                 } else {
@@ -637,10 +637,21 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     }
                     megaClicked = false;
                     for (int i = 0; i < 6; i++) {
-                        if (activeBattle.myTeam.pokes[currentChoiceSlot].status() != Status.Koed.poValue() && !activeBattle.clicked)
-                            pokeList[i].setEnabled(i, activeBattle.allowSwitch[currentChoiceSlot]);
-                        else
+                        if (activeBattle.myTeam.pokes[i].currentHP > 0 && activeBattle.myTeam.pokes[i].status() != Status.Koed.poValue() && !activeBattle.clicked) {
+                            boolean alreadySwitched = false;
+                            for (int j = 0; j < currentChoiceSlot; j++) {
+                                if (myChoices[j].choiceType == ChoiceType.SwitchType && ((SwitchChoice) myChoices[j].choice).pokeSlot == i) {
+                                    alreadySwitched = true;
+                                }
+                            }
+                            if (!alreadySwitched && i >= activeBattle.numberOfSlots) {
+                                pokeList[i].setEnabled(i, activeBattle.allowSwitch[currentChoiceSlot]);
+                            } else {
+                                pokeList[i].setEnabled(i, false);
+                            }
+                        } else {
                             pokeList[i].setEnabled(i, false);
+                        }
                     }
                 }
             }
@@ -668,8 +679,8 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
             public void run() {
                 for (int i = 0; i < 6; i++) {
-                    BattlePoke poke = activeBattle.myTeam.pokes[currentChoiceSlot];
-                    pokeList[currentChoiceSlot].update(poke, activeBattle.allowSwitch[currentChoiceSlot] && !activeBattle.clicked);
+                    BattlePoke poke = activeBattle.myTeam.pokes[i];
+                    pokeList[i].update(poke, activeBattle.allowSwitch[currentChoiceSlot] && !activeBattle.clicked && poke.currentHP > 0 && poke.status() != Status.Koed.poValue());
                 }
             }
         });
