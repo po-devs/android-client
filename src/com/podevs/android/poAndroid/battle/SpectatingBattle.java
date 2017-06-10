@@ -856,7 +856,26 @@ public class SpectatingBattle {
                 break;
             }
             case SpotShifts: {
-                // TODO
+                byte spot1 = msg.readByte();
+                byte spot2 = msg.readByte();
+                boolean silent = msg.readBool();
+                if (!silent) {
+                    if (pokes[player][spot1].status() == Status.Koed.poValue()) {
+                        writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                                " moved to the center!")));
+                    } else {
+                        writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                                " shifted spots with " + pokes[player][spot1].nick + "!")));
+                    }
+                }
+                ShallowBattlePoke tempPoke = pokes[player][spot1];
+                pokes[player][spot1] = pokes[player][spot2];
+                pokes[player][spot2] = tempPoke;
+                if(activity != null)
+                {
+                    activity.updatePokes(player, spot1);
+                    activity.updatePokes(player, spot2);
+                }
                 break;
             }
             case DynamicInfo: {

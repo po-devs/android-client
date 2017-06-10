@@ -1044,17 +1044,17 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             currentPokeStatuses[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB3);
             currentPokeStatuses[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA3);
 
-            if (battle.numberOfSlots == 2) {
-                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
-                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB2).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            }
             if (battle.numberOfSlots == 1) {
                 battleView.findViewById(R.id.pokeInfoA2).setVisibility(View.GONE);
                 battleView.findViewById(R.id.pokeInfoB2).setVisibility(View.GONE);
                 battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
                 battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
                 ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB1).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            }
+            if (battle.numberOfSlots == 2) {
+                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
+                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
+                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB2).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             }
 
             for(int i = 0; i < 3; i++) {
@@ -1101,6 +1101,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
                 pokeSprites[me][2] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
                 pokeSprites[opp][2] = (WebView) battleView.findViewById(R.id.pokeSpriteA3);
+
+                /*if (!isSpectating()) {
+                    ((ViewGroup.MarginLayoutParams) infoScroll.getLayoutParams()).setMargins(4, 0, 4, 128);
+                }
+                ((ViewGroup.MarginLayoutParams)attackRow1.getLayoutParams()).setMargins(0, -126, 0, 79);
+                ((ViewGroup.MarginLayoutParams)attackRow2.getLayoutParams()).setMargins(0, -77, 0, 32);*/
             }
 
             for(int i = 0; i < 2; i++) {
@@ -1290,6 +1296,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     }
                 }
             }
+
             updateButtons();
         }
     };
@@ -1407,6 +1414,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
+            menu.findItem(R.id.shifttocenter).setVisible(!activeBattle.clicked && activeBattle.numberOfSlots == 3 && currentChoiceSlot != 1);
         }
         return true;
     }
@@ -1432,6 +1440,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 } else {
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
                 }
+                break;
+            case R.id.shifttocenter:
+                MoveToCenterChoice mtc = new MoveToCenterChoice();
+                myChoices[currentChoiceSlot] = new BattleChoice((byte)battle.slot(me, currentChoiceSlot), mtc, ChoiceType.CenterMoveType);
+                zmoveClicked = false;
+                goToNextChoice();
                 break;
             case R.id.cancel:
                 netServ.socket.sendMessage(activeBattle.constructCancel(), Command.BattleMessage);

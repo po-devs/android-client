@@ -101,7 +101,7 @@ public class Battle extends SpectatingBattle {
 		switch(bc) {
 		case SendOut: {
 			if (player != me) {
-				super.dealWithCommand(bc, player, msg);
+				super.dealWithCommand(bc, num, msg);
 				return;
 			}
 
@@ -256,9 +256,9 @@ public class Battle extends SpectatingBattle {
 			shouldStruggle[slot] = (allowAttack[slot] && !allowAttacks[slot][0] && !allowAttacks[slot][1] && !allowAttacks[slot][2] && !allowAttacks[slot][3]);
 
 			clicked = false;
-			activity.currentChoiceSlot = 0;
 
 			if (activity != null) {
+				activity.currentChoiceSlot = 0;
 				activity.updateButtons();
 				activity.invalidateOptionsMenu();
 			}
@@ -296,14 +296,33 @@ public class Battle extends SpectatingBattle {
 			break;
 		} case StraightDamage: {
 			if (player != me) {
-				super.dealWithCommand(bc, player, msg);
+				super.dealWithCommand(bc, num, msg);
 			} else {
 				short damage = msg.readShort();
 				writeToHist("\n" + tu(currentPoke(player, slot).nick + " lost " + damage + "HP! (" + (damage*100/myTeam.pokes[player/2].totalHP) + "% of its health)"));
 			}
 			break;
 		} case SpotShifts: {
-			// TODO
+		    byte spot1 = msg.readByte();
+		    byte spot2 = msg.readByte();
+		    boolean silent = msg.readBool();
+		    if (!silent) {
+                if (pokes[player][spot1].status() == Status.Koed.poValue()) {
+                    writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                            " moved to the center!")));
+                } else {
+                    writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                            " shifted spots with " + pokes[player][spot1].nick + "!")));
+                }
+            }
+            ShallowBattlePoke tempPoke = pokes[player][spot1];
+		    pokes[player][spot1] = pokes[player][spot2];
+		    pokes[player][spot2] = tempPoke;
+		    if(activity != null)
+            {
+                activity.updatePokes(player, spot1);
+                activity.updatePokes(player, spot2);
+            }
 			break;
 		} case RearrangeTeam: {
 			oppTeam = new ShallowShownTeam(msg, conf.gen.num);
