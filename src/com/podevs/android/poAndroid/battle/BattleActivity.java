@@ -1063,8 +1063,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 targetNames[me][i] = (TextView) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Name", "id", InfoConfig.pkgName));
                 targetLayouts[me][i] = (RelativeLayout) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Layout", "id", InfoConfig.pkgName));
                 targetLayouts[me][i].setOnClickListener(battleListener);
-            }
-            for(int i = 0; i < 3; i++) {
                 targetIcons[opp][i] = (ImageView) mainLayout.findViewById(resources.getIdentifier("targetA" + (i+1) + "Icon", "id", InfoConfig.pkgName));
                 targetIcons[opp][i].setImageDrawable(PokemonInfo.iconDrawable(new UniqueID(0)));
                 targetNames[opp][i] = (TextView) mainLayout.findViewById(resources.getIdentifier("targetA" + (i+1) + "Name", "id", InfoConfig.pkgName));
