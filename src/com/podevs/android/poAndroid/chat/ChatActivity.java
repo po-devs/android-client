@@ -920,7 +920,7 @@ public class ChatActivity extends Activity {
 
 				builder.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
-                                prefs.edit().putInt("battleMode", ((Spinner)layout.findViewById(R.id.battle_modes)).getSelectedItemPosition()).commit();
+								prefs.edit().putInt("battleMode", ((Spinner)layout.findViewById(R.id.battle_modes)).getSelectedItemPosition()).commit();
 								int clauses = 0;
 								for (int i = 0; i < numClauses; i++)
 									clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
