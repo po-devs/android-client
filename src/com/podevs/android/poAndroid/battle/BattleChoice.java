@@ -16,7 +16,6 @@ enum ChoiceType {
 
 // Please only call serializeBytes() on the Choices that make sense.
 abstract class Choice implements SerializeBytes {
-	ChoiceType choiceType;
 }
 
 class AttackChoice extends Choice {
@@ -30,7 +29,6 @@ class AttackChoice extends Choice {
 		attackTarget = at;
 		this.mega= mega;
 		this.zmove = zmove;
-		this.choiceType = ChoiceType.AttackType;
 	}
 	
 	public AttackChoice(Bais msg) {
@@ -50,7 +48,6 @@ class AttackChoice extends Choice {
 
 class SwitchChoice extends Choice {
 	byte pokeSlot = 0;
-	ChoiceType choiceType = ChoiceType.SwitchType;
 	
 	public SwitchChoice(byte slot) {
 		pokeSlot = slot;
@@ -67,7 +64,6 @@ class SwitchChoice extends Choice {
 
 class RearrangeChoice extends Choice {
 	byte[] pokeIndexes = new byte[6];
-	ChoiceType choiceType = ChoiceType.RearrangeType;
 	
 	public RearrangeChoice(Bais msg) {
 		try {
@@ -92,8 +88,6 @@ class RearrangeChoice extends Choice {
 }
 
 class MoveToCenterChoice extends Choice {
-	ChoiceType choiceType = ChoiceType.CenterMoveType;
-
 	public void serializeBytes(Baos b) { 
 		System.out.println("Error: serializeBytes called on MoveToCenterChoice");
 		System.exit(-1);
@@ -101,8 +95,6 @@ class MoveToCenterChoice extends Choice {
 }
 
 class DrawChoice extends Choice {
-	ChoiceType choiceType = ChoiceType.DrawType;
-
 	public void serializeBytes(Baos b) { 
 		System.out.println("Error: serializeBytes called on DrawChoice");
 		System.exit(-1); 
