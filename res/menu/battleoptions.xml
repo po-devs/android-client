@@ -18,6 +18,11 @@
         android:showAsAction="ifRoom|withText">
     </item>
     <item
+            android:id="@+id/shifttocenter"
+            android:title="@string/shifttocenter"
+            android:visible="false">
+    </item>
+    <item
         android:id="@+id/close"
         android:title="@string/closeBattle">
     </item>

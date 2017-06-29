@@ -11,6 +11,58 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class MoveInfo extends GenInfo {
+	public enum Target {
+		ChosenTarget, //0
+		PartnerOrUser, //1
+		Partner, //2
+		MeFirstTarget, //3
+		AllButSelf, //4
+		Opponents, //5
+		TeamParty, //6
+		User, //7
+		All, //8
+		RandomTarget, //9
+		Field, //10
+		OpposingTeam, //11
+		TeamSide, //12
+		IndeterminateTarget //13
+	}
+
+	public enum Flags {
+		ContactFlag(1), // Is the move a contact move
+		ChargeFlag(2), // Is the move a charging move? not used by PO yet
+		RechargeFlag(4), // Is the move a recharging move? not used by PO yet
+		ProtectableFlag(8), //Can the move be protected against
+		MagicCoatableFlag(16), //Can the move be magic coated
+		SnatchableFlag(32), //Can the move be snatched
+		MemorableFlag(64), //Can the move be mirror moves
+		PunchFlag(128), //Is the move boosted with Iron Fist
+		SoundFlag(256), //Is the move blocked with SoundProof
+		FlyingFlag(512), //Is the move an invulnerable move (shadow force/...)? not used by PO yet
+		UnthawingFlag(1024), // Does the user of this move unthaw when frozen?
+		FarReachFlag(2048), // Can this move reach targets far across in triples?
+		HealingFlag(4096), //Can this move be blocked with Heal Block
+		MischievousFlag(8192), // Can this move bypass substitute?
+		BiteFlag(16384),//Strong jaw moves
+		PowderFlag(32768), //Powder moves
+		BallFlag(65536), //Ball moves for Bulletproof
+		LaunchFlag(131072), //Moves that get boosted by Mega Launcher
+		DanceFlag(262144) // Dancing moves for ability Dancer
+		;
+
+		int value;
+
+		Flags(int num)
+		{
+			this.value = num;
+		}
+
+		public int getValue()
+		{
+			return value;
+		}
+	}
+
 	public static class Move {
 		public String name;
 		byte damageClass = 0;
@@ -19,8 +71,10 @@ public class MoveInfo extends GenInfo {
 		byte accuracy = 0;
 		byte power = 0;
 		byte zpower = 0;
+		int flags = 0;
 		String effect = null;
 		String zeffect = null;
+		Target range = Target.ChosenTarget;
 
 		Move(String name) {
 			this.name = name;
@@ -44,6 +98,8 @@ public class MoveInfo extends GenInfo {
 		typeloaded = false;
 		accuracyloaded = false;
 		effectsloaded = false;
+		targetsloaded = false;
+		flagsloaded = false;
 		genmovelistloaded = false;
 	}
 
@@ -163,6 +219,58 @@ public class MoveInfo extends GenInfo {
 
 		String zeffect = moveNames.get(num).zeffect;
 		return zeffect == null ? "" : zeffect;
+	}
+
+	public static Target target(int num) {
+		loadTargets();
+
+		return moveNames.get(num).range;
+	}
+
+	public static String targetString(int num) {
+		return targetToString(target(num));
+	}
+
+	public static String targetToString(Target t) {
+		switch (t) {
+			case ChosenTarget:
+				return "Single Target";
+			case PartnerOrUser:
+				return "Self or Ally";
+			case Partner:
+				return "Single Ally";
+			case MeFirstTarget:
+				return "Single Target";
+			case AllButSelf:
+				return "All But Self";
+			case Opponents:
+				return "Adjacent Foes";
+			case TeamParty:
+				return "User's Team";
+			case User:
+				return "Self";
+			case All:
+				return "All";
+			case RandomTarget:
+				return "Random";
+			case Field:
+				return "Field";
+			case OpposingTeam:
+				return "All Foes";
+			case TeamSide:
+				return "All Allies";
+			case IndeterminateTarget:
+				return "Self";
+			default:
+				return "---";
+		}
+	}
+
+	public static int flags(int num)
+	{
+		loadFlags();
+
+		return moveNames.get(num).flags;
 	}
 
 	public static String message(int num, int part) {
@@ -319,6 +427,38 @@ public class MoveInfo extends GenInfo {
                 }
             });
         }
+
+	static boolean targetsloaded = false;
+	private static void loadTargets() {
+		if (targetsloaded) {
+			return;
+		}
+		testLoad();
+		targetsloaded = true;
+		String path = "db/moves/" + thisGen + "G/range.txt";
+		InfoFiller.fill(path, new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).range = Target.values()[b];
+			}
+		});
+	}
+
+	static boolean flagsloaded = false;
+	private static void loadFlags() {
+		if (flagsloaded) {
+			return;
+		}
+		testLoad();
+		flagsloaded = true;
+		String path = "db/moves/" + thisGen + "G/flags.txt";
+		InfoFiller.fill(path, new InfoFiller.FillerInt() {
+			@Override
+			void fillInt(int i, int b) {
+				moveNames.get(i).flags = b;
+			}
+		});
+	}
 
 	private static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();

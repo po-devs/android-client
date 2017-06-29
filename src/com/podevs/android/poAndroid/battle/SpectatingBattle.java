@@ -151,8 +151,9 @@ public class SpectatingBattle {
         return remainingTime[opp];
     }
     */
-    public ShallowBattlePoke currentPoke(int player) {
-        return pokes[player][0];
+
+    public ShallowBattlePoke currentPoke(int player, int slot) {
+        return pokes[player][slot];
     }
 
     public boolean isOut(Byte poke) {
@@ -264,7 +265,7 @@ public class SpectatingBattle {
 
                 if (activity != null) {
                     //activity.samePokes[player][slot] = false;
-                    activity.updatePokes(player);
+                    activity.updatePokes(player, slot);
                     activity.updatePokeballs();
                 }
 
@@ -438,7 +439,7 @@ public class SpectatingBattle {
                     pokes[player][poke].changeStatus(status);
                     if (activity != null) {
                         if (isOut(poke))
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         activity.updatePokeballs();
                     }
                 }
@@ -726,7 +727,7 @@ public class SpectatingBattle {
 
                 if (activity != null) {
                     //activity.samePokes[player][slot] = false;
-                    activity.updatePokes(player);
+                    activity.updatePokes(player, slot);
                 }
                 break;
             }
@@ -793,7 +794,7 @@ public class SpectatingBattle {
                             pokes[player][slot].specialSprites.removeFirst();
                         if (activity != null) {
                             //activity.samePokes[player][slot] = false;
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         }
                         break;
                     case DefiniteForme: {
@@ -805,7 +806,7 @@ public class SpectatingBattle {
                             pokes[player][slot].uID = newForm;
                             if (activity != null) {
                                 //activity.samePokes[player][slot] = false;
-                                activity.updatePokes(player);
+                                activity.updatePokes(player, slot);
                             }
                         }
                         break;
@@ -815,7 +816,7 @@ public class SpectatingBattle {
                         pokes[player][slot].uID.subNum = (byte) newForm;
                         if (activity != null) {
                             //activity.samePokes[player][slot] = false;
-                            activity.updatePokes(player);
+                            activity.updatePokes(player, slot);
                         }
                     default:
                         break;
@@ -844,7 +845,7 @@ public class SpectatingBattle {
                     try {
                         synchronized (this) {
                             int change = pokes[player][slot].lastKnownPercent - pokes[player][slot].lifePercent;
-                            activity.animateHpBarTo(player, pokes[player][slot].lifePercent, change);
+                            activity.animateHpBarTo(player, slot, pokes[player][slot].lifePercent, change);
                             if (change < 0) change = -change;
                             if (change > 100) change = 100;
                             if (!baked) wait(5000);
@@ -855,7 +856,26 @@ public class SpectatingBattle {
                 break;
             }
             case SpotShifts: {
-                // TODO
+                byte spot1 = msg.readByte();
+                byte spot2 = msg.readByte();
+                boolean silent = msg.readBool();
+                if (!silent) {
+                    if (pokes[player][spot1].status() == Status.Koed.poValue()) {
+                        writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                                " moved to the center!")));
+                    } else {
+                        writeToHist(Html.fromHtml("<br>" + tu(pokes[player][spot2].nick +
+                                " shifted spots with " + pokes[player][spot1].nick + "!")));
+                    }
+                }
+                ShallowBattlePoke tempPoke = pokes[player][spot1];
+                pokes[player][spot1] = pokes[player][spot2];
+                pokes[player][spot2] = tempPoke;
+                if(activity != null)
+                {
+                    activity.updatePokes(player, spot1);
+                    activity.updatePokes(player, spot2);
+                }
                 break;
             }
             case DynamicInfo: {

@@ -54,10 +54,16 @@ public class ChallengeEnums {
 
 		public enum Mode
 		{
-			Singles,
-			Doubles,
-			Triples,
-			Rotation,
+			Singles { public final String toString() { return "Singles"; }
+			public final int numberOfSlots() { return 1; } },
+			Doubles { public final String toString() { return "Doubles"; }
+			public final int numberOfSlots() { return 2; } },
+			Triples { public final String toString() { return "Triples"; }
+			public final int numberOfSlots() { return 3; } },
+			Rotation { public final String toString() { return "Rotation"; }
+			public final int numberOfSlots() { return 3; } };
+
+        public abstract int numberOfSlots();
 		};
 
 	public static String clausesToStringHtml(int clauses) {

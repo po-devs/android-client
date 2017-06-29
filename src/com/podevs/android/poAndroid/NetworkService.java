@@ -1226,11 +1226,7 @@ public class NetworkService extends Service {
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
-				if (conf.mode != 0) {
-					Log.e(TAG, "Can't watch doubles/triples/rotation: " + battleId);
 
-					return;
-				}
 	            PlayerInfo p1 = getNonNullPlayer(conf.id(0));
 	            PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);

@@ -13,4 +13,6 @@
 <color name="poke_text_shadow_disabled">#ccffffff</color>
 <color name="pp_text_shadow_enabled">#ff333333</color>
 <color name="pp_text_shadow_disabled">#cc000000</color>
+    <color name="target_text_shadow_enabled">#ff333333</color>
+    <color name="target_text_shadow_disabled">#cc000000</color>
 </resources>
