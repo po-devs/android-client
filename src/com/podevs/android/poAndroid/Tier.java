@@ -35,8 +35,7 @@ public class Tier {
 	}
 	
 	public ArrayAdapter<Tier> getArrayAdapter(Context c, int textViewResId) {
-		ArrayAdapter<Tier> aat = new ArrayAdapter<Tier>(c, textViewResId, subTiers);
-		return aat;
+		return new ArrayAdapter<Tier>(c, textViewResId, subTiers);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)

@@ -97,7 +97,7 @@ public class Settings extends PreferenceFragment {
     private Boolean dealWithVolume(String number) {
         try {
         Integer i = Integer.parseInt(number);
-            if (100 >= i && i >= 0) {
+            if (i <= 100 && i >= 0) {
                 makeToast("Volume: " + number);
                 return true;
             }
