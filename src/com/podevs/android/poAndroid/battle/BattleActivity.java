@@ -1051,7 +1051,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
                 ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB1).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             }
-            if (battle.numberOfSlots == 2) {
+            else if (battle.numberOfSlots == 2) {
                 battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
                 battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
                 ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB2).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

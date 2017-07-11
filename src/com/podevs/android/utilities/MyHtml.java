@@ -39,9 +39,7 @@ public class MyHtml {
         org.ccil.cowan.tagsoup.Parser parser = new org.ccil.cowan.tagsoup.Parser();
         try {
             parser.setProperty(org.ccil.cowan.tagsoup.Parser.schemaProperty, HtmlParser.schema);
-        } catch (org.xml.sax.SAXNotRecognizedException e) {
-            throw new RuntimeException(e);
-        } catch (org.xml.sax.SAXNotSupportedException e) {
+        } catch (org.xml.sax.SAXNotRecognizedException | org.xml.sax.SAXNotSupportedException e) {
             throw new RuntimeException(e);
         }
 
@@ -120,11 +118,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         mReader.setContentHandler(this);
         try {
             mReader.parse(new InputSource(new StringReader(mSource)));
-        } catch (IOException e) {
-
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-
+        } catch (IOException | SAXException e) {
             throw new RuntimeException(e);
         }
 
