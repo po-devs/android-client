@@ -44,7 +44,7 @@ public class PlayerInfo implements SerializeBytes {
 		short len = msg.readShort();
 		short version = (short)((short)msg.readByte() & 0xff);
 		if (VERSION < version) {
-			Log.d(TAG, "Skipped unkown version " + version);
+			Log.d(TAG, "Skipped unknown version " + version);
 			msg.skip(len - 1);
 		}
 		id = msg.readInt();
