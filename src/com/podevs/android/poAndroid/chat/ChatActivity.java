@@ -779,7 +779,7 @@ public class ChatActivity extends Activity {
 				builder.setTitle(R.string.find_a_battle)
 						.setMultiChoiceItems(new CharSequence[]{getString(R.string.force_rated), getString(R.string.force_same_tier), getString(R.string.only_within_range)}, new boolean[]{prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false)}, new DialogInterface.OnMultiChoiceClickListener() {
 							public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-								prefs.edit().putBoolean("findOption" + which, isChecked).commit();
+								prefs.edit().putBoolean("findOption" + which, isChecked).apply();
 							}
 						})
 						.setView(range)
@@ -788,9 +788,9 @@ public class ChatActivity extends Activity {
 								if (netServ != null && netServ.socket.isConnected()) {
 									netServ.findingBattle = true;
 									try {
-										prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).commit();
+										prefs.edit().putInt("range", Integer.valueOf(range.getText().toString())).apply();
 									} catch (NumberFormatException e) {
-										prefs.edit().remove("range").commit();
+										prefs.edit().remove("range").apply();
 									}
 									netServ.socket.sendMessage(
 											constructFindBattle(prefs.getBoolean("findOption0", false), prefs.getBoolean("findOption1", true), prefs.getBoolean("findOption2", false), prefs.getInt("range", 200)), Command.FindBattle);
@@ -888,10 +888,8 @@ public class ChatActivity extends Activity {
 			} case ChallengeMode: {
 				final Clauses[] clauses = Clauses.values();
 				final int numClauses = clauses.length;
-				final String[] clauseNames = new String[numClauses];
 				final boolean[] checked = new boolean[numClauses];
 				for (int i=0; i < numClauses; i++) {
-					clauseNames[i] = clauses[i].toString();
 					checked[i] = prefs.getBoolean("challengeOption" + i, false);
 				}
 				View layout = inflater.inflate(R.layout.challenge_mode, (LinearLayout)findViewById(R.id.challenge_mode));
@@ -914,13 +912,13 @@ public class ChatActivity extends Activity {
 					public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 						CheckBox check = (CheckBox)arg1.findViewById(R.id.clausecheck);
 						check.toggle();
-						prefs.edit().putBoolean("challengeOption" + arg2, check.isChecked()).commit();
+						prefs.edit().putBoolean("challengeOption" + arg2, check.isChecked()).apply();
 					}
 				});
 
 				builder.setPositiveButton("Challenge", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
-								prefs.edit().putInt("battleMode", ((Spinner)layout.findViewById(R.id.battle_modes)).getSelectedItemPosition()).commit();
+								prefs.edit().putInt("battleMode", ((Spinner)layout.findViewById(R.id.battle_modes)).getSelectedItemPosition()).apply();
 								int clauses = 0;
 								for (int i = 0; i < numClauses; i++)
 									clauses |= (prefs.getBoolean("challengeOption" + i, false) ? Clauses.values()[i].mask() : 0);
@@ -1134,7 +1132,7 @@ public class ChatActivity extends Activity {
 			case R.id.idle:
 				boolean checked = !item.isChecked();
 
-				getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).commit();
+				getSharedPreferences("clientOptions", MODE_PRIVATE).edit().putBoolean("idle", checked).apply();
 				netServ.socket.sendMessage(new Baos().putFlags(new boolean[]{netServ.me.hasLadderEnabled, checked}), Command.OptionsChanged);
 				break;
 			case R.id.register:
@@ -1351,11 +1349,7 @@ public class ChatActivity extends Activity {
 				}
 				break;
 			case ChannelEvent:
-				if (lastClickedChannel.channelEvents) {
-					channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = false;
-				} else {
-					channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = true;
-				}
+				channelAdapter.getItem(channelAdapter.getPosition(lastClickedChannel)).channelEvents = !lastClickedChannel.channelEvents;
 				break;
 			case ControlPanel:
 				controlUser = lastClickedPlayer.nick();

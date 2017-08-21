@@ -115,7 +115,7 @@ public class PlayerProfile implements SerializeBytes {
 		editor.putInt("avatar", trainerInfo.avatar);
 		editor.putString("color", color.toHexString());
 		
-		editor.commit();
+		editor.apply();
 	}
 	
 	public boolean equals(PlayerProfile p) {

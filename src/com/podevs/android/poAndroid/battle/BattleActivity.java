@@ -878,8 +878,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             case Field:
                 setTargetButtonEnabled(me, currentChoiceSlot, true);
                 targetLayouts[me][currentChoiceSlot].setBackgroundDrawable(resources.getDrawable(R.drawable.battle_border_button_blue));
-            default:
-                return;
         }
     }
 
@@ -1465,7 +1463,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 break;
             case R.id.sounds:
                 item.setChecked(!item.isChecked());
-                getSharedPreferences("battle", Context.MODE_PRIVATE).edit().putBoolean("pokemon_cries", item.isChecked()).commit();
+                getSharedPreferences("battle", Context.MODE_PRIVATE).edit().putBoolean("pokemon_cries", item.isChecked()).apply();
                 break;
             case R.id.debug:
                 showDialog(BattleDialog.Debug.ordinal());
