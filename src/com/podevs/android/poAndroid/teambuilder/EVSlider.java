@@ -12,12 +12,11 @@ import com.podevs.android.poAndroid.pokeinfo.StatsInfo;
 
 public class EVSlider {
 	public interface EVListener {
-		public void onEVChanged(int stat, int ev);
+		void onEVChanged(int stat, int ev);
 	}
 
 	private TextView total;
 	private SeekBar slider;
-	private TextView label;
 	private EditText edit;
 	public EVListener listener;
 	private View parent;
@@ -25,7 +24,7 @@ public class EVSlider {
 	EVSlider(View lay, final int stat) {
 		total = (TextView)lay.findViewById(R.id.total);
 		slider = (SeekBar)lay.findViewById(R.id.slider);
-		label = (TextView)lay.findViewById(R.id.label);
+		TextView label = (TextView) lay.findViewById(R.id.label);
 		edit = (EditText)lay.findViewById(R.id.edit);
 		edit.setImeOptions(EditorInfo.IME_ACTION_DONE);
 		label.setText(StatsInfo.ShortcutRes(stat));
@@ -79,7 +78,7 @@ public class EVSlider {
 		total.setText(Integer.toString(num));
 	}
 
-	public void setVisibility(int visibility) {
+	void setVisibility(int visibility) {
 		parent.setVisibility(visibility);
 	}
 }

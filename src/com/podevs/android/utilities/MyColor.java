@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class MyColor {
-    public static final int BLACK       = 0xFF000000;
+    public static final int BLACK = 0xFF000000;
 
     public static int parseColor(String colorString) {
         if (colorString.charAt(0) == '#') {

@@ -18,13 +18,12 @@ import java.util.ArrayList;
 
 public class MoveChooserFragment extends Fragment {
 	public interface MoveChooserListener {
-		public void onMovesetChanged(boolean stats);
+		void onMovesetChanged(boolean stats);
 	}
 
 	private ListView moveList = null;
 	private MoveListAdapter moveAdapter = null;
-    private AutoCompleteTextView moveChoice = null;
-    private ArrayAdapter<String> moveChoiceAdapter = null;
+	private ArrayAdapter<String> moveChoiceAdapter = null;
 	public MoveChooserListener listener = null;
     private ArrayList<String> names = null;
 
@@ -39,7 +38,7 @@ public class MoveChooserFragment extends Fragment {
 
 		moveList.setAdapter(moveAdapter);
 
-        moveChoice = (AutoCompleteTextView) v.findViewById(R.id.moveChoice);
+		AutoCompleteTextView moveChoice = (AutoCompleteTextView) v.findViewById(R.id.moveChoice);
         moveChoiceAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line);
         updateNames();
         moveChoice.setAdapter(moveChoiceAdapter);

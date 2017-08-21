@@ -62,16 +62,6 @@
             }
         }
 
-        /*
-        public static int[] usefulItems() {
-            if (usefulItems == null) {
-                loadUsefulItems();
-            }
-
-            return usefulItems;
-        }
-        */
-
         public static int[] getUsefulThisGeneration() {
             if (usefulThisGeneration == null) {
                 if (usefulItems == null) {

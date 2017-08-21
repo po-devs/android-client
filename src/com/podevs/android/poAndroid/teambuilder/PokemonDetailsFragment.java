@@ -23,7 +23,7 @@ import java.util.List;
 
 public class PokemonDetailsFragment extends Fragment implements EVListener {
 	public interface PokemonDetailsListener {
-		public void onPokemonEdited(boolean updateAll);
+		void onPokemonEdited(boolean updateAll);
 	}
 
 	private EVSlider sliders[] = null;

@@ -18,14 +18,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RegistryConnectionService extends Service {
 	public interface RegistryCommandListener {
 	
-		public abstract void ServerListEnd();
-		public abstract void RegistryConnectionClosed();
+		void ServerListEnd();
+		void RegistryConnectionClosed();
 
 		/*
 		 * Called when Registry sends us a new Server
 		 */
-		public abstract void NewServer(String name, String desc,
-				short players, String ip, short maxplayers, int port);
+		void NewServer(String name, String desc, short players, String ip, short maxplayers, int port);
 	}
 	
 	private final ConcurrentHashMap<Intent, LocalBinder> binders = new ConcurrentHashMap<Intent, RegistryConnectionService.LocalBinder>();

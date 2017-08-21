@@ -32,7 +32,6 @@ public class StringUtilities {
     private final static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.UK);
 	public static String timeStamp() {
         return format.format(System.currentTimeMillis());
-		//return SimpleDateFormat.getTimeInstance(SimpleDateFormat.MEDIUM, Locale.UK).format(System.currentTimeMillis());
 	}
 	
 	public static String def(String s, String def) {
@@ -61,8 +60,7 @@ public class StringUtilities {
 				sb.append( line );
 				sb.append( '\n' );
 			}
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 		return sb.toString();
 	}
 

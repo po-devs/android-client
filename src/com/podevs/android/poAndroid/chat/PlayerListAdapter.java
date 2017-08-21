@@ -20,9 +20,6 @@ import java.util.Comparator;
 
 public class PlayerListAdapter extends ArrayAdapter<com.podevs.android.poAndroid.player.PlayerInfo>{
 	
-	static final int battlingColor = Color.parseColor("#5d838c");
-	static int defaultColor = -1;
-	
 	public PlayerListAdapter(Context context, int resource) {
 		super(context, resource);
 	}

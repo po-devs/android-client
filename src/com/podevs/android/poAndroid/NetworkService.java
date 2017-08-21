@@ -41,7 +41,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NetworkService extends Service {
-	static final String TAG = "Network Service";
+	final static String TAG = "Network Service";
 	final static String pkgName = "com.podevs.android.poAndroid";
 	final static String defaultKey = "default chan for ";
 
@@ -70,7 +70,6 @@ public class NetworkService extends Service {
 	private ImageParser imageParser;
 	private static Pattern hashTagPattern;
 	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
-	private Matcher hashTagMatcher;
 
 	public static class chatPrefs {
 		// Chat
@@ -653,25 +652,25 @@ public class NetworkService extends Service {
 			 */
 			if (serverVersion.compareTo(version) > 0) {
 				Log.d(TAG, "Server has newer protocol version than we expect");
-			} else if (serverVersion.compareTo(version) < 0) {
+			} // else if (serverVersion.compareTo(version) < 0) {
 				//Toast.makeText(this, "PO Android uses newer network protocol than Server", Toast.LENGTH_LONG);
-			}
+			// }
 
 			serverSupportsZipCompression = msg.readBool();
 
-			ProtocolVersion lastVersionWithoutFeatures = new ProtocolVersion(msg);
-			ProtocolVersion lastVersionWithoutCompatBreak = new ProtocolVersion(msg);
-			ProtocolVersion lastVersionWithoutMajorCompatBreak = new ProtocolVersion(msg);
+			// ProtocolVersion lastVersionWithoutFeatures = new ProtocolVersion(msg);
+			// ProtocolVersion lastVersionWithoutCompatBreak = new ProtocolVersion(msg);
+			// ProtocolVersion lastVersionWithoutMajorCompatBreak = new ProtocolVersion(msg);
 
-			if (serverVersion.compareTo(version) > 0) {
-				if (lastVersionWithoutFeatures.compareTo(version) > 0) {
+			//if (serverVersion.compareTo(version) > 0) {
+				// if (lastVersionWithoutFeatures.compareTo(version) > 0) {
 					//Toast.makeText(this, R.string.new_server_feaantures_warning, Toast.LENGTH_SHORT).show();
-				} else if (lastVersionWithoutCompatBreak.compareTo(version) > 0) {
+				//} else if (lastVersionWithoutCompatBreak.compareTo(version) > 0) {
 					//Toast.makeText(this, R.string.minor_compat_break_warning, Toast.LENGTH_SHORT).show();
-				} else if (lastVersionWithoutMajorCompatBreak.compareTo(version) > 0) {
+				//} else if (lastVersionWithoutMajorCompatBreak.compareTo(version) > 0) {
 					//Toast.makeText(this, R.string.major_compat_break_warning, Toast.LENGTH_LONG).show();
-				}
-			}
+				//}
+			//}
 			serverName = msg.readString();
 			if (chatActivity != null) {
 				chatActivity.updateTitle();
@@ -854,7 +853,8 @@ public class NetworkService extends Service {
 				player = players.get(pId = msg.readInt());
 			}
 			CharSequence message = msg.readString();
-			if (hasId) {
+				Matcher hashTagMatcher;
+				if (hasId) {
 				if (ignoreList.contains(pId)) {
 					break;
 				}
@@ -1112,10 +1112,10 @@ public class NetworkService extends Service {
 			msg.readByte(); // battle mode
 			int id1 = msg.readInt();
 			int id2 = msg.readInt();
-			Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
+			// Log.i(TAG, "bID " + battleID + " battleDesc " + battleDesc + " id1 " + id1 + " id2 " + id2);
 			String[] outcome = new String[]{" won by forfeit against ", " won against ", " tied with "};
 			if (isBattling(battleID) || spectatedBattles.containsKey(battleID)) {
-				if (isBattling(battleID)) {
+//				if (isBattling(battleID)) {
 					//TODO: notification on win/lose
 //					if (mePlayer.id == id1 && battleDesc < 2) {
 //						showNotification(ChatActivity.class, "Chat", "You won!");
@@ -1124,7 +1124,7 @@ public class NetworkService extends Service {
 //					} else if (battleDesc == 2) {
 //						showNotification(ChatActivity.class, "Chat", "You tied!");
 //					}
-				}
+//				}
 
 				if (battleDesc < 2) {
 					joinedChannels.peek().writeToHist(MyHtml.fromHtml("<b><i>" +
@@ -1521,16 +1521,14 @@ public class NetworkService extends Service {
 	public void sendPass(String s, boolean isUserPass) {
 		MessageDigest md5;
 		if (isUserPass) {
-			getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).commit();
+			getSharedPreferences("passwords", MODE_PRIVATE).edit().putString(salt, s).apply();
 			askedForPass = false;
 			try {
 				md5 = MessageDigest.getInstance("MD5");
 				Baos hashPass = new Baos();
 				hashPass.putBytes(md5.digest(mashBytes(toHex(md5.digest(s.getBytes("ISO-8859-1"))).getBytes("ISO-8859-1"), salt.getBytes("ISO-8859-1"))));
 				socket.sendMessage(hashPass, Command.AskForPass);
-			} catch (NoSuchAlgorithmException nsae) {
-			} catch (UnsupportedEncodingException uee) {
-			}
+			} catch (NoSuchAlgorithmException| UnsupportedEncodingException e) {}
 		} else {
 			try {
 				askedForServerPass = false;
@@ -1539,9 +1537,7 @@ public class NetworkService extends Service {
 				hashPass.putBytes(md5.digest(mashBytes(md5.digest(s.getBytes("ISO-8859-1")), salty)));
 				socket.sendMessage(hashPass, Command.ServerPassword);
 				salty = null;
-			} catch (NoSuchAlgorithmException nsae) {
-			} catch (UnsupportedEncodingException uee) {
-			}
+			} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {}
 		}
 	}
 
@@ -1892,7 +1888,7 @@ public class NetworkService extends Service {
 				edit.putStringSet(key, autoJoin);
 			}
 		}
-		edit.commit();
+		edit.apply();
 	}
 
 	public String getUniqueID() {
@@ -1906,9 +1902,7 @@ public class NetworkService extends Service {
 						String serial;
 						try {
 							serial = Build.class.getField("SERIAL").get(null).toString();
-						} catch (NoSuchFieldException e) {
-							serial = "PokemonOnline";
-						} catch (IllegalAccessException e) {
+						} catch (Exception e) {
 							serial = "PokemonOnline";
 						}
 						ANDROID_ID += this.ip;
@@ -1937,11 +1931,7 @@ public class NetworkService extends Service {
 		Boolean flag;
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
 			String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-			if (ANDROID_ID != null) {
-				flag = true;
-			} else {
-				flag = false;
-			}
+			flag = ANDROID_ID != null;
 		} else {
 			flag = false;
 		}
@@ -1954,9 +1944,7 @@ public class NetworkService extends Service {
 			String serial = "";
 			try {
 				serial = Build.class.getField("SERIAL").get(null).toString();
-			} catch (NoSuchFieldException e) {
-				serial = "PokemonOnline";
-			} catch (IllegalAccessException e) {
+			} catch (Exception e) {
 				serial = "PokemonOnline";
 			}
 			String PSEUDO_ID = "13" + (Build.BOARD.length() % 5) + (Build.BRAND.length() % 10) + (Build.DEVICE.length() % 10) + (Build.MANUFACTURER.length() % 10) + (Build.MODEL.length() % 10) + (Build.PRODUCT.length() % 10);

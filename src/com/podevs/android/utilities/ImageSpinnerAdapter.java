@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * Custom ArrayAdapter of SpinnerData
  */
 public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
-    private Activity activity;
     private ArrayList<SpinnerData> data;
     public Resources resources;
     LayoutInflater inflater;
@@ -29,11 +28,10 @@ public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
 
         super(spinner, id, objects);
 
-        activity = spinner;
         data = objects;
         this.resources = resources;
 
-        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) spinner.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
