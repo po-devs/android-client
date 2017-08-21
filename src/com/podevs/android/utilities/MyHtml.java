@@ -21,8 +21,8 @@ import java.io.StringReader;
 
 public class MyHtml {
 
-    public static interface ImageGetter {
-        public Drawable getDrawable(String source, Attributes attributes);
+    public interface ImageGetter {
+        Drawable getDrawable(String source, Attributes attributes);
     }
 
     private MyHtml() { }
@@ -409,7 +409,7 @@ class HtmlToSpannedConverter implements ContentHandler {
             } else if (href.startsWith("ignore/")) {
                 href = href.substring(7);
                 text.setSpan(new Href(href, HrefType.ignore, c), len, len, Spannable.SPAN_MARK_MARK);
-            } else if (href.startsWith("info/")) {
+            // } else if (href.startsWith("info/")) {
                 //href = href.substring(5);
                 //text.setSpan(new Href(href, HrefType.info, c), len, len, Spannable.SPAN_MARK_MARK);
             } else if (href.startsWith("send/")) {

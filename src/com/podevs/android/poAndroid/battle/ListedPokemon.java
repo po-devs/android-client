@@ -13,15 +13,15 @@ import java.util.Locale;
 
 public class ListedPokemon {
 	TextView name, item, ability, hp;
-	ImageView icon, gender, itemIcon;
-	TextView [] moves = new TextView[4];
+	private ImageView icon, gender, itemIcon;
+	private TextView [] moves = new TextView[4];
 	RelativeLayout whole;
 		
 	public ListedPokemon(RelativeLayout whole2) {
 		init(whole2);
 	}
 
-	void init(RelativeLayout lay) {
+	private void init(RelativeLayout lay) {
 		whole = lay;
 		
 		name = (TextView) whole.findViewById(R.id.pokename);
@@ -73,10 +73,10 @@ public class ListedPokemon {
         	type = type.toLowerCase(Locale.UK);
         	moves[j].setBackgroundResource(InfoConfig.resources.getIdentifier(type + "_type_button",
 		      		"drawable", InfoConfig.pkgName));
-			if (poke.move(j) instanceof BattleMove) {
-				if (((BattleMove) poke.move(j)).currentPP <= 0){}
+			//if (poke.move(j) instanceof BattleMove) {
+				//if (((BattleMove) poke.move(j)).currentPP <= 0){}
 					// Grey out
-			}
+			//}
 		}
 	}
 	

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 public class FormListAdapter extends ArrayAdapter<UniqueID> {
     private Gen gen = null;
-    private Activity activity;
     LayoutInflater inflater;
     final static String pkgName = "com.podevs.android.poAndroid";
 
@@ -27,10 +26,9 @@ public class FormListAdapter extends ArrayAdapter<UniqueID> {
     public FormListAdapter(Activity spinner, int id, Gen gen) {
         super(spinner, id);
 
-        activity = spinner;
         this.gen = gen;
 
-        inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) spinner.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.io.*;
 
 public class InfoFiller {
 	static void fill(String file, Filler filler) {
-		InputStream assetsDB = null;
+		InputStream assetsDB;
 		try {
 			assetsDB = getContext().getAssets().open(file);
 		} catch (IOException e) {

@@ -114,7 +114,7 @@ public class Channel {
 				i = Color.parseColor(color);
 			} catch (Exception e) {
 				i = Color.YELLOW;
-			} finally {}
+			}
 			spannable.setSpan(new BackgroundColorSpan(i), left, right, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} finally {}
 

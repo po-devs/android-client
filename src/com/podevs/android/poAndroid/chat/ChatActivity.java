@@ -673,6 +673,7 @@ public class ChatActivity extends Activity {
 						.setOnCancelListener(new OnCancelListener() {
 							public void onCancel(DialogInterface dialog) {
 								removeDialog(id);
+								netServ.askedForPass = false;
 								if (!registering) {
 									disconnect();
 								}

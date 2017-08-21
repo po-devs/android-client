@@ -160,12 +160,7 @@ public class MoveInfo extends GenInfo {
 	}
 
 	public static String accuracyString(int num) {
-		byte acc = accuracy(num);
-		if (acc == 101) {
-			return "--";
-		} else {
-			return String.valueOf(acc);
-		}
+		return accuracyToString(accuracy(num));
 	}
 
 	public static String accuracyToString(int acc) {
@@ -187,14 +182,7 @@ public class MoveInfo extends GenInfo {
 	}
 
 	public static String powerString(int num) {
-		byte pow = power(num);
-		if (pow == 0) {
-			return "--";
-		} else if (pow == 1) {
-			return "???";
-		} else {
-			return String.valueOf(pow >= 0 ? pow : (pow + 256));
-		}
+		return powerToString(power(num));
 	}
 
 	public static String powerToString(int pow) {
