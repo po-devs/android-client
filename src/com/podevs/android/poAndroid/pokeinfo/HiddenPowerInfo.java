@@ -72,9 +72,7 @@ public class HiddenPowerInfo {
 			if (gt == type) {
 				byte [][] temp = ret.clone();
 				ret = new byte[size+1][];
-				for (int j = 0; j < temp.length; j++) {
-					ret[j] = temp[j];
-				}
+				System.arraycopy(temp, 0, ret, 0, temp.length);
 				ret[size] = new byte[] {(byte)((i&1)+30), (byte)(((i & 2)/2)+30), (byte)(((i & 4)/4)+30), (byte)(((i & 8)/8)+30), (byte)(((i & 16)/16)+30), (byte)(((i & 32)/32)+30)};
 				size++;
 			}

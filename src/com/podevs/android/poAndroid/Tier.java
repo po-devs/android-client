@@ -43,7 +43,7 @@ public class Tier {
 		SharedPreferences prefs = ctx.getSharedPreferences("tiers", Context.MODE_PRIVATE);
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			prefs.edit().putStringSet("list", getTierSet()).commit();
+			prefs.edit().putStringSet("list", getTierSet()).apply();
 		}
 	}
 

@@ -35,7 +35,7 @@ public class AbilityInfo {
 			 loadAbilityMessages();
 		}
 		
-		String parts [] = ((String)abilityMessages.get(num, "")).split("\\|");
+		String parts [] = (abilityMessages.get(num, "")).split("\\|");
 		try {
 			return parts[part];
 		} catch (ArrayIndexOutOfBoundsException ex) {

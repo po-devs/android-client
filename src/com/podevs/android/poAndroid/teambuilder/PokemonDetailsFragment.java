@@ -244,11 +244,7 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		shinyChooser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    poke().shiny = true;
-                } else {
-                    poke().shiny = false;
-                }
+				poke().shiny = isChecked;
             }
         });
 

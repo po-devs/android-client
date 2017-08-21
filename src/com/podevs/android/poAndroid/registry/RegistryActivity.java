@@ -192,7 +192,7 @@ public class RegistryActivity extends FragmentActivity implements ServiceConnect
 				intent.putExtra("ip", ipString);
 				intent.putExtra("port", portVal);
 				intent.putExtra("loginPlayer", new Baos().putBaos(meLoginPlayer).toByteArray());
-				prefs.edit().putString("lastAddr", editAddr.getText().toString()).commit();
+				prefs.edit().putString("lastAddr", editAddr.getText().toString()).apply();
 				meLoginPlayer.profile.save(RegistryActivity.this);
 
 				startService(intent);

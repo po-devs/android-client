@@ -89,9 +89,11 @@ public class Settings extends PreferenceFragment {
                 makeToast("Pokemon: " + number);
                 return true;
             }
-        } catch (Exception e) {}
-        makeToast("Enter a valid pokemon number");
-        return false;
+            return false;
+        } catch (Exception e) {
+            makeToast("Enter a valid pokemon number");
+            return false;
+        }
     }
 
     private Boolean dealWithVolume(String number) {
@@ -101,9 +103,11 @@ public class Settings extends PreferenceFragment {
                 makeToast("Volume: " + number);
                 return true;
             }
-        } catch (Exception e) {}
-        makeToast("Select a value between 0 and 100");
-        return false;
+            return false;
+        } catch (Exception e) {
+            makeToast("Select a value between 0 and 100");
+            return false;
+        }
     }
 
     private void makeToast(final String s) {

@@ -217,11 +217,11 @@ public class InfoFiller {
 		return InfoConfig.context;
 	}
 
-	public static interface Filler {
+	public interface Filler {
 		void fill(int i, String s);
 	}
 
-	public static interface OptionsFiller {
+	public interface OptionsFiller {
 		void fill(int i, String s, String options);
 	}
 
