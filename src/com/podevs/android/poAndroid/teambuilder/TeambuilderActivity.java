@@ -181,10 +181,6 @@ public class TeambuilderActivity extends FragmentActivity {
 
 					});
 
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (ProtocolException e) {
-					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -426,7 +422,7 @@ public class TeambuilderActivity extends FragmentActivity {
     					int w = lw.getCheckedItemPosition();
     					
     					String file = lw.getItemAtPosition(w).toString();
-    					getSharedPreferences("team", 0).edit().putString("file", file).commit();
+    					getSharedPreferences("team", 0).edit().putString("file", file).apply();
     					team = new PokeParser(TeambuilderActivity.this, file, true).getTeam();
 						MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
                         ItemInfo.setGeneration(team.gen.num);
@@ -458,10 +454,10 @@ public class TeambuilderActivity extends FragmentActivity {
     						copy[i] = files[i+1].toString();
     					}
 
-    					getSharedPreferences("team", 0).edit().putString("files", TextUtils.join("|", copy)).commit();
+    					getSharedPreferences("team", 0).edit().putString("files", TextUtils.join("|", copy)).apply();
     					
     					if (defaultFile().equals(lw.getItemAtPosition(w).toString())) {
-    						getSharedPreferences("team", 0).edit().putString("file", copy[0]).commit();
+    						getSharedPreferences("team", 0).edit().putString("file", copy[0]).apply();
     					}
     				}
     			});
@@ -563,7 +559,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	}
 	
 	private void setTeamFile(String string) {
-		getSharedPreferences("team", 0).edit().putString("file", string).commit();
+		getSharedPreferences("team", 0).edit().putString("file", string).apply();
 		
 		CharSequence teams[] = getTeamFiles();
 		
@@ -573,7 +569,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			}
 		}
 		
-		getSharedPreferences("team", 0).edit().putString("files", string+"|"+TextUtils.join("|", teams)).commit();
+		getSharedPreferences("team", 0).edit().putString("files", string+"|"+TextUtils.join("|", teams)).apply();
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {

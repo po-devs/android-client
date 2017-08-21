@@ -194,7 +194,7 @@
 
             InfoFiller.plainFill("db/items/item_useful.txt", new Filler() {
                 public void fill(int i, String s) {
-                    items.add(Integer.valueOf(i));
+                    items.add(i);
                 }
             });
 
@@ -284,11 +284,11 @@
             usefulThisGeneration = new int[released_items.size() + released_berries.size()];
 
             for (int i = 0; i < released_items.size(); i++) {
-                usefulThisGeneration[i] = released_items.get(i).intValue();
+                usefulThisGeneration[i] = released_items.get(i);
             }
 
             for (int i = 0; i < released_berries.size(); i++) {
-                usefulThisGeneration[i+released_items.size()] = released_berries.get(i).intValue();
+                usefulThisGeneration[i+released_items.size()] = released_berries.get(i);
             }
         }
 
