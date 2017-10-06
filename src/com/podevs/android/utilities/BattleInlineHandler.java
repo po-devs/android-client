@@ -18,7 +18,7 @@ import java.util.HashMap;
 @Deprecated
 public class BattleInlineHandler implements Html.TagHandler {
     private NetworkService netServ;
-    private HashMap<String, String> attributes = new HashMap<String, String>();
+    private HashMap<String, String> attributes = new HashMap<>();
     public Channel currentChannel;
 
     public BattleInlineHandler(NetworkService service) {
@@ -56,13 +56,11 @@ public class BattleInlineHandler implements Html.TagHandler {
                     }
                 }
             }
-            return;
         } else if (tag.equalsIgnoreCase("ping")) {
             if (opening && currentChannel != null) {
                 Log.e("TagHandler", "Attempt flash");
                 netServ.tryFlashChannel(currentChannel);
             }
-            return;
         } else if (tag.equalsIgnoreCase("background")) {
             try {
                 if (opening) {
@@ -87,19 +85,16 @@ public class BattleInlineHandler implements Html.TagHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return;
         } else if (tag.equalsIgnoreCase("timestamp")) {
             if (opening) {
                 if (netServ.getSettings().timeStamp) {
-                    output.append("(" + StringUtilities.timeStamp() + ") ");
+                    output.append("(").append(StringUtilities.timeStamp()).append(") ");
                 }
             }
-            return;
         } else if (tag.equalsIgnoreCase("tr")) {
             if (!opening) {
                 output.append("\n");
             }
-            return;
         } else if (tag.equalsIgnoreCase("strike")) {
             if (opening) {
                 start((SpannableStringBuilder) output, new StrikethroughSpan());

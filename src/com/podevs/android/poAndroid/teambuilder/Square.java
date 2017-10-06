@@ -13,8 +13,8 @@ public class Square {
     private ShortBuffer drawListBuffer;
 
     // number of coordinates per vertex in this array
-    static final int COORDS_PER_VERTEX = 3;
-    static float squareCoords[] =
+    private static final int COORDS_PER_VERTEX = 3;
+    private static float squareCoords[] =
                     {-1.0f, 1.0f,0.0f,
                      -1.0f,-1.0f,0.0f,
                       1.0f,-1.0f,0.0f,
@@ -24,12 +24,6 @@ public class Square {
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
 
-
-    private final String vertexShaderCode =
-            "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    "  gl_Position = vPosition;" +
-                    "}";
 
     public final String fragment =
                     "precision mediump float;" +
@@ -57,10 +51,9 @@ public class Square {
                     "    gl_FragColor = vec4(color, 1);" +
                     "}";
 
-    int mProgram;
+    private int mProgram;
 
-    static final int vertexStride = COORDS_PER_VERTEX * 4;
-    static final int vertexCount = squareCoords.length/COORDS_PER_VERTEX;
+    private static final int vertexStride = COORDS_PER_VERTEX * 4;
 
     public Square() {
         ByteBuffer bb = ByteBuffer.allocateDirect(squareCoords.length * 4);
@@ -76,6 +69,11 @@ public class Square {
         drawListBuffer.position(0);
 
 
+        String vertexShaderCode = "attribute vec4 vPosition;" +
+            "void main() {" +
+            "  gl_Position = vPosition;" +
+            "}";
+
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragment);
 
@@ -85,7 +83,7 @@ public class Square {
         GLES20.glLinkProgram(mProgram);
     }
 
-    public static int loadShader(int type, String shaderCode){
+    private static int loadShader(int type, String shaderCode){
         int shader = GLES20.glCreateShader(type);
 
         GLES20.glShaderSource(shader, shaderCode);

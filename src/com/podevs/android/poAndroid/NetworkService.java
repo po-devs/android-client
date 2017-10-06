@@ -47,13 +47,12 @@ public class NetworkService extends Service {
 
 	private final IBinder binder = new LocalBinder();
 	//public Channel currentChannel = null;
-	public LinkedList<Channel> joinedChannels = new LinkedList<Channel>();
-	// Thread sThread, rThread;
+	public LinkedList<Channel> joinedChannels = new LinkedList<>();
 	volatile public PokeClientSocket socket = null;
 	public boolean findingBattle = false;
 	public boolean registered = false;
 	public ChatActivity chatActivity = null;
-	public LinkedList<IncomingChallenge> challenges = new LinkedList<IncomingChallenge>();
+	public LinkedList<IncomingChallenge> challenges = new LinkedList<>();
 	public boolean askedForPass = false;
 	public boolean askedForServerPass = false;
 	private String salt = null;
@@ -66,7 +65,7 @@ public class NetworkService extends Service {
 	public ProtocolVersion serverVersion = version;
 	public boolean serverSupportsZipCompression = false;
 	private byte reconnectSecret[] = null;
-	public ArrayList<Integer> ignoreList= new ArrayList<Integer>();
+	public ArrayList<Integer> ignoreList= new ArrayList<>();
 	private ImageParser imageParser;
 	private static Pattern hashTagPattern;
 	public static final Pattern urlPattern = Pattern.compile("(https?:\\/\\/[-\\w\\.]+)+(:\\d+)?(\\/([\\S\\/_\\.]*(\\?\\S+)?)?)?");
@@ -450,7 +449,7 @@ public class NetworkService extends Service {
 				Baos loginCmd = new Baos();
 				loginCmd.putBaos(version); //Protocol version
 				
-				String defaultChannel = null;
+				String defaultChannel;
 				Set<String> autoJoinChannels = null;
 
 				SharedPreferences prefs = getSharedPreferences("autoJoinChannels", MODE_PRIVATE);
@@ -798,7 +797,7 @@ public class NetworkService extends Service {
 			
 			PlayerInfo p = players.get(id);
 			if (p != null) {
-                PlayerInfo p2 = p;
+				PlayerInfo p2 = p;
 				p2.hasLadderEnabled = dataFlags.readBool();
 				p2.isAway = dataFlags.readBool();
 
@@ -863,9 +862,8 @@ public class NetworkService extends Service {
 				String test = "";
 				if (chatSettings.timeStamp) {
 					test = "(" + StringUtilities.timeStamp() + ") ";
-				} else {
-					test = "";
 				}
+
 				String beg = "<font color='" + color + "'><b>" + test;
 				if (playerAuth(pId) > 0 && playerAuth(pId) < 4) {
 					beg += "+<i>" + name + ": </i></b></font>";
@@ -889,9 +887,7 @@ public class NetworkService extends Service {
 									if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
 										chatActivity.makeToast(message.toString(), "long");
 									else {
-										Iterator<Channel> it = joinedChannels.iterator();
-										while (it.hasNext()) {
-											Channel next = it.next();
+										for (Channel next : joinedChannels) {
 											next.writeToHist(message, left, right, chatSettings.color, false, null);
 										}
 									}
@@ -963,9 +959,7 @@ public class NetworkService extends Service {
 				if (chatActivity != null && message.toString().contains("Wrong password for this name.")) // XXX Is this still the message sent?
 					chatActivity.makeToast(message.toString(), "long");
 				else {
-					Iterator<Channel> it = joinedChannels.iterator();
-					while (it.hasNext()) {
-						Channel next = it.next();
+					for (Channel next : joinedChannels) {
 						next.writeToHist(message, false, null);
 					}
 				}
@@ -1055,7 +1049,7 @@ public class NetworkService extends Service {
 						// Gets an instance of the NotificationManager service
 						NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 						// Builds the notification and issues it.
-						mNotifyMgr.notify(mNotificationId, mBuilder.build());;
+						mNotifyMgr.notify(mNotificationId, mBuilder.build());
 					}
 				}
 				break;
@@ -1297,9 +1291,7 @@ public class NetworkService extends Service {
 				} else {
 					message = "<font color=#ff0000><b> " + getName(src) + " kicked " + getName(dest) + "</b></font>";
 				}
-				Iterator<Channel> it = joinedChannels.iterator();
-				while (it.hasNext()) {
-					Channel next = it.next();
+				for (Channel next : joinedChannels) {
 					next.writeToHist(MyHtml.fromHtml(message), false, null);
 				}
 				break;
@@ -1313,9 +1305,7 @@ public class NetworkService extends Service {
 				} else {
 					message = "<font color=#ff0000><b> " + getName(src) + " banned " + getName(dest) + "</b></font>";
 				}
-				Iterator<Channel> it = joinedChannels.iterator();
-				while (it.hasNext()) {
-					Channel next = it.next();
+				for (Channel next : joinedChannels) {
 					next.writeToHist(MyHtml.fromHtml(message), false, null);
 				}
 				break;
@@ -1781,7 +1771,7 @@ public class NetworkService extends Service {
 	}
 
 	public void poWatchPlayer(String idOrName) {
-		int id = 0;
+		int id;
 		if (StringUtilities.isNumeric(idOrName)) {
 			id = Integer.parseInt(idOrName);
 		} else {
@@ -1798,7 +1788,7 @@ public class NetworkService extends Service {
 	}
 
 	public void poPM(String idOrName) {
-		int id = 0;
+		int id;
 		if (StringUtilities.isNumeric(idOrName)) {
 			id = Integer.parseInt(idOrName);
 		} else {
@@ -1835,7 +1825,7 @@ public class NetworkService extends Service {
 
         edit.remove(key);
 
-        HashSet<String> settings = new HashSet<String>();
+        HashSet<String> settings = new HashSet<>();
 
         for (Channel chan : joinedChannels) {
             if (chan.channelEvents) {
@@ -1892,11 +1882,10 @@ public class NetworkService extends Service {
 	}
 
 	public String getUniqueID() {
-		String msg = "";
+		String msg;
 		try {
 			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-				String ANDROID_ID = "";
-				ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+				String ANDROID_ID = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 				if (ANDROID_ID != null) {
 					if (ANDROID_ID.length() > 2) {
 						String serial;
@@ -1941,7 +1930,7 @@ public class NetworkService extends Service {
 
 	private String getPseudoUniqueID() {
 		try {
-			String serial = "";
+			String serial;
 			try {
 				serial = Build.class.getField("SERIAL").get(null).toString();
 			} catch (Exception e) {

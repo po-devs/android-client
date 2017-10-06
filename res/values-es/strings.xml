@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="empty"></string>
     <string name="choosename">Nombre de Usuario</string>
     <string name="app_name">Pokémon Online</string>
     <string name="connect">!Conectar!</string>
@@ -195,23 +194,24 @@
 
     <string name="end_hail_weather">Ha dejado de granizar.</string>
     <string name="hurt_hail_weather">¡El granizo zarandea a !</string>
-    <string name="continue_hail_weather">Sigue granizando...</string>
+    <string name="continue_hail_weather">Sigue granizando…</string>
     <string name="end_sandstorm_weather">La tormenta de arena amainó.</string>
     <string name="hurt_sandstorm_weather">¡La tormenta de arena zarandea a !</string>
-    <string name="continue_sandstorm_weather">La tormenta de arena arrecia...</string>
+    <string name="continue_sandstorm_weather">La tormenta de arena arrecia…</string>
     <string name="end_sunny_weather">Se ha ido el sol.</string>
-    <string name="continue_sunny_weather">Hace mucho sol...</string>
+    <string name="continue_sunny_weather">Hace mucho sol…</string>
     <string name="end_rain_weather">Dejó de llover.</string>
-    <string name="continue_rain_weather">Sigue lloviendo...</string>
+    <string name="continue_rain_weather">Sigue lloviendo…</string>
     <string name="end_heavysun_weather">!Los intensos rayos de sol se han ido!</string>
-    <string name="continue_heavysun_weather">Los intensos rayos de sol continúan brillando...</string>
+    <string name="continue_heavysun_weather">Los intensos rayos de sol continúan brillando…</string>
     <string name="end_heavyrain_weather">¡La fuerte lluvia se ha ido!</string>
-    <string name="continue_heavyrain_weather">La fuerte lluvia continúa...</string>
+    <string name="continue_heavyrain_weather">La fuerte lluvia continúa…</string>
     <string name="end_delta_weather">¡La misteriosa corriente de aire se ha desvanecido!</string>
-    <string name="continue_delta_weather">Una misteriosa corriente de aire está protegiendo a los Pokémon de tipo Volador...</string>
+    <string name="continue_delta_weather">Una misteriosa corriente de aire está protegiendo a los Pokémon de tipo
+        Volador…</string>
 
     <string name="no_effect_message">¡No tuvo ningún efecto!</string>
-    <string name="not_very_effective_message">No es muy eficaz...</string>
+    <string name="not_very_effective_message">No es muy eficaz…</string>
     <string name="super_effective_message">¡Es muy eficaz!</string>
 
     <string name="disconnected_no_timeout">! se desconectó!</string>

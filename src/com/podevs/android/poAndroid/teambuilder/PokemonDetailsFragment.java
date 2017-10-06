@@ -73,12 +73,12 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 		formesChooser = (Spinner)v.findViewById(R.id.formes);
 		formesLayout = (LinearLayout)v.findViewById(R.id.formesLayout);
 		shinyChooser = (CheckBox)v.findViewById(R.id.shiny);
-		levelChooser = (TextView)v.findViewById(R.id.level);;
+		levelChooser = (TextView)v.findViewById(R.id.level);
 		happinessChooser = (TextView)v.findViewById(R.id.happiness);
         manualIVButton = (Button) v.findViewById(R.id.manualiv);
         hackmonButton = (ToggleButton) v.findViewById(R.id.hackmon);
 
-		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
+		ArrayList<SpinnerData> temp = new ArrayList<>();
 		int usefulItems[] = ItemInfo.getUsefulThisGeneration();
 		for (int usefulItem : usefulItems) {
 			SpinnerData tempData = new SpinnerData(ItemInfo.name(usefulItem), usefulItem);
@@ -93,10 +93,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		abilityChooser.setAdapter(abilityChooserAdapter);
 		
-		genderChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
+		genderChooserAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
 		genderChooser.setAdapter(genderChooserAdapter);
 
-		//formesChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);
 		formesChooser.setAdapter(formListAdapter = new FormListAdapter(getActivity(), R.layout.forminlist_item, poke().gen()));
 		
 		ArrayAdapter<CharSequence> natureChooserAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_item);

@@ -7,9 +7,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
-import android.text.Html;
 import android.util.Base64;
 import org.xml.sax.Attributes;
 
@@ -26,8 +24,8 @@ import java.util.regex.Pattern;
  */
 
 public class ImageParser implements MyHtml.ImageGetter {
-    Context context;
-    final static Pattern urlPattern =  Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
+    private Context context;
+    private final static Pattern urlPattern =  Pattern.compile("^(http|https)\\:\\/\\/.*\\S\\.(jpg|png|bmp)$");
 
     public ImageParser(Context context) {
         // this.view = view;
@@ -184,7 +182,7 @@ public class ImageParser implements MyHtml.ImageGetter {
         }
 
         private Drawable download(String url) throws IOException{
-            Drawable ret = null;
+            Drawable ret;
 
             URL urlObj = new URL(url);
             HttpURLConnection urlConnection = (HttpURLConnection) urlObj.openConnection();

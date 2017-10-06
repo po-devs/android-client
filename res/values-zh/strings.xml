@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="empty" />
     <string name="choosename">玩家名称</string>
     <string name="app_name">安卓PO</string>
     <string name="connect">连接服务器</string>

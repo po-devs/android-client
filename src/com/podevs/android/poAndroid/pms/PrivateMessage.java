@@ -12,7 +12,7 @@ import java.util.LinkedList;
  */
 public class PrivateMessage {
 	PrivateMessageListener listener;
-    LinkedList<Message> messages = new LinkedList<PrivateMessage.Message>();
+    LinkedList<Message> messages = new LinkedList<>();
     PlayerInfo me, other;
     protected ListView privateList = null;
 

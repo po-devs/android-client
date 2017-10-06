@@ -673,7 +673,7 @@ public class PokemonInfo {
 			return;
 		}
 		pokeNames = new SparseArray<String>();
-		pokemonsg = new SparseArray<PokemonInfo.PokeData>();
+		pokemonsg = new SparseArray<PokeData>();
 		namesToIds = new HashMap<String, UniqueID>();
 		InfoFiller.uIDfill("db/pokes/pokemons.txt", new InfoFiller.OptionsFiller() {
 			public void fill(int i, String s, String options) {
@@ -744,20 +744,6 @@ public class PokemonInfo {
 			}
 		});
 	}
-
-	/*
-	public static int numberOfPokemons() {
-		loadPokeNames();
-
-		return pokeCount;
-	}
-
-	public static int totalNumberOfPokemons() {
-		loadPokeNames();
-
-		return pokeNames.size();
-	}
-	*/
 
 	/**
 	 *

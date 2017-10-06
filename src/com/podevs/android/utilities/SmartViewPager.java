@@ -21,9 +21,6 @@ public class SmartViewPager extends ViewPager {
 	
 	@Override
 	protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
-	   if(v != this && v instanceof ViewPager) {
-	      return true;
-	   }
-	   return super.canScroll(v, checkV, dx, x, y);
+		return v != this && v instanceof ViewPager || super.canScroll(v, checkV, dx, x, y);
 	}
 }

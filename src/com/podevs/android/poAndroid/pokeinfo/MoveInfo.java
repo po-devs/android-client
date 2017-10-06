@@ -266,7 +266,7 @@ public class MoveInfo extends GenInfo {
 			loadMoveMessages();
 		}
 
-		String parts [] = ((String)moveMessages.get(num, "")).split("\\|");
+		String parts [] = (moveMessages.get(num, "")).split("\\|");
 		try {
 			return parts[part];
 		} catch (ArrayIndexOutOfBoundsException ex) {

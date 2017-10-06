@@ -13,12 +13,12 @@ public class ControlPanelGroup {
     private final TextView auth;
     private final TextView ip;
     private final TextView seen;
-    private final ListView aliases;
+    //private final ListView aliases;
     private final ArrayAdapter<String> aliasesAdapter;
 
     private final Button kickButton;
-    private final Button muteButton;
-    private final Button tempButton;
+    //private final Button muteButton;
+    //private final Button tempButton;
     private final Button banButton;
 
     public ControlPanelGroup(EditText searchEdit, TextView status, TextView auth, TextView ip, TextView seen, ListView aliases, ArrayAdapter<String> aliasesAdapter, Button kickButton, Button muteButton, Button tempButton, Button banButton) {
@@ -27,11 +27,11 @@ public class ControlPanelGroup {
         this.auth = auth;
         this.ip = ip;
         this.seen = seen;
-        this.aliases = aliases;
+        //this.aliases = aliases;
         this.aliasesAdapter = aliasesAdapter;
         this.kickButton = kickButton;
-        this.muteButton = muteButton;
-        this.tempButton = tempButton;
+        //this.muteButton = muteButton;
+        //this.tempButton = tempButton;
         this.banButton = banButton;
     }
 

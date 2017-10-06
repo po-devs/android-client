@@ -150,10 +150,6 @@ public class MoveChooserFragment extends Fragment {
 		moveAdapter.notifyDataSetChanged();
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-	}
 
     public void updateNames() {
         if (poke().isHackmon) {

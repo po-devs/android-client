@@ -17,7 +17,7 @@ import java.util.HashSet;
 
 public class PokeListAdapter implements ListAdapter {
 	private Gen gen = null;
-	private HashSet<DataSetObserver> observers = new HashSet<DataSetObserver>();
+	private HashSet<DataSetObserver> observers = new HashSet<>();
 
 	PokeListAdapter(Gen gen) {
 		super();

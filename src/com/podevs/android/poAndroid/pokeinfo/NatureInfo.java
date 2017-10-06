@@ -83,7 +83,7 @@ public class NatureInfo {
 	}
 
 	static int boostStat(int base, int nature, int stat) {
-		int boost = (0 + boosted(nature) == stat ? 1 : 0) + (hindered(nature) == stat ? -1 : 0);
+		int boost = (boosted(nature) == stat ? 1 : 0) + (hindered(nature) == stat ? -1 : 0);
 		return base * (10+boost)/10;
 	}
 

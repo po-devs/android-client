@@ -18,7 +18,7 @@ public class PlayerInfo implements SerializeBytes {
 	public short avatar;
 	String info;
 	public byte auth;
-	public ArrayList<Integer> battles = new ArrayList<Integer>();
+	public ArrayList<Integer> battles = new ArrayList<>();
 
 	public class TierStanding {
 		public String tier;

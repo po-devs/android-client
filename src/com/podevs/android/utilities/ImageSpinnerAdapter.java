@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ImageSpinnerAdapter extends ArrayAdapter<SpinnerData> {
     private ArrayList<SpinnerData> data;
     public Resources resources;
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     final static String pkgName = "com.podevs.android.poAndroid";
 
 

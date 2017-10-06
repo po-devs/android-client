@@ -16,9 +16,7 @@ public class BattlePoke extends ShallowBattlePoke implements Poke {
 	public short totalHP = 0;
 	public short gender = 0;
 	short item = 0;
-	// public String itemString;
 	short ability = 0;
-	public String abilityString;
 	// byte statusCount = 0;
 	// byte originalStatusCount = 0;
 	byte nature = 0;

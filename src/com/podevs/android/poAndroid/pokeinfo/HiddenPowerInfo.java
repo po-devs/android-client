@@ -24,7 +24,7 @@ public class HiddenPowerInfo {
 		}
 	}
 
-	static byte hiddenPowerConfigurations[][][] = null;
+	private static byte hiddenPowerConfigurations[][][] = null;
 
 	static public byte[] configurationForType(final int type, Gen gen) {
 		if (hiddenPowerConfigurations == null) {

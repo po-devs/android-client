@@ -60,8 +60,6 @@ public class ChatActivity extends Activity {
 		ViewRanking
 	}
 
-	// public final static int SWIPE_TIME_THRESHOLD = 100;
-
 	private enum ChatContext {
 		ChallengePlayer,
 		ViewPlayerInfo,
@@ -129,7 +127,7 @@ public class ChatActivity extends Activity {
 					Tier self = parentTier.subTiers.get((int)id);
 					if(self.subTiers.size() > 0) {
 						parentTier = self;
-						((ListView)parent).setAdapter(new ArrayAdapter<Tier>(ChatActivity.this,
+						((ListView)parent).setAdapter(new ArrayAdapter<>(ChatActivity.this,
 								R.layout.tier_list_item, parentTier.subTiers));
 					}
 					else {
@@ -166,7 +164,7 @@ public class ChatActivity extends Activity {
 
 		@Override
 		public boolean isViewFromObject(View arg0, Object arg1) {
-			return (Object)arg0 == arg1;
+			return arg0 == arg1;
 		}
 
 		@Override
@@ -1143,39 +1141,6 @@ public class ChatActivity extends Activity {
 				}
 				break;
 			case R.id.changeName:
-				/*
-				String all = chatInput.getText().toString();
-				if (all.length() > 3) {
-					String s = all;
-					if (s.contains(" ")) {
-						s = chatInput.getText().toString().split(" (?!.* )")[1];
-						if (s.length() < 4) {
-							break;
-						}
-					}
-					Collection<PlayerInfo> players = currentChannel().players.values();
-					ArrayList<String> nicks = new ArrayList<String>();
-					String regex = "(?i)^" + s + ".*";
-					for (PlayerInfo p : players) {
-						if (p.nick.matches(regex)) {
-							nicks.add(p.nick());
-						}
-					}
-					players = null;
-					if (nicks.size() == 1) {
-						all = all.replaceFirst(regex, nicks.get(0));
-						chatInput.setText(all);
-						chatInput.setSelection(all.length()-1);
-					} else {
-						// Add pop-out listview to choose from end results larger than 1
-						all = all.replaceFirst(regex, nicks.get(0));
-						chatInput.setText(all);
-						chatInput.setSelection(all.length()-1);
-					}
-				} else {
-					break;
-				}
-				*/
 				showDialog(ChatDialog.AskForName.ordinal());
 				break;
 			case R.id.settings:
@@ -1269,7 +1234,7 @@ public class ChatActivity extends Activity {
 
 				break;
 			case R.id.channellisting:
-				String cName = "Default";
+				String cName;
 				try {
 					lastClickedChannel = channelAdapter.getItem(aMenuInfo.position);
 					cName = lastClickedChannel.name;

@@ -16,7 +16,7 @@ public class BattleConf implements SerializeBytes {
 	public boolean rated;
 	
 	public int id(int i) { return ids[i]; }
-	public byte mode() { return mode; };
+	public byte mode() { return mode; }
 	
 	public BattleConf(Bais msg, boolean old) {
 		if (!old) {

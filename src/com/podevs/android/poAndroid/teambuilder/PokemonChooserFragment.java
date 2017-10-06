@@ -26,7 +26,7 @@ public class PokemonChooserFragment extends Fragment {
 	PokeListAdapter pokeListAdapter = null;
 	
 	public interface PokemonChooserListener {
-		public void onPokemonChosen(UniqueID id, String nickname);
+		void onPokemonChosen(UniqueID id, String nickname);
 	}
 
 

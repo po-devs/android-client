@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 public class MessageListAdapter extends BaseAdapter {
-	final LinkedList<TextView> messageViews = new LinkedList<TextView>();
+	final LinkedList<TextView> messageViews = new LinkedList<>();
 	public Channel channel;
 	Context context;
     public int lastSeen = 0;

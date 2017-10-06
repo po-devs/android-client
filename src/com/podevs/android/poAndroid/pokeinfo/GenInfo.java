@@ -50,8 +50,8 @@ public class GenInfo {
 		if (genNames != null) {
 			return;
 		}
-		genNames = new SparseArray<String>();
-		versionNames = new SparseArray<String>();
+		genNames = new SparseArray<>();
+		versionNames = new SparseArray<>();
 		maxSubgen = new SparseIntArray();
 
 		String path;

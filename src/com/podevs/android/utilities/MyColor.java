@@ -39,7 +39,7 @@ public class MyColor {
         }
     }
 
-    public static final int convertValueToInt(CharSequence charSeq, int defaultValue) {
+    public static int convertValueToInt(CharSequence charSeq, int defaultValue) {
         if (null == charSeq)
             return defaultValue;
 

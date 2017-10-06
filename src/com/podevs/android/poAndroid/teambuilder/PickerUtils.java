@@ -13,10 +13,8 @@ public class PickerUtils {
         }
 
         float lightness = HSLColor.lightness(color) * 100;
-        if (lightness > 140) {
-            return false;
-        }
-        return true;
+
+        return !(lightness > 140);
     }
 
     /*
@@ -31,7 +29,7 @@ public class PickerUtils {
     }
     */
 
-    public static int luma(int color) {
+    private static int luma(int color) {
         // This is a quick approximation
         // real Y = 0.2126 R + 0.7152 G + 0.0722 B
         int r = red(color);

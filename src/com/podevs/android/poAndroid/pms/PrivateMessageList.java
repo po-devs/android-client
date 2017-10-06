@@ -5,7 +5,7 @@ import com.podevs.android.poAndroid.player.PlayerInfo;
 import java.util.TreeMap;
 
 public class PrivateMessageList {
-	protected TreeMap<Integer, PrivateMessage> privateMessages = new TreeMap<Integer, PrivateMessage>();
+	protected TreeMap<Integer, PrivateMessage> privateMessages = new TreeMap<>();
 	PlayerInfo me = new PlayerInfo();
 	PrivateMessageListListener listener;
 	

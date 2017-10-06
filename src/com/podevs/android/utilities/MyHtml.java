@@ -743,7 +743,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
-    private static enum HrefType {
+    private enum HrefType {
         url,
         join,
         watch,

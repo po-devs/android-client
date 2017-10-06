@@ -19,7 +19,6 @@ import com.podevs.android.poAndroid.NetworkService;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ChallengeEnums.Clauses;
 import com.podevs.android.poAndroid.player.PlayerInfo;
-import com.podevs.android.poAndroid.poke.PokeEnums;
 import com.podevs.android.poAndroid.poke.PokeEnums.Stat;
 import com.podevs.android.poAndroid.poke.PokeEnums.Status;
 import com.podevs.android.poAndroid.poke.PokeEnums.StatusFeeling;
@@ -72,8 +71,8 @@ public class SpectatingBattle {
     public ShallowBattlePoke[][] pokes = new ShallowBattlePoke[2][6];
     // ArrayList<Boolean> pokeAlive = new ArrayList<Boolean>();
 
-    public SpannableStringBuilder hist; //= new SpannableStringBuilder();
-    public final SpannableStringBuilder histDelta; //= new SpannableStringBuilder();
+    public SpannableStringBuilder hist;
+    public final SpannableStringBuilder histDelta;
 
     public BattleDynamicInfo[] dynamicInfo = new BattleDynamicInfo[2];
 

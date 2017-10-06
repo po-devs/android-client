@@ -13,9 +13,6 @@ import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
-import com.podevs.android.utilities.SpinnerData;
-
-import java.util.ArrayList;
 
 public class FormListAdapter extends ArrayAdapter<UniqueID> {
     private Gen gen = null;
@@ -60,8 +57,4 @@ public class FormListAdapter extends ArrayAdapter<UniqueID> {
         return convertView;
     }
 
-    @Override
-    public void clear() {
-        super.clear();
-    }
 }

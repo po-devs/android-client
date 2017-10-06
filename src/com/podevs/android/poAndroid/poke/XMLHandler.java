@@ -35,37 +35,42 @@ public class XMLHandler extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, Attributes atts) throws SAXException {
-		if (localName.equals("Team")) {
-			myParsedTeam.gen.num = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("gen"), String.valueOf(GenInfo.genMax())));
-			myParsedTeam.gen.subNum = (byte)Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), String.valueOf((int)GenInfo.lastGen().subNum)));
-			myParsedTeam.defaultTier = StringUtilities.def(atts.getValue("defaultTier"), "");
-			
-			for (int i = 0; i < 6; i++) {
-				myParsedTeam.pokes[i].gen = myParsedTeam.gen;
-			}
-		} else if (localName.equals("Pokemon")) {
-			TeamPoke poke = myParsedTeam.pokes[numPoke];
-			
-			poke.uID = new UniqueID(Integer.parseInt(StringUtilities.def(atts.getValue("Num"), "0")), 
-					Integer.parseInt(StringUtilities.def(atts.getValue("Forme"), "0")));
-			poke.nick = StringUtilities.def(atts.getValue("Nickname"), PokemonInfo.name(poke.uID));
-			poke.item = (short)Integer.parseInt(StringUtilities.def(atts.getValue("Item"), "0"));
-			
-			poke.ability = (short) Integer.parseInt(StringUtilities.def(atts.getValue("Ability"), "0"));
-			poke.nature = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Nature"), "0"));
-			poke.hiddenPowerType = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("HiddenPower"), "16"));
-			poke.gender = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Gender"), "0"));
-			poke.shiny = Integer.parseInt(StringUtilities.def(atts.getValue("Shiny"), "0")) != 0;
-			poke.happiness = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Happiness"), "0"));
-			poke.level = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Lvl"), "0"));
-            poke.isHackmon = Integer.parseInt(StringUtilities.def(atts.getValue("Hackmon"), "0")) != 0;
+		switch (localName) {
+			case "Team":
+				myParsedTeam.gen.num = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("gen"), String.valueOf(GenInfo.genMax())));
+				myParsedTeam.gen.subNum = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("subgen"), String.valueOf((int) GenInfo.lastGen().subNum)));
+				myParsedTeam.defaultTier = StringUtilities.def(atts.getValue("defaultTier"), "");
+
+				for (int i = 0; i < 6; i++) {
+					myParsedTeam.pokes[i].gen = myParsedTeam.gen;
+				}
+				break;
+			case "Pokemon":
+				TeamPoke poke = myParsedTeam.pokes[numPoke];
+
+				poke.uID = new UniqueID(Integer.parseInt(StringUtilities.def(atts.getValue("Num"), "0")),
+                Integer.parseInt(StringUtilities.def(atts.getValue("Forme"), "0")));
+				poke.nick = StringUtilities.def(atts.getValue("Nickname"), PokemonInfo.name(poke.uID));
+				poke.item = (short) Integer.parseInt(StringUtilities.def(atts.getValue("Item"), "0"));
+				poke.ability = (short) Integer.parseInt(StringUtilities.def(atts.getValue("Ability"), "0"));
+				poke.nature = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Nature"), "0"));
+				poke.hiddenPowerType = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("HiddenPower"), "16"));
+				poke.gender = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Gender"), "0"));
+				poke.shiny = Integer.parseInt(StringUtilities.def(atts.getValue("Shiny"), "0")) != 0;
+				poke.happiness = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Happiness"), "0"));
+				poke.level = (byte) Integer.parseInt(StringUtilities.def(atts.getValue("Lvl"), "0"));
+				poke.isHackmon = Integer.parseInt(StringUtilities.def(atts.getValue("Hackmon"), "0")) != 0;
+				break;
+			case "Move":
+				inMove = true;
+				break;
+			case "DV":
+				inDV = true;
+				break;
+			case "EV":
+				inEV = true;
+				break;
 		}
-		else if (localName.equals("Move"))
-			inMove = true;
-		else if (localName.equals("DV"))
-			inDV = true;
-		else if (localName.equals("EV"))
-			inEV = true;
 	}
 
 	@Override

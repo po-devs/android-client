@@ -13,7 +13,7 @@ public class ChallengeEnums {
 		InvalidTier,
 
 		ChallengeDescLast
-	};
+	}
 
 	public enum Clauses
 	{
@@ -50,7 +50,7 @@ public class ChallengeEnums {
 
 		public abstract int mask();
 		public abstract String battleText();
-		};
+		}
 
 		public enum Mode
 		{
@@ -64,7 +64,7 @@ public class ChallengeEnums {
 			public final int numberOfSlots() { return 3; } };
 
         public abstract int numberOfSlots();
-		};
+		}
 
 	public static String clausesToStringHtml(int clauses) {
 		String s = "";

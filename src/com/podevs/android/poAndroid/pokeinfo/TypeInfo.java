@@ -34,7 +34,7 @@ public class TypeInfo {
 
 
 	private static byte effectiveness[][][];
-	public static void loadTypeEffectiveness() {
+	private static void loadTypeEffectiveness() {
 		if (effectiveness == null) {
 			effectiveness = new byte[GenInfo.genMax()][Type.values().length][Type.values().length];
 			for (int i = 0; i < effectiveness.length; i++) {

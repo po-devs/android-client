@@ -44,7 +44,7 @@ public class AbilityInfo {
 	}
 
 	private static void loadAbilityNames() {
-		abilityNames = new ArrayList<String>();
+		abilityNames = new ArrayList<>();
 		String path;
 		if (RegistryActivity.localize_assets) {
 			path = "db/abilities/" + InfoConfig.resources.getString(R.string.asset_localization) + "abilities.txt";
@@ -63,7 +63,7 @@ public class AbilityInfo {
 	}
 	
 	private static void loadAbilityMessages() {
-		abilityMessages = new SparseArray<String>();
+		abilityMessages = new SparseArray<>();
 		String path;
 		if (RegistryActivity.localize_assets) {
 			path = "db/abilities/" + InfoConfig.resources.getString(R.string.asset_localization) + "ability_messages.txt";

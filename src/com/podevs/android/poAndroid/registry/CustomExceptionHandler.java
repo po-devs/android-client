@@ -95,16 +95,13 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     public void uncaughtException(Thread t, final Throwable e) {
         if (!shouldWrite) {
-            new Thread() {
-                @Override
-                public void run() {
-                    Looper.prepare();
-                    Toast toast = Toast.makeText(mContext, e.getClass().getName() + "\n" + Log.getStackTraceString(e), Toast.LENGTH_LONG);
-                    ((TextView) ((ViewGroup) toast.getView()).getChildAt(0)).setTextSize(10);
-                    toast.show();
-                    Looper.loop();
-                }
-            }.start();
+            new Thread(() -> {
+                Looper.prepare();
+                Toast toast = Toast.makeText(mContext, e.getClass().getName() + "\n" + Log.getStackTraceString(e), Toast.LENGTH_LONG);
+                ((TextView) ((ViewGroup) toast.getView()).getChildAt(0)).setTextSize(10);
+                toast.show();
+                Looper.loop();
+            }).start();
 
             try {
                 Thread.sleep(10000);
