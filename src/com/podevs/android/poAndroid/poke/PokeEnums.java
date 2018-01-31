@@ -26,7 +26,7 @@ public class PokeEnums {
 		Rooted { public final int poValue() { return 21; } },
 		Koed  { public final int poValue() { return 31; } };
 		public abstract int poValue();
-		public final static Status[] poValues() {
+		public static Status[] poValues() {
 			Status[] values = new Status[Status.Koed.poValue()+1];
 			for (Status i : Status.values())
 				values[i.poValue()] = i;

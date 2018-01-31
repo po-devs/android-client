@@ -5,7 +5,6 @@ import com.podevs.android.utilities.Baos;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.SocketChannel;
@@ -18,9 +17,9 @@ public class PokeClientSocket {
 	private final static String TAG = "PokeClientSocket";
 	// 4 bytes for length and 1 for type.
 	private final static int OVERHEAD_SIZE = 5;
-	public final static int CONNECT_TIMEOUT = 10000;
+	private final static int CONNECT_TIMEOUT = 10000;
 
-	public PokeClientSocket(String inIpAddr, int inPortNum) throws SocketTimeoutException, IOException
+	public PokeClientSocket(String inIpAddr, int inPortNum) throws IOException
 	{
 		schan = SocketChannel.open();
 		schan.socket().connect(new InetSocketAddress(inIpAddr, inPortNum), CONNECT_TIMEOUT);

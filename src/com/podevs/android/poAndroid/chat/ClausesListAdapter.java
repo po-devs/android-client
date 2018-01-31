@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.ChallengeEnums;
-import com.podevs.android.poAndroid.poke.TeamPoke;
-import com.podevs.android.poAndroid.pokeinfo.*;
 
 import java.util.HashSet;
 
@@ -66,7 +64,7 @@ public class ClausesListAdapter implements ListAdapter {
         return getCount() == 0;
     }
 
-    private HashSet<DataSetObserver> observers = new HashSet<DataSetObserver>();
+    private HashSet<DataSetObserver> observers = new HashSet<>();
 
     public void registerDataSetObserver(DataSetObserver arg0) {
         observers.add(arg0);

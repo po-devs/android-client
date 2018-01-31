@@ -39,7 +39,7 @@ public class StringUtilities {
 	}
 
 	public static String getFileContent(Context ctx, String path) {
-		FileInputStream in = null;
+		FileInputStream in;
 		try {
 			in = ctx.openFileInput(path);
 		} catch (FileNotFoundException e) {

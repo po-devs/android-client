@@ -35,9 +35,9 @@ public class Channel {
 	public static final String TAG = "Pokemon Online Channel";
 	public boolean channelEvents = false;
 	
-	public Hashtable<Integer, PlayerInfo> players = new Hashtable<Integer, PlayerInfo>();
+	public Hashtable<Integer, PlayerInfo> players = new Hashtable<>();
 	
-	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<SpannableStringBuilder>();
+	public LinkedList<SpannableStringBuilder> messageList = new LinkedList<>();
 
 	public void writeToHist(CharSequence text, boolean clickable, final String command) {
 		SpannableStringBuilder spannable;
@@ -109,7 +109,7 @@ public class Channel {
 			}, text.toString().indexOf(command), text.toString().indexOf(command) + command.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		}
 		try {
-			Integer i = 0;
+			Integer i;
 			try {
 				i = Color.parseColor(color);
 			} catch (Exception e) {

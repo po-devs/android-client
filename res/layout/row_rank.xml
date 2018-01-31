@@ -9,7 +9,7 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:singleLine="true"
+            android:maxLines="1"
             android:paddingLeft="5dp"
             android:id="@+id/rank"/>
     <TextView
@@ -17,13 +17,13 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:singleLine="true"
+            android:maxLines="1"
             android:id="@+id/name"/>
     <TextView
             android:layout_weight="3"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/points"/>
 </LinearLayout>

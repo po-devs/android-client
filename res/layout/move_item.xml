@@ -36,8 +36,7 @@
                     android:layout_width="0dip"
                     android:layout_weight="4.35"
                     android:layout_height="wrap_content"
-                    android:linksClickable="false" android:text="damageClass" android:layout_gravity="bottom"
-                    android:editable="false"/>
+                    android:linksClickable="false" android:text="damageClass" android:layout_gravity="bottom"/>
             <!--      <ImageView
                           android:id="@+id/damageClass"
                           android:layout_width="wrap_content"

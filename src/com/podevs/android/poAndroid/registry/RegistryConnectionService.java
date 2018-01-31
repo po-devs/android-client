@@ -27,7 +27,7 @@ public class RegistryConnectionService extends Service {
 		void NewServer(String name, String desc, short players, String ip, short maxplayers, int port);
 	}
 	
-	private final ConcurrentHashMap<Intent, LocalBinder> binders = new ConcurrentHashMap<Intent, RegistryConnectionService.LocalBinder>();
+	private final ConcurrentHashMap<Intent, LocalBinder> binders = new ConcurrentHashMap<>();
 	
 	static final String TAG = "Pokemon Online Registry";
 

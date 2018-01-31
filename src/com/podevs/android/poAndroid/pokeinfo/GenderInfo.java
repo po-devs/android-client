@@ -6,7 +6,7 @@ import com.podevs.android.poAndroid.registry.RegistryActivity;
 public class GenderInfo {
     private static String [] genders;
 
-    {
+    static {
         loadGenderNames();
     }
 

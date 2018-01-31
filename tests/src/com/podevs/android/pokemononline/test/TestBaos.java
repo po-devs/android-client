@@ -21,11 +21,7 @@ public class TestBaos extends AndroidTestCase {
 		
 		boolean result[] = new boolean[flags.length];
 		for (int i = 0; i < result.length; i++) {
-			if (read.available() != 0) {
-				result[i] = read.readBool();
-			} else {
-				result[i] = false;
-			}
+			result[i] = read.available() != 0 && read.readBool();
 		}
 		
 		for (int i = 0; i < flags.length; i++)

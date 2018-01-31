@@ -12,7 +12,7 @@ enum ChoiceType {
     CenterMoveType,
     DrawType,
     ItemType
-};
+}
 
 // Please only call serializeBytes() on the Choices that make sense.
 abstract class Choice implements SerializeBytes {

@@ -25,11 +25,11 @@ public class ShallowBattlePoke implements SerializeBytes {
 	public byte level = 0;
 	public byte lastKnownPercent = 0;
 	public boolean sub = false;
-	public LinkedList<UniqueID> specialSprites = new LinkedList<UniqueID>();
+	public LinkedList<UniqueID> specialSprites = new LinkedList<>();
 	public BattleMove[] moves = new BattleMove[4];
 	public Integer[][] stats = new Integer[2][6];
 
-	public ShallowBattlePoke() {}; // For pokes who have not been sent out;
+	public ShallowBattlePoke() {} // For pokes who have not been sent out;
 	
 	public ShallowBattlePoke(Bais msg, boolean isMe, Gen gen) {
 		uID = new UniqueID(msg);

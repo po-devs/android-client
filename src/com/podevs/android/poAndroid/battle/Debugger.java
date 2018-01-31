@@ -37,7 +37,7 @@ public class Debugger {
     }
 
     public static String readablePacket(BattlePacket p) {
-        String readable = "";
+        String readable;
         Bais msg = p.msg.cloneRemaining();
         byte player = player(p.num);
         byte slot = slot(p.num, player);

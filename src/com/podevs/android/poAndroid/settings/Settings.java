@@ -117,9 +117,4 @@ public class Settings extends PreferenceFragment {
             Log.d("Settings", "NULL ACTIVITY: Could not create toast");
         }
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
 }

@@ -49,12 +49,12 @@ public interface DragController {
     /**
      * Indicates the drag is a move.
      */
-    public static int DRAG_ACTION_MOVE = 0;
+    int DRAG_ACTION_MOVE = 0;
 
     /**
      * Indicates the drag is a copy.
      */
-    public static int DRAG_ACTION_COPY = 1;
+    int DRAG_ACTION_COPY = 1;
 
     /**
      * Starts a drag

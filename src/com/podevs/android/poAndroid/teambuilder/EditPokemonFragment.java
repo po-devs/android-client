@@ -82,11 +82,6 @@ public class EditPokemonFragment extends Fragment implements PokemonChooserListe
 		pokeList.update(poke());
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-	}
-
 	private TeamPoke poke() {
 		return ((EditPokemonActivity) getActivity()).getPoke();
 	}

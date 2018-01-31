@@ -71,7 +71,7 @@ class MyResultReceiver extends ResultReceiver {
     }
 
     public interface Receiver {
-        public void onReceiveResult(int resultCode, Bundle resultData);
+        void onReceiveResult(int resultCode, Bundle resultData);
     }
 
     @Override
@@ -96,7 +96,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         Debug
     }
 
-    // public final static int SWIPE_TIME_THRESHOLD = 100;
     private static final String TAG = "Battle";
 
     DragLayer mDragLayer;
@@ -227,7 +226,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 }
             });
         }
-    };
+    }
 
     public HpAnimator hpAnimator = new HpAnimator();
 
@@ -250,7 +249,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
         @Override
         public boolean isViewFromObject(View arg0, Object arg1) {
-            return (Object)arg0 == arg1;
+            return arg0 == arg1;
         }
 
         @Override
@@ -279,11 +278,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         resources = getResources();
         realViewSwitcher = new ViewPager(this);
         mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
-
-        //if (mainLayout.findViewById(R.id.smallBattleWindow) != null) {
-			/* Small screen, set full screen otherwise pokemon are cropped */
-          //  requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //}
 
         realViewSwitcher.setAdapter(new MyAdapter());
         setContentView(realViewSwitcher);
@@ -408,7 +402,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         pokeballs[i][j].setColorFilter(statusTint(battle.pokes[i][j].status()));
                     }
                 }
-                /// PorterDuff.Mode.MULTIPLY;
             }
         });
     }
@@ -1197,21 +1190,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
         super.onDestroy();
     }
 
-    /*
-    public OnTouchListener dialogListener = new OnTouchListener() {
-        public boolean onTouch(View v, MotionEvent e) {
-            int id = v.getId();
-            for(int i = 0; i < 6; i++) {
-                if(id == myArrangePokeIcons[i].getId() && e.getAction() == MotionEvent.ACTION_DOWN) {
-                    Object dragInfo = v;
-                    mDragLayer.startDrag(v, myArrangePokeIcons[i], dragInfo, DragController.DRAG_ACTION_MOVE);
-                    break;
-                }
-            }
-            return true;
-        }
-    };*/
-
     public OnTouchListener dialogListener(final TextView nameAndType, final TextView statNames, final TextView statNums, final TextView moves) {
         return new OnTouchListener() {
             @Override
@@ -1230,7 +1208,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         statNames.setText(s);
                         statNums.setText(activeBattle.myTeam.pokes[num].printStats());
                         moves.setText(activeBattle.myTeam.pokes[num].movesString());
-                        mDragLayer.startDrag(v, myArrangePokeIcons[i], (Object) event, DragController.DRAG_ACTION_MOVE);
+                        mDragLayer.startDrag(v, myArrangePokeIcons[i], event, DragController.DRAG_ACTION_MOVE);
                         break;
                     }
                 }
@@ -1395,7 +1373,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 menu.findItem(R.id.close).setVisible(false);
                 menu.findItem(R.id.cancel).setVisible(currentChoiceSlot > 0);
             }
-            menu.findItem(R.id.megavolve).setVisible(activeBattle.clicked ? false : activeBattle.allowMega[currentChoiceSlot]);
+            menu.findItem(R.id.megavolve).setVisible(!activeBattle.clicked && activeBattle.allowMega[currentChoiceSlot]);
             menu.findItem(R.id.megavolve).setChecked(megaClicked);
 
             if (megaClicked) {
@@ -1403,7 +1381,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
-            menu.findItem(R.id.zmove).setVisible(activeBattle.clicked ? false : activeBattle.allowZMove[currentChoiceSlot]);
+            menu.findItem(R.id.zmove).setVisible(!activeBattle.clicked && activeBattle.allowZMove[currentChoiceSlot]);
             menu.findItem(R.id.zmove).setChecked(zmoveClicked);
             if (zmoveClicked) {
                 menu.findItem(R.id.zmove).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -1687,14 +1665,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             boolean validPacket = (packet != null);
 
             if (validPacket) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        Toast.makeText(mActivity, ex.getClass().getName() + "\n" + packet.toCompactString() + "\n" + packet.toString(), Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    }
-                }.start();
+                new Thread(() -> {
+                    Looper.prepare();
+                    Toast.makeText(mActivity, ex.getClass().getName() + "\n" + packet.toCompactString() + "\n" + packet.toString(), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }).start();
 
                 try {
                     Thread.sleep(10000);

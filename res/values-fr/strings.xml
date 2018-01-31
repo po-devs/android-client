@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="empty"></string>
     <string name="choosename">Nom de dresseur</string>
     <string name="app_name">Pokémon Online</string>
     <string name="connect">Connexion!</string>

@@ -223,8 +223,8 @@
         }
 
         private static boolean primitiveContains(int toFind) {
-            for (int i = 0; i < usefulItems.length ; i++) {
-                if (usefulItems[i] == toFind) {
+            for (int usefulItem : usefulItems) {
+                if (usefulItem == toFind) {
                     return true;
                 }
             }

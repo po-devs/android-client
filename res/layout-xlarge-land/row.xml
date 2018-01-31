@@ -5,8 +5,8 @@
   android:orientation="horizontal"
   android:layout_width="fill_parent"
   android:layout_height="?android:attr/listPreferredItemHeight">
-	<TextView android:id="@+id/servername" android:textSize="18sp" android:layout_weight="2" android:layout_width="0dip" android:layout_height="fill_parent" android:singleLine="true" />
-  	<TextView android:id="@+id/players" android:textSize="18sp" android:layout_weight="1" android:layout_width="0dip" android:layout_height="fill_parent" android:singleLine="true" />  
-  	<TextView android:id="@+id/connection" android:textSize="18sp" android:layout_weight="2" android:layout_width="0dip" android:layout_height="fill_parent" android:singleLine="true" />
+	<TextView android:id="@+id/servername" android:textSize="18sp" android:layout_weight="2" android:layout_width="0dip" android:layout_height="fill_parent" android:maxLines="1"/>
+  	<TextView android:id="@+id/players" android:textSize="18sp" android:layout_weight="1" android:layout_width="0dip" android:layout_height="fill_parent" android:maxLines="1"/>
+  	<TextView android:id="@+id/connection" android:textSize="18sp" android:layout_weight="2" android:layout_width="0dip" android:layout_height="fill_parent" android:maxLines="1"/>
    
 </LinearLayout>

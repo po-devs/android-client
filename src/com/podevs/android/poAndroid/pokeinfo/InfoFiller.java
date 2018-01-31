@@ -55,7 +55,7 @@ public class InfoFiller {
 	}
 
     static void plainFill(String file, Filler filler) {
-        InputStream assetsDB = null;
+        InputStream assetsDB;
         try {
             assetsDB = getContext().getAssets().open(file);
         } catch (IOException e) {
@@ -99,7 +99,7 @@ public class InfoFiller {
 
 	static void uIDfill(String file, Filler filler, boolean readAll) {
 
-		InputStream assetsDB = null;
+		InputStream assetsDB;
 		try {
 			assetsDB = getContext().getAssets().open(file);
 		} catch (IOException e) {
@@ -154,7 +154,7 @@ public class InfoFiller {
 
 	static void uIDfill(String file, OptionsFiller filler) {
 
-		InputStream assetsDB = null;
+		InputStream assetsDB;
 		try {
 			assetsDB = getContext().getAssets().open(file);
 		} catch (IOException e) {

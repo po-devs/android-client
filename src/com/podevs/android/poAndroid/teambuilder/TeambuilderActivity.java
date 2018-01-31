@@ -29,7 +29,6 @@ import com.podevs.android.poAndroid.pokeinfo.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +99,7 @@ public class TeambuilderActivity extends FragmentActivity {
 			} else {
 				return null;
 			}
-			}
+		}
 	}
 	
 	/** Called when the activity is first created. */
@@ -136,86 +135,56 @@ public class TeambuilderActivity extends FragmentActivity {
         
 		viewPager.setAdapter(new MyAdapter(getSupportFragmentManager()));
 
-       // Runtime.getRuntime().gc();
     }
 
 	// This function will allow you do download txt from web.
 	private void downloadTeam(final URL Link) {
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					HttpURLConnection c = (HttpURLConnection) Link.openConnection();
-					c.setRequestMethod("GET");
-					c.connect();
-					InputStream in = c.getInputStream();
-					final ByteArrayOutputStream bo = new ByteArrayOutputStream();
+		new Thread(() -> {
+            try {
+                HttpURLConnection c = (HttpURLConnection) Link.openConnection();
+                c.setRequestMethod("GET");
+                c.connect();
+                InputStream in = c.getInputStream();
+                final ByteArrayOutputStream bo = new ByteArrayOutputStream();
 
-					byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for information!!
-					in.read(buffer); // Read from Buffer
-					bo.write(buffer); // Write Into Buffer
-					in.close();
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								bo.flush();
-								String textToParse = new String(trim(bo.toByteArray()));
-								bo.close();
-								if (textToParse.contains("?xml version=\"1.0\"")) {
-									team = new PokeParser(TeambuilderActivity.this, textToParse, false).getTeam();
-								} else {
-									// New parsing type
-									team = importableParse(textToParse);
-								}
-								MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
-                                ItemInfo.setGeneration(team.gen.num);
-								updateTeam();
-								if (progressDialog.isShowing()) {
-									progressDialog.dismiss();
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
+                byte[] buffer = new byte[2304]; // 2^11 + 2^8 hopefully this is enough space for information!!
+                in.read(buffer); // Read from Buffer
+                bo.write(buffer); // Write Into Buffer
+                in.close();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            bo.flush();
+                            String textToParse = new String(trim(bo.toByteArray()));
+                            bo.close();
+                            if (textToParse.contains("?xml version=\"1.0\"")) {
+                                team = new PokeParser(TeambuilderActivity.this, textToParse, false).getTeam();
+                            } else {
+                                // New parsing type
+                                team = importableParse(textToParse);
+                            }
+                            MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
+							ItemInfo.setGeneration(team.gen.num);
+                            updateTeam();
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-					});
+                });
 
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				/*
-				try {
-					DefaultHttpClient httpClient = new DefaultHttpClient();
-					HttpGet httpGet = new HttpGet(URL);
-					HttpResponse response = httpClient.execute(httpGet);
-					HttpEntity entity = response.getEntity();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-					BufferedHttpEntity buf = new BufferedHttpEntity(entity);
-
-					InputStream is = buf.getContent();
-
-					BufferedReader r = new BufferedReader(new InputStreamReader(is));
-
-					StringBuilder total = new StringBuilder();
-					String line;
-					while ((line = r.readLine()) != null) {
-						total.append(line + "\n");
-					}
-					String result = total.toString();
-					team = new PokeParser(result, TeambuilderActivity.this).getTeam();
-					MoveInfo.forceSetGen(team.gen.num, team.gen.subNum);
-					updateTeam();
-				} catch (Exception e) {
-
-				}
-				*/
-               // Runtime.getRuntime().gc();
-				if (progressDialog.isShowing()) {
-					progressDialog.dismiss();
-				}
-			}
-		}.start();
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        }).start();
 	}
 
 	private Team importableParse(String textToParse) {

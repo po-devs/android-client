@@ -106,7 +106,6 @@ public class Bais extends ByteArrayInputStream {
 		try {
 			read(tmpBuf);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return tmpBuf;
@@ -118,7 +117,7 @@ public class Bais extends ByteArrayInputStream {
 			// XXX Bad things happened do something about them.
 			return null;
 		}
-		ArrayList<String> list = new ArrayList<String>(len);
+		ArrayList<String> list = new ArrayList<>(len);
 		for (int i = 0; i < len; i++) {
 			list.add(readString());
 		}

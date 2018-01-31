@@ -85,7 +85,7 @@ public class DragLayer extends FrameLayout implements DragController {
     private final int[] mDropCoordinates = new int[2];
 
     // Faruq: utilize array list instead
-    private ArrayList<DragListener> mListener = new ArrayList<DragListener>();
+    private ArrayList<DragListener> mListener = new ArrayList<>();
 
     private View mIgnoredDropTarget;
 
