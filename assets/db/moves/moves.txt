@@ -700,3 +700,12 @@
 699 Oceanic Operetta
 700 Soul-Stealing 7-Star Strike
 701 10,000,000 Volt Thunderbolt
+702 Clangorous Soulblaze
+703 Splintered Stormshards
+704 Mind Blown
+705 Photon Geyser
+706 Searing Sunraze Smash
+707 Menacing Moonraze Maelstrom
+708 Let's Snuggle Forever
+709 Plasma Fists
+710 Light That Burns the Sky
