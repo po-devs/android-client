@@ -141,6 +141,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     boolean useAnimSprites = true;
     boolean megaClicked = false;
+    boolean burstClicked = false;
     boolean zmoveClicked = false;
     BattleMove lastClickedMove;
     int currentChoiceSlot = 0;
@@ -493,7 +494,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
             public void run() {
                 ShallowBattlePoke poke = battle.currentPoke(me, slot);
-                poke.shiny = activeBattle.myTeam.pokes[0].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
+                poke.shiny = activeBattle.myTeam.pokes[slot].shiny; // This is a very stupid way to do it. ShallowBattleTeam never gives shiny correctly?
                 // Load correct moveset and name
                 if (poke != null) {
                     if (!samePokes[me]) {
@@ -636,6 +637,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                         }
                     }
                     megaClicked = false;
+                    burstClicked = false;
                     for (int i = 0; i < 6; i++) {
                         if (activeBattle.myTeam.pokes[i].currentHP > 0 && activeBattle.myTeam.pokes[i].status() != Status.Koed.poValue() && !activeBattle.clicked) {
                             boolean alreadySwitched = false;
@@ -719,7 +721,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
     public void attackClicked (byte zone) {
         //netServ.socket.sendMessage(activeBattle.constructAttack((byte)-1, megaClicked, zmoveClicked), Command.BattleMessage);
-        AttackChoice ac = new AttackChoice(zone, (byte)opp, megaClicked, zmoveClicked);
+        AttackChoice ac = new AttackChoice(zone, (byte)opp, megaClicked || burstClicked, zmoveClicked);
         myChoices[currentChoiceSlot] = new BattleChoice((byte)battle.slot(me, currentChoiceSlot), ac, ChoiceType.AttackType);
         if (battle.numberOfSlots == 1) {
             goToNextChoice();
@@ -1395,7 +1397,11 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 menu.findItem(R.id.close).setVisible(false);
                 menu.findItem(R.id.cancel).setVisible(currentChoiceSlot > 0);
             }
-            menu.findItem(R.id.megavolve).setVisible(activeBattle.clicked ? false : activeBattle.allowMega[currentChoiceSlot]);
+
+            boolean necrozmaForme = activeBattle.myTeam.pokes[currentChoiceSlot].uID().pokeNum == 800
+                    && (activeBattle.myTeam.pokes[currentChoiceSlot].uID().subNum == 1 || activeBattle.myTeam.pokes[currentChoiceSlot].uID().subNum == 2);
+
+            menu.findItem(R.id.megavolve).setVisible(activeBattle.clicked ? false : activeBattle.allowMega[currentChoiceSlot] && !necrozmaForme);
             menu.findItem(R.id.megavolve).setChecked(megaClicked);
 
             if (megaClicked) {
@@ -1403,6 +1409,16 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             } else {
                 menu.findItem(R.id.megavolve).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             }
+
+            menu.findItem(R.id.ultraburst).setVisible(activeBattle.clicked ? false : activeBattle.allowMega[currentChoiceSlot] && necrozmaForme);
+            menu.findItem(R.id.ultraburst).setChecked(burstClicked);
+
+            if (burstClicked) {
+                menu.findItem(R.id.ultraburst).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            } else {
+                menu.findItem(R.id.ultraburst).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            }
+
             menu.findItem(R.id.zmove).setVisible(activeBattle.clicked ? false : activeBattle.allowZMove[currentChoiceSlot]);
             menu.findItem(R.id.zmove).setChecked(zmoveClicked);
             if (zmoveClicked) {
@@ -1427,6 +1443,15 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
                 }
                 updateButtons();
+                break;
+            case R.id.ultraburst:
+                item.setChecked(!item.isChecked());
+                burstClicked = item.isChecked();
+                if (burstClicked) {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                } else {
+                    item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                }
                 break;
             case R.id.megavolve:
                 item.setChecked(!item.isChecked());
