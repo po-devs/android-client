@@ -10,6 +10,14 @@
         android:showAsAction="ifRoom|withText">
     </item>
     <item
+            android:id="@+id/ultraburst"
+            android:checkable="true"
+            android:title="@string/ultraburst"
+            android:icon="@drawable/ic_mega"
+            android:visible="false"
+            android:showAsAction="ifRoom|withText">
+    </item>
+    <item
         android:id="@+id/megavolve"
         android:checkable="true"
         android:title="@string/megavolve"
