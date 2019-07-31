@@ -279,31 +279,38 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
         resources = getResources();
         realViewSwitcher = new ViewPager(this);
-        mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+        //mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+        /*if (battle.numberOfSlots == 2) {
+            mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen_doubles, null);
+        } else if (battle.numberOfSlots == 3) {
+            mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen_triples, null);
+        } else {
+            mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+        }*/
 
         //if (mainLayout.findViewById(R.id.smallBattleWindow) != null) {
 			/* Small screen, set full screen otherwise pokemon are cropped */
-          //  requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //  requestWindowFeature(Window.FEATURE_NO_TITLE);
         //}
 
-        realViewSwitcher.setAdapter(new MyAdapter());
+        /*realViewSwitcher.setAdapter(new MyAdapter());
         setContentView(realViewSwitcher);
 
-        infoView = (TextView)mainLayout.findViewById(R.id.infoWindow);
-        infoScroll = (ScrollView)mainLayout.findViewById(R.id.infoScroll);
-        battleView = (RelativeLayout)mainLayout.findViewById(R.id.battleScreen);
+        infoView = (TextView) mainLayout.findViewById(R.id.infoWindow);
+        infoScroll = (ScrollView) mainLayout.findViewById(R.id.infoScroll);
+        battleView = (RelativeLayout) mainLayout.findViewById(R.id.battleScreen);
 
-        struggleLayout = (RelativeLayout)mainLayout.findViewById(R.id.struggleLayout);
-        attackRow1 = (LinearLayout)mainLayout.findViewById(R.id.attackRow1);
-        attackRow2 = (LinearLayout)mainLayout.findViewById(R.id.attackRow2);
-        targetRow1 = (LinearLayout)mainLayout.findViewById(R.id.targetRowA);
-        targetRow2 = (LinearLayout)mainLayout.findViewById(R.id.targetRowB);
+        struggleLayout = (RelativeLayout) mainLayout.findViewById(R.id.struggleLayout);
+        attackRow1 = (LinearLayout) mainLayout.findViewById(R.id.attackRow1);
+        attackRow2 = (LinearLayout) mainLayout.findViewById(R.id.attackRow2);
+        targetRow1 = (LinearLayout) mainLayout.findViewById(R.id.targetRowA);
+        targetRow2 = (LinearLayout) mainLayout.findViewById(R.id.targetRowB);
 
         struggleLayout.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                attackClicked((byte)-1);
+                attackClicked((byte) -1);
             }
-        });
+        });*/
 
         setUncaughtHandler();
     }
@@ -914,7 +921,34 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 netServ.closeBattle(battleId); //remove the possibly ongoing notification
                 return;
             }
-			
+
+            if (battle.numberOfSlots == 2) {
+                mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen_doubles, null);
+            } else if (battle.numberOfSlots == 3) {
+                mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen_triples, null);
+            } else {
+                mainLayout = getLayoutInflater().inflate(R.layout.battle_mainscreen, null);
+            }
+
+            realViewSwitcher.setAdapter(new MyAdapter());
+            setContentView(realViewSwitcher);
+
+            infoView = (TextView) mainLayout.findViewById(R.id.infoWindow);
+            infoScroll = (ScrollView) mainLayout.findViewById(R.id.infoScroll);
+            battleView = (RelativeLayout) mainLayout.findViewById(R.id.battleScreen);
+
+            struggleLayout = (RelativeLayout) mainLayout.findViewById(R.id.struggleLayout);
+            attackRow1 = (LinearLayout) mainLayout.findViewById(R.id.attackRow1);
+            attackRow2 = (LinearLayout) mainLayout.findViewById(R.id.attackRow2);
+            targetRow1 = (LinearLayout) mainLayout.findViewById(R.id.targetRowA);
+            targetRow2 = (LinearLayout) mainLayout.findViewById(R.id.targetRowB);
+
+            struggleLayout.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    attackClicked((byte) -1);
+                }
+            });
+
 			/* Is it a spectating battle or not? */
             try {
                 activeBattle = (Battle) battle;
@@ -1044,20 +1078,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             currentPokeStatuses[me][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusB3);
             currentPokeStatuses[opp][2] = (ImageView) battleView.findViewById(R.id.currentPokeStatusA3);
 
-            if (battle.numberOfSlots == 1) {
-                battleView.findViewById(R.id.pokeInfoA2).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeInfoB2).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
-                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB1).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            }
-            else if (battle.numberOfSlots == 2) {
-                battleView.findViewById(R.id.pokeInfoA3).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeInfoB3).setVisibility(View.GONE);
-                ((RelativeLayout.LayoutParams)battleView.findViewById(R.id.pokeInfoB2).getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            }
-
-            for(int i = 0; i < 3; i++) {
+            for(int i = 0; i < battle.numberOfSlots; i++) {
                 targetIcons[me][i] = (ImageView) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Icon", "id", InfoConfig.pkgName));
                 targetIcons[me][i].setImageDrawable(PokemonInfo.iconDrawable(new UniqueID(0)));
                 targetNames[me][i] = (TextView) mainLayout.findViewById(resources.getIdentifier("targetB" + (i+1) + "Name", "id", InfoConfig.pkgName));
@@ -1076,22 +1097,14 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             }
 
             if (battle.numberOfSlots == 1) {
-                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
-                pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
-                battleView.findViewById(R.id.pokeSpriteA1).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeSpriteB1).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeSpriteA3).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeSpriteB3).setVisibility(View.GONE);
+                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
+                pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
             }
             else if (battle.numberOfSlots == 2) {
-                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
+                pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
                 pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
-                pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB3);
+                pokeSprites[me][1] = (WebView) battleView.findViewById(R.id.pokeSpriteB2);
                 pokeSprites[opp][1] = (WebView) battleView.findViewById(R.id.pokeSpriteA2);
-                battleView.findViewById(R.id.pokeSpriteA3).setVisibility(View.GONE);
-                battleView.findViewById(R.id.pokeSpriteB1).setVisibility(View.GONE);
-                ((ViewGroup.MarginLayoutParams)pokeSprites[me][0].getLayoutParams()).setMargins(0,0,0,0);
-                ((ViewGroup.MarginLayoutParams)pokeSprites[opp][1].getLayoutParams()).setMargins(0,0,0,0);
             } else if (battle.numberOfSlots == 3) {
                 pokeSprites[me][0] = (WebView) battleView.findViewById(R.id.pokeSpriteB1);
                 pokeSprites[opp][0] = (WebView) battleView.findViewById(R.id.pokeSpriteA1);
@@ -1288,7 +1301,7 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             }
             // Check to see if click was on target button
             for(int i = 0; i < 2; i++) {
-                for(int j = 0; j < 3; j++) {
+                for(int j = 0; j < battle.numberOfSlots; j++) {
                     if (id == targetLayouts[i][j].getId()) {
                         targetClicked((byte) battle.slot(i, j));
                     }

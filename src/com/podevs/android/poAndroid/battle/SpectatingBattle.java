@@ -97,7 +97,7 @@ public class SpectatingBattle {
         conf = bc; // singles, doubles, triples
         this.bID = bID;
 
-        numberOfSlots = (conf.mode() + 1) * 2;
+        numberOfSlots = ChallengeEnums.Mode.values()[conf.mode].numberOfSlots();
         players[0] = p1;
         players[1] = p2;
 
