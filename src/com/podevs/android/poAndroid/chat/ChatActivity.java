@@ -449,8 +449,8 @@ public class ChatActivity extends Activity {
 		if (messageAdapter == null)
 			return;
 		final int delta = messageAdapter.channel.lastSeen - messageAdapter.lastSeen;
-		if (delta <= 0)
-			return;
+		//if (delta <= 0)
+		//	return;
 		Runnable update = new Runnable() {
 			public void run() {
 				LinkedList<SpannableStringBuilder> msgList = messageAdapter.channel.messageList;
